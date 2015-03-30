@@ -1,7 +1,7 @@
 //tools for other to use
 #include <string>
+#include <windows.h>
 //#include "afxinet.h"
-typedef void* HMODULE;
 /*typedef void* PVOID;
 typedef PVOID HANDLE;
 typedef HANDLE HINSTANCE;
@@ -17,14 +17,35 @@ namespace Tools{
 		AfxMessageBox(Msg);
 	}
 	//self make function 
-	/*
+	// tools for Tchar to string
 	string Tchar2string(TCHAR *smsg){
 		int iLen = WideCharToMultiByte(CP_ACP, 0, smsg, -1, NULL, 0, NULL, NULL);
 		char* chRtn = new char[iLen*sizeof(char)];
 		WideCharToMultiByte(CP_ACP, 0, smsg, -1, chRtn, iLen, NULL, NULL);
 		string str(chRtn);
 		return str;
-	}*/
+	}
+	// ANSI To Unicode
+	wstring ANSIToUnicode(const string& str)
+	{
+		int len = 0;
+		len = str.length();
+		int  unicodeLen = ::MultiByteToWideChar(CP_ACP,0,str.c_str(),-1,NULL,0);
+		wchar_t *  pUnicode;
+		pUnicode = new  wchar_t[unicodeLen + 1];
+		memset(pUnicode, 0, (unicodeLen + 1)*sizeof(wchar_t));
+		::MultiByteToWideChar(CP_ACP,0,str.c_str(),-1,(LPWSTR)pUnicode,unicodeLen);
+		wstring  rt;
+		rt = (wchar_t*)pUnicode;
+		delete  pUnicode;
+		return  rt;
+	}
+	//string to LPCWSTR 
+	LPCWSTR Sting2LPCWSTR(string str){
+		wstring w_str = ANSIToUnicode(str);
+		LPCWSTR L_str = w_str.c_str();
+		return L_str;
+	}
 	//Dllusr
 	class Dlluser{
 	public:
@@ -33,23 +54,39 @@ namespace Tools{
 			this->path = path;
 		}
 		//set the function's name
-		void Set_name(string name){
+		void Set_fun_name(string name){
 			this->fun_name = name;
+		}
+		//load dll
+		bool Load_dll(){
+			hmodele = LoadLibrary(Sting2LPCWSTR(this->path));//()this->path.c_str()
+			if (!hmodele) return false;
+			return true;
 		}
 		//get the void* funtion
 		void* Getfun(){
-			FindName();
+			Find_function();
 			return fun;
+		}
+		void free_dll(){
+			FreeLibrary(hmodele);
 		}
 	private:
 		string path;
 		string fun_name;
 		HMODULE hmodele;
 		void *fun;
-		//find the name
-		void FindName(){
+		//find the function
+		void Find_function(){
 			//fun = 
-
+			if (fun_name == "") { fun = NULL; return ; }
+			try{
+				fun = GetProcAddress(hmodele, this->fun_name.c_str());
+			}catch (exception e){
+				fun = NULL;
+				return ;
+			}
+			return ; 
 		}
 	};
 
