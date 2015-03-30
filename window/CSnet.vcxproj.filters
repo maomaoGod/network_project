@@ -54,19 +54,22 @@
     <ClInclude Include="Phylayer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Dll.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GetHtml.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="NetDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CWebBrowser2.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Tool.h">
+    <ClInclude Include="NetDll.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DllDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HtmlDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="NetHtml.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -101,16 +104,22 @@
     <ClCompile Include="Phylayer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Dll.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="GetHtml.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="NetDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CWebBrowser2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NetDll.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DllDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HtmlDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NetHtml.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

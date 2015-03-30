@@ -12,8 +12,8 @@
 #include "CSnetDoc.h"
 #include "CSnetView.h"
 #include "NetDlg.h"
-#include "Dll.h"
-#include "GetHtml.h"
+#include "DllDlg.h"
+#include "HtmlDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -115,15 +115,18 @@ void CCSnetView::OnDll()
 	Dlg.DoModal();
 }
 
-//turn to brower
+
 void CCSnetView::OnNetpage()
 {
 	// TODO:  在此添加命令处理程序代码
-	GetHtml Dlg;
+	HtmlDlg Dlg;
 	Dlg.DoModal();
+
 }
 
-//turn to five main app
+
+
+
 void CCSnetView::OnNetDlg()
 {
 	// TODO:  在此添加命令处理程序代码

@@ -104,17 +104,18 @@
     <ClInclude Include="CSnetDoc.h" />
     <ClInclude Include="CSnetView.h" />
     <ClInclude Include="CWebBrowser2.h" />
-    <ClInclude Include="Dll.h" />
-    <ClInclude Include="GetHtml.h" />
+    <ClInclude Include="DllDlg.h" />
+    <ClInclude Include="HtmlDlg.h" />
     <ClInclude Include="Linklayer.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="NetDlg.h" />
+    <ClInclude Include="NetDll.h" />
+    <ClInclude Include="NetHtml.h" />
     <ClInclude Include="Netlayer.h" />
     <ClInclude Include="Phylayer.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Tool.h" />
     <ClInclude Include="Trslayer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -123,11 +124,13 @@
     <ClCompile Include="CSnetDoc.cpp" />
     <ClCompile Include="CSnetView.cpp" />
     <ClCompile Include="CWebBrowser2.cpp" />
-    <ClCompile Include="Dll.cpp" />
-    <ClCompile Include="GetHtml.cpp" />
+    <ClCompile Include="DllDlg.cpp" />
+    <ClCompile Include="HtmlDlg.cpp" />
     <ClCompile Include="Linklayer.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="NetDlg.cpp" />
+    <ClCompile Include="NetDll.cpp" />
+    <ClCompile Include="NetHtml.cpp" />
     <ClCompile Include="Netlayer.cpp" />
     <ClCompile Include="Phylayer.cpp" />
     <ClCompile Include="stdafx.cpp">

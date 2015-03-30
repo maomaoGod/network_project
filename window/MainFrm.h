@@ -1,11 +1,16 @@
+
 // MainFrm.h : CMainFrame 类的接口
 //
+
 #pragma once
+
 class CMainFrame : public CFrameWnd
 {
+	
 protected: // 仅从序列化创建
 	CMainFrame();
 	DECLARE_DYNCREATE(CMainFrame)
+
 // 特性
 public:
 
