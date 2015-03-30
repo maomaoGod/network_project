@@ -1,14 +1,11 @@
 // Dll.cpp : 实现文件
 //
-
 #include "stdafx.h"
 #include "CSnet.h"
 #include "Dll.h"
 #include "afxdialogex.h"
 
-
 // Dll 对话框
-
 IMPLEMENT_DYNAMIC(Dll, CDialogEx)
 
 Dll::Dll(CWnd* pParent /*=NULL*/)

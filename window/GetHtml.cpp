@@ -1,6 +1,5 @@
 // GetHtml.cpp : 实现文件
 //
-
 #include "stdafx.h"
 #include "afxinet.h"
 #include "CSnet.h"
@@ -66,7 +65,8 @@ void GetHtml::OnBnClickedButton1() //获取URL字符串，调用函数获取网页数据，并将数
 {
 	TCHAR url[100];
 	CString myhtml;
-	GetDlgItem(IDC_URL)->GetWindowText(url, 100);  //获取url		
+	GetDlgItem(IDC_URL)->GetWindowText(url, 100);  //获取url	
+
 	myhtml = getURLContext(url);        //获取数据流
 	GetDlgItem(IDC_HTML)->SetWindowText(myhtml); //显示文本
 }

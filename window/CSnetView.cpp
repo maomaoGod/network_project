@@ -115,18 +115,15 @@ void CCSnetView::OnDll()
 	Dlg.DoModal();
 }
 
-
+//turn to brower
 void CCSnetView::OnNetpage()
 {
 	// TODO:  在此添加命令处理程序代码
 	GetHtml Dlg;
 	Dlg.DoModal();
-
 }
 
-
-
-
+//turn to five main app
 void CCSnetView::OnNetDlg()
 {
 	// TODO:  在此添加命令处理程序代码
