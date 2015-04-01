@@ -13,9 +13,15 @@ using namespace std;
 
 namespace Tools{
 	//overload : it don't need to use _T anymore
-	void AfxMessageBox(string Msg){
+	/*void AfxMessageBox(string Msg){
 		AfxMessageBox(Msg);
 	}
+	void AfxMessageBox(string Msg, UINT BS, UINT IS){//
+		AfxMessageBox(Msg, BS, IS);//, 
+	}
+	int AfxMessageBox(string Msg, UINT BS, UINT IS){//
+		return AfxMessageBox(Msg, BS, IS);//, 
+	}*/
 	//self make function 
 	// tools for Tchar to string
 	string Tchar2string(TCHAR *smsg){

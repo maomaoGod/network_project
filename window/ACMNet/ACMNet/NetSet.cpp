@@ -5,7 +5,6 @@
 #include "NetSet.h"
 #include "afxdialogex.h"
 
-
 // NetSet ¶Ô»°¿ò
 
 IMPLEMENT_DYNAMIC(NetSet, CDialogEx)

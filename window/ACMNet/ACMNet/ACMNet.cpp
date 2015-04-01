@@ -1,7 +1,5 @@
-
 // ACMNet.cpp : 定义应用程序的类行为。
 //
-
 #include "stdafx.h"
 #include "ACMNet.h"
 #include "ACMNetDlg.h"
@@ -10,16 +8,12 @@
 #define new DEBUG_NEW
 #endif
 
-
 // CACMNetApp
-
 BEGIN_MESSAGE_MAP(CACMNetApp, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
-
 // CACMNetApp 构造
-
 CACMNetApp::CACMNetApp()
 {
 	// 支持重新启动管理器
@@ -29,14 +23,10 @@ CACMNetApp::CACMNetApp()
 	// 将所有重要的初始化放置在 InitInstance 中
 }
 
-
 // 唯一的一个 CACMNetApp 对象
-
 CACMNetApp theApp;
 
-
 // CACMNetApp 初始化
-
 BOOL CACMNetApp::InitInstance()
 {
 	// 如果一个运行在 Windows XP 上的应用程序清单指定要

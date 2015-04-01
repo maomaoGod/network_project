@@ -1,4 +1,3 @@
-
 // ACMNetDlg.cpp : 实现文件
 //
 
@@ -7,6 +6,9 @@
 #include "ACMNet.h"
 #include "ACMNetDlg.h"
 #include "afxdialogex.h"
+#include "Tools.h"
+
+using namespace Tools;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -14,7 +16,6 @@
 
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
-
 class CAboutDlg : public CDialogEx
 {
 public:
@@ -45,7 +46,6 @@ END_MESSAGE_MAP()
 
 
 // CACMNetDlg 对话框
-
 
 
 CACMNetDlg::CACMNetDlg(CWnd* pParent /*=NULL*/)
@@ -162,8 +162,20 @@ HCURSOR CACMNetDlg::OnQueryDragIcon()
 void CACMNetDlg::OnClose()
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-
-	CDialogEx::OnClose();
+	//AfxMessageBox(" 是否退出软件 \n", MB_OKCANCEL, MB_ICONQUESTION);
+	if (AfxMessageBox(_T(" 是否退出软件 \n"), MB_OKCANCEL, MB_ICONQUESTION) == IDOK){
+		CRect rectDlg;
+		this->GetWindowRect(rectDlg);
+		while (rectDlg.TopLeft().y < rectDlg.BottomRight().y){//rectDlg.Height() > 30
+			//rectDlg.Height() -= 10;
+			rectDlg.TopLeft().y += 3;
+			rectDlg.BottomRight().y -= 3;
+			this->MoveWindow(rectDlg);
+		}
+		CDialogEx::OnClose();
+	}
+	return;
+	
 }
 
 
