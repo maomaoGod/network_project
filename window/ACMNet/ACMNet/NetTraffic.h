@@ -4,14 +4,18 @@
 using namespace Tools;
 
 namespace NetTraffic{
+	//MySocket
+	class MySocket : CSocket{
+
+	};
 	// the TCP link
 	class TCP{
-		Dlluser MySocket;//the socket we define from the dll
-
+		Dlluser SocketDLL;//the socket we define from the dll
+		MySocket mysocket;
 	};
 	// the UDP link
 	class UDP{
-		Dlluser MySocket;//the socket we define from the dll
-
+		Dlluser SocketDLL;//the socket we define from the dll
+		 
 	};
 }
