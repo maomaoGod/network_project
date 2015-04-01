@@ -1,5 +1,5 @@
 #include "Tools.h"
-
+#include "afxsock.h"
 //there we will use the Socket class to transform the data
 using namespace Tools;
 

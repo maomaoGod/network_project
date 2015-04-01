@@ -1,13 +1,13 @@
 
 // ACMNetDlg.cpp : 实现文件
 //
-
 #include "stdafx.h"
 #include "NetSet.h"
 #include "ACMNet.h"
 #include "ACMNetDlg.h"
 #include "afxdialogex.h"
-
+#include "Tools.h"
+using namespace Tools;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -17,26 +17,32 @@ enum  STATE  { THREAD_EXIT, THREAD_WAIT, THREAD_RUN }  FLAG;
 CEdit    *CtrlLog;
 CACMNetDlg *mynet;
 CString  cmd, result;
-CWebBrowser2 myweb;
-NetHtml   myhtml;
+//CWebBrowser2 myweb;
+HtmlMsg  myhtml;
 
-
+/*
 void  GetPage(CString url){
 	mynet->GetDlgItem(IDC_RESPONSE)->ShowWindow(SW_HIDE);
 	COleVariant noArg;
 	myweb.Navigate(url, &noArg, &noArg, &noArg, &noArg);
 	myweb.get_Visible();
 }
+*/
 void  GetHtml(CString url){
-	CString html;
+	//CString html;
+	/*
 	if (myweb.IsWindowVisible()){
 		myweb.put_Visible(FALSE);
 		mynet->GetDlgItem(IDC_RESPONSE)->ShowWindow(SW_SHOW);
+	}*/
+	//html = myhtml.getURLContext(url);
+	myhtml.SetUrl(url);
+	if (!myhtml.HtmlAsk()){
+		AfxMessageBox(myhtml.GetLog());
+		return;
 	}
-	html = myhtml.getURLContext(url);
-	mynet->GetDlgItem(IDC_RESPONSE)->SetWindowText(html);
+	mynet->GetDlgItem(IDC_RESPONSE)->SetWindowText(myhtml.GetText());
 }
-
 void Compute(CString equation){
 
 }
@@ -58,10 +64,10 @@ void   MapTask(){
 	args = cmd.Mid(i);
 	   if (Ins.Compare(_T("gethtml"))==0)
 		   GetHtml(args);
-	   else if (Ins.Compare(_T("compute"))==0)
+	   else if (Ins.Compare(_T("compute")) == 0)
 		   Compute(args);
-	   else if (Ins.Compare(_T("getpage"))==0)
-		   GetPage(args);
+	  /* else if (Ins.Compare(_T("getpage")) == 0)
+		    GetPage(args);*/
 }
 
 DWORD WINAPI DEALCMD(LPVOID lpParameter){
@@ -185,7 +191,7 @@ BOOL CACMNetDlg::OnInitDialog()
 	mynet = this;
 	GetDlgItem(IDC_RESPONSE)->GetWindowRect(&rect);
 	ScreenToClient(&rect);
-	myweb.Create(NULL, NULL, WS_VISIBLE, rect, this, 101);
+	//smyweb.Create(NULL, NULL, WS_VISIBLE, rect, this, 101);
 	CtrlLog = (CEdit *)GetDlgItem(IDC_LOG);
 	FLAG = THREAD_WAIT;
 	if (CreateThread(NULL, NULL, DEALCMD, NULL, NULL, NULL)){

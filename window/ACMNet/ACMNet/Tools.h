@@ -1,7 +1,7 @@
 //tools for other to use
 #include <string>
 #include <windows.h>
-//#include "afxinet.h"
+#include "afxinet.h"
 /*typedef void* PVOID;
 typedef PVOID HANDLE;
 typedef HANDLE HINSTANCE;
@@ -12,17 +12,6 @@ typedef HINSTANCE HMODULE;*/
 using namespace std;
 
 namespace Tools{
-	//overload : it don't need to use _T anymore
-	/*void AfxMessageBox(string Msg){
-		AfxMessageBox(Msg);
-	}
-	
-	void AfxMessageBox(string Msg, UINT BS, UINT IS){//
-		AfxMessageBox(Msg, BS, IS);//, 
-	}
-	int AfxMessageBox(string Msg, UINT BS, UINT IS){//
-		return AfxMessageBox(Msg, BS, IS);//, 
-	}*/
 	//self make function 
 	// tools for Tchar to string
 	string Tchar2string(TCHAR *smsg){
@@ -101,39 +90,77 @@ namespace Tools{
 	class HtmlMsg{
     // the function used by public
 	public:
-		void SetUrl(string url){
+		HtmlMsg(){
+		}
+		HtmlMsg(LPCTSTR url){
 			this->url = url;
 		}
-		string GetText(){
+		~ HtmlMsg(){
+		}
+		void SetUrl(LPCTSTR url){
+			this->url = url;
+		}
+		CString GetText(){
 			return this->document;
+		}
+		CString GetLog(){
+			return this->Log;
 		}
 		bool HtmlAsk(){
 			this->finish = false;
 			this->success = false;
-			Request();
+			getURLContext();
 			while (true){
-				if (this->finish) return false;
+				if (this->finish) break;
 			}
 			return this->success;
 		}
 	private:
-		string url; // the url Msg
-		string document; //the html Msg
+		LPCTSTR url; // the url Msg
+		CString document; //the html Msg
+		CString Log;
 		bool finish; //finish is tell us how to work on it
 		bool success;
-		// the function to post/get
-	    void Request(){
-			//set the document acconding to the path
-			document = "";
+		// the function to get htmlMsg
+		void getURLContext(){
+			CInternetSession mySession(NULL, 0);//set session
+			CHttpFile* htmlFile = NULL; //http file
+			TCHAR src[1024];
 			try{
-				//socket
+				htmlFile = (CHttpFile*)mySession.OpenURL(this->url);//建立连接获取输入;
+				while (htmlFile->ReadString(src, 1024)){//处理流中每一行
+					int nBufferSize = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)src, -1, NULL, 0);
+					TCHAR *pBuffer = new TCHAR[nBufferSize + 1];
+					memset(pBuffer, 0, (nBufferSize + 1)*sizeof(TCHAR));
+					MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)src, -1, pBuffer, nBufferSize*sizeof(TCHAR));//UTF-8转Unicode
+					document += pBuffer;
+					document += _T("\r\n");
+					delete pBuffer;
+				}
+				htmlFile->Close();
+				mySession.Close(); //关闭会话
 			}
-			catch(exception e){
+			catch (CException *e) {  //异常处理
 				this->finish = true;
 				this->success = false;
+				this->Log = _T("获取数据失败");
+				//AfxMessageBox(_T("获取数据失败"));
 			}
 			this->finish = true;
 			this->success = true;
-		}
+		};
 	};
 }
+
+
+//overload : it don't need to use _T anymore
+/*void AfxMessageBox(string Msg){
+AfxMessageBox(Msg);
+}
+
+void AfxMessageBox(string Msg, UINT BS, UINT IS){//
+AfxMessageBox(Msg, BS, IS);//,
+}
+int AfxMessageBox(string Msg, UINT BS, UINT IS){//
+return AfxMessageBox(Msg, BS, IS);//,
+}*/
