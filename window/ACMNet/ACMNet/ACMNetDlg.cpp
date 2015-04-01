@@ -1,21 +1,95 @@
+
 // ACMNetDlg.cpp : 实现文件
 //
+
 #include "stdafx.h"
 #include "NetSet.h"
 #include "ACMNet.h"
 #include "ACMNetDlg.h"
 #include "afxdialogex.h"
-#include "Tools.h"
-#include "NetTraffic.h"
 
-using namespace Tools;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+enum  STATE  { THREAD_EXIT, THREAD_WAIT, THREAD_RUN }  FLAG;
+CEdit    *CtrlLog;
+CACMNetDlg *mynet;
+CString  cmd, result;
+CWebBrowser2 myweb;
+NetHtml   myhtml;
+
+
+void  GetPage(CString url){
+	mynet->GetDlgItem(IDC_RESPONSE)->ShowWindow(SW_HIDE);
+	COleVariant noArg;
+	myweb.Navigate(url, &noArg, &noArg, &noArg, &noArg);
+	myweb.get_Visible();
+}
+void  GetHtml(CString url){
+	CString html;
+	if (myweb.IsWindowVisible()){
+		myweb.put_Visible(FALSE);
+		mynet->GetDlgItem(IDC_RESPONSE)->ShowWindow(SW_SHOW);
+	}
+	html = myhtml.getURLContext(url);
+	mynet->GetDlgItem(IDC_RESPONSE)->SetWindowText(html);
+}
+
+void Compute(CString equation){
+
+}
+
+void   MapTask(){
+	int len,i;
+	TCHAR c;
+	CString Ins;
+	static CString args;
+	args.Empty();
+	len = cmd.GetLength();
+	for (i = 0; i < cmd.GetLength(); i++){
+		if ((c = cmd.GetAt(i)) != _T(' ')){
+			Ins += c;
+		}
+		else break;
+	}
+	while ((c = cmd.GetAt(i++)) != _T(' '));
+	args = cmd.Mid(i);
+	   if (Ins.Compare(_T("gethtml"))==0)
+		   GetHtml(args);
+	   else if (Ins.Compare(_T("compute"))==0)
+		   Compute(args);
+	   else if (Ins.Compare(_T("getpage"))==0)
+		   GetPage(args);
+}
+
+DWORD WINAPI DEALCMD(LPVOID lpParameter){
+
+	while (TRUE){
+		if (FLAG == THREAD_EXIT)
+			break;
+		else if (FLAG == THREAD_WAIT)
+			continue;
+		else {
+			MapTask();
+			FLAG = THREAD_WAIT;
+		}
+
+	}
+	return 0;
+}
+
+void PrintLog(LPCTSTR str)
+{
+	int count;
+	CString log;
+	log.Format(_T("%s\r\n"), str);
+	CtrlLog->ReplaceSel(log);
+}
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
+
 class CAboutDlg : public CDialogEx
 {
 public:
@@ -48,6 +122,7 @@ END_MESSAGE_MAP()
 // CACMNetDlg 对话框
 
 
+
 CACMNetDlg::CACMNetDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CACMNetDlg::IDD, pParent)
 {
@@ -69,6 +144,8 @@ BEGIN_MESSAGE_MAP(CACMNetDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CANCEL, &CACMNetDlg::OnBnClickedCancel)
 	ON_COMMAND(ID_SETTING, &CACMNetDlg::OnSetting)
 	ON_COMMAND(ID_SHOWSET, &CACMNetDlg::OnShowset)
+	ON_WM_CREATE()
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -104,6 +181,18 @@ BOOL CACMNetDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
+	CRect rect;
+	mynet = this;
+	GetDlgItem(IDC_RESPONSE)->GetWindowRect(&rect);
+	ScreenToClient(&rect);
+	myweb.Create(NULL, NULL, WS_VISIBLE, rect, this, 101);
+	CtrlLog = (CEdit *)GetDlgItem(IDC_LOG);
+	FLAG = THREAD_WAIT;
+	if (CreateThread(NULL, NULL, DEALCMD, NULL, NULL, NULL)){
+		PrintLog(_T("创建消息处理线程成功!\n"));
+	}
+	else PrintLog(_T("创建消息处理线程失败"));
+	mycmd.ReplaceSel(_T("Command: "));
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -162,32 +251,25 @@ HCURSOR CACMNetDlg::OnQueryDragIcon()
 void CACMNetDlg::OnClose()
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	//AfxMessageBox(" 是否退出软件 \n", MB_OKCANCEL, MB_ICONQUESTION);
-	if (AfxMessageBox(_T(" 是否退出软件 \n"), MB_OKCANCEL, MB_ICONQUESTION) == IDOK){
-		CRect rectDlg;
-		this->GetWindowRect(rectDlg);
-		while (rectDlg.TopLeft().y < rectDlg.BottomRight().y){//rectDlg.Height() > 30
-			//rectDlg.Height() -= 10;
-			rectDlg.TopLeft().y += 3;
-			rectDlg.BottomRight().y -= 3;
-			this->MoveWindow(rectDlg);
-		}
-		CDialogEx::OnClose();
-	}
-	return;
-	
+
+	CDialogEx::OnClose();
 }
 
 
 void CACMNetDlg::OnBnClickedSend()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	TCHAR  CMD[1024];
-	int index;
-	index=mycmd.GetSel();
-	mycmd.GetLine(index, CMD);
-	GetDlgItem(IDC_COMMAND)->GetWindowText(CMD,1024);
-	GetDlgItem(IDC_EDIT1)->SetWindowText(CMD);
+	CString strLine, strText;
+	int count=mycmd.GetLineCount();
+	int len = mycmd.LineLength(mycmd.LineIndex(count-1));
+	mycmd.GetLine(count - 1, strText.GetBuffer(len), len);
+	strText.ReleaseBuffer(len);
+	strLine.Format(_T("%s"), strText);
+	mycmd.ReplaceSel(_T("\r\n\r\nCommand: "));
+	cmd=strLine.Mid(9);
+	mycmd.SetFocus();
+	FLAG = THREAD_RUN;
+	PrintLog(_T("成功发射"));
 }
 
 
@@ -209,5 +291,34 @@ void CACMNetDlg::OnSetting()
 void CACMNetDlg::OnShowset()
 {
 	// TODO:  在此添加命令处理程序代码
-	
+}
+
+
+int CACMNetDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CDialogEx::OnCreate(lpCreateStruct) == -1)
+		return -1;
+	// TODO:  在此添加您专用的创建代码
+
+	return 0;
+}
+
+
+HBRUSH CACMNetDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{	
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+	if (pWnd->GetDlgCtrlID() == IDC_RESPONSE) //静态文本 
+	{
+		  pDC->SetBkMode(TRANSPARENT); 
+		  HBRUSH B= CreateSolidBrush(RGB(0XFA, 0XFA, 0XD2));
+	      pDC->SetTextColor(RGB(255, 0, 0)); //控件中的文字的颜色
+		  return B;
+	}
+	else if (pWnd->GetDlgCtrlID() == IDC_LOG){
+		pDC->SetBkMode(TRANSPARENT); 
+		HBRUSH B = CreateSolidBrush(RGB(0x97, 0x79, 0xEE));
+		pDC->SetTextColor(RGB(255, 0, 0)); //控件中的文字的颜色
+		return B;
+	}
+	return hbr;
 }
