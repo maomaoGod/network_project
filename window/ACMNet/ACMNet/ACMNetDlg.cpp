@@ -1,4 +1,3 @@
-
 // ACMNetDlg.cpp : 实现文件
 //
 #include "stdafx.h"
@@ -6,8 +5,6 @@
 #include "ACMNet.h"
 #include "ACMNetDlg.h"
 #include "afxdialogex.h"
-#include "Tools.h"
-using namespace Tools;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -88,7 +85,6 @@ DWORD WINAPI DEALCMD(LPVOID lpParameter){
 
 void PrintLog(LPCTSTR str)
 {
-	int count;
 	CString log;
 	log.Format(_T("%s\r\n"), str);
 	CtrlLog->ReplaceSel(log);

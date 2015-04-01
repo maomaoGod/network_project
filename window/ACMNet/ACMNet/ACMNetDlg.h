@@ -2,6 +2,9 @@
 //
 #pragma once
 #include "afxwin.h"
+
+#include "Tools.h"
+using namespace Tools;
 //#include "CWebBrowser2.h"
 // CACMNetDlg ¶Ô»°¿ò
 class CACMNetDlg : public CDialogEx
@@ -28,8 +31,8 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	CEdit   mycmd;
-	//Dlluser  mydll;
+	CEdit  mycmd;
+	static Dlluser mydll;
 	afx_msg void OnClose();
 	afx_msg void OnBnClickedSend();
 	afx_msg void OnBnClickedCancel();
