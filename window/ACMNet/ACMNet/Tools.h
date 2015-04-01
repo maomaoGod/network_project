@@ -16,6 +16,7 @@ namespace Tools{
 	/*void AfxMessageBox(string Msg){
 		AfxMessageBox(Msg);
 	}
+	
 	void AfxMessageBox(string Msg, UINT BS, UINT IS){//
 		AfxMessageBox(Msg, BS, IS);//, 
 	}

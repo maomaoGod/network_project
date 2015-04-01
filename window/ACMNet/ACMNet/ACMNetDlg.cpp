@@ -1,12 +1,12 @@
 // ACMNetDlg.cpp : 实现文件
 //
-
 #include "stdafx.h"
 #include "NetSet.h"
 #include "ACMNet.h"
 #include "ACMNetDlg.h"
 #include "afxdialogex.h"
 #include "Tools.h"
+#include "NetTraffic.h"
 
 using namespace Tools;
 

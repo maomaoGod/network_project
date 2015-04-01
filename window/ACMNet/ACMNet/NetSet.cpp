@@ -26,5 +26,41 @@ void NetSet::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(NetSet, CDialogEx)
+	ON_BN_CLICKED(IDC_LOCAL_Browse, &NetSet::OnBnClickedLocalBrowse)
+	ON_BN_CLICKED(IDC_Server_Browse, &NetSet::OnBnClickedServerBrowse)
 END_MESSAGE_MAP()
 
+
+// load the local agreement
+void NetSet::OnBnClickedLocalBrowse()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	CString local_path;
+	CFileDialog dlg(TRUE,//t open f save
+		NULL, NULL,
+		OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT,
+		(LPCTSTR)_T("DLL Files (*.dll)|*.dll"),
+		NULL);
+	if (dlg.DoModal() == IDOK){
+		local_path = dlg.GetPathName();
+		GetDlgItem(IDC_local_text)->SetWindowText(local_path);
+	}
+	else return;
+}
+
+// load the Server agreement
+void NetSet::OnBnClickedServerBrowse()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	CString server_path;
+	CFileDialog dlg(TRUE,//t open f save
+		NULL, NULL,
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+		(LPCTSTR)_T("DLL Files (*.dll)|*.dll"),
+		NULL);
+	if (dlg.DoModal() == IDOK){
+		server_path = dlg.GetPathName();
+		GetDlgItem(IDC_server_text)->SetWindowText(server_path);
+	}
+	else return;
+}
