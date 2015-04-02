@@ -1,11 +1,13 @@
+
 // ACMNetDlg.h : 头文件
 //
+
 #pragma once
 #include "afxwin.h"
+#include "CWebBrowser2.h"
+#include "NetDll.h"
+#include "NetHtml.h"
 
-#include "Tools.h"
-using namespace Tools;
-//#include "CWebBrowser2.h"
 // CACMNetDlg 对话框
 class CACMNetDlg : public CDialogEx
 {
@@ -31,8 +33,8 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	CEdit  mycmd;
-	static Dlluser mydll;
+	CEdit   mycmd;
+	NetDll   mydll;
 	afx_msg void OnClose();
 	afx_msg void OnBnClickedSend();
 	afx_msg void OnBnClickedCancel();

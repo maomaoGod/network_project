@@ -17,9 +17,12 @@ NetDll::~NetDll()
 }
 
 void NetDll:: LoadDll(LPCTSTR path){
+	if (Hinst != NULL){   //释放已有句柄
+		FreeLibrary(Hinst);
+		Hinst = NULL;
+	}
 	Hinst = LoadLibrary(path); //获取链接库实例句柄
 	if (Hinst == NULL){
-		AfxMessageBox(_T("Load.Dll file failed"));
 		return;
 	}
 }
@@ -32,6 +35,10 @@ void NetDll::OpenDll(){
 	path = file.GetPathName();//获取链接库路径
 	if (path.IsEmpty())
 		return;
+	if (Hinst != NULL){
+		FreeLibrary(Hinst);
+		Hinst = NULL;
+	}
 	Hinst = LoadLibrary(path); //获取链接库实例句柄
 	if (Hinst == NULL){
 		AfxMessageBox(_T("Load.Dll file failed"));
