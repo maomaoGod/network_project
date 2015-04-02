@@ -1,35 +1,33 @@
-
 // ACMNetDlg.cpp : 实现文件
 //
-
 #include "stdafx.h"
 #include "NetSet.h"
 #include "ACMNet.h"
 #include "ACMNetDlg.h"
+#include "ACMBrow.h"
 #include "afxdialogex.h"
-
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 enum  STATE  { THREAD_EXIT, THREAD_WAIT, THREAD_RUN }  FLAG;
+CEdit    *CtrlLog;
 CACMNetDlg *mynet;
-CString  cmd;
-CWebBrowser2 myweb;
-NetHtml   myhtml;
+CString  cmd, result;
+ACMBrow myweb;
+HtmlMsg  myhtml;
 
+void PrintLog(LPCTSTR str)
+{
+	CString log;
+	log.Format(_T("%s\r\n"), str);
+	CtrlLog->ReplaceSel(log);
+}
 void PrintRP(LPCTSTR txt){     //将txt输出到Response编辑框
 	CString res;
 	res.Format(_T("Response: %s\r\n"), txt);
 	((CEdit *)(mynet->GetDlgItem(IDC_RESPONSE)))->ReplaceSel(res);
-}
-
-void PrintLog(LPCTSTR str)   //将log信息输出到Log编辑框
-{
-	CString log;
-	log.Format(_T("%s\r\n"), str);
-	((CEdit *)(mynet->GetDlgItem(IDC_LOG)))->ReplaceSel(log);
 }
 
 void  GetPage(CString url){
@@ -39,18 +37,37 @@ void  GetPage(CString url){
 	myweb.get_Visible();
 }
 
-void  GetHtml(CString url){
-	CString html;
+void GetHtml(CString url){
 	if (myweb.IsWindowVisible()){
 		myweb.put_Visible(FALSE);
 		mynet->GetDlgItem(IDC_RESPONSE)->ShowWindow(SW_SHOW);
 	}
-	html = myhtml.getURLContext(url);
-	mynet->GetDlgItem(IDC_RESPONSE)->SetWindowText(html);
+	myhtml.SetUrl(url);
+	if (!myhtml.HtmlAsk()){
+		//AfxMessageBox(myhtml.GetLog());
+		PrintLog(myhtml.GetLog());
+		return;
+	}
+	mynet->GetDlgItem(IDC_RESPONSE)->SetWindowText(myhtml.GetText());
 }
-
+void Compute(CString equation){
+	CString rst;
+	int a, b;
+	typedef int(*ADDPROC)(int, int);
+	mynet->dlltest.Set_fun_name("add");
+	ADDPROC Add = (ADDPROC)mynet->dlltest.Getfun();
+	int pos = equation.Find(_T("+"));
+	a = _ttoi(equation.Mid(0, pos));
+	b = _ttoi(equation.Mid(pos + 1));
+	rst.Format(_T("%d + %d = %d"), a, b, Add(a, b));
+	PrintRP(rst);
+}
+void CleanRP()
+{
+	mynet->GetDlgItem(IDC_RESPONSE)->SetWindowText(_T(""));
+}
 void Switch(){
-	if (mynet->GetDlgItem(IDC_RESPONSE)->IsWindowVisible()){	
+	if (mynet->GetDlgItem(IDC_RESPONSE)->IsWindowVisible()){
 		mynet->GetDlgItem(IDC_RESPONSE)->ShowWindow(SW_HIDE);
 		myweb.put_Visible(TRUE);
 	}
@@ -61,32 +78,15 @@ void Switch(){
 }
 
 void SetDll(CString args){
-	mynet->mydll.LoadDll(args);
-	if (mynet->mydll.Hinst != NULL){
-		PrintLog(_T("加载链接库成功!"));
-	}
-	else 
+	mynet->dlltest.Setpath(args);
+	if (!mynet->dlltest.Load_dll()){
 		PrintLog(_T("加载链接库失败!"));
+		return;
+	}
+	PrintLog(_T("加载链接库成功!"));
 }
 
-void Compute(CString equation){
-	CString rst;
-	int a, b;
-	typedef int(*ADDPROC)(int, int);
-	ADDPROC Add = (ADDPROC)GetProcAddress(mynet->mydll.Hinst, "add");
-	int pos = equation.Find(_T("+"));
-	a = _ttoi(equation.Mid(0, pos));
-	b = _ttoi(equation.Mid(pos + 1));
-	rst.Format(_T("%d + %d = %d"), a, b, Add(a,b));
-	PrintRP(rst);
-}
-
-void CleanRP()
-{
-	mynet->GetDlgItem(IDC_RESPONSE)->SetWindowText(_T(""));
-}
-
-void   MapTask(){
+void MapTask(){
 	int len, i;
 	TCHAR c;
 	CString Ins;
@@ -119,7 +119,6 @@ void   MapTask(){
 }
 
 DWORD WINAPI DEALCMD(LPVOID lpParameter){
-
 	while (TRUE){
 		if (FLAG == THREAD_EXIT)
 			break;
@@ -134,21 +133,15 @@ DWORD WINAPI DEALCMD(LPVOID lpParameter){
 	return 0;
 }
 
-
-
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
-
 class CAboutDlg : public CDialogEx
 {
 public:
 	CAboutDlg();
-
 // 对话框数据
 	enum { IDD = IDD_ABOUTBOX };
-
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-
 // 实现
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -233,14 +226,16 @@ BOOL CACMNetDlg::OnInitDialog()
 	mynet = this;
 	GetDlgItem(IDC_RESPONSE)->GetWindowRect(&rect);
 	ScreenToClient(&rect);
-	myweb.Create(NULL, NULL, WS_VISIBLE|WS_CHILD, rect, this, 101);
-	//myweb.ShowWindow(SW_HIDE);
+	myweb.Create(NULL, NULL, WS_VISIBLE, rect, this, 101);
+	myweb.put_Silent(TRUE);//
+	CtrlLog = (CEdit *)GetDlgItem(IDC_LOG);
 	FLAG = THREAD_WAIT;
 	if (CreateThread(NULL, NULL, DEALCMD, NULL, NULL, NULL)){
 		PrintLog(_T("创建消息处理线程成功!\n"));
 	}
 	else PrintLog(_T("创建消息处理线程失败"));
 	mycmd.ReplaceSel(_T("Command: "));
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -324,23 +319,17 @@ void CACMNetDlg::OnBnClickedSend()
 	strText.ReleaseBuffer(len);
 	strLine.Format(_T("%s"), strText);
 	mycmd.ReplaceSel(_T("\r\n\r\nCommand: "));
+	cmd=strLine.Mid(9);
 	mycmd.SetFocus();
-	int i;
-	for (i = 9;;i++)
-	if (strLine.GetAt(i) != _T(' '))
-		break;
-	cmd = strLine.Mid(i);
-	if (!cmd.IsEmpty()){
-		FLAG = THREAD_RUN;
-		PrintLog(_T("命令发送成功"));
-	}
+	FLAG = THREAD_RUN;
+	PrintLog(_T("命令发送成功"));
 }
 
 
 void CACMNetDlg::OnBnClickedCancel()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	GetDlgItem(IDC_COMMAND)->SetWindowText(_T("Command: "));
+	GetDlgItem(IDC_COMMAND)->SetWindowText(_T(""));
 }
 
 
@@ -380,7 +369,7 @@ HBRUSH CACMNetDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	}
 	else if (pWnd->GetDlgCtrlID() == IDC_LOG){
 		pDC->SetBkMode(TRANSPARENT); 
-		HBRUSH B = CreateSolidBrush(RGB(0xEE, 0xD2, 0xEE));
+		HBRUSH B = CreateSolidBrush(RGB(0x97, 0x79, 0xEE));
 		pDC->SetTextColor(RGB(255, 0, 0)); //控件中的文字的颜色
 		return B;
 	}

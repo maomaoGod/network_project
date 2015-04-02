@@ -1,13 +1,11 @@
-
 // ACMNetDlg.h : 头文件
 //
-
 #pragma once
 #include "afxwin.h"
-#include "CWebBrowser2.h"
-#include "NetDll.h"
-#include "NetHtml.h"
 
+#include "Tools.h"
+using namespace Tools;
+//#include "ACMBrow.h"
 // CACMNetDlg 对话框
 class CACMNetDlg : public CDialogEx
 {
@@ -20,12 +18,9 @@ public:
 
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
-
-
 // 实现
 protected:
 	HICON m_hIcon;
-
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -33,8 +28,8 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	CEdit   mycmd;
-	NetDll   mydll;
+	CEdit  mycmd;
+	Dlluser dlltest;
 	afx_msg void OnClose();
 	afx_msg void OnBnClickedSend();
 	afx_msg void OnBnClickedCancel();

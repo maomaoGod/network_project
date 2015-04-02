@@ -1,14 +1,13 @@
-// CWebBrowser2.h : 由 Microsoft Visual C++ 创建的 ActiveX 控件包装器类的声明
-
+// ACMBrow.h : 由 Microsoft Visual C++ 创建的 ActiveX 控件包装器类的声明
 #pragma once
 
 /////////////////////////////////////////////////////////////////////////////
-// CWebBrowser2
+// ACMBrow
 
-class CWebBrowser2 : public CWnd
+class ACMBrow : public CWnd
 {
 protected:
-	DECLARE_DYNCREATE(CWebBrowser2)
+	DECLARE_DYNCREATE(ACMBrow)
 public:
 	CLSID const& GetClsid()
 	{
@@ -385,6 +384,4 @@ public:
 		static BYTE parms[] = VTS_BOOL ;
 		InvokeHelper(0x22c, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms, newValue);
 	}
-
-
 };

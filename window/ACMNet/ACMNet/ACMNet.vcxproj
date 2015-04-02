@@ -101,6 +101,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ACMBrow.h" />
     <ClInclude Include="ACMNet.h" />
     <ClInclude Include="ACMNetDlg.h" />
     <ClInclude Include="NetSet.h" />
@@ -109,8 +110,10 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Tools.h" />
+    <ClInclude Include="viewContrls.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ACMBrow.cpp" />
     <ClCompile Include="ACMNet.cpp" />
     <ClCompile Include="ACMNetDlg.cpp" />
     <ClCompile Include="NetSet.cpp" />

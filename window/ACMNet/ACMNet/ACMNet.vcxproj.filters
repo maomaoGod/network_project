@@ -42,6 +42,12 @@
     <ClInclude Include="NetTraffic.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ACMBrow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="viewContrls.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACMNet.cpp">
@@ -54,6 +60,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="NetSet.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ACMBrow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
