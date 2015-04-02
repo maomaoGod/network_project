@@ -104,6 +104,7 @@
     <ClInclude Include="ACMBrow.h" />
     <ClInclude Include="ACMNet.h" />
     <ClInclude Include="ACMNetDlg.h" />
+    <ClInclude Include="ConDoc.h" />
     <ClInclude Include="NetSet.h" />
     <ClInclude Include="NetTraffic.h" />
     <ClInclude Include="Resource.h" />

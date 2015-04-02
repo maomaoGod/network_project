@@ -48,6 +48,9 @@
     <ClInclude Include="viewContrls.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ConDoc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACMNet.cpp">

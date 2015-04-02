@@ -86,6 +86,18 @@ void SetDll(CString args){
 	PrintLog(_T("加载链接库成功!"));
 }
 
+
+void Help_Msg(){
+	CString Msg = _T("	help -- look for the help message \r\n \
+	getpage -- get the page according to url \r\n \
+	gethtml -- get the html according to url \r\n \
+	switch -- switch the html and page \r\n \
+	setdll -- load the dll from the path \r\n \
+      	compute -- compute the num \r\n \
+	");
+	mynet->GetDlgItem(IDC_RESPONSE)->SetWindowText(Msg);//OutMsg()
+}
+
 void MapTask(){
 	int len, i;
 	TCHAR c;
@@ -113,6 +125,9 @@ void MapTask(){
 		Switch();
 	else if (Ins.Compare(_T("cleanrp")) == 0)
 		CleanRP();
+	else if (Ins.Compare(_T("help")) == 0){
+		Help_Msg();
+	}
 	else{
 		PrintLog(_T("命令未定义"));
 	}
@@ -320,6 +335,7 @@ void CACMNetDlg::OnBnClickedSend()
 	strLine.Format(_T("%s"), strText);
 	mycmd.ReplaceSel(_T("\r\n\r\nCommand: "));
 	cmd=strLine.Mid(9);
+	if (cmd == _T("")) return;
 	mycmd.SetFocus();
 	FLAG = THREAD_RUN;
 	PrintLog(_T("命令发送成功"));
