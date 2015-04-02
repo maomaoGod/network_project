@@ -95,6 +95,7 @@ namespace Tools{
 		bool success;
 		// the function to get htmlMsg
 		void getURLContext(){
+			document = _T("");
 			CInternetSession mySession(NULL, 0);//set session
 			CHttpFile* htmlFile = NULL; //http file
 			TCHAR src[1024];

@@ -298,8 +298,19 @@ HCURSOR CACMNetDlg::OnQueryDragIcon()
 void CACMNetDlg::OnClose()
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	if (AfxMessageBox(_T(" 是否退出软件 \n"), MB_OKCANCEL, MB_ICONQUESTION) == IDOK){
+		CRect rectDlg;
+		this->GetWindowRect(rectDlg);
+		while (rectDlg.TopLeft().y < rectDlg.BottomRight().y){//rectDlg.Height() > 30
+			//rectDlg.Height() -= 10;
+			rectDlg.TopLeft().y += 3;
+			rectDlg.BottomRight().y -= 3;
+			this->MoveWindow(rectDlg);
+		}
+		CDialogEx::OnClose();
+	}
+	return;
 
-	CDialogEx::OnClose();
 }
 
 
