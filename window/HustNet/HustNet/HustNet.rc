@@ -253,7 +253,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "\n华中科技大学计算机网络实验平台\nHustNet\n\n\nHustNet.Document\nHustNet.Document"
+    IDR_MAINFRAME           "华中科技大学网络实验平台\n\nHustNet\n\n\nHustNet.Document\nHustNet.Document"
 END
 
 STRINGTABLE

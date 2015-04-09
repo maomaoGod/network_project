@@ -20,6 +20,7 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -75,7 +76,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 		return FALSE;
 	// TODO:  在此处通过修改
 	//  CREATESTRUCT cs 来修改窗口类或样式
-
+	cs.style &= ~FWS_ADDTOTITLE;
 	return TRUE;
 }
 
@@ -112,6 +113,24 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	s_splitter.CreateView(0, 0, RUNTIME_CLASS(CmdView), CSize(rect.Width() / 2, rect.Height() / 2), pContext);
 	s_splitter.CreateView(1, 0, RUNTIME_CLASS(LogView), CSize(rect.Width() / 2, rect.Height() / 4), pContext);
 	m_splitter.CreateView(0, 1, RUNTIME_CLASS(RespondView), CSize(rect.Width() / 2, rect.Height()), pContext);
+	CMainFrame *pframe;
+	pframe = (CMainFrame *)AfxGetApp()->GetMainWnd();
 	return bCreateSplit;
 	//return CFrameWnd::OnCreateClient(lpcs, pContext);
+}
+
+
+void CMainFrame::OnSize(UINT nType, int cx, int cy)
+{
+	CFrameWnd::OnSize(nType, cx, cy);
+
+	// TODO:  在此处添加消息处理程序代码
+	if (nType != SIZE_MINIMIZED){
+		CRect rect;
+		GetClientRect(&rect);
+		m_splitter.SetRowInfo(0, cy, 50);
+		m_splitter.SetColumnInfo(0, rect.Width() / 3, 50);
+		 s_splitter.SetColumnInfo(0, rect.Width() / 3, 50);
+		 m_splitter.RecalcLayout();
+	}
 }

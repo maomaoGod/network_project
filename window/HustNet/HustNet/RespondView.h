@@ -10,7 +10,8 @@ class RespondView : public CView
 protected:
 	RespondView();           // 动态创建所使用的受保护的构造函数
 	virtual ~RespondView();
-
+public:
+	CString  Res;
 public:
 	virtual void OnDraw(CDC* pDC);      // 重写以绘制该视图
 #ifdef _DEBUG
@@ -22,6 +23,8 @@ public:
 
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	void PrintRp(CString mystr);
 };
 
 

@@ -12,7 +12,7 @@ IMPLEMENT_DYNCREATE(RespondView, CView)
 
 RespondView::RespondView()
 {
-
+	Res.Empty();
 }
 
 RespondView::~RespondView()
@@ -29,6 +29,7 @@ void RespondView::OnDraw(CDC* pDC)
 {
 	CDocument* pDoc = GetDocument();
 	// TODO:  在此添加绘制代码
+	pDC->TextOut(0, 0, Res);
 }
 
 
@@ -50,3 +51,14 @@ void RespondView::Dump(CDumpContext& dc) const
 
 
 // RespondView 消息处理程序
+
+
+void RespondView::PrintRp(CString mystr)
+{
+CClientDC dc(this);
+CFont font;
+font.CreatePointFont(100, _T("微软雅黑"), NULL);
+CFont *pOldFont = dc.SelectObject(&font);
+Res += (mystr+_T("\n"));
+dc.TextOut(0, 0, Res);
+}	
