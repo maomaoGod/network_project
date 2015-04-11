@@ -8,18 +8,22 @@
 
 // RespondView
 
-IMPLEMENT_DYNCREATE(RespondView, CView)
+IMPLEMENT_DYNCREATE(RespondView, CEditView)
 
 RespondView::RespondView()
 {
 	Res.Empty();
+	curline = 0;
 }
 
 RespondView::~RespondView()
 {
 }
 
-BEGIN_MESSAGE_MAP(RespondView, CView)
+BEGIN_MESSAGE_MAP(RespondView, CEditView)
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONDBLCLK()
+	ON_WM_CHAR()
 END_MESSAGE_MAP()
 
 
@@ -29,7 +33,7 @@ void RespondView::OnDraw(CDC* pDC)
 {
 	CDocument* pDoc = GetDocument();
 	// TODO:  在此添加绘制代码
-	pDC->TextOut(0, 0, Res);
+	SetWindowText(Res);
 }
 
 
@@ -38,13 +42,13 @@ void RespondView::OnDraw(CDC* pDC)
 #ifdef _DEBUG
 void RespondView::AssertValid() const
 {
-	CView::AssertValid();
+	CEditView::AssertValid();
 }
 
 #ifndef _WIN32_WCE
 void RespondView::Dump(CDumpContext& dc) const
 {
-	CView::Dump(dc);
+	CEditView::Dump(dc);
 }
 #endif
 #endif //_DEBUG
@@ -55,10 +59,49 @@ void RespondView::Dump(CDumpContext& dc) const
 
 void RespondView::PrintRp(CString mystr)
 {
-CClientDC dc(this);
-CFont font;
-font.CreatePointFont(100, _T("微软雅黑"), NULL);
-CFont *pOldFont = dc.SelectObject(&font);
-Res += (mystr+_T("\n"));
-dc.TextOut(0, 0, Res);
+	Res += _T("Respond: ") + mystr + _T("\r\n");
+	SetWindowText(Res);
 }	
+
+
+void RespondView::OnInitialUpdate()
+{
+	CEditView::OnInitialUpdate();
+
+	// TODO:  在此添加专用代码和/或调用基类
+	CClientDC dc(this);
+	dc.GetTextMetrics(&tm);
+	//GetEditCtrl().SetReadOnly(TRUE);
+}
+
+
+BOOL RespondView::PreCreateWindow(CREATESTRUCT& cs)
+{
+	// TODO:  在此添加专用代码和/或调用基类
+		m_dwDefaultStyle = AFX_WS_DEFAULT_VIEW | WS_VSCROLL | ES_AUTOVSCROLL |ES_MULTILINE | ES_NOHIDESEL;
+	return CCtrlView::PreCreateWindow(cs);
+}
+
+
+void RespondView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	//return;
+	CEditView::OnLButtonDown(nFlags, point);
+}
+
+
+void RespondView::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	return;
+	//CEditView::OnLButtonDblClk(nFlags, point);
+}
+
+
+void RespondView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	return;
+	//CEditView::OnChar(nChar, nRepCnt, nFlags);
+}

@@ -27,6 +27,9 @@ CmdView::~CmdView()
 BEGIN_MESSAGE_MAP(CmdView, CEditView)
 	ON_WM_CHAR()
 	ON_WM_KEYUP()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONDBLCLK()
+	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 
@@ -52,23 +55,26 @@ void CmdView::Dump(CDumpContext& dc) const
 
 void CmdView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	if (0x08 == nChar){
-		int num, len;
-		len = ((CEdit *)this)->LineLength();
-		if (len == 9)
+	// TODO:  在此添加消息处理程序代码和/或调用默认值	
+	CString mystr, strText;
+	CPoint point;
+	int num, len;
+	switch(nChar)  
+	{
+	case VK_BACK:
+		point = GetCaretPos();
+		if (point.x <= length)
 			return;
-	}
-	if (0x0D == nChar){
-		CString mystr, strText;
-		int num, len;
-		num = ((CEdit *)this)->GetLineCount();
-		len = ((CEdit *)this)->LineLength();
-		((CEdit *)this)->GetLine(num - 1, strText.GetBuffer(len), len);
-		strText.ReleaseBuffer();
-		int index = strText.Find(_T(':'));
-		mystr.Format(_T("%s"), strText);
-		prespond->PrintRp(mystr);
+		break;
+	case VK_RETURN:
+			num = ((CEdit *)this)->GetLineCount();
+			len = ((CEdit *)this)->LineLength();
+			((CEdit *)this)->GetLine(num - 1, strText.GetBuffer(len), len);
+			strText.ReleaseBuffer();
+			mystr.Format(_T("%s"), strText);
+			prespond->PrintRp(mystr);
+			 break;
+	default: break;
 	}
 	CEditView::OnChar(nChar, nRepCnt, nFlags);
 }
@@ -79,6 +85,10 @@ void CmdView::OnInitialUpdate()
 	CEditView::OnInitialUpdate();
 
 	// TODO:  在此添加专用代码和/或调用基类
+	CClientDC dc(this);
+	CSize  sz;
+	sz = dc.GetTextExtent(_T("Commahnd: "));
+	length = sz.cx;
 	CWnd *pwnd;
 	pcmd = this;
 	pfame = (CMainFrame *)AfxGetApp()->GetMainWnd();
@@ -96,4 +106,48 @@ void CmdView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (0x0D == nChar)
 		((CEdit *)this)->ReplaceSel(_T("Command: "));
 	CEditView::OnKeyUp(nChar, nRepCnt, nFlags);
+}
+
+
+BOOL CmdView::PreCreateWindow(CREATESTRUCT& cs)
+{
+	// TODO:  在此添加专用代码和/或调用基类
+	m_dwDefaultStyle = AFX_WS_DEFAULT_VIEW | WS_VSCROLL | ES_AUTOVSCROLL |ES_MULTILINE | ES_NOHIDESEL;
+	return CCtrlView::PreCreateWindow(cs);
+}
+
+
+void CmdView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	return;
+	//CEditView::OnLButtonDown(nFlags, point);
+}
+
+
+void CmdView::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	return;
+	//CEditView::OnLButtonDblClk(nFlags, point);
+}
+
+
+void CmdView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	int len;
+	CPoint point;
+	switch (nChar)
+	{
+	case  VK_UP:
+	case  VK_DOWN:return;
+	case  VK_LEFT:
+		point = GetCaretPos();
+		if (point.x <= length)
+			return;
+	default: break;
+	}
+
+	CEditView::OnKeyDown(nChar, nRepCnt, nFlags);
 }

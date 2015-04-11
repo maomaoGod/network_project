@@ -92,5 +92,8 @@
     <Image Include="B:\FFOutput\internet.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\internet.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

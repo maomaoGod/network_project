@@ -19,13 +19,18 @@ public:
 #endif
 #endif
 public:
-
+	TEXTMETRIC tm;
+	int length;
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	virtual void OnInitialUpdate();
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 };
 
 
