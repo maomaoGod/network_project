@@ -10,7 +10,6 @@ IMPLEMENT_DYNCREATE(LogView, CEditView)
 LogView::LogView()
 {
 	Res.Empty();
-	curline = 0;
 	logcount = 0;
 }
 
@@ -23,6 +22,7 @@ BEGIN_MESSAGE_MAP(LogView, CEditView)
 	ON_WM_LBUTTONDBLCLK()
 	ON_WM_CHAR()
 	ON_MESSAGE(PRINT, Print)
+	ON_MESSAGE(CLEAN, Clean)
 END_MESSAGE_MAP()
 
 
@@ -54,15 +54,6 @@ void LogView::Dump(CDumpContext& dc) const
 
 
 // LogView 消息处理程序
-
-
-void LogView::PrintRp(CString mystr)
-{
-	CString temp;
-	temp.Format(_T("log%d:%s\r\n"), logcount++, mystr);
-	Res += temp;
-	SetWindowText(Res);
-}
 
 
 void LogView::OnInitialUpdate()
@@ -112,7 +103,22 @@ void LogView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 LRESULT LogView::Print(WPARAM wparam, LPARAM lparam)
 {
 	CString mystr = *((CString *)wparam);
-	PrintRp(mystr);
+	CString temp;
+	temp.Format(_T("log%d:%s\r\n "), logcount++, mystr);
+	Res += temp;
+	SetWindowText(Res);
+	int l = ((CEdit *)this)->GetWindowTextLength();
+	((CEdit *)this)->SetSel(l, l, false);
+	((CEdit *)this)->SetFocus();
+	return 0;
+}
+
+LRESULT LogView::Clean(WPARAM wparam, LPARAM lparam)
+{
+	CString mystr;
+	mystr.Empty();
+	SetWindowText(mystr);
+	logcount = 0;
 	int l = ((CEdit *)this)->GetWindowTextLength();
 	((CEdit *)this)->SetSel(l, l, false);
 	((CEdit *)this)->SetFocus();

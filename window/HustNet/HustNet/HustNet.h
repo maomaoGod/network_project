@@ -16,7 +16,8 @@
 
 #define PRINT       WM_USER+1000
 #define CLEAN      WM_USER+1001
-#define DISPATCH WM_USER+1002
+#define SET          WM_USER+1002
+#define DISPATCH WM_USER+1003
 
 struct  CMD{
 	int ID;

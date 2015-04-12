@@ -23,6 +23,7 @@ BEGIN_MESSAGE_MAP(RespondView, CEditView)
 	ON_WM_CHAR()
 	ON_MESSAGE(PRINT,Print)
 	ON_MESSAGE(CLEAN,Clean)
+	ON_MESSAGE(SET,Set)
 END_MESSAGE_MAP()
 
 
@@ -56,11 +57,6 @@ void RespondView::Dump(CDumpContext& dc) const
 // RespondView 消息处理程序
 
 
-void RespondView::PrintRp(CString mystr)
-{
-	Res += _T("Respond: ") + mystr + _T("\r\n");
-	SetWindowText(Res);
-}	
 
 
 void RespondView::OnInitialUpdate()
@@ -110,7 +106,8 @@ void RespondView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 LRESULT RespondView::Print(WPARAM wparam, LPARAM lparam)
 {
 	CString mystr = *((CString *)wparam);
-	PrintRp(mystr);
+	Res += _T("Respond: ") + mystr + _T("\r\n");
+	SetWindowText(Res);
 	int l = ((CEdit *)this)->GetWindowTextLength();
 	((CEdit *)this)->SetSel(l,l,false);
 	((CEdit *)this)->SetFocus();
@@ -121,5 +118,19 @@ LRESULT RespondView::Clean(WPARAM wparam, LPARAM lparam)
 {
 	Res.Empty();
 	SetWindowText(Res);
+	int l = ((CEdit *)this)->GetWindowTextLength();
+	((CEdit *)this)->SetSel(l, l, false);
+	((CEdit *)this)->SetFocus();
+	return 0;
+}
+
+LRESULT RespondView::Set(WPARAM wparam, LPARAM lparam)
+{
+	CString mystr = *((CString *)wparam);
+	Res = mystr;
+	SetWindowText(Res);
+	int l = ((CEdit *)this)->GetWindowTextLength();
+	((CEdit *)this)->SetSel(l, l, false);
+	((CEdit *)this)->SetFocus();
 	return 0;
 }

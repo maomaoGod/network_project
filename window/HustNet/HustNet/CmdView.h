@@ -15,9 +15,10 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 #endif
-public:
+protected:
 	TEXTMETRIC tm;
-	int length;
+	CFont  myfont;
+	int masklength;
 	int maskline;
 protected:
 	DECLARE_MESSAGE_MAP()

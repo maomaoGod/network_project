@@ -83,6 +83,14 @@ void CleanLog(CString e)
 	pfame->SendMessage(DISPATCH, LOGVIEW, LPARAM(&mycmd));
 }
 
+void SetRp(CString e)
+{
+	CMD mycmd;
+	mycmd.ID = SET;
+	mycmd.agrs = &e;
+	pfame->SendMessage(DISPATCH, RPVIEW, LPARAM(&mycmd));
+}
+
 void   MapTask(){   //任务分发
 	int len, i;
 	TCHAR c;
@@ -129,6 +137,8 @@ void Initialcmd()
 	my_map.insert(pair<CString, CMDPROC>(_T("printrp"), PrintRp));
 	my_map.insert(pair<CString, CMDPROC>(_T("compute"), Compute));
 	my_map.insert(pair<CString, CMDPROC>(_T("cleanrp"), CleanRp));
+	my_map.insert(pair<CString, CMDPROC>(_T("cleanlog"), CleanLog));
+	my_map.insert(pair<CString, CMDPROC>(_T("setrp"), SetRp));
 }
 
 void CmdView::DealEnter()
@@ -154,7 +164,7 @@ void CmdView::DealEnter()
 	    command = strText.Mid(index);
 	strText.Empty();
 	if (maskline == num - 1 && !command.IsEmpty())  //只有一行命令
-		;//PrintRp(command);
+		;
 	else if (maskline < num - 1){   //多行命令
 		num = myedit->GetLineCount();
 		for (int i = maskline + 1; i < num; i++){
@@ -165,9 +175,11 @@ void CmdView::DealEnter()
 			command += strText;
 			strText.Empty();
 		}
-		//;PrintRp(command);
 	}
-	THREADFLAG = THREAD_RUN;
+	if (THREADFLAG == THREAD_RUN)
+		PrintLog(_T("命令无效：请等待上一命令执行完"));
+	else
+    	THREADFLAG = THREAD_RUN;
 }
 
 void CmdView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -178,7 +190,7 @@ void CmdView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		int num;
 		num = myedit->GetLineCount();
 		point = GetCaretPos();
-		if (point.x <= length&&num - 1 == maskline)
+		if (point.x <= masklength&&num - 1 == maskline)
 			return;
 	}
 	if (VK_RETURN == nChar) //处理回车消息
@@ -201,14 +213,13 @@ void CmdView::OnInitialUpdate()
 
 	CClientDC dc(this);
 
-    static CFont  myfont;
 	myfont.CreatePointFont(120,	(LPCTSTR)_T("Times New Roman"));
 	myedit->SetFont(&myfont);
 	
 	dc.GetTextMetrics(&tm);
 	CSize  sz;
 	sz = dc.GetTextExtent(_T("Command:"));
-	length = sz.cx+tm.tmWeight/200;
+	masklength = sz.cx+tm.tmWeight/200;
 	myedit->ReplaceSel(_T("Command:"));
 	maskline = 0;
 }
@@ -239,14 +250,16 @@ void CmdView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	CPoint point;
+	int nline;
 	switch (nChar)
 	{
 	case  VK_UP:
 	case  VK_DOWN:
 	case   VK_HOME: return;
 	case  VK_LEFT:
-		point = GetCaretPos();
-		if (point.x <= length&&point.y/tm.tmHeight==maskline)  //禁止光标移动到command:
+		point = GetCaretPos();                        //禁止光标移动到command区域:
+		nline = myedit->CharFromPos(point);
+		if (point.x <= masklength&&HIWORD(nline)==maskline) 
 			return;
 	default: break;
 	}

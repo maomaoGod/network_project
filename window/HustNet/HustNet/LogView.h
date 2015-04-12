@@ -23,13 +23,12 @@ public:
 #endif
 
 protected:
-	int  curline;
 	TEXTMETRIC tm;
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg LRESULT Print(WPARAM wparam, LPARAM lparam);
+	afx_msg LRESULT Clean(WPARAM wparam, LPARAM lparam);
 public:
-	void PrintRp(CString mystr);
 	virtual void OnInitialUpdate();
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
