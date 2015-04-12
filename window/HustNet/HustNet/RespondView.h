@@ -28,7 +28,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg LRESULT Print(WPARAM wparam, LPARAM lparam);
 	afx_msg LRESULT Clean(WPARAM wparam, LPARAM lparam);
-	afx_msg LRESULT SetText(WPARAM wparam, LPARAM lparam);
+	afx_msg LRESULT Set(WPARAM wparam, LPARAM lparam);
 public:
 	virtual void OnInitialUpdate();
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);

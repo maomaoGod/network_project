@@ -16,17 +16,14 @@ public:
 #endif
 #endif
 protected:
-	enum  CMDMODE { ROOT, USER }  CMDFLAG;
-protected:
 	TEXTMETRIC tm;
-	CFont   myfont;
-	CEdit  *myedit;
-	CString Hint;
-	int HintPLen;    //Hint屏幕尺寸长度
-	int HintSLen;    //Hint字符串长(内存长度)
-	int HintLine;
+	CFont  myfont;
+	int masklength;
+	int maskline;
 protected:
 	DECLARE_MESSAGE_MAP()
+	CString Cmd;
+	CEdit *myedit;
 public:
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	virtual void OnInitialUpdate();
@@ -36,10 +33,6 @@ public:
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg  LRESULT  OnSetHint(WPARAM wparam, LPARAM lparam);
-    afx_msg  LRESULT  OnTakeOverCmd(WPARAM wparam, LPARAM lparam);
-	afx_msg  LRESULT  OnDealCmdOver(WPARAM wparam, LPARAM lparam);
-	afx_msg  LRESULT  OnEndInput(WPARAM wparam, LPARAM lparam);
 protected:
 	void DealEnter();
 public:
