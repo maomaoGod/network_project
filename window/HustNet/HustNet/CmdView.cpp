@@ -131,19 +131,22 @@ CString  GetLine()
 }
 
 void   MapTask(){   //任务分发
-	int len, i;
+	int index;
 	TCHAR c;
 	CString Ins,args;
-	args.Empty();
-	len = command.GetLength();
-	for (i = 0; i < command.GetLength(); i++){
-		if ((c = command.GetAt(i)) != _T(' ')){
-			Ins += c;
-		}
-		else break;
+	command.TrimLeft();
+	command.TrimRight();
+	if (command.IsEmpty())
+		return;
+	index = command.Find(_T(' '));
+	if (index == -1){
+		Ins = command;
+		args.Empty();
 	}
-	while (i < command.GetLength() && (c = command.GetAt(i++)) != _T(' '));
-	args = command.Mid(i);
+	else {
+		Ins = command.Mid(0, index);
+		args = (command.Mid(index)).TrimLeft();
+	}
 	if (my_map.find(Ins) == my_map.end()){
 		PrintLog(_T("未知命令"));
 	}
@@ -195,7 +198,7 @@ void Initialcmd()
 void CmdView::DealEnter()
 {
 		CString strText;
-		int        num, len, index, nIndex;
+		int        num, len, nIndex,nline;
 		len = myedit->GetWindowTextLength(); //移动光标到行尾
 		myedit->SetSel(len, len, false);
 		myedit->SetFocus();
@@ -204,24 +207,14 @@ void CmdView::DealEnter()
 		len = myedit->LineLength(nIndex);  //获取行长度
 		myedit->GetLine(HintLine, strText.GetBuffer(len), len); //获取行内容
 		strText.ReleaseBuffer();
-		index = HintSLen;
-		while (index < len&&_T(' ') == strText.GetAt(index))
-			index++;  //去除空格
-		if (index == len){
-			command.Empty();
-			return;
-		}
-		else
-			command = strText.Mid(index);
+		command = (strText.Mid(HintSLen)).TrimLeft();  
 		strText.Empty();
-		if (HintLine == num - 1 && !command.IsEmpty())  //只有一行命令
-			;
-		else if (HintLine < num - 1){   //多行命令
+        if (HintLine < num - 1){      //多行命令
 			num = myedit->GetLineCount();
-			for (int i = HintLine + 1; i < num; i++){
-				nIndex = myedit->LineIndex(i);
+			for (nline= HintLine + 1; nline< num; nline++){
+				nIndex = myedit->LineIndex(nline);
 				len = myedit->LineLength(nIndex);
-				myedit->GetLine(i, strText.GetBuffer(len), len);
+				myedit->GetLine(nline, strText.GetBuffer(len), len);
 				strText.ReleaseBuffer();
 				command += strText;
 				strText.Empty();
@@ -231,7 +224,7 @@ void CmdView::DealEnter()
 				PrintLog(_T("命令无效：请等待上一命令执行完"));	 
 	   else if (THREADFLAG == THREAD_WAIT)  //未接管模式下发送命令
 		       THREADFLAG = THREAD_RUN;
-	   else  if (CMDFLAG == USER)
+	   else  if (CMDFLAG == USER)  //用户模式下
 		   LINEFLAG = NEWLINE;
 }
 
@@ -313,13 +306,13 @@ void CmdView::OnSize(UINT nType, int cx, int cy)
 {
 	CEditView::OnSize(nType, cx, cy);
 	// TODO:  在此处添加消息处理程序代码
-	int num = myedit->GetLineCount();   //重新获取HintLine行标号
+	int num = ((CEdit *)this)->GetLineCount();   //重新获取HintLine行标号
 	int nIndex,nline;
 	CString strText,temp;
 	for (nline = num - 1; nline >= 0; nline--){
 		nIndex = ((CEdit*)this)->LineIndex(nline);
-		int len = myedit->LineLength(nIndex);
-		myedit->GetLine(nline, strText.GetBuffer(len), len);
+		int len = ((CEdit *)this)->LineLength(nIndex);
+		((CEdit *)this)->GetLine(nline, strText.GetBuffer(len), len);
 		strText.ReleaseBuffer();
 		if (len >= HintSLen){
 			temp = strText.Mid(0, HintSLen);
@@ -389,6 +382,6 @@ LRESULT  CmdView::OnEndInput(WPARAM wparam, LPARAM lparam)
 	if (CMDFLAG == USER){
 		myedit->ReplaceSel(Hint);
 		HintLine = myedit->GetLineCount() - 1;
-		return 0;
 	}
+	return 0;
 }

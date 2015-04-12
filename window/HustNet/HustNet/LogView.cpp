@@ -9,7 +9,7 @@ IMPLEMENT_DYNCREATE(LogView, CEditView)
 
 LogView::LogView()
 {
-	Res.Empty();
+	Log.Empty();
 	logcount = 0;
 }
 
@@ -32,7 +32,7 @@ void LogView::OnDraw(CDC* pDC)
 {
 	CDocument* pDoc = GetDocument();
 	// TODO:  在此添加绘制代码
-	SetWindowText(Res);
+	SetWindowText(Log);
 }
 
 
@@ -62,7 +62,6 @@ void LogView::OnInitialUpdate()
 
 	// TODO:  在此添加专用代码和/或调用基类
 	CClientDC dc(this);
-	dc.GetTextMetrics(&tm);
 	static CFont  myfont;
 	myfont.CreatePointFont(120, (LPCTSTR)_T("Times New Roman"));
 	((CEdit *)this)->SetFont(&myfont);
@@ -104,9 +103,9 @@ LRESULT LogView::Print(WPARAM wparam, LPARAM lparam)
 {
 	CString mystr = *((CString *)wparam);
 	CString temp;
-	temp.Format(_T("log%d:%s\r\n "), logcount++, mystr);
-	Res += temp;
-	SetWindowText(Res);
+	temp.Format(_T("log%d: %s \r\n"), logcount++, mystr);
+	Log += temp;
+	SetWindowText(Log);
 	int l = ((CEdit *)this)->GetWindowTextLength();
 	((CEdit *)this)->SetSel(l, l, false);
 	((CEdit *)this)->SetFocus();
@@ -115,9 +114,8 @@ LRESULT LogView::Print(WPARAM wparam, LPARAM lparam)
 
 LRESULT LogView::Clean(WPARAM wparam, LPARAM lparam)
 {
-	CString mystr;
-	mystr.Empty();
-	SetWindowText(mystr);
+	Log.Empty();
+	SetWindowText(Log);
 	logcount = 0;
 	int l = ((CEdit *)this)->GetWindowTextLength();
 	((CEdit *)this)->SetSel(l, l, false);

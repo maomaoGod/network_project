@@ -12,7 +12,7 @@ protected:
 	virtual ~LogView();
 	int logcount;
 public:
-	CString  Res;
+	CString  Log;
 public:
 	virtual void OnDraw(CDC* pDC);      // 重写以绘制该视图
 #ifdef _DEBUG
@@ -23,7 +23,6 @@ public:
 #endif
 
 protected:
-	TEXTMETRIC tm;
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg LRESULT Print(WPARAM wparam, LPARAM lparam);
