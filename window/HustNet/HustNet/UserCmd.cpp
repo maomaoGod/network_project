@@ -5,6 +5,14 @@
 
 extern void PrintLog(CString);
 extern void PrintRp(CString);
+extern void CleanLog();
+extern void CleanRp();
+extern void SetRp(CString);
+extern void TakeOverCmd(CString e);
+extern void SetHint(CString e);
+extern CString GetLine();
+
+
 void Compute(CString e){
 	int pos;
 	CString a, b,result;
@@ -16,4 +24,11 @@ void Compute(CString e){
 	c2 = _wtoi(b);
 	result.Format(_T("%d+%d=%d"), c1, c2, c1 + c2);
 	PrintRp(result);
+}
+
+void Test(CString e){
+	CString mystr;
+	TakeOverCmd(_T("myTest>"));
+	while ((mystr = GetLine()).Compare(_T("exit"))!=0)
+	     PrintRp(mystr);
 }

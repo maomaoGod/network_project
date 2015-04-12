@@ -9,12 +9,12 @@
 CMainFrame *pfame;
 CString  command;
 using namespace std;
-// CmdView
-#define TIPLEN 8
+
 typedef void (*CMDPROC)(CString);
 map<CString, CMDPROC> my_map;
-
 enum  STATE  { THREAD_EXIT, THREAD_WAIT, THREAD_RUN }  THREADFLAG;
+enum  LINESTATE {OLDLINE,NEWLINE} LINEFLAG;
+
 IMPLEMENT_DYNCREATE(CmdView, CEditView)
 
 CmdView::CmdView()
@@ -33,6 +33,10 @@ BEGIN_MESSAGE_MAP(CmdView, CEditView)
 	ON_WM_KEYDOWN()
 	ON_WM_SIZE()
 	ON_WM_KILLFOCUS()
+	ON_MESSAGE(TAKEOVERCMD,OnTakeOverCmd)
+	ON_MESSAGE(SETHINT, OnSetHint)
+	ON_MESSAGE(DEALCMDOVER, OnDealCmdOver)
+	ON_MESSAGE(ENDINPUT, OnEndInput)
 END_MESSAGE_MAP()
 
 // CmdView 诊断
@@ -86,9 +90,44 @@ void CleanLog(CString e)
 void SetRp(CString e)
 {
 	CMD mycmd;
-	mycmd.ID = SET;
+	mycmd.ID = SETTEXT;
 	mycmd.agrs = &e;
 	pfame->SendMessage(DISPATCH, RPVIEW, LPARAM(&mycmd));
+}
+
+void SetHint(CString e)
+{
+	CMD mycmd;
+	mycmd.ID = SETHINT;
+	mycmd.agrs = &e;
+	pfame->SendMessage(DISPATCH, CMDVIEW, LPARAM(&mycmd));
+}
+
+void TakeOverCmd(CString e)
+{
+	CMD mycmd;
+	mycmd.ID = TAKEOVERCMD;
+	mycmd.agrs = &e;
+	pfame->SendMessage(DISPATCH, CMDVIEW, LPARAM(&mycmd));
+}
+
+void EndInput()
+{
+	CMD mycmd;
+	mycmd.ID = ENDINPUT;
+	mycmd.agrs = NULL;
+	pfame->SendMessage(DISPATCH, CMDVIEW, LPARAM(&mycmd));
+}
+
+CString  GetLine()
+{
+	static CString  myline;
+	while (LINEFLAG != NEWLINE)
+		;
+	myline = command;
+	EndInput();
+	LINEFLAG = OLDLINE;
+	return myline;
 }
 
 void   MapTask(){   //任务分发
@@ -112,6 +151,14 @@ void   MapTask(){   //任务分发
     	(my_map[Ins])(args);
 }
 
+void DealCmdOver()
+{
+	CMD mycmd;
+	mycmd.ID = DEALCMDOVER;
+	mycmd.agrs = NULL;
+	pfame->SendMessage(DISPATCH, CMDVIEW, (LPARAM)&mycmd);
+}
+
 DWORD WINAPI DEALCMD(LPVOID lpParameter){
 
 	while (TRUE){
@@ -122,6 +169,7 @@ DWORD WINAPI DEALCMD(LPVOID lpParameter){
 		else {
 			MapTask();
 			THREADFLAG = THREAD_WAIT;
+			DealCmdOver();
 		}
 	}
 	return 0;
@@ -139,47 +187,52 @@ void Initialcmd()
 	my_map.insert(pair<CString, CMDPROC>(_T("cleanrp"), CleanRp));
 	my_map.insert(pair<CString, CMDPROC>(_T("cleanlog"), CleanLog));
 	my_map.insert(pair<CString, CMDPROC>(_T("setrp"), SetRp));
+	my_map.insert(pair<CString, CMDPROC>(_T("test"), Test));
 }
 
+
+// CmdView
 void CmdView::DealEnter()
 {
-	CString strText;
-	int        num, len, index, nIndex;
-    len = myedit->GetWindowTextLength(); //移动光标到行尾
-	myedit->SetSel(len, len, false);
-	myedit->SetFocus();
-	num = myedit->GetLineCount(); //处理command行
-	nIndex = myedit->LineIndex(maskline); //获取行号
-	len = myedit->LineLength(nIndex);  //获取行长度
-	myedit->GetLine(maskline, strText.GetBuffer(len), len); //获取行内容
-	strText.ReleaseBuffer();
-	index = TIPLEN;
-	while (index < len&&_T(' ') == strText.GetAt(index))
-		index++;  //去除空格
-	if (index == len){
-		command.Empty();
-		return;
-	}
-	else
-	    command = strText.Mid(index);
-	strText.Empty();
-	if (maskline == num - 1 && !command.IsEmpty())  //只有一行命令
-		;
-	else if (maskline < num - 1){   //多行命令
-		num = myedit->GetLineCount();
-		for (int i = maskline + 1; i < num; i++){
-			nIndex = myedit->LineIndex(i);
-			len = myedit->LineLength(nIndex);
-			myedit->GetLine(i, strText.GetBuffer(len), len);
-			strText.ReleaseBuffer();
-			command += strText;
-			strText.Empty();
+		CString strText;
+		int        num, len, index, nIndex;
+		len = myedit->GetWindowTextLength(); //移动光标到行尾
+		myedit->SetSel(len, len, false);
+		myedit->SetFocus();
+		num = myedit->GetLineCount();           //处理command行
+		nIndex = myedit->LineIndex(HintLine); //获取行号
+		len = myedit->LineLength(nIndex);  //获取行长度
+		myedit->GetLine(HintLine, strText.GetBuffer(len), len); //获取行内容
+		strText.ReleaseBuffer();
+		index = HintSLen;
+		while (index < len&&_T(' ') == strText.GetAt(index))
+			index++;  //去除空格
+		if (index == len){
+			command.Empty();
+			return;
 		}
-	}
-	if (THREADFLAG == THREAD_RUN)
-		PrintLog(_T("命令无效：请等待上一命令执行完"));
-	else
-    	THREADFLAG = THREAD_RUN;
+		else
+			command = strText.Mid(index);
+		strText.Empty();
+		if (HintLine == num - 1 && !command.IsEmpty())  //只有一行命令
+			;
+		else if (HintLine < num - 1){   //多行命令
+			num = myedit->GetLineCount();
+			for (int i = HintLine + 1; i < num; i++){
+				nIndex = myedit->LineIndex(i);
+				len = myedit->LineLength(nIndex);
+				myedit->GetLine(i, strText.GetBuffer(len), len);
+				strText.ReleaseBuffer();
+				command += strText;
+				strText.Empty();
+			}
+		}
+	   if (THREADFLAG == THREAD_RUN&&CMDFLAG == ROOT)//未接管模式下命令输入过快
+				PrintLog(_T("命令无效：请等待上一命令执行完"));	 
+	   else if (THREADFLAG == THREAD_WAIT)  //未接管模式下发送命令
+		       THREADFLAG = THREAD_RUN;
+	   else  if (CMDFLAG == USER)
+		   LINEFLAG = NEWLINE;
 }
 
 void CmdView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -190,16 +243,12 @@ void CmdView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		int num;
 		num = myedit->GetLineCount();
 		point = GetCaretPos();
-		if (point.x <= masklength&&num - 1 == maskline)
+		if (point.x <= HintPLen&&num - 1 == HintLine)
 			return;
 	}
 	if (VK_RETURN == nChar) //处理回车消息
 		DealEnter();
 	CEditView::OnChar(nChar, nRepCnt, nFlags);
-	if (VK_RETURN == nChar){
-		myedit->ReplaceSel(_T("Command:"));//添加Command提示
-		maskline = myedit->GetLineCount()-1;
-	}
 }
 
 void CmdView::OnInitialUpdate()
@@ -211,23 +260,17 @@ void CmdView::OnInitialUpdate()
 	myedit = (CEdit *)this;
 	Initialcmd();
 
-	CClientDC dc(this);
-
 	myfont.CreatePointFont(120,	(LPCTSTR)_T("Times New Roman"));
 	myedit->SetFont(&myfont);
-	
-	dc.GetTextMetrics(&tm);
-	CSize  sz;
-	sz = dc.GetTextExtent(_T("Command:"));
-	masklength = sz.cx+tm.tmWeight/200;
-	myedit->ReplaceSel(_T("Command:"));
-	maskline = 0;
+	SetHint(_T("Command:"));
+	myedit->ReplaceSel(Hint);
+	HintLine = 0;
 }
 
 
-BOOL CmdView::PreCreateWindow(CREATESTRUCT& cs)
+BOOL CmdView::PreCreateWindow(CREATESTRUCT& cs)  //设置CmdView属性
 {
-	// TODO:  在此添加专用代码和/或调用基类    //设置CmdView属性
+	// TODO:  在此添加专用代码和/或调用基类  
 	m_dwDefaultStyle = AFX_WS_DEFAULT_VIEW | WS_VSCROLL | ES_AUTOVSCROLL |ES_MULTILINE | ES_NOHIDESEL;
 	return CCtrlView::PreCreateWindow(cs);
 }
@@ -259,7 +302,7 @@ void CmdView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case  VK_LEFT:
 		point = GetCaretPos();                        //禁止光标移动到command区域:
 		nline = myedit->CharFromPos(point);
-		if (point.x <= masklength&&HIWORD(nline)==maskline) 
+		if (point.x <= HintPLen&&HIWORD(nline)==HintLine) 
 			return;
 	default: break;
 	}
@@ -270,18 +313,18 @@ void CmdView::OnSize(UINT nType, int cx, int cy)
 {
 	CEditView::OnSize(nType, cx, cy);
 	// TODO:  在此处添加消息处理程序代码
-	int num = myedit->GetLineCount();   //重新获取maskline行标号
-	int nIndex;
+	int num = myedit->GetLineCount();   //重新获取HintLine行标号
+	int nIndex,nline;
 	CString strText,temp;
-	for (int i = num - 1; i >= 0; i--){
-		nIndex = ((CEdit*)this)->LineIndex(i);
+	for (nline = num - 1; nline >= 0; nline--){
+		nIndex = ((CEdit*)this)->LineIndex(nline);
 		int len = myedit->LineLength(nIndex);
-		myedit->GetLine(i, strText.GetBuffer(len), len);
+		myedit->GetLine(nline, strText.GetBuffer(len), len);
 		strText.ReleaseBuffer();
-		if (len >= TIPLEN){
-			temp = strText.Mid(0, TIPLEN);
-			if (temp.Compare(_T("Command:")) == 0){
-				maskline = i;
+		if (len >= HintSLen){
+			temp = strText.Mid(0, HintSLen);
+			if (temp.Compare(Hint) == 0){
+				HintLine = nline;
 				break;
 			}
 		}
@@ -297,5 +340,55 @@ void CmdView::OnKillFocus(CWnd* pNewWnd)
 	int len = myedit->GetWindowTextLength();  //获取输入焦点
 	myedit->SetSel(len,len,false);
 	myedit->SetFocus();
+}
 
+LRESULT CmdView::OnSetHint(WPARAM wparam, LPARAM lparam)
+{
+	CClientDC dc(this);
+	CSize  sz;
+	Hint = *((CString *)wparam);
+	dc.GetTextMetrics(&tm);
+	sz = dc.GetTextExtent(Hint);
+	HintSLen = _tcslen(Hint);
+	HintPLen = sz.cx + tm.tmWeight / 200;
+	return 0;
+}
+
+LRESULT CmdView::OnTakeOverCmd(WPARAM wparam, LPARAM lparam)
+{	
+
+	if (CMDFLAG==ROOT)
+    	CMDFLAG = USER;
+	LINEFLAG = OLDLINE;
+	Hint = *((CString *)wparam);
+	SetHint(Hint);
+	myedit->ReplaceSel(Hint);
+	HintLine = myedit->GetLineCount() - 1;
+	return 0;
+}
+
+LRESULT  CmdView::OnDealCmdOver(WPARAM wparam, LPARAM lparam)
+{
+	if (CMDFLAG == USER){
+		myedit->ReplaceSel(_T("退出成功\r\n"));
+		CMDFLAG = ROOT;
+		SetHint(_T("Command:"));
+	}
+	HintLine = myedit->GetLineCount() - 1;
+	POINT cur;
+	cur.x = 0;
+	cur.y = HintLine*tm.tmHeight;
+	SetCaretPos(cur);
+	SetFocus();
+	myedit->ReplaceSel(Hint);
+	return 0;
+}
+
+LRESULT  CmdView::OnEndInput(WPARAM wparam, LPARAM lparam)
+{
+	if (CMDFLAG == USER){
+		myedit->ReplaceSel(Hint);
+		HintLine = myedit->GetLineCount() - 1;
+		return 0;
+	}
 }
