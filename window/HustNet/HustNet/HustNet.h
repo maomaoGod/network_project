@@ -14,10 +14,15 @@
 #define LOGVIEW   2
 
 
-#define PRINT       WM_USER+1000
-#define CLEAN      WM_USER+1001
-#define SET          WM_USER+1002
-#define DISPATCH WM_USER+1003
+#define PRINT                    WM_USER+1000
+#define CLEAN                   WM_USER+1001
+#define SETTEXT                WM_USER+1002
+#define TAKEOVERCMD     WM_USER+1003
+#define RELEASECMD       WM_USER+1004
+#define SETHINT                WM_USER+1005
+#define DEALCMDOVER    WM_USER+1006
+#define DISPATCH              WM_USER+1007
+#define ENDINPUT              WM_USER+1008
 
 struct  CMD{
 	int ID;

@@ -23,7 +23,7 @@ BEGIN_MESSAGE_MAP(RespondView, CEditView)
 	ON_WM_CHAR()
 	ON_MESSAGE(PRINT,Print)
 	ON_MESSAGE(CLEAN,Clean)
-	ON_MESSAGE(SET,Set)
+	ON_MESSAGE(SETTEXT,SetText)
 END_MESSAGE_MAP()
 
 
@@ -124,7 +124,7 @@ LRESULT RespondView::Clean(WPARAM wparam, LPARAM lparam)
 	return 0;
 }
 
-LRESULT RespondView::Set(WPARAM wparam, LPARAM lparam)
+LRESULT RespondView::SetText(WPARAM wparam, LPARAM lparam)
 {
 	CString mystr = *((CString *)wparam);
 	Res = mystr;
