@@ -72,7 +72,9 @@ void LogView::OnInitialUpdate()
 	// TODO:  在此添加专用代码和/或调用基类
 	CClientDC dc(this);
 	dc.GetTextMetrics(&tm);
-	//GetEditCtrl().SetReadOnly(TRUE);
+	static CFont  myfont;
+	myfont.CreatePointFont(120, (LPCTSTR)_T("Times New Roman"));
+	((CEdit *)this)->SetFont(&myfont);
 }
 
 

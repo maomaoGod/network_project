@@ -201,7 +201,7 @@ void CmdView::OnInitialUpdate()
 
 	CClientDC dc(this);
 
-	static CFont  myfont;
+    static CFont  myfont;
 	myfont.CreatePointFont(120,	(LPCTSTR)_T("Times New Roman"));
 	myedit->SetFont(&myfont);
 	
@@ -238,7 +238,6 @@ void CmdView::OnLButtonDblClk(UINT nFlags, CPoint point)
 void CmdView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	int len;
 	CPoint point;
 	switch (nChar)
 	{
@@ -247,7 +246,7 @@ void CmdView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case   VK_HOME: return;
 	case  VK_LEFT:
 		point = GetCaretPos();
-		if (point.x <= length&&point.y/tm.tmHeight==maskline)
+		if (point.x <= length&&point.y/tm.tmHeight==maskline)  //禁止光标移动到command:
 			return;
 	default: break;
 	}
@@ -281,8 +280,8 @@ void CmdView::OnKillFocus(CWnd* pNewWnd)
 {
 	CEditView::OnKillFocus(pNewWnd);
 
-	// TODO:  在此处添加消息处理程序代码
-	int len = myedit->GetWindowTextLength();
+	// TODO:  在此处添加消息处理程序代码   
+	int len = myedit->GetWindowTextLength();  //获取输入焦点
 	myedit->SetSel(len,len,false);
 	myedit->SetFocus();
 
