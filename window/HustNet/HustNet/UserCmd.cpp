@@ -33,6 +33,40 @@ void Test(CString e){
 	     PrintRp(mystr);
 }
 
-void Fun(CString e){
-	PrintLog(e);
+
+void  Connect(CString e){
+	AfxSocketInit();
+
+	//创建 CSocket 对象
+	CSocket aSocket;
+
+	CString strIP;
+
+	strIP.Format(_T("%s"), _T("127.0.0.1"));
+	if (!aSocket.Create())
+	{
+		CString error;
+		error.Format(_T("创建失败:%d"), aSocket.GetLastError());
+		PrintLog(error);
+		return;
+	}
+	//转换需要连接的端口内容类型
+	PrintLog(_T("套接字创建成功"));
+	//连接指定的地址和端口
+	if (aSocket.Connect(strIP, 6500))
+	{
+		TCHAR szRecValue[1024] = { 0 };
+		CString  rev;
+		//发送内容给服务器
+		PrintLog(_T("连接服务器成功"));
+		aSocket.Send(e, e.GetLength() + 1);
+		aSocket.Receive((void *)szRecValue, 1024);
+		rev.Format(_T("%s"), szRecValue);
+	}
+	else{
+		CString error;
+		error.Format(_T("创建失败:%d"), aSocket.GetLastError());
+		PrintLog(error);
+	}
+	aSocket.Close();
 }

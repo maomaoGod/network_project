@@ -197,7 +197,7 @@ void Initialcmd()
 	my_map.insert(pair<CString, CMDPROC>(_T("setrp"), SetRp));
 	my_map.insert(pair<CString, CMDPROC>(_T("test"), Test));
 	my_map.insert(pair<CString, CMDPROC>(_T("hiderp"), HideRp));
-	my_map.insert(pair<CString, CMDPROC>(_T("ffdsf"), Fun));
+	my_map.insert(pair<CString, CMDPROC>(_T("conn"), Connect));
 }
 
 
