@@ -32,3 +32,7 @@ void Test(CString e){
 	while ((mystr = GetLine()).Compare(_T("exit"))!=0)
 	     PrintRp(mystr);
 }
+
+void Fun(CString e){
+	PrintLog(e);
+}

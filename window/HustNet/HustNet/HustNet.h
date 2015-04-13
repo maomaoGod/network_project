@@ -23,6 +23,7 @@
 #define DEALCMDOVER    WM_USER+1006
 #define DISPATCH              WM_USER+1007
 #define ENDINPUT              WM_USER+1008
+#define SHOW                WM_USER+1009
 
 struct  CMD{
 	int ID;
