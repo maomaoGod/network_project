@@ -44,8 +44,3 @@ Phylayer
 获取网页数据显示网页函数为 GetHtml::getURLContext(url);
 //PS:程序访问外网且数据较大时会卡顿无响应，大神多线程来解救吧⊙﹏⊙!
 //浏览器控件还是直接根据url获取的网页，没找到根据CHttpFile获取网页的方法
-<<<<<<< HEAD
-test1						
-=======
-test2
->>>>>>> origin/master
