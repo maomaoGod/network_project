@@ -63,11 +63,6 @@ void PrintLog(CString log)
 	pfame->SendMessage(DISPATCH, LOGVIEW,(LPARAM)(&mycmd));
 }
 
-void HideRp(CString e)
-{
-	pfame->SendMessage(SHOW, RPVIEW, NULL);
-}
-
 void PrintRp(CString rp)
 {
 	CMD mycmd;
@@ -196,8 +191,8 @@ void Initialcmd()
 	my_map.insert(pair<CString, CMDPROC>(_T("cleanlog"), CleanLog));
 	my_map.insert(pair<CString, CMDPROC>(_T("setrp"), SetRp));
 	my_map.insert(pair<CString, CMDPROC>(_T("test"), Test));
-	my_map.insert(pair<CString, CMDPROC>(_T("hiderp"), HideRp));
-	my_map.insert(pair<CString, CMDPROC>(_T("ffdsf"), Fun));
+	//my_map.insert(pair<CString, CMDPROC>(_T("Mail"), Mail));
+	my_map[_T("Mail")] = Mail;//equal to before
 }
 
 

@@ -165,9 +165,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "设置"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    COMBOBOX        IDC_COMBO1,17,30,70,30,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO1,17,30,70,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "本地",IDC_STATIC,8,17,187,82
-    COMBOBOX        IDC_COMBO2,20,127,64,30,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO2,20,127,64,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "服务器",IDC_STATIC,8,110,188,94
     LTEXT           "路径:",IDC_STATIC,15,54,25,10
     EDITTEXT        IDC_EDIT1,45,53,122,14,ES_AUTOHSCROLL
@@ -240,37 +240,6 @@ BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog Info
-//
-
-IDD_SET DLGINIT
-BEGIN
-    IDC_COMBO1, 0x403, 7, 0
-0xa6d3, 0xc3d3, 0xe3b2, "\000" 
-    IDC_COMBO1, 0x403, 7, 0
-0xcbd4, 0xe4ca, 0xe3b2, "\000" 
-    IDC_COMBO1, 0x403, 7, 0
-0xf8cd, 0xe7c2, 0xe3b2, "\000" 
-    IDC_COMBO1, 0x403, 7, 0
-0xb4c1, 0xb7c2, 0xe3b2, "\000" 
-    IDC_COMBO1, 0x403, 7, 0
-0xefce, 0xedc0, 0xe3b2, "\000" 
-    IDC_COMBO2, 0x403, 7, 0
-0xa6d3, 0xc3d3, 0xe3b2, "\000" 
-    IDC_COMBO2, 0x403, 7, 0
-0xcbd4, 0xe4ca, 0xe3b2, "\000" 
-    IDC_COMBO2, 0x403, 7, 0
-0xf8cd, 0xe7c2, 0xe3b2, "\000" 
-    IDC_COMBO2, 0x403, 7, 0
-0xb4c1, 0xb7c2, 0xe3b2, "\000" 
-    IDC_COMBO2, 0x403, 7, 0
-0xefce, 0xedc0, 0xe3b2, "\000" 
-    0
-END
 
 
 /////////////////////////////////////////////////////////////////////////////

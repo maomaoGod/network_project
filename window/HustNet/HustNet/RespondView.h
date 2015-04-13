@@ -1,5 +1,5 @@
 #pragma once
-#include "HustNetDoc.h"
+
 
 // RespondView 视图
 
@@ -9,7 +9,9 @@ class RespondView : public CEditView
 
 protected:
 	RespondView();           // 动态创建所使用的受保护的构造函数
-	virtual ~RespondView();	
+	virtual ~RespondView();
+public:
+	CString  Res;
 public:
 	virtual void OnDraw(CDC* pDC);      // 重写以绘制该视图
 #ifdef _DEBUG
@@ -20,8 +22,8 @@ public:
 #endif
 
 protected:
+	int  curline;
 	TEXTMETRIC tm;
-	CString Res;
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg LRESULT Print(WPARAM wparam, LPARAM lparam);

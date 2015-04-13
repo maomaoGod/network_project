@@ -1,7 +1,9 @@
 #pragma once
-#include "UserCmd.h"
-#include "CmdView.h"
+//#include "UserCmd.h"
+//#include "CmdView.h"
 #include "stdafx.h"
+#include "Tools.h"
+using namespace Tools;
 
 extern void PrintLog(CString);
 extern void PrintRp(CString);
@@ -33,6 +35,7 @@ void Test(CString e){
 	     PrintRp(mystr);
 }
 
-void Fun(CString e){
-	PrintLog(e);
+void Mail(CString e){
+	MailSend mail;
+	mail.Begin();
 }

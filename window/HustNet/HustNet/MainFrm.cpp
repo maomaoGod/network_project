@@ -18,7 +18,6 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_MESSAGE(DISPATCH,Dispatch)
-	ON_MESSAGE(SHOW, Show)
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_NETSET, &CMainFrame::OnNETSET)
 END_MESSAGE_MAP()
@@ -143,11 +142,10 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 		if (nType != SIZE_MINIMIZED){
 			CRect rect;
 			GetClientRect(&rect);
-			m_splitter.SetRowInfo(0, cy, 100);
-			m_splitter.SetColumnInfo(0, rect.Width() / 3, 100);
-			s_splitter.SetColumnInfo(0, rect.Width() / 3, 100);
+			m_splitter.SetRowInfo(0, cy, 50);
+			m_splitter.SetColumnInfo(0, rect.Width() / 3, 50);
+			s_splitter.SetColumnInfo(0, rect.Width() / 3, 50);
 			m_splitter.RecalcLayout();
-			s_splitter.RecalcLayout();
 		}
 	}
 }
@@ -174,18 +172,7 @@ LRESULT CMainFrame::Dispatch(WPARAM wparam, LPARAM lparam)
 	return 0;
 }
 
-LRESULT CMainFrame::Show(WPARAM wparam, LPARAM lparam)
-{
-	switch (wparam)
-	{
-	case RPVIEW:
-		prespond->ShowWindow(SW_HIDE);
-		break;
-	default: break;
-	}
-	return 0;
-}
-
+//close 
 void CMainFrame::OnClose()
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值

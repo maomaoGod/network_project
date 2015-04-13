@@ -10,6 +10,7 @@ IMPLEMENT_DYNCREATE(RespondView, CEditView)
 RespondView::RespondView()
 {
 	Res.Empty();
+	curline = 0;
 }
 
 RespondView::~RespondView()
@@ -32,7 +33,6 @@ void RespondView::OnDraw(CDC* pDC)
 {
 	CDocument* pDoc = GetDocument();
 	// TODO:  在此添加绘制代码
-
 	SetWindowText(Res);
 }
 
