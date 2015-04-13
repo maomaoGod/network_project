@@ -1,9 +1,8 @@
 
 // ServeView.h : CServeView 类的接口
 //
-
+#include "MyServeSocket.h"
 #pragma once
-
 
 class CServeView : public CEditView
 {
@@ -17,6 +16,9 @@ public:
 
 // 操作
 public:
+
+protected :
+	MyServeSocket  ManagerSocket;
 
 // 重写
 public:
@@ -42,8 +44,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg LRESULT OnPrint(WPARAM wparam, LPARAM lparam);
 protected:
-	void Print(CString e);
 };
 
 #ifndef _DEBUG  // ServeView.cpp 中的调试版本

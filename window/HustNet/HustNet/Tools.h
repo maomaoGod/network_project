@@ -23,6 +23,7 @@ namespace Tools{
 	//
 	class Tstr{
 	public:
+		//Tchar to string
 		static string Tchar2string(TCHAR *smsg){
 				int iLen = WideCharToMultiByte(CP_ACP, 0, smsg, -1, NULL, 0, NULL, NULL);
 				char* chRtn = new char[iLen*sizeof(char)];
@@ -46,11 +47,34 @@ namespace Tools{
 			return  rt;
 		}
 		//string to LPCWSTR
-		static LPCWSTR Sting2LPCWSTR(string str){
+		static LPCWSTR String2LPCWSTR(string str){
 			wstring w_str = ANSIToUnicode(str);
 			LPCWSTR L_str = w_str.c_str();
 			return L_str;
 		}
+		//Csting to LPSTR
+		static LPSTR CString2LPSTR(CString Subject){
+			LPSTR sub = (LPSTR)Subject.GetBuffer();
+			Subject.ReleaseBuffer();
+			return sub;
+		}
+		static string CS2S(CString Subject){
+			string sub = CString2LPSTR(Subject);//Subject.GetBuffer(0);
+			return sub;
+		}
+
+		//command & args
+		
+		static void CCarg(CStringArray *strArry, CString Cmd, TCHAR div){
+			int i = 0;
+			CString strGet(_T(""));
+			//CStringArray strArry;
+			while (AfxExtractSubString(strGet, Cmd, i++, div)){
+				strArry->Add(strGet);
+			}
+			//return strArry;
+		}
+
 	};
 	//Dllusr
 	class Dlluser{
@@ -161,66 +185,9 @@ namespace Tools{
 			this->success = true;
 		};
 	};
-	//send a mail
-	class MailSend
-	{
-	public:
-		MailSend(){
-			init();
-		}
-		~MailSend(){
-		}
-		void Begin(){
-			CString mystr;
-			TakeOverCmd(_T("Mail>"));
-			while ((mystr = GetLine()).Compare(_T("exit")) != 0){
-				PrintLog(_T("Accept ") + mystr);
-				switch (MailCmd[mystr]){
-					case 0: break;
-					case 1: break;
-					case 2: break;
-					case 3: break;
-					case 4: 
-						if(this->Repared()) PrintLog(_T("Mail Repared"));
+	
+	
 
-							break;
-					default: PrintLog(_T("Error Code"));
-				}
-			}
-		}
-	private:
-		map<CString,int> MailCmd;
-		CString UserName, PassWord;
-		Dlluser MailHelp;
-		LPMAPILOGON pMAPILogon;
-		LPMAPILOGOFF pMAPILogoff;
-		LPMAPISENDMAIL pMAPISendMail;
-		UINT iMapiInstalled;
-		LHANDLE lhSession;
-		void init(){
-			MailCmd[_T("exit")] = 0;//exit
-			MailCmd[_T("user")] = MailCmd[_T("User")] = 1;//u
-			MailCmd[_T("password")] = MailCmd[_T("Password")] = 2;//pw
-			MailCmd[_T("STMP")] = 3;//set stmp
-			MailCmd[_T("Send")] = MailCmd[_T("send")] = 4;//send mail
-		}
-		bool Repared(){
-			iMapiInstalled = GetProfileInt(_T("Mail"), _T("MAPI"), 0);
-			if (!iMapiInstalled) return false;
-			MailHelp.Setpath(_T("MAPI32.DLL"));
-			if(!MailHelp.Load_dll()) return false;
-			MailHelp.Set_fun_name("MAPILogon");
-			pMAPILogon = (LPMAPILOGON)MailHelp.Getfun();
-			MailHelp.Set_fun_name("MAPILogoff");
-			pMAPILogoff = (LPMAPILOGOFF)MailHelp.Getfun();
-			MailHelp.Set_fun_name("MAPISendMail");
-			pMAPISendMail = (LPMAPISENDMAIL)MailHelp.Getfun();
-			return 1;
-		}
-
-
-
-	};
 }
 
 
@@ -273,3 +240,67 @@ wstring w_str = ANSIToUnicode(str);
 LPCWSTR L_str = w_str.c_str();
 return L_str;
 }*/
+/*
+bool Repared(){
+iMapiInstalled = GetProfileInt(_T("Mail"), _T("MAPI"), 0);
+if (!iMapiInstalled) return false;//failed
+MailHelp.Setpath(_T("MAPI32.DLL"));
+if(!MailHelp.Load_dll()) return false;//failed load
+MailHelp.Set_fun_name("MAPILogon");
+pMAPILogon = (LPMAPILOGON)MailHelp.Getfun();
+MailHelp.Set_fun_name("MAPILogoff");
+pMAPILogoff = (LPMAPILOGOFF)MailHelp.Getfun();
+MailHelp.Set_fun_name("MAPISendMail");
+pMAPISendMail = (LPMAPISENDMAIL)MailHelp.Getfun();
+//to log
+LPSTR name = (LPSTR)UserName.GetBuffer();
+UserName.ReleaseBuffer();
+LPSTR pass = (LPSTR)PassWord.GetBuffer();
+PassWord.ReleaseBuffer();
+/*if (pMAPILogon(0, name, pass, MAPI_LOGON_UI, 0, &lhSession) != SUCCESS_SUCCESS){
+PrintLog(_T("Error user or password!"));
+return false;
+}*/
+/*
+if (pMAPILogon(0, NULL, NULL, MAPI_LOGON_UI, 0, &lhSession) != SUCCESS_SUCCESS){
+	PrintLog(_T("Error user or password!"));
+	return false;
+}
+else{
+	ULONG Result;
+	MapiMessage Msg;
+	MapiRecipDesc Recer[1];
+	Recer[0].ulRecipClass = MAPI_TO;
+	LPSTR sendname = (LPSTR)RevAddr.GetBuffer();
+	RevAddr.ReleaseBuffer();
+	Recer[0].lpszName = sendname;
+	Recer[0].lpszAddress = sendname;
+	Recer[0].ulEIDSize = 0;
+	Recer[0].lpEntryID = 0;
+	//set Msg
+	memset(&Msg, 0, sizeof(Msg));
+	LPSTR sub = (LPSTR)Subject.GetBuffer();
+	Subject.ReleaseBuffer();
+	Msg.lpszSubject = sub;
+	LPSTR text = (LPSTR)MsgText.GetBuffer();
+	MsgText.ReleaseBuffer();
+	Msg.lpszNoteText = text;
+	Msg.nRecipCount = 1;
+	Msg.lpRecips = Recer;
+
+	Result = pMAPISendMail(lhSession, 0, &Msg, 0, 0);
+	if (Result != SUCCESS_SUCCESS){
+		PrintLog(_T("Error for send a mail"));
+		return false;
+	}
+	pMAPILogoff(lhSession, 0, 0, 0);
+}
+MailHelp.free_dll();
+return 1;
+		}
+
+*/
+
+
+
+

@@ -194,6 +194,7 @@ void Initialcmd()
 	my_map.insert(pair<CString, CMDPROC>(_T("conn"), Connect));
 	//my_map.insert(pair<CString, CMDPROC>(_T("Mail"), Mail));
 	my_map[_T("Mail")] = Mail;//equal to before
+	my_map[_T("Chat")] = Chat;
 }
 
 

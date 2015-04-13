@@ -9,6 +9,7 @@
 
 #include "resource.h"       // 主符号
 
+#define PRINT  WM_USER +1000
 
 // CServeApp:
 // 有关此类的实现，请参阅 Serve.cpp
