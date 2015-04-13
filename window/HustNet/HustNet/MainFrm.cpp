@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "HustNet.h"
 #include "MainFrm.h"
+#include "NetSet.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -19,6 +20,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(DISPATCH,Dispatch)
 	ON_MESSAGE(SHOW, Show)
 	ON_WM_CLOSE()
+	ON_COMMAND(ID_NETSET, &CMainFrame::OnNETSET)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -59,12 +61,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // 未能创建
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
-
 	// TODO:  如果不需要可停靠工具栏，则删除这三行
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);
-
+	//set the state bar Msg
+	m_wndStatusBar.SetPaneText(1 ,_T("华中科技大学2012级ACM班制作"),true);
 
 	return 0;
 }
@@ -76,8 +78,14 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	// TODO:  在此处通过修改
 	//  CREATESTRUCT cs 来修改窗口类或样式
 	cs.style &= ~FWS_ADDTOTITLE;
-	cs.cx = 900;
-	cs.cy = 600;
+	//cs.cx = 900;
+	//cs.cy = 600;
+	//设置高、宽 (屏幕分辨率的3/4)
+	cs.cy = ::GetSystemMetrics(SM_CYSCREEN) * 3 / 4;
+	cs.cx = ::GetSystemMetrics(SM_CXSCREEN) * 5 / 8;
+	//设置窗口位置 (居中)
+	cs.y = (cs.cy*4/3 - cs.cy) / 2;
+	cs.x = (cs.cx*8/5 - cs.cx) / 2;
 	return TRUE;
 }
 
@@ -130,7 +138,6 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 void CMainFrame::OnSize(UINT nType, int cx, int cy)
 {
 	CFrameWnd::OnSize(nType, cx, cy);
-
 	// TODO:  在此处添加消息处理程序代码
 	if (flag){
 		if (nType != SIZE_MINIMIZED){
@@ -179,10 +186,27 @@ LRESULT CMainFrame::Show(WPARAM wparam, LPARAM lparam)
 	return 0;
 }
 
-
 void CMainFrame::OnClose()
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	if (AfxMessageBox(_T(" 是否退出软件 \n"), MB_OKCANCEL, MB_ICONQUESTION) == IDOK){
+		CRect rectDlg;
+		this->GetWindowRect(rectDlg);
+		while (rectDlg.TopLeft().y < rectDlg.BottomRight().y){//rectDlg.Height() > 30
+			//rectDlg.Height() -= 10;
+			rectDlg.TopLeft().y += 3;
+			rectDlg.BottomRight().y -= 3;
+			this->MoveWindow(rectDlg);
+		}
+		DestroyWindow();//CFrameWnd::OnCloseWithout(0);
+	}
+	return;
+}
 
-	CFrameWnd::OnClose();
+
+void CMainFrame::OnNETSET()
+{
+	// TODO:  在此添加命令处理程序代码
+	NetSet SetDlg;
+	SetDlg.DoModal();
 }

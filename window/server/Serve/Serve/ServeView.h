@@ -35,10 +35,15 @@ public:
 #endif
 
 protected:
+	CString mylog;
 
 // 生成的消息映射函数
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+protected:
+	void Print(CString e);
 };
 
 #ifndef _DEBUG  // ServeView.cpp 中的调试版本

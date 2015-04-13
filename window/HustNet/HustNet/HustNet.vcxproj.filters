@@ -48,6 +48,9 @@
     <ClInclude Include="UserCmd.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="NetSet.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HustNet.cpp">
@@ -72,6 +75,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UserCmd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NetSet.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

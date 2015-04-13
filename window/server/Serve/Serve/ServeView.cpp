@@ -26,6 +26,7 @@ BEGIN_MESSAGE_MAP(CServeView, CEditView)
 	ON_COMMAND(ID_FILE_PRINT, &CEditView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CEditView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CEditView::OnFilePrintPreview)
+	ON_WM_CHAR()
 END_MESSAGE_MAP()
 
 // CServeView 构造/析构
@@ -44,11 +45,8 @@ BOOL CServeView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO:  在此处通过修改
 	//  CREATESTRUCT cs 来修改窗口类或样式
-
-	BOOL bPreCreated = CEditView::PreCreateWindow(cs);
-	cs.style &= ~(ES_AUTOHSCROLL|WS_HSCROLL);	// 启用换行
-
-	return bPreCreated;
+	m_dwDefaultStyle = AFX_WS_DEFAULT_VIEW | WS_VSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | ES_NOHIDESEL;
+	return CCtrlView::PreCreateWindow(cs);
 }
 
 
@@ -95,3 +93,20 @@ CServeDoc* CServeView::GetDocument() const // 非调试版本是内联的
 
 
 // CServeView 消息处理程序
+
+
+void CServeView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	return;
+	//CEditView::OnChar(nChar, nRepCnt, nFlags);
+}
+
+
+void CServeView::Print(CString e)
+{
+	CString mystr;
+	mystr = e + _T("\r\n");
+	mylog += e;
+	SetWindowText(mylog);
+}
