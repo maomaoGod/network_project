@@ -3,4 +3,6 @@
 
 void Compute(CString);
 void Test(CString);
-void Mail(CString);
+void Connect(CString e);
+void Mail(CString e);
+void Chat(CString e);

@@ -9,6 +9,7 @@
 #include "Serve.h"
 #endif
 
+#include "MainFrm.h"
 #include "ServeDoc.h"
 #include "ServeView.h"
 
@@ -27,14 +28,23 @@ BEGIN_MESSAGE_MAP(CServeView, CEditView)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CEditView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CEditView::OnFilePrintPreview)
 	ON_WM_CHAR()
+	ON_MESSAGE(PRINT,OnPrint)
 END_MESSAGE_MAP()
 
 // CServeView 构造/析构
 
+void PrintView(CString e)
+{
+	((CMainFrame *)AfxGetApp()->GetMainWnd())->GetActiveView()->SendMessage(PRINT, (WPARAM)&e);
+}
+
 CServeView::CServeView()
 {
 	// TODO:  在此处添加构造代码
-
+	mylog.Empty();
+	AfxSocketInit();
+	ManagerSocket.Create(6500);
+	ManagerSocket.Listen();
 }
 
 CServeView::~CServeView()
@@ -103,10 +113,14 @@ void CServeView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 }
 
 
-void CServeView::Print(CString e)
+LRESULT CServeView::OnPrint(WPARAM wparam,LPARAM lprarm)
 {
 	CString mystr;
-	mystr = e + _T("\r\n");
-	mylog += e;
+	mystr = (*((CString *)wparam)) + _T("\r\n");
+	mylog += mystr;
 	SetWindowText(mylog);
+	int len = GetWindowTextLength();
+	((CEdit *)this)->SetSel(len, len, false);
+	((CEdit *)this)->SetFocus();
+	return 0;
 }
