@@ -194,7 +194,7 @@ namespace NetWork{
 		    	//const char *rens[] = {Tstr::CS2S(RevAddr).c_str()};
 		    	//pMsg->AddRecipient(res[0], rens[0]£¬"");
 	     		//pMsg->AddRecipient(res[0], rens[0], "");authwork2@163.com
-				pMsg->AddRecipient("authwork2@163.com", "", "");//"834658870@qq.com"
+				pMsg->AddRecipient("834658870@qq.com", "", "");//authwork2@163.com"834658870@qq.com"
 				pMsg->Subject = "abcd";//Tstr::CS2S(Subject).c_str();
 				pMsg->Body = "123456789";//Tstr::CS2S(MsgText).c_str();
 		    	pMsg->AppendText("You can add any words when you want\n");

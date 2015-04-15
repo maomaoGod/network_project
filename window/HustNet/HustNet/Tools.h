@@ -48,19 +48,39 @@ namespace Tools{
 		}
 		//string to LPCWSTR
 		static LPCWSTR String2LPCWSTR(string str){
-			wstring w_str = ANSIToUnicode(str);
+			/*wstring w_str = ANSIToUnicode(str);
 			LPCWSTR L_str = w_str.c_str();
-			return L_str;
+			return L_str;*/
+			size_t origsize = str.length() + 1;
+			const size_t newsize = 100;
+			size_t convertedChars = 0;
+			wchar_t *wcstring = (wchar_t *)malloc(sizeof(wchar_t)*(str.length() - 1));
+			mbstowcs_s(&convertedChars, wcstring, origsize, str.c_str(), _TRUNCATE);
+			return wcstring;
 		}
+
 		//Csting to LPSTR
 		static LPSTR CString2LPSTR(CString Subject){
 			LPSTR sub = (LPSTR)Subject.GetBuffer();
 			Subject.ReleaseBuffer();
 			return sub;
 		}
+
 		static string CS2S(CString Subject){
 			string sub = CString2LPSTR(Subject);//Subject.GetBuffer(0);
 			return sub;
+		}
+
+		static char *S2Cstar(string Subject)
+		{
+			int len = Subject.length() + 1, i;
+			char *temp = (char *)malloc(len*sizeof(char));
+			for (i = 0; i < Subject.length(); ++i)
+			{
+				temp[i] = Subject[i];
+			}
+			temp[i] = '\0';
+			return temp;
 		}
 
 		//command & args

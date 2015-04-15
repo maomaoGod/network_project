@@ -192,6 +192,8 @@ void Initialcmd()
 	my_map.insert(pair<CString, CMDPROC>(_T("setrp"), SetRp));
 	my_map.insert(pair<CString, CMDPROC>(_T("test"), Test));
 	my_map.insert(pair<CString, CMDPROC>(_T("conn"), Connect));
+	my_map.insert(pair<CString, CMDPROC>(_T("setdll"), SetDll));
+	my_map.insert(pair<CString, CMDPROC>(_T("gethtml"), GetHtml));
 	//my_map.insert(pair<CString, CMDPROC>(_T("Mail"), Mail));
 	my_map[_T("Mail")] = Mail;//equal to before
 	my_map[_T("Chat")] = Chat;
@@ -389,3 +391,4 @@ LRESULT  CmdView::OnEndInput(WPARAM wparam, LPARAM lparam)
 	}
 	return 0;
 }
+

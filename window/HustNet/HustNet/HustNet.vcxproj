@@ -106,6 +106,8 @@
     <ClInclude Include="HustNetDoc.h" />
     <ClInclude Include="LogView.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="NetDll.h" />
+    <ClInclude Include="NetHtml.h" />
     <ClInclude Include="NetSet.h" />
     <ClInclude Include="NetWork.h" />
     <ClInclude Include="Resource.h" />
@@ -121,6 +123,8 @@
     <ClCompile Include="HustNetDoc.cpp" />
     <ClCompile Include="LogView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="NetDll.cpp" />
+    <ClCompile Include="NetHtml.cpp" />
     <ClCompile Include="NetSet.cpp" />
     <ClCompile Include="RespondView.cpp" />
     <ClCompile Include="stdafx.cpp">
