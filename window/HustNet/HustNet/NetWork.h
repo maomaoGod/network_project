@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "map"
 #include "Tools.h"
-#import "dll/Jmail.dll"
+//#import "dll/Jmail.dll"
 
 extern void PrintLog(CString);
 extern void PrintRp(CString);
@@ -129,6 +129,24 @@ namespace NetWork{
 		}
 
 	};
+	
+	class FTPWork{
+
+	};
+	/*HOW IT WORKS
+	
+	
+	*/
+	class AppLayerHttp{
+	public:
+
+	private:
+
+	};
+}
+
+
+	/*
 	//send a mail
 	class MailSend // use the 
 	{
@@ -216,9 +234,5 @@ namespace NetWork{
 			}
 		}
 	};
-
-	class FTPWork{
-
-	};
-}
+	*/
 

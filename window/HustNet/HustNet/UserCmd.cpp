@@ -87,8 +87,8 @@ void  Connect(CString e){
 
 void Mail(CString e)
 {
-	MailSend mail;
-	mail.Begin();
+	//MailSend mail;
+	//mail.Begin();
 }
 
 void Chat(CString e){
