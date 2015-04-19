@@ -59,7 +59,7 @@ void  Connect(CString e){
 		//转换需要连接的端口内容类型
 		PrintLog(_T("套接字创建成功"));
 		//连接指定的地址和端口
-		if (aSocket.Connect(strIP, 6500))
+		if (aSocket.Connect(strIP, 6500))//1234
 		{
 			PrintLog(_T("连接服务器成功"));
 			TCHAR szRecValue[1024] = { 0 };

@@ -33,7 +33,7 @@ void MyServeSocket::OnAccept(int nErrorCode)
 	// TODO:  在此添加专用代码和/或调用基类
 	static int count = 0;
 	CString Hint;
-	ClientSocket   *clientsocket = new ClientSocket();
+	ClientSocket  *clientsocket = new ClientSocket();
 	CAsyncSocket::OnAccept(nErrorCode);
 	this->Accept(*clientsocket);
 	Hint.Format(_T("客户端%d已连接"), count);

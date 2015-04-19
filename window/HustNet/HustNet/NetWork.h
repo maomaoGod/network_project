@@ -16,6 +16,13 @@ extern CString GetLine();
 using namespace std;
 using namespace Tools;
 
+/*
+Send sample Msg Data
+CMD + " " + PATH + " " + HOST
+Rev
+FILE TYPE + " " + FILE LEN + " " + FILE
+*/
+
 namespace NetWork{
 	//Socket
 	class ChatWork{
@@ -134,14 +141,50 @@ namespace NetWork{
 
 	};
 	/*HOW IT WORKS
-	
-	
 	*/
 	class AppLayerHttp{
 	public:
-
+		void Begin(){
+			CString mystr;
+			TakeOverCmd(_T("Mail>"));
+			while ((mystr = GetLine()).Compare(_T("exit")) != 0){
+				PrintLog(_T("Accept ") + mystr);
+				switch (0){
+				case 0: break;
+				case 1: break;
+				case 2: break;
+				case 3: break;
+				case 4: break;
+				case 5: break;
+				default: PrintLog(_T("Error Code"));
+				}
+			}
+		}
+		/*
+		send a report
+        CMD + " " + PATH + " " + HOST
+		*/
+		bool Send(string Method, string url){
+			//1 div url to path + IP
+			//2 com Method + " " + path + IP
+			//3 send com Msg
+			//return true if TCP finish
+			//else return false
+		}
+		/*
+		rev the Message
+		FILE TYPE + " " + FILE LEN + " " + FILE
+		*/
+		void Rev(){
+			//1. get save type
+			//2. get file len
+			//3. define Cache[1024]
+			//4. get all data by recive case by case
+			//5. turn it to the file type
+			//6. show it
+		}
 	private:
-
+		//no data
 	};
 }
 

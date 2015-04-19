@@ -7,6 +7,7 @@ namespace Tools{
 		/*little tools : a string divided by a char
 		  and it return a strArry
 		*/
+	public:
 		static void Split(string Seq,vector<string> *strArray, char div){
 			if (strArray->size() != 0){
 				strArray->clear();
