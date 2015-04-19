@@ -44,7 +44,7 @@ void Test(CString e){
 void  Connect(CString e){
 		AfxSocketInit();
 
-		//创建 CSocket 对象
+		/**<创建 CSocket 对象*/
 		CSocket aSocket;
 
 		CString strIP;
@@ -56,10 +56,10 @@ void  Connect(CString e){
 			PrintLog(error);
 			return;
 		}
-		//转换需要连接的端口内容类型
+		/**@brief 转换需要连接的端口内容类型*/
 		PrintLog(_T("套接字创建成功"));
-		//连接指定的地址和端口
-		if (aSocket.Connect(strIP, 6500))//1234
+		/**@brief 连接指定的地址和端口*/
+		if (aSocket.Connect(strIP, 6500))
 		{
 			PrintLog(_T("连接服务器成功"));
 			TCHAR szRecValue[1024] = { 0 };
@@ -87,8 +87,8 @@ void  Connect(CString e){
 
 void Mail(CString e)
 {
-	//MailSend mail;
-	//mail.Begin();
+	MailSend mail;
+	mail.Begin();
 }
 
 void Chat(CString e){

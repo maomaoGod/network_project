@@ -1,8 +1,18 @@
+/**@file
+ *@brief sending and receiving message from server
+ *@author xinYao,jinxiaFang
+ *@date 2015/04/19
+ *@version XXXXXX
+ *@note
+ *As to send message, the format is CMD + " " + PATH + " " + HOST
+ *As to receive message, the format is FILE TYPE + " " + FILE LEN + " " + FILE CONTENT
+ */
+
 #pragma once
 #include "stdafx.h"
 #include "map"
 #include "Tools.h"
-//#import "dll/Jmail.dll"
+#import "dll/Jmail.dll"
 
 extern void PrintLog(CString);
 extern void PrintRp(CString);
@@ -16,22 +26,23 @@ extern CString GetLine();
 using namespace std;
 using namespace Tools;
 
-/*
-Send sample Msg Data
-CMD + " " + PATH + " " + HOST
-Rev
-FILE TYPE + " " + FILE LEN + " " + FILE
-*/
-
 namespace NetWork{
-	//Socket
+	/**
+	 *@class ChatWork NetWork
+	 *@brief Socket
+	 *@author xinYao, jinxiaFang
+	 *@note
+	 *XXXXXXXXX
+	 */
 	class ChatWork{
 	public:
 		ChatWork(){
 			init();
 			Obj = _T("Public");
-			No = -1;//local
-			TNo = _T("-1");//server
+			/**@brief local*/
+			No = -1;
+			/**@brief server*/
+			TNo = _T("-1");
 			this->Name = "No1";
 		}
 		ChatWork(CString name){
@@ -49,23 +60,26 @@ namespace NetWork{
 				Tstr::CCarg(&cmd, mystr, _T(' '));
 				PrintLog(_T("Accept ") + cmd[0]);
 				switch (exp[cmd[0]]){
-				case 0: break;//keep
+                /**@brief keep*/
+				case 0: break;
+                /**@brief send*/
 				case 1:
 					if (cmd.GetSize() < 2){
 						PrintLog(_T("Error code for no Msg"));
 						break;
 					}
 					SendMsg(cmd[1]);
-					break;//send
-				case 2: break;//link
-				case 3: 
+					break;
+                /**@brief link*/
+				case 2: break;
+				case 3:
 					if (cmd.GetSize() < 2){
 						PrintLog(_T("Error code for no Msg"));
 						break;
 					}
 					ConnMsg(cmd[1]);
 					break;
-				case 10: 
+				case 10:
 					CNo.Format(_T("%d"), this->No);
 					PrintRp(_T("the no of client is ") + CNo);
 					PrintRp(_T("the aim of client is ") + TNo);
@@ -83,22 +97,26 @@ namespace NetWork{
 		map<CString, int> exp;
 		CString Name;
 		int No;
-		//CString Msg;
+		/**< CString Msg*/
 		CString Obj;
 		CString CNo, TNo;
 		CSocket csocket;
-		CString strIP;//IP
+		/**< IP*/
+		CString strIP;
 		TCHAR szRecValue[1024];
 		void init(){
-			exp[_T("Send")] = exp[_T("send")] = 1;//Send message to someone
-			exp[_T("Link")] = exp[_T("link")] = 2;//link to somebody
-			exp[_T("Conn")] = exp[_T("conn")] = 3;//connect
+		    /**@brief Send message to someone*/
+			exp[_T("Send")] = exp[_T("send")] = 1;
+			/**@brief link to somebody*/
+			exp[_T("Link")] = exp[_T("link")] = 2;
+			/**@brief connect*/
+			exp[_T("Conn")] = exp[_T("conn")] = 3;
 			exp[_T("Info")] = 10;
 		}
 		void SendMsg(CString Msg){
 			CString rev;
 			memset(szRecValue, 0, sizeof(szRecValue));
-			//发送内容给服务器
+			/**brief send message to the server*/
 			PrintLog(_T("连接服务器成功"));
 			csocket.Send(Msg, Msg.GetLength()*sizeof(TCHAR));
 			csocket.Receive((void *)szRecValue, 1024);
@@ -115,14 +133,14 @@ namespace NetWork{
 				PrintLog(error);
 				return;
 			}
-			//转换需要连接的端口内容类型
+			/**@brief 转换需要连接的端口内容类型*/
 			PrintLog(_T("套接字创建成功"));
-			//连接指定的地址和端口
+			/**@brief 连接指定的地址和端口*/
 			if (csocket.Connect(strIP, 6500))
 			{
 				CString rev;
 				memset(szRecValue, 0, sizeof(szRecValue));
-				//发送内容给服务器
+				/**brief send message to the server*/
 				PrintLog(_T("连接服务器成功"));
 				csocket.Send(Msg, Msg.GetLength()*sizeof(TCHAR));
 				csocket.Receive((void *)szRecValue, 1024);
@@ -136,12 +154,19 @@ namespace NetWork{
 		}
 
 	};
-	
+<<<<<<< HEAD
+
 	class FTPWork{
 
 	};
-	/*HOW IT WORKS
-	*/
+
+	/**
+	 *@class AppLayerHttp NetWork
+	 *@brief How the Application Layer works
+	 *@author xinYao, jinxiaFang
+	 *@note
+	 *to achieve communication of the client and the server with HTTP protocol
+	 */
 	class AppLayerHttp{
 	public:
 		void Begin(){
@@ -160,10 +185,17 @@ namespace NetWork{
 				}
 			}
 		}
-		/*
-		send a report
-        CMD + " " + PATH + " " + HOST
-		*/
+		/**
+         *@brief the client sends a report to the server
+         *@author
+         *@param in Method HTTP CMD
+         *@param in url the link which waiting to access
+         *@exception XXXXXXX
+         *@return True if successfully, otherwise False
+         *@note
+         *XXXXXXXX
+         *@remarks the format of sending message is "CMD + " " + PATH + " " + HOST"
+		 */
 		bool Send(string Method, string url){
 			//1 div url to path + IP
 			//2 com Method + " " + path + IP
@@ -171,10 +203,18 @@ namespace NetWork{
 			//return true if TCP finish
 			//else return false
 		}
-		/*
-		rev the Message
-		FILE TYPE + " " + FILE LEN + " " + FILE
-		*/
+
+		/**
+         *@brief the client receives a report from the server
+         *@author
+         *@param XXXXXXX
+         *@param XXXXX
+         *@exception XXXXXXX
+         *@return void
+         *@note
+         *XXXXXXXX
+         *@remarks the farmat of sending message is "FILE TYPE + " " + FILE LEN + " " + FILE Content"
+		 */
 		void Rev(){
 			//1. get save type
 			//2. get file len
@@ -190,8 +230,10 @@ namespace NetWork{
 
 
 	/*
+=======
+>>>>>>> parent of 0a428e0... the Http on Serve
 	//send a mail
-	class MailSend // use the 
+	class MailSend // use the
 	{
 	public:
 		MailSend(){
@@ -277,5 +319,9 @@ namespace NetWork{
 			}
 		}
 	};
-	*/
+
+	class FTPWork{
+
+	};
+}
 

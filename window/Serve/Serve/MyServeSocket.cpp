@@ -1,11 +1,19 @@
 // MyServeSocket.cpp : 实现文件
 //
+/**@file
+ *@brief To achieve the function of server socket
+ *@author xinYao,jinxiaFang
+ *@date 2015/04/19
+ *@version XXXXXX
+ *@note
+ *XXXXXXX
+ */
 
 #include "stdafx.h"
 #include "Serve.h"
 #include "MyServeSocket.h"
 #include  "ClientSocket.h"
-#include <map> 
+#include <map>
 
 extern void PrintView(CString);
 
