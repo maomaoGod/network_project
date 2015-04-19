@@ -1,6 +1,6 @@
 /**@file
  *@brief sending and receiving message from server
- *@author xinYao,jinxiaFang
+ *@author 
  *@date 2015/04/19
  *@version XXXXXX
  *@note
@@ -12,7 +12,7 @@
 #include "stdafx.h"
 #include "map"
 #include "Tools.h"
-#import "dll/Jmail.dll"
+//#import "dll/Jmail.dll"
 
 extern void PrintLog(CString);
 extern void PrintRp(CString);
@@ -30,7 +30,7 @@ namespace NetWork{
 	/**
 	 *@class ChatWork NetWork
 	 *@brief Socket
-	 *@author xinYao, jinxiaFang
+	 *@author 
 	 *@note
 	 *XXXXXXXXX
 	 */
@@ -154,7 +154,6 @@ namespace NetWork{
 		}
 
 	};
-<<<<<<< HEAD
 
 	class FTPWork{
 
@@ -163,7 +162,7 @@ namespace NetWork{
 	/**
 	 *@class AppLayerHttp NetWork
 	 *@brief How the Application Layer works
-	 *@author xinYao, jinxiaFang
+	 *@author 
 	 *@note
 	 *to achieve communication of the client and the server with HTTP protocol
 	 */
@@ -229,7 +228,7 @@ namespace NetWork{
 }
 
 
-	/*
+/*
 =======
 >>>>>>> parent of 0a428e0... the Http on Serve
 	//send a mail
@@ -324,4 +323,4 @@ namespace NetWork{
 
 	};
 }
-
+*/

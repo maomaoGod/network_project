@@ -1,13 +1,14 @@
 /**@file
  *@brief sending and receiving message from client
- *@author xinYao,jinxiaFang
+ *@author 
  *@date 2015/04/19
  *@version XXXXXX
  *@note
- *As to send message, the format is CMD + " " + PATH + " " + HOST
- *As to receive message, the format is FILE TYPE + " " + FILE LEN + " " + FILE CONTENT
+ *As to send message, 
+ *the format is CMD + " " + PATH + " " + HOST
+ *As to receive message, the format is 
+ *FILE TYPE + " " + FILE LEN + " " + FILE CONTENT
  */
-
 #pragma once
 #include "map"
 #include "Tools.h"
@@ -31,7 +32,7 @@ namespace NetWork{
 	/**
 	 *@class AppLayerHttp NetWork
 	 *@brief How the Application Layer works
-	 *@author xinYao, jinxiaFang
+	 *@author 
 	 *@note
 	 *to achieve communication of the client and the server with HTTP protocol
 	 */

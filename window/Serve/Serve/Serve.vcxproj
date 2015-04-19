@@ -104,6 +104,7 @@
     <ClInclude Include="ClientSocket.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MyServeSocket.h" />
+    <ClInclude Include="NetWork.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Serve.h" />
     <ClInclude Include="ServeDoc.h" />
