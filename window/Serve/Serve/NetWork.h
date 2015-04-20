@@ -1,47 +1,45 @@
-/**@file
- *@brief sending and receiving message from client
- *@author 
- *@date 2015/04/19
- *@version XXXXXX
- *@note
- *As to send message, 
- *the format is CMD + " " + PATH + " " + HOST
- *As to receive message, the format is 
- *FILE TYPE + " " + FILE LEN + " " + FILE CONTENT
- */
+/**
+*@file
+*@brief sending and receiving message from client
+*@author  ACM2012
+*@date 2015/04/19
+*@version 0.1
+*@note
+*As to send message
+*the format is CMD + " " + PATH + " " + HOST
+*As to receive message, the format is
+*FILE TYPE + " " + FILE LEN + " " + FILE CONTENT
+*/
 #pragma once
 #include "map"
 #include "Tools.h"
 #include "MyServeSocket.h"
-#include <cstring>
-
-//#define Byte (unsigned char) 
-
+/**@brief Socket Number*/
 #define SCOKETNUM 1024
-//
+/**@brief No Socket*/
 #define NO_SOCKET 1
-//
+/**@brief Not Receive Data*/
 #define NO_REV_DATA 2
-//
+/**@brief Port*/
 #define PORT 6500
-//
+/**@brief Return the Message OK*/
 #define MSG_OK 200
-//
+/**@brief Return the Message BAD_REQUEST*/
 #define BAD_REQUEST 400
-//
+/**@brief Return the Message Not Found*/
 #define NO_FOUND 404
 
-using namespace Tools;
+using namespace Tools; ///<using the namespace Tools
 typedef unsigned char Byte;
 
 namespace NetWork{
 	/**
-	 *@class AppLayerHttp NetWork
-	 *@brief How the Application Layer works
-	 *@author 
-	 *@note
-	 *to achieve communication of the client and the server with HTTP protocol
-	 */
+	*@class AppLayerHttp NetWork
+	*@brief How the Application Layer works
+	*@author  ACM2012
+	*@note
+	*to achieve communication of the client and the server with HTTP protocol
+	*/
 	class AppLayerHttp{
 	public:
 		string Log;
@@ -58,31 +56,29 @@ namespace NetWork{
 		}
 
 		/**
-         *@brief analyse the data send by
-         *@author
-         *@param in RevData the data waiting to analysis
-         *@exception XXXXXXX
-         *@return void
-         *@note
-         *To achieve dividing the data recived using tools::Split
-         *and save them in data
-         *@remarks the format of data is splited by " "
-		 */
+		*@brief analyse the data send by
+		*@author  ACM2012
+		*@param [in] <RevData> the data waiting to analysis
+		*@return void
+		*@note
+		*To achieve dividing the data recived using tools::Split
+		*and save them in data
+		*@remarks the format of data is splited by " "
+		*/
 		void GetData(string RevData){
 			STR::Split(RevData, &data, ' ');
 		}
 
 		/**
-         *@brief to handle the CMD
-         *@author
-         *@param in CMD the Request Methods of HTTP protocol
-         *@param in args some arguments with the CMD
-         *@exception XXXXXXX
-         *@return void
-         *@note
-         *map the CMD to the real function
-         *@remarks XXX
-		 */
+		*@brief to handle the CMD
+		*@author  ACM2012
+		*@param [in] <CMD> the Request Methods of HTTP protocol
+		*@param [in] <args> some arguments with the CMD
+		*@return void
+		*@note
+		*map the CMD to the real function
+		*@remarks
+		*/
 		void DealWith(string CMD, vector<string> args){
 		    /**@brief DON'T HAVE THIS CMD return BADxxx */
 			if (Function.find(CMD)==Function.end()){
@@ -112,7 +108,7 @@ namespace NetWork{
 		bool Mark[SCOKETNUM];
 		/**@brief turn */
 		MyServeSocket *mysocket[SCOKETNUM];
-		/**@note
+		/**@brief
 		 *the Socket is the class we design, map it to the count
 		 *map <ClientSocket *, int> myclient;
 		 *the file in the "/" path
@@ -121,142 +117,149 @@ namespace NetWork{
 		/**@brief the Msg respond to client*/
 		string RespondMsg;
 
-		/**@brief the function we choose to deal with the data request
-		 *@author
-		 *@param in data some information we want to get
-		 *@return void
-		 *@note
-		 *检索URI中标识资源的一个简单请求, Map it to 1
-		 *path >> data[1]
-         *host >> data[2]
-         *1 find the file according to the path
-         *2 if not exist return NO_FOUND
-         *3 else use byte cache[1024] to divide the file
-         *4 read file into IO
-         *5 use a loop to do{
-			    move parts of file into cache
-				use the sender to send the cache out
-				check the return value
-			}
-		 */
+		/**
+		*@brief the function we choose to deal with the data request
+		*@author  ACM2012
+		*@param [in] <data> some information we want to get
+		*@return void
+		*@note
+		*检索URI中标识资源的一个简单请求, Map it to 1
+		*path >> data[1]
+		*host >> data[2]
+		*1 find the file according to the path
+		*2 if not exist return NO_FOUND
+		*3 else use byte cache[1024] to divide the file
+		*4 read file into IO
+		*5 use a loop to do{
+		move parts of file into cache
+		use the sender to send the cache out
+		check the return value
+		}
+		*/
 		void GET(vector<string> data){
 
 		}
 
-		/**@brief the function we choose to deal with the data request like GET
-		 *@author
-		 *@param in data some information we want to get
-		 *@return void
-		 *@note
-		 *与GET方法相同，服务器只返回状态行和头标，
-		 *并不返回请求文档, Map it to 2
-		 *path >> data[1]
-         *host >> data[2]
-         *1 find the file according to the path
-         *2 if not exist return (NO_FOUND,"NOT FOUND")
-			given the Msg like (no of state, and text Msg)
-			use sender to send it out
-		 */
+		/**
+		*@brief the function we choose to deal with the data request like GET
+		*@author  ACM2012
+		*@param [in] <data> some information we want to get
+		*@return void
+		*@note
+		*与GET方法相同，服务器只返回状态行和头标，
+		*并不返回请求文档, Map it to 2
+		*path >> data[1]
+		*host >> data[2]
+		*1 find the file according to the path
+		*2 if not exist return (NO_FOUND,"NOT FOUND")
+		given the Msg like (no of state, and text Msg)
+		use sender to send it out
+		*/
 		void HEAD(vector<string> data){
 
 		}
-		/**@brief POST methods
-		 *@author
-		 *@param in data some information we want to get
-		 *@return void
-		 *@note
-		 *服务器接受被写入客户端输出流中的数据的请求,Map it to 3
-		 *path >> data[1]
-         *host >> data[2]
-         *1 analysis the data from client
-         *2 save it the Socket conn to it
-         *return OK
-         */
+		/**
+		*@brief POST methods
+		*@author  ACM2012
+		*@param [in] <data> some information we want to get
+		*@return void
+		*@note
+		*服务器接受被写入客户端输出流中的数据的请求,Map it to 3
+		*path >> data[1]
+		*host >> data[2]
+		*1 analysis the data from client
+		*2 save it the Socket conn to it
+		*return OK
+		*/
 		void POST(vector<string> data){
 
 		}
-		/**@brief PUT method
-		 *@author
-		 *@param in data some information we want to get
-		 *@return void
-		 *@note
-		 *服务器保存请求数据作为指定URI新内容的请求,Map it to 4
-		 *path >> data[1]
-         *host >> data[2]
-         *1 find the file in path?
-         *2 no -> save it in this path ,return OK
-         *3 yes ->
-         * 3.1 rewrite it in this path , return OK
-         * 3.2 return HAVE_EXISTED
-         */
+		/**
+		*@brief PUT method
+		*@author  ACM2012
+		*@param [in] <data> some information we want to get
+		*@return void
+		*@note
+		*服务器保存请求数据作为指定URI新内容的请求,Map it to 4
+		*path >> data[1]
+		*host >> data[2]
+		*1 find the file in path?
+		*2 no -> save it in this path ,return OK
+		*3 yes ->
+		* 3.1 rewrite it in this path , return OK
+		* 3.2 return HAVE_EXISTED
+		*/
 		void PUT(vector<string> data){
 
 		}
 
-		/**@brief DELETE some options of request methods
-		 *@author
-		 *@param in data some information we want to get
-		 *@return void
-		 *@note
-		 *服务器删除URI中命名的资源的请求, Map it to 5
-		 *path >> data[1]
-		 *host >> data[2]
-		 *1 find the file in path?
-         *2 yes -> delete it in this path ,return OK
-         *3 no ->
-         * 3.1 return OK anyway
-         * 3.2 return warnning "NOT_EXIST"
-         */
+		/**
+		*@brief DELETE some options of request methods
+		*@author  ACM2012
+		*@param [in] <data> some information we want to get
+		*@return void
+		*@note
+		*服务器删除URI中命名的资源的请求, Map it to 5
+		*path >> data[1]
+		*host >> data[2]
+		*1 find the file in path?
+		*2 yes -> delete it in this path ,return OK
+		*3 no ->
+		* 3.1 return OK anyway
+		* 3.2 return warnning "NOT_EXIST"
+		*/
 		void DELETE(vector<string> data){
 
 		}
 
-		/**@brief some options of request methods
-		 *@author
-		 *@param in data some information we want to get
-		 *@return void
-		 *@note
-		 *关于服务器支持的请求方法信息的请求,Map it to 6
-		 *just tell the people things this serve support
-		 * 1 return OK
-		 * 2 return "GET HEAD POST PUT DELETE OPTIONS TRACE CONNECT"as Msg
-		 */
+		/**
+		*@brief some options of request methods
+		*@author  ACM2012
+		*@param [in] <data> some information we want to get
+		*@return void
+		*@note
+		*关于服务器支持的请求方法信息的请求,Map it to 6
+		*just tell the people things this serve support
+		* 1 return OK
+		* 2 return "GET HEAD POST PUT DELETE OPTIONS TRACE CONNECT"as Msg
+		*/
 		void OPTIONS(vector<string> data){
 
 		}
-
-		/**@brief don't Know what's it meaning
-		 *@author
-		 *@param in data some information we want to get
-		 *@return void
-		 *@note
-		 *Web服务器反馈Http请求和其头标的请求,Map it to 7
-		 */
+		/**
+		*@brief don't Know what's it meaning
+		*@author  ACM2012
+		*@param [in] <data> some information we want to get
+		*@return void
+		*@note
+		*Web服务器反馈Http请求和其头标的请求,Map it to 7
+		*/
 		void TRACE(vector<string> data){
 			//I don't Know what's it meaning?
 		}
 
-		/**@brief NOT USE FUNCTION
-		 *@author
-		 *@param in data some information we want to get
-		 *@return void
-		 *@note
-		 *已文档化但当前未实现的一个方法,预留做隧道处理, Map it to 8
-		 *this function leaved to satifiy other function
-		 *and it doesn't has a function now
-		 */
+		/**
+		*@brief NOT USE FUNCTION
+		*@author  ACM2012
+		*@param [in] <data> some information we want to get
+		*@return void
+		*@note
+		*已文档化但当前未实现的一个方法,预留做隧道处理, Map it to 8
+		*this function leaved to satifiy other function
+		*and it doesn't has a function now
+		*/
 		void CONNECT(vector<string> data){
 
 		}
 
-		/**@brief init the Http Object
-		 *@author
-		 *@param
-		 *@return void
-		 *@note
-		 *Init the Map
-         *该映射不分辨大小写
-		 */
+		/**
+		*@brief init the Http Object
+		*@author  ACM2012
+		*@return void
+		*@note
+		*Init the Map
+		*该映射不分辨大小写
+		*/
 		void Http_init(){
 			/**@brief 检索URI中标识资源的一个简单请求, Map it to 1*/
 			Function["GET"] = Function["get"] = &AppLayerHttp::GET;
@@ -282,21 +285,21 @@ namespace NetWork{
 			Function["CONNECT"] = Function["connet"] = &AppLayerHttp::CONNECT;
 		}
 
-		/**@brief launching a listen thread
-		 *@author
-		 *@param
-		 *@return void
-		 *@note
-		 *launch a listen thread
-		 *if failed return false, else return true
-         *new a socket to listen from the request from client
-         *STEP:
-		 * 1 FREE A CSocket
-		 * 2 USE THE No.0
-		 * 3 0 to do other things
-		 * 4 Open the listener
-		 * return ture, else return false
-		 */
+		/**
+		*@brief launching a listen thread
+		*@author  ACM2012
+		*@return void
+		*@note
+		*launch a listen thread
+		*if failed return false, else return true
+		*new a socket to listen from the request from client
+		*STEP:
+		* 1 FREE A CSocket
+		* 2 USE THE No.0
+		* 3 0 to do other things
+		* 4 Open the listener
+		* return ture, else return false
+		*/
 
 		bool Listen_launch(){
 
@@ -305,7 +308,12 @@ namespace NetWork{
 
 	};
 
-	
+	/**
+	*@class <MySocket>
+	*@brief TCP和UDP的公共部分
+	*@author  ACM2012
+	*@note
+	*/
 	class MySocket{
 	public:
 		//NOT USE NOW
@@ -320,22 +328,45 @@ namespace NetWork{
 				}
 			}
 		}*/
-		//create it without data
+
+		/**
+		*@author  ACM2012
+		*@note
+		*标准构造函数
+		*@remarks
+		*/
 		MySocket(){
 			message.head_len = 0;
 			message.data_len = 0;
 			message.head = NULL;
 			message.data = NULL;
 		}
-		//if TCP & UDP to create a object, and they want to recv Msg, use it
-		//also you can use this methon when sending a Msg
+
+		/**
+		*@author  ACM2012
+		*@param [in] <len> the length of data
+		*@param [in] <Msg> the length of Message header
+		*@note
+		*if TCP & UDP to create a object, and they want to recv Msg, use it
+		*also you can use this methon when sending a Msg
+		*@remarks
+		*/
 		MySocket(int head_len, int data_len){
 			message.head_len = head_len;
 			message.data_len = data_len;
 			message.head = (Byte *)malloc(sizeof(Byte) * message.head_len);
 			message.data = (Byte *)malloc(sizeof(Byte) * message.data_len);
 		}
-		//if get a string , I'd like to turn it to Byte
+
+		/**
+		*@author  ACM2012
+		*@param [in] <len> the length of data
+		*@param [in] <Msg> the Message
+		*@return return true if allocate memory to data successfully
+		*@note
+		*if get a string , I'd like to turn it to Byte
+		*@remarks
+		*/
 		bool data_alloc(int len, string Msg){
 			//if there are data exist in data, delete it
 			if (message.data_len) delete message.data;
@@ -347,7 +378,16 @@ namespace NetWork{
 			}
 			return true;
 		}
-		//if get a Byte array , just set it to Byte
+
+		/**
+		*@author  ACM2012
+		*@param [in] <len> the length of data
+		*@param [in] <Msg> the address of Message
+		*@return return true if allocate memory to data successfully
+		*@note
+		*if get a char array , just set it to Byte
+		*@remarks
+		*/
 		bool data_alloc(int len, Byte *Msg){
 			//if there are data exist in data, delete it
 			if (message.data_len) delete message.data;
@@ -359,18 +399,54 @@ namespace NetWork{
 			}
 			return true;
 		}
-		//if get a string , I'd like to turn it to Byte
+		/**
+		*@author  ACM2012
+		*@param [in] <head> the head of message
+		*@return void
+		*@note
+		*if get a string , I'd like to turn it to Byte
+		*@remarks
+		*/
 		void SetHead(string head){
 			this->message.head = (Byte *)malloc(sizeof(Byte)*head.length());
 			memcpy(this->message.head, head.c_str(), head.length());
 			this->message.head_len = head.length();
 		}
-		//if get a Byte array , just set it to Byte
+		/**
+		*@author  ACM2012
+		*@param [in] <head> the head of message
+		*@param [in] <len> the length of message
+		*@return void
+		*@note
+		*if get a char array , just set it to Byte
+		*@remarks
+		*/
 		void SetHead(Byte *head, int len){
 			this->message.head = head;
 			this->message.head_len = len;
 		}
-		//send the Msg to NET layer
+
+		void SetIP(Byte a, Byte b, Byte c, Byte d){
+			IP[0] = a;
+			IP[1] = b;
+			IP[2] = c;
+			IP[3] = d;
+		}
+
+		/**
+		*@brief send the Msg to NET layer
+		*@author  ACM2012
+		*@return if(!nettran(message)) return false
+		*@note
+		* if the NET layer has the CHICK
+		JUST CHICK IT
+		if the len don't satisfy it, return false
+		if the NET is busy or not preparing well, return false
+		goto send
+		NET nettran
+		if(!nettran(message)) return false;
+		*@remarks
+		*/
 		bool Sender(){
 			//if the NET layer has the CHICK
 			//JUST CHICK IT
@@ -378,33 +454,38 @@ namespace NetWork{
 			//if the NET is busy or not preparing well, return false 
 			//goto send
 			//NET nettran
-			//if(!nettran(message)) return false;
+			//if(!nettran(message, IP)) return false;
 			return true;
 		}
-		//get the Msg from NET layer
+		/**
+		*@author  ACM2012
+		*@return if(!netrevc(&message)) return false
+		*@note
+		*get the Msg from NET layer
+		*@remarks
+		*/
 		bool Revcer(){
 			//if(!netrevc(&message)) return false;
 			//JUST FINISHED
 			return true;
 		}
-		//the check function, return the answer 
+		/**@brief the check function, return the answer */
 		short CheckSum(){
 			//steps 
 		}
-		//check the Msg is right or not
+		/**@brief check the Msg is right or not*/
 		bool CheckSum(short num){
 			//steps
 		}
 	private:
 		struct Msg{
-			//the data
-		    Byte *data;
+		    Byte *data;///<the data
 			int data_len;
-		    //the head before data
-		    Byte *head;
+		    Byte *head;///<brief the head before data
 			int head_len;
 		};
 		Msg message;
+		Byte IP[4];
 	};
 
 
