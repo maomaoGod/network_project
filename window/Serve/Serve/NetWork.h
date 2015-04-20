@@ -425,7 +425,17 @@ namespace NetWork{
 			this->message.head = head;
 			this->message.head_len = len;
 		}
-
+		/**
+		*@author  ACM2012
+		*@param [in] <a> the head of message
+		*@param [in] <b> the length of message
+		*@param [in] <c> the head of message
+		*@param [in] <d> the length of message
+		*@return void
+		*@note
+		*
+		*@remarks
+		*/
 		void SetIP(Byte a, Byte b, Byte c, Byte d){
 			IP[0] = a;
 			IP[1] = b;
@@ -444,7 +454,7 @@ namespace NetWork{
 		if the NET is busy or not preparing well, return false
 		goto send
 		NET nettran
-		if(!nettran(message)) return false;
+		if(!nettran(message, IP)) return false;
 		*@remarks
 		*/
 		bool Sender(){
@@ -485,60 +495,11 @@ namespace NetWork{
 			int head_len;
 		};
 		Msg message;
-		Byte IP[4];
+		Byte IP[4];///<initial IP array
 	};
 
-
-	/**
-	 *@class
-	 *@brief 继承自MySocket，实现UDPSocket
-	 *@author ACM2012
-	 *@note
-	 *继承自MySocket，重写OnReceive函数
-	 *在OnReceive函数中调用ReceiveFrom来读取数据.
-	 *需要将来把实现移到NetWork.cpp中
-	 *发送方做法：1.调用Create函数创建一个Socket
-	 *2.调用Bind函数让新创建的Socket与远程主机的指定端口通信
-	 *3.准备好数据后调用SendTo函数，将数据发送到远程主机上
-	 *接收方做法：1.数据接收方会自动启用OnReceive函数来响应，
-	 *在OnReceive函数中调用ReceiveFrom来读取数据
-	 */
 	class MyUDP :MySocket{
-		/**@brief 构造函数*/
-		MyUDP();
-		/**@brief 析构函数*/
-		virtual ~MyUDP();
 
-	protected:
-		SOCKADDR_IN m_clientAddr;
-
-		/**@brief 重写OnReceive函数*/
-		virtual void OnReceive(int nErrorCode)
-		{
-			TCHAR recBuf[1024];
-			/**@brief Socket地址长度，属性继承自CAsyncSocket*/
-			int len = sizeof(SOCKADDR_IN);
-			/**@brief 清空buffer*/
-			ZeroMemory(recBuf, sizeof(recBuf));
-			/**@brief 调用ReceiveFrom函数，接收数据*/
-			int recBytes = ReceiveFrom(recBuf, 1023, (SOCKADDR*)&m_clientAddr, &len, 0);
-			
-			/**@brief 判断接收数据的情况*/
-			if (recBytes == 0)
-			{
-				/**@brief 提示UDP未收到信息*/
-			}
-			else if (recBytes == SOCKET_ERROR)
-			{
-				/**@brief 提示接受错误*/
-			}
-			else
-			{
-				/**@brief 收到数据，将数据给出*/
-			}
-
-			MySocket::OnReceive(nErrorCode);
-		}
 	};
 
 }
