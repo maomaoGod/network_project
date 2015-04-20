@@ -13,8 +13,9 @@
 #include "map"
 #include "Tools.h"
 #include "MyServeSocket.h"
+#include <cstring>
 
-#define Byte (unsigned char) 
+//#define Byte (unsigned char) 
 
 #define SCOKETNUM 1024
 //
@@ -31,6 +32,8 @@
 #define NO_FOUND 404
 
 using namespace Tools;
+typedef unsigned char Byte;
+
 namespace NetWork{
 	/**
 	 *@class AppLayerHttp NetWork
@@ -302,7 +305,7 @@ namespace NetWork{
 
 	};
 
-	template <class T>
+	
 	class MySocket{
 	public:
 		//NOT USE NOW
@@ -340,30 +343,31 @@ namespace NetWork{
 			this->message.data = (Byte *)malloc(sizeof(Byte)*len);
 			int i;
 			for (i = 0; i < len; i++){
-				this->data[i] = Msg[i];
+				this->message.data[i] = Msg[i];
 			}
 			return true;
 		}
-		//if get a char array , just set it to Byte
-		bool data_alloc(int len, char *Msg, int len){
+		//if get a Byte array , just set it to Byte
+		bool data_alloc(int len, Byte *Msg){
 			//if there are data exist in data, delete it
 			if (message.data_len) delete message.data;
 			//create it
 			this->message.data = (Byte *)malloc(sizeof(Byte)*len);
 			int i;
 			for (i = 0; i < len; i++){
-				this->data[i] = Msg[i];
+				this->message.data[i] = Msg[i];
 			}
 			return true;
 		}
 		//if get a string , I'd like to turn it to Byte
 		void SetHead(string head){
-			this->message.head = &(head.c_str());
+			this->message.head = (Byte *)malloc(sizeof(Byte)*head.length());
+			memcpy(this->message.head, head.c_str(), head.length());
 			this->message.head_len = head.length();
 		}
-		//if get a char array , just set it to Byte
-		void SetHead(char *head, int len){
-			this->head = head;
+		//if get a Byte array , just set it to Byte
+		void SetHead(Byte *head, int len){
+			this->message.head = head;
 			this->message.head_len = len;
 		}
 		//send the Msg to NET layer
@@ -401,6 +405,10 @@ namespace NetWork{
 			int head_len;
 		};
 		Msg message;
+	};
+
+	class MyUDP :MySocket{
+
 	};
 
 }
