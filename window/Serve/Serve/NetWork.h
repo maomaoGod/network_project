@@ -14,8 +14,6 @@
 #include "map"
 #include "Tools.h"
 #include "MyServeSocket.h"
-/**@brief Byte*/
-#define Byte (unsigned char) 
 /**@brief Socket Number*/
 #define SCOKETNUM 1024
 /**@brief No Socket*/
@@ -428,6 +426,13 @@ namespace NetWork{
 			this->message.head_len = len;
 		}
 
+		void SetIP(Byte a, Byte b, Byte c, Byte d){
+			IP[0] = a;
+			IP[1] = b;
+			IP[2] = c;
+			IP[3] = d;
+		}
+
 		/**
 		*@brief send the Msg to NET layer
 		*@author  ACM2012
@@ -449,7 +454,7 @@ namespace NetWork{
 			//if the NET is busy or not preparing well, return false 
 			//goto send
 			//NET nettran
-			//if(!nettran(message)) return false;
+			//if(!nettran(message, IP)) return false;
 			return true;
 		}
 		/**
@@ -480,6 +485,7 @@ namespace NetWork{
 			int head_len;
 		};
 		Msg message;
+		Byte IP[4];
 	};
 
 	class MyUDP :MySocket{
