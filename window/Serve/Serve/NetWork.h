@@ -402,28 +402,30 @@ namespace NetWork{
 		/**
 		*@author  ACM2012
 		*@param [in] <head> the head of message
-		*@return void
+		*@return true
 		*@note
 		*if get a string , I'd like to turn it to Byte
 		*@remarks
 		*/
-		void SetHead(string head){
+		bool SetHead(string head){
 			this->message.head = (Byte *)malloc(sizeof(Byte)*head.length());
 			memcpy(this->message.head, head.c_str(), head.length());
 			this->message.head_len = head.length();
+			return true;
 		}
 		/**
 		*@author  ACM2012
 		*@param [in] <head> the head of message
 		*@param [in] <len> the length of message
-		*@return void
+		*@return true
 		*@note
 		*if get a char array , just set it to Byte
 		*@remarks
 		*/
-		void SetHead(Byte *head, int len){
+		bool SetHead(Byte *head, int len){
 			this->message.head = head;
 			this->message.head_len = len;
+			return true;
 		}
 
 		void SetIP(Byte a, Byte b, Byte c, Byte d){
@@ -541,6 +543,54 @@ namespace NetWork{
 			}
 
 			MySocket::OnReceive(nErrorCode);
+		}
+		/**
+		*@brief creat the message from received data
+		*@author  ACM2012
+		*@return if(data_alloc && sethead) true
+		*@note
+		*@remarks
+		*/
+		bool MsgMaker(){
+			string Msg;
+			int len;
+			bool temp;
+			//get the Msg and the length of Msg from APP
+			temp = data_alloc(len, Msg);
+			//get the IP from App
+			//GetIP();
+			//the port of serve is defined by 6500
+			Byte  in_Port[2];
+			//get Port from App
+			//GetPort()
+			Byte  out_Port[2];
+			//transform message.data_len to Byte[2]
+			Byte length[2];
+			//CheckSum from message.data
+			//transform the result of checksum to Byte[16];
+			Byte check[2];
+			CheckSum();
+		    //从head指针开始，头2位放源端口号，3-4位放目的端口号，5-6位放收到的数据的长度，7-8位放检验和
+			Byte *head = in_Port;
+			*(head + 2) = *out_Port;
+			*(head + 2) = *length;
+			*(head + 2) = *check;
+			//creat the head of the message
+			if (temp && SetHead(head, sizeof(head)))
+				return true;
+		}
+		/**
+		*@brief 用来将上面生成的message发送出去
+		*@author  ACM2012
+		*@return 发送成功返回true，发送失败返回false
+		*@note
+		*@remarks
+		*/
+		bool UDP_Send(){
+			//调用基类函数sender将上述生成的报文发出去
+			if (Sender())
+				return true;
+			else return false;
 		}
 	};
 
