@@ -13,6 +13,9 @@
 #include "map"
 #include "Tools.h"
 #include "MyServeSocket.h"
+
+#define Byte (unsigned char) 
+
 #define SCOKETNUM 1024
 //
 #define NO_SOCKET 1
@@ -298,4 +301,106 @@ namespace NetWork{
 
 
 	};
+
+	template <class T>
+	class MySocket{
+	public:
+		//NOT USE NOW
+		/*
+		bool data_alloc(int len, T Msg, int Word_size){
+			this->data = (Byte *)malloc(sizeof(Byte)*len);
+			int i;
+			for (i = 0; i < len; i++){
+				while (Word_size){
+					Word_size -= 8;
+
+				}
+			}
+		}*/
+		//create it without data
+		MySocket(){
+			message.head_len = 0;
+			message.data_len = 0;
+			message.head = NULL;
+			message.data = NULL;
+		}
+		//if TCP & UDP to create a object, and they want to recv Msg, use it
+		//also you can use this methon when sending a Msg
+		MySocket(int head_len, int data_len){
+			message.head_len = head_len;
+			message.data_len = data_len;
+			message.head = (Byte *)malloc(sizeof(Byte) * message.head_len);
+			message.data = (Byte *)malloc(sizeof(Byte) * message.data_len);
+		}
+		//if get a string , I'd like to turn it to Byte
+		bool data_alloc(int len, string Msg){
+			//if there are data exist in data, delete it
+			if (message.data_len) delete message.data;
+			//create it
+			this->message.data = (Byte *)malloc(sizeof(Byte)*len);
+			int i;
+			for (i = 0; i < len; i++){
+				this->data[i] = Msg[i];
+			}
+			return true;
+		}
+		//if get a char array , just set it to Byte
+		bool data_alloc(int len, char *Msg, int len){
+			//if there are data exist in data, delete it
+			if (message.data_len) delete message.data;
+			//create it
+			this->message.data = (Byte *)malloc(sizeof(Byte)*len);
+			int i;
+			for (i = 0; i < len; i++){
+				this->data[i] = Msg[i];
+			}
+			return true;
+		}
+		//if get a string , I'd like to turn it to Byte
+		void SetHead(string head){
+			this->message.head = &(head.c_str());
+			this->message.head_len = head.length();
+		}
+		//if get a char array , just set it to Byte
+		void SetHead(char *head, int len){
+			this->head = head;
+			this->message.head_len = len;
+		}
+		//send the Msg to NET layer
+		bool Sender(){
+			//if the NET layer has the CHICK
+			//JUST CHICK IT
+			//if the len don't satisfy it, return false
+			//if the NET is busy or not preparing well, return false 
+			//goto send
+			//NET nettran
+			//if(!nettran(message)) return false;
+			return true;
+		}
+		//get the Msg from NET layer
+		bool Revcer(){
+			//if(!netrevc(&message)) return false;
+			//JUST FINISHED
+			return true;
+		}
+		//the check function, return the answer 
+		short CheckSum(){
+			//steps 
+		}
+		//check the Msg is right or not
+		bool CheckSum(short num){
+			//steps
+		}
+	private:
+		struct Msg{
+			//the data
+		    Byte *data;
+			int data_len;
+		    //the head before data
+		    Byte *head;
+			int head_len;
+		};
+		Msg message;
+	};
+
 }
