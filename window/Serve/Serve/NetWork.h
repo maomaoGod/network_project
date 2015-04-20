@@ -1,7 +1,7 @@
 /**
 *@file
 *@brief sending and receiving message from client
-*@author  xinYao, jinxiaFang
+*@author  ACM2012
 *@date 2015/04/19
 *@version 0.1
 *@note
@@ -38,7 +38,7 @@ namespace NetWork{
 	/**
 	*@class AppLayerHttp NetWork
 	*@brief How the Application Layer works
-	*@author xinYao, jinxiaFang
+	*@author  ACM2012
 	*@note
 	*to achieve communication of the client and the server with HTTP protocol
 	*/
@@ -59,7 +59,7 @@ namespace NetWork{
 
 		/**
 		*@brief analyse the data send by
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <RevData> the data waiting to analysis
 		*@return void
 		*@note
@@ -73,7 +73,7 @@ namespace NetWork{
 
 		/**
 		*@brief to handle the CMD
-		*@author xinYao ,jinxiaFang
+		*@author  ACM2012
 		*@param [in] <CMD> the Request Methods of HTTP protocol
 		*@param [in] <args> some arguments with the CMD
 		*@return void
@@ -121,7 +121,7 @@ namespace NetWork{
 
 		/**
 		*@brief the function we choose to deal with the data request
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <data> some information we want to get
 		*@return void
 		*@note
@@ -144,7 +144,7 @@ namespace NetWork{
 
 		/**
 		*@brief the function we choose to deal with the data request like GET
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <data> some information we want to get
 		*@return void
 		*@note
@@ -162,7 +162,7 @@ namespace NetWork{
 		}
 		/**
 		*@brief POST methods
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <data> some information we want to get
 		*@return void
 		*@note
@@ -178,7 +178,7 @@ namespace NetWork{
 		}
 		/**
 		*@brief PUT method
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <data> some information we want to get
 		*@return void
 		*@note
@@ -197,7 +197,7 @@ namespace NetWork{
 
 		/**
 		*@brief DELETE some options of request methods
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <data> some information we want to get
 		*@return void
 		*@note
@@ -216,7 +216,7 @@ namespace NetWork{
 
 		/**
 		*@brief some options of request methods
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <data> some information we want to get
 		*@return void
 		*@note
@@ -230,7 +230,7 @@ namespace NetWork{
 		}
 		/**
 		*@brief don't Know what's it meaning
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <data> some information we want to get
 		*@return void
 		*@note
@@ -242,7 +242,7 @@ namespace NetWork{
 
 		/**
 		*@brief NOT USE FUNCTION
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <data> some information we want to get
 		*@return void
 		*@note
@@ -256,7 +256,7 @@ namespace NetWork{
 
 		/**
 		*@brief init the Http Object
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@return void
 		*@note
 		*Init the Map
@@ -289,7 +289,7 @@ namespace NetWork{
 
 		/**
 		*@brief launching a listen thread
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@return void
 		*@note
 		*launch a listen thread
@@ -313,7 +313,7 @@ namespace NetWork{
 	/**
 	*@class <MySocket>
 	*@brief TCP和UDP的公共部分
-	*@author xinYao, jinxiaFang
+	*@author  ACM2012
 	*@note
 	*/
 	class MySocket{
@@ -332,7 +332,7 @@ namespace NetWork{
 		}*/
 
 		/**
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@note
 		*标准构造函数
 		*@remarks
@@ -345,7 +345,7 @@ namespace NetWork{
 		}
 
 		/**
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <len> the length of data
 		*@param [in] <Msg> the length of Message header
 		*@note
@@ -361,7 +361,7 @@ namespace NetWork{
 		}
 
 		/**
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <len> the length of data
 		*@param [in] <Msg> the Message
 		*@return return true if allocate memory to data successfully
@@ -382,7 +382,7 @@ namespace NetWork{
 		}
 
 		/**
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <len> the length of data
 		*@param [in] <Msg> the address of Message
 		*@return return true if allocate memory to data successfully
@@ -402,7 +402,7 @@ namespace NetWork{
 			return true;
 		}
 		/**
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <head> the head of message
 		*@return void
 		*@note
@@ -415,7 +415,7 @@ namespace NetWork{
 			this->message.head_len = head.length();
 		}
 		/**
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@param [in] <head> the head of message
 		*@param [in] <len> the length of message
 		*@return void
@@ -430,7 +430,7 @@ namespace NetWork{
 
 		/**
 		*@brief send the Msg to NET layer
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@return if(!nettran(message)) return false
 		*@note
 		* if the NET layer has the CHICK
@@ -453,7 +453,7 @@ namespace NetWork{
 			return true;
 		}
 		/**
-		*@author xinYao, jinxiaFang
+		*@author  ACM2012
 		*@return if(!netrevc(&message)) return false
 		*@note
 		*get the Msg from NET layer

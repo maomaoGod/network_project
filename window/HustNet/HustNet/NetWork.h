@@ -30,7 +30,7 @@ namespace NetWork{
 	/**
 	 *@class ChatWork NetWork
 	 *@brief Socket
-	 *@author 
+	 *@author   ACM2012
 	 *@note
 	 *XXXXXXXXX
 	 */
@@ -160,7 +160,7 @@ namespace NetWork{
 	/**
 	 *@class AppLayerHttp NetWork
 	 *@brief How the Application Layer works
-	 *@author 
+	 *@author   ACM2012
 	 *@note
 	 *to achieve communication of the client and the server with HTTP protocol
 	 */
@@ -184,7 +184,7 @@ namespace NetWork{
 		}
 		/**
          *@brief the client sends a report to the server
-         *@author
+         *@author  ACM2012
          *@param [in] <Method> HTTP CMD
          *@param [in] <url> the link which waiting to access
          *@return True if successfully, otherwise False
@@ -201,7 +201,7 @@ namespace NetWork{
 		}
 
 		/**
-         *@author
+         *@author  ACM2012
          *@return void
          *@note
          *the client receives a report from the server
