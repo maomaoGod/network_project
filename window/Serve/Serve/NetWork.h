@@ -477,6 +477,9 @@ namespace NetWork{
 		bool CheckSum(short num){
 			//steps
 		}
+		void OnReceive(){
+
+		}
 	private:
 		struct Msg{
 		    Byte *data;///<the data
