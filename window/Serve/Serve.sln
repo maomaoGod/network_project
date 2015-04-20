@@ -5,16 +5,38 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Serve", "Serve\Serve.vcxproj", "{6CE22399-A6A0-4B66-A876-9206E6E28548}"
 EndProject
+Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "Modeling", "Modeling\Modeling.modelproj", "{1E9EC368-40D0-4C25-987F-A81E8A48A853}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|Win32 = Debug|Win32
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6CE22399-A6A0-4B66-A876-9206E6E28548}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{6CE22399-A6A0-4B66-A876-9206E6E28548}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{6CE22399-A6A0-4B66-A876-9206E6E28548}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{6CE22399-A6A0-4B66-A876-9206E6E28548}.Debug|Win32.ActiveCfg = Debug|Win32
 		{6CE22399-A6A0-4B66-A876-9206E6E28548}.Debug|Win32.Build.0 = Debug|Win32
+		{6CE22399-A6A0-4B66-A876-9206E6E28548}.Release|Any CPU.ActiveCfg = Release|Win32
+		{6CE22399-A6A0-4B66-A876-9206E6E28548}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{6CE22399-A6A0-4B66-A876-9206E6E28548}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{6CE22399-A6A0-4B66-A876-9206E6E28548}.Release|Win32.ActiveCfg = Release|Win32
 		{6CE22399-A6A0-4B66-A876-9206E6E28548}.Release|Win32.Build.0 = Release|Win32
+		{1E9EC368-40D0-4C25-987F-A81E8A48A853}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E9EC368-40D0-4C25-987F-A81E8A48A853}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E9EC368-40D0-4C25-987F-A81E8A48A853}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1E9EC368-40D0-4C25-987F-A81E8A48A853}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1E9EC368-40D0-4C25-987F-A81E8A48A853}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{1E9EC368-40D0-4C25-987F-A81E8A48A853}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E9EC368-40D0-4C25-987F-A81E8A48A853}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E9EC368-40D0-4C25-987F-A81E8A48A853}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1E9EC368-40D0-4C25-987F-A81E8A48A853}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1E9EC368-40D0-4C25-987F-A81E8A48A853}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

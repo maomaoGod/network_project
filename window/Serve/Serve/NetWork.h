@@ -29,8 +29,17 @@
 /**@brief Return the Message Not Found*/
 #define NO_FOUND 404
 
+#define SOCKET_ERROR -1
 using namespace Tools; ///<using the namespace Tools
 typedef unsigned char Byte;
+/*
+struct sockaddr_in
+{
+	short sin_family;//Addressfamily一般来说AF_INET（地址族）PF_INET（协议族）
+	unsigned short sin_port;//Portnumber(必须要采用网络数据格式,普通数字可以用htons()函数转换成网络数据格式的数字)
+	struct in_addr sin_addr;//Internetaddress
+	unsigned char sin_zero[8];//Samesizeasstructsockaddr没有实际意义,只是为了　跟SOCKADDR结构在内存中对齐
+};*/
 
 namespace NetWork{
 	/**
@@ -478,8 +487,14 @@ namespace NetWork{
 		/**@brief check the Msg is right or not*/
 		bool CheckSum(short num){
 			//steps
+		
 		}
-		void OnReceive(){
+
+		void ZeroMemory(Byte *recBuf){
+			memset(recBuf, 0, sizeof(recBuf));
+		}
+
+		void OnReceive(int nErrorCode){
 
 		}
 	private:
@@ -515,16 +530,22 @@ namespace NetWork{
 		virtual ~MyUDP();
 
 	protected:
-		SOCKADDR_IN m_clientAddr;
+		typedef Byte SOCKADDR;
+		typedef Byte SOCKADDR_IN;
 
+		SOCKADDR_IN m_clientAddr;
+		
+		int ReceiveFrom(Byte *Buf, int len, SOCKADDR* client_addr, int *addr_len, int mode){
+
+		}
 		/**@brief 重写OnReceive函数*/
 		virtual void OnReceive(int nErrorCode)
 		{
-			TCHAR recBuf[1024];
+			Byte recBuf[1024];
 			/**@brief Socket地址长度，属性继承自CAsyncSocket*/
 			int len = sizeof(SOCKADDR_IN);
 			/**@brief 清空buffer*/
-			ZeroMemory(recBuf, sizeof(recBuf));
+			ZeroMemory(recBuf);
 			/**@brief 调用ReceiveFrom函数，接收数据*/
 			int recBytes = ReceiveFrom(recBuf, 1023, (SOCKADDR*)&m_clientAddr, &len, 0);
 			
