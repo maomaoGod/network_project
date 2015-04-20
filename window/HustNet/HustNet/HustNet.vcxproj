@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CmdView.h" />
+    <ClInclude Include="HttpSet.h" />
     <ClInclude Include="HustNet.h" />
     <ClInclude Include="HustNetDoc.h" />
     <ClInclude Include="LogView.h" />
@@ -119,6 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CmdView.cpp" />
+    <ClCompile Include="HttpSet.cpp" />
     <ClCompile Include="HustNet.cpp" />
     <ClCompile Include="HustNetDoc.cpp" />
     <ClCompile Include="LogView.cpp" />

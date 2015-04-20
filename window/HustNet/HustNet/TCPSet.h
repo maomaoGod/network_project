@@ -40,8 +40,7 @@ public:
 	/** @brief 析构函数*/
 	~HttpSet();
 	/** @brief 根据URL和方法发送请求报文*/
-	CString HttpSet::request(LPCTSTR pstrURL, string method);
+	CString HttpSet::request(LPCTSTR pstrURL, string method, string content);
 	/** @brief 根据IP地址和方法发送响应报文*/
-	CString HttpSet::response(LPCTSTR pstrURL, string method);
+	HttpSet::response(LPCTSTR pstrURL, string method, string content);
 };
-

@@ -1,8 +1,8 @@
 /**@file
  *@brief sending and receiving message from server
- *@author 
+ *@author ACM2012
  *@date 2015/04/19
- *@version XXXXXX
+ *@version 0.1
  *@note
  *As to send message, the format is CMD + " " + PATH + " " + HOST
  *As to receive message, the format is FILE TYPE + " " + FILE LEN + " " + FILE CONTENT
