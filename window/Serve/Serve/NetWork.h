@@ -592,13 +592,19 @@ namespace NetWork{
 			Byte check[2];
 			CheckSum();
 		    //从head指针开始，头2位放源端口号，3-4位放目的端口号，5-6位放收到的数据的长度，7-8位放检验和
-			Byte *head = in_Port;
-			*(head + 2) = *out_Port;
-			*(head + 2) = *length;
-			*(head + 2) = *check;
+			Byte *head = (Byte *)malloc(sizeof(Byte) * 8);
+			//Byte *head = in_Port;
+			//*(head + 2) = *out_Port;
+			//*(head + 2) = *length;
+			//*(head + 2) = *check;
+			memcpy(head, in_Port, 2);
+			memcpy(head + 2, out_Port, 2);
+			memcpy(head + 4, length, 2);
+			memcpy(head + 6, check, 2);
 			//creat the head of the message
 			if (temp && SetHead(head, sizeof(head)))
 				return true;
+			free(head);
 		}
 		/**
 		*@brief 用来将上面生成的message发送出去
