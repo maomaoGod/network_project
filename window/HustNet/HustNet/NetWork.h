@@ -96,13 +96,11 @@ namespace NetWork{
 	private:
 		map<CString, int> exp;
 		CString Name;
-		int No;
-		/**< CString Msg*/
-		CString Obj;
+		int No;	
+		CString Obj;///< CString Msg*/
 		CString CNo, TNo;
 		CSocket csocket;
-		/**< IP*/
-		CString strIP;
+		CString strIP;///< IP*/
 		TCHAR szRecValue[1024];
 		void init(){
 		    /**@brief Send message to someone*/
@@ -187,31 +185,26 @@ namespace NetWork{
 		/**
          *@brief the client sends a report to the server
          *@author
-         *@param in Method HTTP CMD
-         *@param in url the link which waiting to access
-         *@exception XXXXXXX
+         *@param [in] <Method> HTTP CMD
+         *@param [in] <url> the link which waiting to access
          *@return True if successfully, otherwise False
          *@note
-         *XXXXXXXX
+         *1 div url to path + IP
+		 *2 com Method + " " + path + IP
+	     *3 send com Msg
+		 *   return true if TCP finish
+		 *   else return false
          *@remarks the format of sending message is "CMD + " " + PATH + " " + HOST"
 		 */
 		bool Send(string Method, string url){
-			//1 div url to path + IP
-			//2 com Method + " " + path + IP
-			//3 send com Msg
-			//return true if TCP finish
-			//else return false
+		
 		}
 
 		/**
-         *@brief the client receives a report from the server
          *@author
-         *@param XXXXXXX
-         *@param XXXXX
-         *@exception XXXXXXX
          *@return void
          *@note
-         *XXXXXXXX
+         *the client receives a report from the server
          *@remarks the farmat of sending message is "FILE TYPE + " " + FILE LEN + " " + FILE Content"
 		 */
 		void Rev(){
