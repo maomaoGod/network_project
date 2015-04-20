@@ -1,0 +1,7 @@
+; MFCLibrary1.def : 声明 DLL 的模块参数。
+
+LIBRARY "MFCLibrary1"
+
+EXPORTS	message
+		add
+    ; 此处可以是显式导出
