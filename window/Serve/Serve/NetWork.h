@@ -734,5 +734,69 @@ namespace NetWork{
 		* 简单接收报文，用户不应该能使用这个函数，因为他并没有可靠机制
 		*/
 		void Simple_Receive();
+
+		/** @brief 定义结构体，包含用于拥塞控制的参数
+		* @note
+		* SS:慢启动状态
+		* CA：拥塞避免状态
+		* RTT：一个往返时延
+		* MSS：发送方与接收方协商最大报文段长度
+		* CongWin：拥塞窗口
+		* Threshold：阈值
+		* redundancy_ACK：冗余ACK个数
+		* state：当前状态
+		* Time_out：超时
+		*/
+		struct CC
+		{
+			const Byte SS = 1;
+			const Byte CA = 2;
+			int RTT;
+			int MSS;
+			int CongWin;
+			int Threshold;
+			Byte redundancy_ACK;
+			Byte state;
+			bool Time_out;
+		};
+
+		/** @brief 拥塞控制函数,
+		* @note
+		* (1)收到未确认数据的ACK，
+		* 若处于慢启动状态：每过一个RTT，拥塞窗口翻倍，若拥塞窗口超过阈值，状态改变为"拥塞避免"
+		* 若处于拥塞避免状态：每过一个RTT，拥塞窗口增加一个MSS
+		* (2)发生丢包，
+		* 若由3个冗余ACK引发：拥塞窗口和阈值都设为CongWin的一半，设置状态为“拥塞避免”
+		* 若由超时引发：阈值设为拥塞窗口的一半，拥塞窗口设置为1个MSS，设置状态为“慢启动”
+		*/
+		void Congestion_Control()
+		{
+			if (redundancy_ACK >= 3)
+			{
+				Threshold = CongWin / 2;
+				CongWin = Threshold;
+				state = CA;
+			}
+			else if (Time_out)
+			{
+				Threshold = CongWin / 2;
+				CongWin = MSS;
+				state = SS;
+			}
+			else
+			{
+				if (state == SS)
+				{
+					CongWin += MSS;
+					if (CongWin > Threshold)
+						state = CA;
+				}
+				else
+				{
+					CongWin += MSS * MSS / CongWin;
+				}
+			}
+		}
+
 	};
 }
