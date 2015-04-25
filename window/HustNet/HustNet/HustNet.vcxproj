@@ -54,6 +54,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -69,6 +70,9 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -102,11 +106,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CmdView.h" />
-    <ClInclude Include="HttpSet.h" />
     <ClInclude Include="HustNet.h" />
     <ClInclude Include="HustNetDoc.h" />
     <ClInclude Include="LogView.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="UICtrl.h" />
+    <ClInclude Include="UserCmd.h" />
     <ClInclude Include="NetDll.h" />
     <ClInclude Include="NetHtml.h" />
     <ClInclude Include="NetSet.h" />
@@ -116,15 +121,14 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Tools.h" />
-    <ClInclude Include="UserCmd.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CmdView.cpp" />
-    <ClCompile Include="HttpSet.cpp" />
     <ClCompile Include="HustNet.cpp" />
     <ClCompile Include="HustNetDoc.cpp" />
     <ClCompile Include="LogView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="UserCmd.cpp" />
     <ClCompile Include="NetDll.cpp" />
     <ClCompile Include="NetHtml.cpp" />
     <ClCompile Include="NetSet.cpp" />
@@ -133,7 +137,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UserCmd.cpp" />
+    <ClCompile Include="UICtrl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HustNet.rc" />
