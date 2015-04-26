@@ -145,7 +145,7 @@ namespace NetWork{
 		*@param [in] <data> some information we want to get
 		*@return void
 		*@note
-		*检索URI中标识资源的一个简单请求, Map it to 1
+		*检索URL中标识资源的一个简单请求, Map it to 1
 		*path >> data[1]
 		*host >> data[2]
 		*1 find the file according to the path
@@ -295,7 +295,39 @@ namespace NetWork{
 		* 2 return "GET HEAD POST PUT DELETE OPTIONS TRACE CONNECT"as Msg
 		*/
 		void OPTIONS(vector<string> data){
+			//find files
+			RespondMsg = "OPTIONSMSG : ";
+		//	string temp;
+			FILE *fp;
+			//if (fopen_s(&fp, path, "r")){
+			//	ErroeCode = ERROR;//return false message
+			//	return;
+			//}
+			ErrorCode = MSG_OK;
+			RespondMsg += "GET : ";
+			RespondMsg += "Retrieve a simple request URL identifying the resources.( 检索URI中标识资源的一个简单请求)";
+			RespondMsg += "\r\n";
 
+			RespondMsg += "HEAD : ";
+			RespondMsg += "The same as the GET method, the server returns only the status line and head.(与GET方法相同，服务器只返回状态行和头标)";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "POST : "; 
+			RespondMsg += "The server accepts the request of the data that are written to the client output stream.(服务器接受被写入客户端输出流中的数据的请求)";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "PUT : ";
+			RespondMsg += "The server save request data as the specified URL request of new content.(服务器保存请求数据作为指定URI新内容的请求)";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "OPTIONS : ";
+			RespondMsg += "The request of the information about request methods of the server supports.(关于服务器支持的请求方法信息的请求)";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "CONNECT : "; 
+			RespondMsg += "The method, which has documented but unrealized currently, reserved for the tunnel processing.(已文档化但当前未实现的一个方法，预留做隧道处理)";
+			RespondMsg += "\r\n";
+			fclose(fp);
 		}
 		/**
 		*@brief don't Know what's it meaning
