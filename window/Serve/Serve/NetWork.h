@@ -104,6 +104,7 @@ namespace NetWork{
 		    /**@brief DON'T HAVE THIS CMD return BADxxx */
 			if (Function.find(CMD)==Function.end()){
 				ErrorCode = BAD_REQUEST;
+				return;
 			}
 			try{
 				//注意1：这里必须使用this->，否则会有error C2171: “*”:
@@ -298,36 +299,34 @@ namespace NetWork{
 			//find files
 			RespondMsg = "OPTIONSMSG : ";
 		//	string temp;
-			FILE *fp;
 			//if (fopen_s(&fp, path, "r")){
 			//	ErroeCode = ERROR;//return false message
 			//	return;
 			//}
 			ErrorCode = MSG_OK;
 			RespondMsg += "GET : ";
-			RespondMsg += "Retrieve a simple request URL identifying the resources.( 检索URI中标识资源的一个简单请求)";
+			RespondMsg += "Retrieve a simple request URL identifying the resources.";
 			RespondMsg += "\r\n";
 
 			RespondMsg += "HEAD : ";
-			RespondMsg += "The same as the GET method, the server returns only the status line and head.(与GET方法相同，服务器只返回状态行和头标)";
+			RespondMsg += "The same as the GET method, the server returns only the status line and head.";
 			RespondMsg += "\r\n";
 
 			RespondMsg += "POST : "; 
-			RespondMsg += "The server accepts the request of the data that are written to the client output stream.(服务器接受被写入客户端输出流中的数据的请求)";
+			RespondMsg += "The server accepts the request of the data that are written to the client output stream.";
 			RespondMsg += "\r\n";
 
 			RespondMsg += "PUT : ";
-			RespondMsg += "The server save request data as the specified URL request of new content.(服务器保存请求数据作为指定URI新内容的请求)";
+			RespondMsg += "The server save request data as the specified URL request of new content.";
 			RespondMsg += "\r\n";
 
 			RespondMsg += "OPTIONS : ";
-			RespondMsg += "The request of the information about request methods of the server supports.(关于服务器支持的请求方法信息的请求)";
+			RespondMsg += "The request of the information about request methods of the server supports.";
 			RespondMsg += "\r\n";
 
 			RespondMsg += "CONNECT : "; 
-			RespondMsg += "The method, which has documented but unrealized currently, reserved for the tunnel processing.(已文档化但当前未实现的一个方法，预留做隧道处理)";
+			RespondMsg += "The method, which has documented but unrealized currently, reserved for the tunnel processing.";
 			RespondMsg += "\r\n";
-			fclose(fp);
 		}
 		/**
 		*@brief don't Know what's it meaning
