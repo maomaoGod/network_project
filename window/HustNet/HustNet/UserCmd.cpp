@@ -106,11 +106,6 @@ void  UserCmd::Connect(CString e){
 	aSocket.Close();
 }
 
-void UserCmd::Mail(CString e)
-{
-	MailSend mail;
-	mail.Begin();
-}
 
 void UserCmd::Chat(CString e){
 	ChatWork chat;
@@ -152,4 +147,11 @@ void UserCmd::cleanrp(CString e){
 */
 void UserCmd::cleanlog(CString e){
     CleanLog(NULL);
+}
+
+void UserCmd::Visit(CString e){
+	if (e.Compare(_T("http")) == 0){
+		AppLayerHttp myhttp;
+		myhttp.Begin();
+	}
 }

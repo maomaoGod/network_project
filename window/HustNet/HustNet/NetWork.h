@@ -12,16 +12,8 @@
 #include "stdafx.h"
 #include "map"
 #include "Tools.h"
+#include "UICtrl.h"
 //#import "dll/Jmail.dll"
-
-extern void PrintLog(CString);
-extern void PrintRp(CString);
-extern void CleanLog();
-extern void CleanRp();
-extern void SetRp(CString);
-extern void TakeOverCmd(CString e);
-extern void SetHint(CString e);
-extern CString GetLine();
 
 using namespace std;
 using namespace Tools;
@@ -168,7 +160,7 @@ namespace NetWork{
 	public:
 		void Begin(){
 			CString mystr;
-			TakeOverCmd(_T("Mail>"));
+			TakeOverCmd(_T("http>"));
 			while ((mystr = GetLine()).Compare(_T("exit")) != 0){
 				PrintLog(_T("Accept ") + mystr);
 				switch (0){
