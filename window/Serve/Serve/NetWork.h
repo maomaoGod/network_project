@@ -599,9 +599,6 @@ namespace NetWork{
 	};
 
 	class MyUDP :MySocket{
-<<<<<<< HEAD
-
-=======
 		/**@brief 构造函数*/
 		MyUDP();
 		/**@brief 析构函数*/
@@ -697,7 +694,6 @@ namespace NetWork{
 				return true;
 			else return false;
 		}
->>>>>>> origin/master
 	};
 
 	/**
