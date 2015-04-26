@@ -106,6 +106,13 @@ void  UserCmd::Connect(CString e){
 	aSocket.Close();
 }
 
+void UserCmd::Mail(CString e)
+{
+	//MailSend mail;
+	//mail.Begin();
+	AppLayerHttp html;
+	html.Begin();
+}
 
 void UserCmd::Chat(CString e){
 	ChatWork chat;

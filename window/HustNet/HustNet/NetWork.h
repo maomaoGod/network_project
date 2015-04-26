@@ -158,22 +158,43 @@ namespace NetWork{
 	 */
 	class AppLayerHttp{
 	public:
+		AppLayerHttp(){
+			AfxSocketInit();
+		}
+		
 		void Begin(){
 			CString mystr;
 			TakeOverCmd(_T("http>"));
 			while ((mystr = GetLine()).Compare(_T("exit")) != 0){
+				CleanRp(NULL);
 				PrintLog(_T("Accept ") + mystr);
-				switch (0){
-				case 0: break;
-				case 1: break;
-				case 2: break;
-				case 3: break;
-				case 4: break;
-				case 5: break;
-				default: PrintLog(_T("Error Code"));
+				CStringArray code;
+				Tstr::CCarg(&code ,mystr ,_T(' '));
+				//Create();
+				aSocket = new CSocket();
+				//failed
+			    if (!aSocket->Create()){
+					CString error;
+				    error.Format(_T("创建失败:%d"), aSocket->GetLastError());
+				    PrintLog(error);
+				    return;
+			    }
+				//argc size
+				if (code.GetSize() < 2) {
+					PrintLog(_T("参数过少"));
+					return;
 				}
+				//send
+				if (!Send(code[0], code[1])){
+					PrintLog(_T("Interrupt Error!"));
+					return;
+				}
+				Rev();
+				aSocket->Close();
+				delete aSocket;
 			}
 		}
+
 		/**
          *@brief the client sends a report to the server
          *@author  ACM2012
@@ -188,8 +209,28 @@ namespace NetWork{
 		 *   else return false
          *@remarks the format of sending message is "CMD + " " + PATH + " " + HOST"
 		 */
-		bool Send(string Method, string url){
-		
+		bool Send(CString Method, CString url){
+			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
+			int i = url.Find(_T('/'));
+			//int i = url.Find(_T('\\'));
+			IP = url.Mid(0, i);
+			Path = url.Mid(i + 1);//
+			PrintLog(IP);
+			PrintLog(Path);
+			if(aSocket->Connect(IP, 6500)){
+				aSocket->Receive((void *)szRecValue, 1024);
+				rev.Format(_T("来自服务器的消息:%s"), szRecValue);
+				PrintRp(rev);
+			}
+			else{
+				CString error;
+				error.Format(_T("连接服务器失败:%d"), aSocket->GetLastError());
+				PrintLog(error);
+				return false;
+			}
+			CString Msg = Method + _T(' ') + Path;
+			aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
+			return true;
 		}
 
 		/**
@@ -206,9 +247,25 @@ namespace NetWork{
 			//4. get all data by recive case by case
 			//5. turn it to the file type
 			//6. show it
+			rev = _T("");
+			CString temp;
+			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
+			while (aSocket->Receive((void *)szRecValue, 1024)){
+				temp.Format(_T("%s"),szRecValue);
+				rev += temp;
+				memset(szRecValue, 0, 1024 * sizeof(TCHAR));
+			}
+			PrintRp(rev);
 		}
+	
 	private:
+		//typedef void(AppLayerHttp::*DealWithFunciton)(vector<CString> data);
 		//no data
+		CSocket *aSocket;
+		CString IP;
+		CString Path;
+		CString rev;
+		TCHAR szRecValue[1024];
 	};
 }
 

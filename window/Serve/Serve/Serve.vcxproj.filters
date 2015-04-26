@@ -48,7 +48,11 @@
     <ClInclude Include="NetWork.h">
       <Filter>头文件</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="mycsocket.h">
+=======
+    <ClInclude Include="Tools.h">
+>>>>>>> origin/master
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

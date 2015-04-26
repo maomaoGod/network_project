@@ -44,7 +44,7 @@ void MyServeSocket::OnAccept(int nErrorCode)
 	ClientSocket  *clientsocket = new ClientSocket();
 	CAsyncSocket::OnAccept(nErrorCode);
 	this->Accept(*clientsocket);
-	Hint.Format(_T("客户端%d已连接"), count);
+	Hint.Format(_T("第%d次网页请求已连接"), count + 1);
 	myclient[clientsocket] = count++;
 	PrintView(Hint);
 }

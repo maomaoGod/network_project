@@ -5,6 +5,7 @@
 #include "HustNet.h"
 #include "MainFrm.h"
 #include "NetSet.h"
+#include "UIctrl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -248,6 +249,7 @@ void CMainFrame::OnClose()
 	/**
 	*TODO:  在此添加消息处理程序代码和/或调用默认值
 	*/
+	CleanRp(NULL);
 	if (AfxMessageBox(_T(" 是否退出软件 \n"), MB_OKCANCEL, MB_ICONQUESTION) == IDOK){
 		CRect rectDlg;
 		this->GetWindowRect(rectDlg);
