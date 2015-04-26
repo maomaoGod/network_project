@@ -1,6 +1,9 @@
 
-// HustNetDoc.h : CHustNetDoc 类的接口
-//
+/**@file
+*date 2015.4.20
+*@version <0.1>
+*@brief HustNetDoc.h : CHustNetDoc 类的接口
+*/
 
 
 #pragma once
@@ -8,17 +11,26 @@
 
 class CHustNetDoc : public CDocument
 {
-protected: // 仅从序列化创建
+protected: 
+	/** 
+	*仅从序列化创建
+	*/
 	CHustNetDoc();
 	DECLARE_DYNCREATE(CHustNetDoc)
 
-// 特性
+/**
+*特性
+*/
 public:
 
-// 操作
+/**
+*操作
+*/
 public:
 
-// 重写
+/**
+*重写
+*/
 public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
@@ -27,7 +39,9 @@ public:
 	virtual void OnDrawThumbnail(CDC& dc, LPRECT lprcBounds);
 #endif // SHARED_HANDLERS
 
-// 实现
+/**
+*实现
+*/
 public:
 	virtual ~CHustNetDoc();
 #ifdef _DEBUG
@@ -37,7 +51,9 @@ public:
 
 protected:
 
-// 生成的消息映射函数
+/**
+*生成的消息映射函数
+*/
 protected:
 	DECLARE_MESSAGE_MAP()
 

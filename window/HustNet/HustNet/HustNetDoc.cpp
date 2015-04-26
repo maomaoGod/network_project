@@ -1,10 +1,13 @@
 
-// HustNetDoc.cpp : CHustNetDoc 类的实现
-//
+/**
+*HustNetDoc.cpp : CHustNetDoc 类的实现
+*/
 
 #include "stdafx.h"
-// SHARED_HANDLERS 可以在实现预览、缩略图和搜索筛选器句柄的
-// ATL 项目中进行定义，并允许与该项目共享文档代码。
+/**
+*SHARED_HANDLERS 可以在实现预览、缩略图和搜索筛选器句柄的\n
+* ATL 项目中进行定义，并允许与该项目共享文档代码。
+*/
 #ifndef SHARED_HANDLERS
 #include "HustNet.h"
 #endif
@@ -17,7 +20,10 @@
 #define new DEBUG_NEW
 #endif
 
-// CHustNetDoc
+/** 
+*CHustNetDoc
+*/
+
 
 IMPLEMENT_DYNCREATE(CHustNetDoc, CDocument)
 
@@ -25,11 +31,15 @@ BEGIN_MESSAGE_MAP(CHustNetDoc, CDocument)
 END_MESSAGE_MAP()
 
 
-// CHustNetDoc 构造/析构
+/**
+*CHustNetDoc 构造/析构
+*/
 
 CHustNetDoc::CHustNetDoc()
 {
-	// TODO:  在此添加一次性构造代码
+	/**
+	*TODO:  在此添加一次性构造代码
+	*/
 
 }
 
@@ -42,8 +52,10 @@ BOOL CHustNetDoc::OnNewDocument()
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 
-	// TODO:  在此添加重新初始化代码
-	// (SDI 文档将重用该文档)
+	/**
+	*TODO:  在此添加重新初始化代码\n
+	*(SDI 文档将重用该文档)
+	*/
 
 	return TRUE;
 }
@@ -51,26 +63,36 @@ BOOL CHustNetDoc::OnNewDocument()
 
 
 
-// CHustNetDoc 序列化
+/**
+*CHustNetDoc 序列化
+*/
 
 void CHustNetDoc::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
 	{
-		// TODO:  在此添加存储代码
+		/**
+		*TODO:  在此添加存储代码
+		*/
 	}
 	else
 	{
-		// TODO:  在此添加加载代码
+		/**
+		*TODO:  在此添加加载代码
+		*/
 	}
 }
 
 #ifdef SHARED_HANDLERS
 
-// 缩略图的支持
+/**
+*缩略图的支持
+*/
 void CHustNetDoc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 {
-	// 修改此代码以绘制文档数据
+	/**
+	*修改此代码以绘制文档数据
+	*/
 	dc.FillSolidRect(lprcBounds, RGB(255, 255, 255));
 
 	CString strText = _T("TODO: implement thumbnail drawing here");
@@ -88,15 +110,19 @@ void CHustNetDoc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 	dc.SelectObject(pOldFont);
 }
 
-// 搜索处理程序的支持
+/**
+*搜索处理程序的支持
+*/
 void CHustNetDoc::InitializeSearchContent()
 {
 	CString strSearchContent;
-	// 从文档数据设置搜索内容。
-	// 内容部分应由“;”分隔
+	/**
+	*从文档数据设置搜索内容。\n
+	* 内容部分应由“;”分隔\n
 
-	// 例如:     strSearchContent = _T("point;rectangle;circle;ole object;")；
-	SetSearchContent(strSearchContent);
+	* 例如:     strSearchContent = _T("point;rectangle;circle;ole object;")；\n
+	* SetSearchContent(strSearchContent);
+	*/
 }
 
 void CHustNetDoc::SetSearchContent(const CString& value)
@@ -116,10 +142,14 @@ void CHustNetDoc::SetSearchContent(const CString& value)
 		}
 	}
 }
+/**
+*SHARED_HANDLERS
+*/
+#endif 
 
-#endif // SHARED_HANDLERS
-
-// CHustNetDoc 诊断
+/**
+*CHustNetDoc 诊断
+*/
 
 #ifdef _DEBUG
 void CHustNetDoc::AssertValid() const
@@ -131,7 +161,12 @@ void CHustNetDoc::Dump(CDumpContext& dc) const
 {
 	CDocument::Dump(dc);
 }
-#endif //_DEBUG
+/**
+*_DEBUG
+*/
+#endif 
 
 
-// CHustNetDoc 命令
+/**
+*CHustNetDoc 命令
+*/

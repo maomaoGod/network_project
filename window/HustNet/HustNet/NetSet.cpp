@@ -1,14 +1,15 @@
-// NetSet.cpp : 实现文件
-//
+/**
+*NetSet.cpp : 实现文件
+*/
 
 #include "stdafx.h"
 #include "HustNet.h"
 #include "NetSet.h"
 #include "afxdialogex.h"
 
-
-// NetSet 对话框
-
+/**
+*NetSet 对话框
+*/
 IMPLEMENT_DYNAMIC(NetSet, CDialogEx)
 
 NetSet::NetSet(CWnd* pParent /*=NULL*/)
@@ -33,12 +34,15 @@ BEGIN_MESSAGE_MAP(NetSet, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// NetSet 消息处理程序
-
+/**
+*NetSet 消息处理程序
+*/
 
 void NetSet::OnBnClickedLocalBrowse()
 {
-	// TODO:  在此添加控件通知处理程序代码
+	/**
+	*TODO:  在此添加控件通知处理程序代码
+	*/
 	CString local_path;
 	CFileDialog dlg(TRUE,//t open f save
 		NULL, NULL,
@@ -55,7 +59,9 @@ void NetSet::OnBnClickedLocalBrowse()
 
 void NetSet::OnBnClickedServerBrowse()
 {
-	// TODO:  在此添加控件通知处理程序代码
+	/**
+	*TODO:  在此添加控件通知处理程序代码
+	*/
 	CString server_path;
 	CFileDialog dlg(TRUE,//t open f save
 		NULL, NULL,

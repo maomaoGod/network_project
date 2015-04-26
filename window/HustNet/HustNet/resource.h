@@ -1,7 +1,8 @@
-//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ 生成的包含文件。
-// 供 HustNet.rc 使用
-//
+/**
+*{{NO_DEPENDENCIES}}\n
+* Microsoft Visual C++ 生成的包含文件。\n
+* 供 HustNet.rc 使用
+*/
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define IDP_SOCKETS_INIT_FAILED         104
@@ -28,8 +29,9 @@
 #define ID_32776                        32776
 #define ID_NETSET                       32777
 
-// Next default values for new objects
-// 
+/**
+*Next default values for new objects
+*/ 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        313

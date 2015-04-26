@@ -1,6 +1,7 @@
 
-// HustNet.h : HustNet 应用程序的主头文件
-//
+/**
+*HustNet.h : HustNet 应用程序的主头文件
+*/
 #pragma once
 
 #ifndef __AFXWIN_H__
@@ -13,7 +14,6 @@
 #define RPVIEW   1
 #define LOGVIEW   2
 
-
 #define PRINT                    WM_USER+1000
 #define CLEAN                   WM_USER+1001
 #define SETTEXT                WM_USER+1002
@@ -22,17 +22,24 @@
 #define SETHINT                WM_USER+1005
 #define DEALCMDOVER    WM_USER+1006
 #define DISPATCH              WM_USER+1007
-#define ENDINPUT              WM_USER+1008
+#define ENDINPUT             WM_USER+1008
+#define GETCOMMAND      WM_USER+1009
+#define GETCMDSTATE      WM_USER+1010
+#define GETLINESTATE      WM_USER+1011
 
+/**
+*@brief 用户自定义消息的参数传递结构
+*/
 struct  CMD{
-	int ID;
-	void * agrs;
+	int   ID;
+	void *para1;
+	void *para2;
 };
 
-
-// CHustNetApp:
-// 有关此类的实现，请参阅 HustNet.cpp
-//
+/**
+*CHustNetApp:\n
+*有关此类的实现，请参阅 HustNet.cpp
+*/
 
 class CHustNetApp : public CWinApp
 {
@@ -40,12 +47,16 @@ public:
 	CHustNetApp();
 
 
-// 重写
+/**
+*重写
+*/
 public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 
-// 实现
+/**
+*实现
+*/
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
 };

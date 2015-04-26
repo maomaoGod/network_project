@@ -11,20 +11,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B8D95C62-B99A-418C-ADF5-E05C9C574F22}</ProjectGuid>
-    <RootNamespace>HustNet</RootNamespace>
-    <Keyword>MFCProj</Keyword>
+    <ProjectGuid>{314E3F0B-18DC-4E09-9602-631E5A689A16}</ProjectGuid>
+    <RootNamespace>MFCLibrary1</RootNamespace>
+    <Keyword>MFCDLLProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Static</UseOfMfc>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -52,17 +52,16 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>.\MFCLibrary1.def</ModuleDefinitionFile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
-      <ValidateAllParameters>true</ValidateAllParameters>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
@@ -70,9 +69,6 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
-    <Bscmake>
-      <PreserveSbr>true</PreserveSbr>
-    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -81,7 +77,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -89,10 +85,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>.\MFCLibrary1.def</ModuleDefinitionFile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
-      <ValidateAllParameters>true</ValidateAllParameters>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
@@ -105,59 +101,26 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CmdView.h" />
-    <ClInclude Include="HustNet.h" />
-    <ClInclude Include="HustNetDoc.h" />
-    <ClInclude Include="LogView.h" />
-    <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="UICtrl.h" />
-    <ClInclude Include="UserCmd.h" />
-    <ClInclude Include="NetDll.h" />
-    <ClInclude Include="NetHtml.h" />
-    <ClInclude Include="NetSet.h" />
-    <ClInclude Include="NetWork.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="RespondView.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="Tools.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="CmdView.cpp" />
-    <ClCompile Include="HustNet.cpp" />
-    <ClCompile Include="HustNetDoc.cpp" />
-    <ClCompile Include="LogView.cpp" />
-    <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="UserCmd.cpp" />
-    <ClCompile Include="NetDll.cpp" />
-    <ClCompile Include="NetHtml.cpp" />
-    <ClCompile Include="NetSet.cpp" />
-    <ClCompile Include="RespondView.cpp" />
+    <ClCompile Include="MFCLibrary1.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UICtrl.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="HustNet.rc" />
+    <ClInclude Include="MFCLibrary1.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\HustNet.rc2" />
+    <None Include="MFCLibrary1.def" />
+    <None Include="res\MFCLibrary1.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="B:\FFOutput\internet.ico" />
-    <Image Include="res\HustNet.ico" />
-    <Image Include="res\HustNetDoc.ico" />
-    <Image Include="res\internet.ico" />
-    <Image Include="res\Toolbar.bmp" />
+    <ResourceCompile Include="MFCLibrary1.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties RESOURCE_FILE="HustNet.rc" />
-    </VisualStudio>
-  </ProjectExtensions>
 </Project>
