@@ -19,7 +19,7 @@ namespace Tools{
 			}
 			string substring;
 			int i, j;
-			int len = Seq.length;
+			int len = Seq.length();
 			for (i = 0; i < len; i++){
 				for (j = i; j < len; j++){
 					if (Seq[j] == div) break;
@@ -30,5 +30,50 @@ namespace Tools{
 				i = j;
 			}
 		}
+
+		static LPSTR CString2LPSTR(CString Subject){
+			LPSTR sub = (LPSTR)Subject.GetBuffer();
+			Subject.ReleaseBuffer();
+			return sub;
+		}
+
+		static string Tchar2string(TCHAR *smsg){
+			int iLen = WideCharToMultiByte(CP_ACP, 0, smsg, -1, NULL, 0, NULL, NULL);
+			char* chRtn = new char[iLen*sizeof(char)];
+			WideCharToMultiByte(CP_ACP, 0, smsg, -1, chRtn, iLen, NULL, NULL);
+			string str(chRtn);
+			return str;
+		}
+
+		static string CS2S(CString Subject){
+			string sub = Tchar2string(Subject.GetBuffer());//Subject.GetBuffer(0);
+			Subject.ReleaseBuffer();
+			return sub;
+		}
+
+		static wstring ANSIToUnicode(const string& str)
+		{
+			int len = 0;
+			len = str.length();
+			int  unicodeLen = ::MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0);
+			wchar_t *  pUnicode;
+			pUnicode = new  wchar_t[unicodeLen + 1];
+			memset(pUnicode, 0, (unicodeLen + 1)*sizeof(wchar_t));
+			::MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, (LPWSTR)pUnicode, unicodeLen);
+			wstring  rt;
+			rt = (wchar_t*)pUnicode;
+			delete  pUnicode;
+			return  rt;
+		}
+
+		static CString S2CS(string Subject){
+			int nBufferSize = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)(Subject.c_str()), -1, NULL, 0);
+			TCHAR *pBuffer = new TCHAR[nBufferSize + 1];
+			memset(pBuffer, 0, (nBufferSize + 1)*sizeof(TCHAR));
+			MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)(LPCSTR)(Subject.c_str()), -1, pBuffer, nBufferSize*sizeof(TCHAR));//UTF-8תUnicode
+			CString myhtml = pBuffer;
+			return myhtml;
+		}
+
 	};
 }

@@ -14,6 +14,7 @@
 #include "map"
 #include "Tools.h"
 #include "MyServeSocket.h"
+#include <strstream>
 /**@brief Socket Number*/
 #define SCOKETNUM 1024
 /**@brief No Socket*/
@@ -61,7 +62,7 @@ namespace NetWork{
 		}
 		/**@brief remove the map*/
 		~AppLayerHttp(){
-			delete &Function;
+			//delete &Function;
 		}
 
 		/**
@@ -88,10 +89,20 @@ namespace NetWork{
 		*map the CMD to the real function
 		*@remarks
 		*/
-		void DealWith(string CMD, vector<string> args){
+		
+		string GetCMD(){
+			return data[0];
+		}
+		int GetCode(){
+			return ErrorCode;
+		}
+		string GetResMsg(){
+			return RespondMsg;
+		}
+		//, vector<string> args
+		void DealWith(string CMD){
 		    /**@brief DON'T HAVE THIS CMD return BADxxx */
 			if (Function.find(CMD)==Function.end()){
-
 				ErrorCode = BAD_REQUEST;
 			}
 			try{
@@ -99,13 +110,15 @@ namespace NetWork{
 				//“void (__thiscall CUtil::* )(int)”类型的操作数非法的错误
 				//注意2：这里必须使用*解引用，才能实现函数调用，
 				//否则会有error C2064: 项不会计算为接受 1 个参数的函数的错误
-				(this->*Function[CMD])(args);
+				(this->*Function[CMD])(data);//args
+				
 			}
 			catch (exception e){
 				Log = e.what();
 				return ;
 			}
 		}
+	
 	private :
 		/**@brief the deal function struct*/
 		typedef void(AppLayerHttp::*DealWithFunciton)(vector<string> data);
@@ -146,7 +159,30 @@ namespace NetWork{
 		}
 		*/
 		void GET(vector<string> data){
-
+			//find file
+			RespondMsg = "";
+			string *temp;
+			//string p = servepath + data[1];
+			char t[1024];
+			char path[1024];
+			int i;
+			//memcpy(path, data[1].c_str(), data.size());
+			//path[data.size()] = '\0';
+			for (i = 0; i < data[1].length(); i++){
+				path[i] = data[1][i];
+			}
+			path[i] = '\0';
+			FILE *fp;
+			if (fopen_s(&fp, path, "r")){
+				ErrorCode = NO_FOUND;
+				return;
+			}
+			ErrorCode = MSG_OK;
+			while (fscanf_s(fp, "%s", t, 1024)!= -1){
+				temp = new string(t);
+				RespondMsg += *temp;
+			}
+			fclose(fp);
 		}
 
 		/**
@@ -165,7 +201,32 @@ namespace NetWork{
 		use sender to send it out
 		*/
 		void HEAD(vector<string> data){
-
+			//find file
+			RespondMsg = "HEADMSG :";
+			string temp;
+			//string p = servepath + data[1];
+			char t[1024];
+			char path[1024];
+			int i;
+			//memcpy(path, data[1].c_str(), data.size());
+			//path[data.size()] = '\0';
+			for (i = 0; i < data[1].length(); i++){
+				path[i] = data[1][i];
+			}
+			path[i] = '\0';
+			FILE *fp;
+			if (fopen_s(&fp, path, "r")){
+				ErrorCode = NO_FOUND;
+				return;
+			}
+			ErrorCode = MSG_OK;
+			strstream ss;
+			ss << ErrorCode;
+			ss >> temp;//Errorcode
+			RespondMsg += temp;
+			RespondMsg += "\r\n";
+			RespondMsg += ("path in serve: " + data[1]);
+			fclose(fp);
 		}
 		/**
 		*@brief POST methods
@@ -217,9 +278,10 @@ namespace NetWork{
 		* 3.1 return OK anyway
 		* 3.2 return warnning "NOT_EXIST"
 		*/
+		/*
 		void DELETE(vector<string> data){
 
-		}
+		}*/
 
 		/**
 		*@brief some options of request methods
@@ -243,9 +305,10 @@ namespace NetWork{
 		*@note
 		*Web服务器反馈Http请求和其头标的请求,Map it to 7
 		*/
+		/*
 		void TRACE(vector<string> data){
 			//I don't Know what's it meaning?
-		}
+		}*/
 
 		/**
 		*@brief NOT USE FUNCTION
@@ -282,13 +345,13 @@ namespace NetWork{
 			  Map it to 4*/
 			Function["PUT"] = Function["put"] = &AppLayerHttp::PUT;
 			/**@brief 服务器删除URI中命名的资源的请求, Map it to 5*/
-			Function["DELETE"] = Function["delete"] = &AppLayerHttp::DELETE;
+			//Function["DELETE"] = Function["delete"] = &AppLayerHttp::DELETE;
 			/**@brief 关于服务器支持的请求方法信息的请求,
 			  Map it to 6*/
 			Function["OPTIONS"] = Function["options"] = &AppLayerHttp::OPTIONS;
 			/**@brief Web服务器反馈Http请求和其头标的请求,
 			  Map it to 7*/
-			Function["TRACE"] = Function["trace"] = &AppLayerHttp::TRACE;
+			//Function["TRACE"] = Function["trace"] = &AppLayerHttp::TRACE;
 			/**@brief 已文档化但当前未实现的一个方法，
 			  预留做隧道处理, Map it to 8*/
 			Function["CONNECT"] = Function["connet"] = &AppLayerHttp::CONNECT;
@@ -311,7 +374,7 @@ namespace NetWork{
 		*/
 
 		bool Listen_launch(){
-
+			return true;
 		}
 
 
@@ -506,10 +569,10 @@ namespace NetWork{
 			//steps
 		
 		}
-
+		/*
 		void ZeroMemory(Byte *recBuf){
 			memset(recBuf, 0, sizeof(recBuf));
-		}
+		}*/
 
 		void OnReceive(int nErrorCode){
 
@@ -562,7 +625,7 @@ namespace NetWork{
 			/**@brief Socket地址长度，属性继承自CAsyncSocket*/
 			int len = sizeof(SOCKADDR_IN);
 			/**@brief 清空buffer*/
-			ZeroMemory(recBuf);
+			//ZeroMemory(recBuf);
 			/**@brief 调用ReceiveFrom函数，接收数据*/
 			int recBytes = ReceiveFrom(recBuf, 1023, (SOCKADDR*)&m_clientAddr, &len, 0);
 			
@@ -769,6 +832,7 @@ namespace NetWork{
 		* 若由3个冗余ACK引发：拥塞窗口和阈值都设为CongWin的一半，设置状态为“拥塞避免”
 		* 若由超时引发：阈值设为拥塞窗口的一半，拥塞窗口设置为1个MSS，设置状态为“慢启动”
 		*/
+		/*
 		void Congestion_Control()
 		{
 			if (redundancy_ACK >= 3)
@@ -796,7 +860,7 @@ namespace NetWork{
 					CongWin += MSS * MSS / CongWin;
 				}
 			}
-		}
+		}*/
 
 	};
 }

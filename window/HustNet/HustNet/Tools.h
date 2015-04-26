@@ -3,6 +3,7 @@
 #include <string>
 //#include <windows.h>
 #include <map>
+#include <vector>
 #include <mapi.h>
 #include "afxinet.h"
 
@@ -93,6 +94,24 @@ namespace Tools{
 				strArry->Add(strGet);
 			}
 			//return strArry;
+		}
+
+		static void Split(string Seq, vector<string> *strArray, char div){
+			if (strArray->size() != 0){
+				strArray->clear();
+			}
+			string substring;
+			int i, j;
+			int len = Seq.length();
+			for (i = 0; i < len; i++){
+				for (j = i; j < len; j++){
+					if (Seq[j] == div) break;
+				}
+				/**<for a substring is*/
+				if (j > i)substring = Seq.substr(i, j - i);
+				strArray->push_back(substring);
+				i = j;
+			}
 		}
 
 	};
