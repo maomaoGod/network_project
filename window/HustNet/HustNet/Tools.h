@@ -281,16 +281,16 @@ return L_str;
 }*/
 /*
 bool Repared(){
-iMapiInstalled = GetProfileInt(_T("Mail"), _T("MAPI"), 0);
+iMapiInstalled = GetProfileInt(_T("Http"), _T("MAPI"), 0);
 if (!iMapiInstalled) return false;//failed
-MailHelp.Setpath(_T("MAPI32.DLL"));
-if(!MailHelp.Load_dll()) return false;//failed load
-MailHelp.Set_fun_name("MAPILogon");
-pMAPILogon = (LPMAPILOGON)MailHelp.Getfun();
-MailHelp.Set_fun_name("MAPILogoff");
-pMAPILogoff = (LPMAPILOGOFF)MailHelp.Getfun();
-MailHelp.Set_fun_name("MAPISendMail");
-pMAPISendMail = (LPMAPISENDMAIL)MailHelp.Getfun();
+HttpHelp.Setpath(_T("MAPI32.DLL"));
+if(!HttpHelp.Load_dll()) return false;//failed load
+HttpHelp.Set_fun_name("MAPILogon");
+pMAPILogon = (LPMAPILOGON)HttpHelp.Getfun();
+HttpHelp.Set_fun_name("MAPILogoff");
+pMAPILogoff = (LPMAPILOGOFF)HttpHelp.Getfun();
+HttpHelp.Set_fun_name("MAPISendHttp");
+pMAPISendHttp = (LPMAPISENDHttp)HttpHelp.Getfun();
 //to log
 LPSTR name = (LPSTR)UserName.GetBuffer();
 UserName.ReleaseBuffer();
@@ -327,14 +327,14 @@ else{
 	Msg.nRecipCount = 1;
 	Msg.lpRecips = Recer;
 
-	Result = pMAPISendMail(lhSession, 0, &Msg, 0, 0);
+	Result = pMAPISendHttp(lhSession, 0, &Msg, 0, 0);
 	if (Result != SUCCESS_SUCCESS){
-		PrintLog(_T("Error for send a mail"));
+		PrintLog(_T("Error for send a Http"));
 		return false;
 	}
 	pMAPILogoff(lhSession, 0, 0, 0);
 }
-MailHelp.free_dll();
+HttpHelp.free_dll();
 return 1;
 		}
 
