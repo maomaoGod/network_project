@@ -41,7 +41,6 @@ void ClientSocket::OnReceive(int nErrorCode)
 		char *stemp;
 		if (app.GetCode() != MSG_OK){
 			back.Format(_T("%d"),app.GetCode());
-			
 		}
 		else {
 			back = STR::S2CS(app.GetResMsg());

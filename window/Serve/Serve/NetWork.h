@@ -279,19 +279,22 @@ namespace NetWork{
 			if (!fopen_s(&fp, path, "r"))
 			{
 				fclose(fp);
-				retMsg = MSG_OK;
+				DeleteFile(STR::String2LPCWSTR(data[1]));
+				ErrorCode = MSG_OK;
+				RespondMsg += "change the file existed in serve";
 			}
 			else
-				retMsg = Created;
+				ErrorCode = Created;
 			fopen_s(&fp, path, "w");
 			char *temp;
-			temp = (char *)malloc(sizeof(char)*(data[3].length() + 1));
-			for (i = 0; i < data[3].length(); i++)
-				temp[i] = data[3][i];
+			if (data.size() < 3) data.push_back("");
+			temp = (char *)malloc(sizeof(char)*(data[2].length() + 1));
+			for (i = 0; i < data[2].length(); i++)
+				temp[i] = data[2][i];
 			temp[i] = 0;
 			fprintf_s(fp, "%s\n",temp);
 			free(temp);
-			RespondMsg += retMsg;
+			fclose(fp);
 			return;
 		}
 

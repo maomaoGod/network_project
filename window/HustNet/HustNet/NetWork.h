@@ -231,7 +231,7 @@ namespace NetWork{
 			CString Msg, temp;
 			Msg = Method + _T(' ') + Path;
 			for (i = 2; i < url->GetSize(); i++){
-				temp = url->GetAt(1).Mid(0);
+				temp = url->GetAt(i).Mid(0);
 				Msg = Msg + _T(' ') + temp;
 			}
 			aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
