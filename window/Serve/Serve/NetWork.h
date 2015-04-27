@@ -25,6 +25,8 @@
 #define PORT 6500
 /**@brief Return the Message OK*/
 #define MSG_OK 200
+/**@brief Return the Message Created*/
+#define Created 201
 /**@brief Return the Message BAD_REQUEST*/
 #define BAD_REQUEST 400
 /**@brief Return the Message Not Found*/
@@ -182,6 +184,7 @@ namespace NetWork{
 			while (fscanf_s(fp, "%s", t, 1024)!= -1){
 				temp = new string(t);
 				RespondMsg += *temp;
+				delete temp;
 			}
 			fclose(fp);
 		}
@@ -243,7 +246,7 @@ namespace NetWork{
 		*return OK
 		*/
 		void POST(vector<string> data){
-
+			
 		}
 		/**
 		*@brief PUT method
@@ -261,7 +264,35 @@ namespace NetWork{
 		* 3.2 return HAVE_EXISTED
 		*/
 		void PUT(vector<string> data){
-
+			RespondMsg = "PUT :";
+			//string p = servepath + data[1];
+			char path[1024];
+			int retMsg;
+			int i;
+			//memcpy(path, data[1].c_str(), data.size());
+			//path[data.size()] = '\0';
+			for (i = 0; i < data[1].length(); i++){
+				path[i] = data[1][i];
+			}
+			path[i] = '\0';
+			FILE *fp;
+			if (!fopen_s(&fp, path, "r"))
+			{
+				fclose(fp);
+				retMsg = MSG_OK;
+			}
+			else
+				retMsg = Created;
+			fopen_s(&fp, path, "w");
+			char *temp;
+			temp = (char *)malloc(sizeof(char)*(data[3].length() + 1));
+			for (i = 0; i < data[3].length(); i++)
+				temp[i] = data[3][i];
+			temp[i] = 0;
+			fprintf_s(fp, "%s\n",temp);
+			free(temp);
+			RespondMsg += retMsg;
+			return;
 		}
 
 		/**
