@@ -1,0 +1,28 @@
+﻿生成启动时间为 2015/4/27 18:52:48。
+     1>项目“H:\Work\ClassWork\network_project\window\Serve\Serve\Serve.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         H:\WorkTool\VS2013\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\Serve.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ClientSocket.cpp
+         ClientSocket.cpp
+     1>h:\work\classwork\network_project\window\serve\serve\network.h(33): warning C4005: “SOCKET_ERROR”: 宏重定义
+                 g:\program files (x86)\windows kits\8.1\include\um\winsock2.h(381) : 参见“SOCKET_ERROR”的前一个定义
+     1>h:\work\classwork\network_project\window\serve\serve\network.h(172): warning C4018: “<”: 有符号/无符号不匹配
+     1>h:\work\classwork\network_project\window\serve\serve\network.h(214): warning C4018: “<”: 有符号/无符号不匹配
+     1>h:\work\classwork\network_project\window\serve\serve\network.h(209): warning C4101: “t”: 未引用的局部变量
+     1>h:\work\classwork\network_project\window\serve\serve\network.h(292): warning C4018: “<”: 有符号/无符号不匹配
+     1>h:\work\classwork\network_project\window\serve\serve\network.h(287): warning C4101: “t”: 未引用的局部变量
+     1>h:\work\classwork\network_project\window\serve\serve\clientsocket.cpp(41): warning C4101: “stemp”: 未引用的局部变量
+       Link:
+         H:\WorkTool\VS2013\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"H:\Work\ClassWork\network_project\window\Serve\Debug\Serve.exe" /INCREMENTAL /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:H:\WorkTool\VS2013\VC\Include\Manifest\dpiaware.manifest /DEBUG /PDB:"H:\Work\ClassWork\network_project\window\Serve\Debug\Serve.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"H:\Work\ClassWork\network_project\window\Serve\Debug\Serve.lib" /MACHINE:X86 Debug\Serve.res
+         Debug\ClientSocket.obj
+         Debug\MainFrm.obj
+         Debug\MyServeSocket.obj
+         Debug\Serve.obj
+         Debug\ServeDoc.obj
+         Debug\ServeView.obj
+         Debug\stdafx.obj
+         Serve.vcxproj -> H:\Work\ClassWork\network_project\window\Serve\Debug\Serve.exe
+     1>已完成生成项目“H:\Work\ClassWork\network_project\window\Serve\Serve\Serve.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:02.14
