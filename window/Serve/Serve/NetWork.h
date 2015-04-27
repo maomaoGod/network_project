@@ -297,7 +297,7 @@ namespace NetWork{
 		*/
 		void OPTIONS(vector<string> data){
 			//find files
-			RespondMsg = "OPTIONSMSG : ";
+			RespondMsg = "OPTIONSMSG : \r\n";
 		//	string temp;
 			//if (fopen_s(&fp, path, "r")){
 			//	ErroeCode = ERROR;//return false message
