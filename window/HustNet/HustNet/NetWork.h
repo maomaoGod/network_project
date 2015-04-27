@@ -185,7 +185,7 @@ namespace NetWork{
 					return;
 				}
 				//send
-				if (!Send(code[0], code[1])){
+				if (!Send(code[0], &code)){
 					PrintLog(_T("Interrupt Error!"));
 					return;
 				}
@@ -209,12 +209,12 @@ namespace NetWork{
 		 *   else return false
          *@remarks the format of sending message is "CMD + " " + PATH + " " + HOST"
 		 */
-		bool Send(CString Method, CString url){
+		bool Send(CString Method, CStringArray *url){
 			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
-			int i = url.Find(_T('/'));
+			int i = url->GetAt(1).Find(_T('/'));
 			//int i = url.Find(_T('\\'));
-			IP = url.Mid(0, i);
-			Path = url.Mid(i + 1);//
+			IP = url->GetAt(1).Mid(0, i);
+			Path = url->GetAt(1).Mid(i + 1);//
 			PrintLog(IP);
 			PrintLog(Path);
 			if(aSocket->Connect(IP, 6500)){
@@ -228,7 +228,12 @@ namespace NetWork{
 				PrintLog(error);
 				return false;
 			}
-			CString Msg = Method + _T(' ') + Path;
+			CString Msg, temp;
+			Msg = Method + _T(' ') + Path;
+			for (i = 2; i < url->GetSize(); i++){
+				temp = url->GetAt(1).Mid(0);
+				Msg = Msg + _T(' ') + temp;
+			}
 			aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
 			return true;
 		}

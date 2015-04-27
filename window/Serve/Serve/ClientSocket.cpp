@@ -59,7 +59,7 @@ void ClientSocket::OnSend(int nErrorCode)
 {
 	// TODO:  在此添加专用代码和/或调用基类
 	CString back;
-	back.Format(_T("应答第%d次网页请求，已连接，清等待网页数据"), myclient[this] + 1);
+	back.Format(_T("应答第%d次网页请求，已连接，请等待网页数据"), myclient[this] + 1);
 	Send(back, back.GetLength()*sizeof(TCHAR));
 	CAsyncSocket::OnSend(nErrorCode);
 }
