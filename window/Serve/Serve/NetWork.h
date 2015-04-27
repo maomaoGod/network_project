@@ -282,7 +282,7 @@ namespace NetWork{
 		
 		void DELETEFILE(vector<string> data){
 			//find file
-			RespondMsg = "DELETE :";
+			RespondMsg = "File"+ data[1] + " have been DELETE";
 			//string p = servepath + data[1];
 			char t[1024];
 			char path[1024];
@@ -317,11 +317,6 @@ namespace NetWork{
 		void OPTIONS(vector<string> data){
 			//find files
 			RespondMsg = "OPTIONSMSG : ";
-		//	string temp;
-			//if (fopen_s(&fp, path, "r")){
-			//	ErroeCode = ERROR;//return false message
-			//	return;
-			//}
 			ErrorCode = MSG_OK;
 			RespondMsg += "GET : ";
 			RespondMsg += "Retrieve a simple request URL identifying the resources.";
@@ -339,6 +334,10 @@ namespace NetWork{
 			RespondMsg += "The server save request data as the specified URL request of new content.";
 			RespondMsg += "\r\n";
 
+			RespondMsg += "DELETE : ";
+			RespondMsg += "delete the file on the server according to URL";
+			RespondMsg += "\r\n";
+
 			RespondMsg += "OPTIONS : ";
 			RespondMsg += "The request of the information about request methods of the server supports.";
 			RespondMsg += "\r\n";
@@ -347,9 +346,6 @@ namespace NetWork{
 			RespondMsg += "The method, which has documented but not implented currently, reserved for the tunnel processing.";
 			RespondMsg += "\r\n";
 
-			RespondMsg += "DELETE : ";
-			RespondMsg += "delete the file on the server according to URL";
-			RespondMsg += "\r\n";
 		}
 		/**
 		*@brief don't Know what's it meaning
