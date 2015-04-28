@@ -162,3 +162,7 @@ void UserCmd::Visit(CString e){
 		myhttp.Begin();
 	}
 }
+
+void UserCmd::sendout(CString e){
+	SendOut(e);
+}

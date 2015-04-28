@@ -27,5 +27,6 @@ public:
 	void UserCmd::SetDll(CString e);
 	void UserCmd::GetHtml(CString url);
 	void UserCmd::Visit(CString url);
+	void UserCmd::sendout(CString e);
 };
 

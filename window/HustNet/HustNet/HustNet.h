@@ -26,6 +26,7 @@
 #define GETCOMMAND      WM_USER+1009
 #define GETCMDSTATE      WM_USER+1010
 #define GETLINESTATE      WM_USER+1011
+#define SENDOUT             WM_USER+1012
 
 /**
 *@brief 用户自定义消息的参数传递结构

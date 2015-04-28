@@ -6,6 +6,7 @@
 #include "MainFrm.h"
 #include "NetSet.h"
 #include "UIctrl.h"
+//#include<process.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -21,8 +22,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_MESSAGE(DISPATCH,Dispatch)
+	ON_MESSAGE(SENDOUT,SendOut)
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_NETSET, &CMainFrame::OnNETSET)
+	ON_WM_COPYDATA()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -277,4 +280,35 @@ void CMainFrame::OnNETSET()
 	*@brief 模态显示设置对话框
 	*/
 	SetDlg.DoModal();
+}
+
+LRESULT CMainFrame::SendOut(WPARAM wparam, LPARAM lparam)
+{
+	CString *sendtext = (CString *)wparam;
+	COPYDATASTRUCT mycp;
+	HWND revhwnd = ::FindWindow(NULL, _T("NetProtocol"));
+	if (revhwnd == NULL){
+		AfxMessageBox(_T("网络协议未开启"));
+		return 0;
+	}
+	mycp.dwData = _getpid();
+	mycp.cbData = (*sendtext).GetLength()*sizeof(TCHAR);
+	mycp.lpData = (void*)(*sendtext).GetBuffer(0);
+	::SendMessage(revhwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
+	return 0;
+}
+
+BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	if (pCopyDataStruct != NULL)
+	{
+		LPCTSTR pszText = (LPCTSTR)(pCopyDataStruct->lpData);
+		DWORD   dwLength = (DWORD)(pCopyDataStruct->cbData);
+		CString mystr;
+		memcpy(mystr.GetBuffer(dwLength / sizeof(TCHAR)), pszText, dwLength);
+		mystr.ReleaseBuffer();
+		PrintRp(mystr);
+	}
+	return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
 }

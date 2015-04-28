@@ -160,3 +160,8 @@ void EndInput()
 	mycmd.para2 = NULL;
 	pframe->SendMessage(DISPATCH, CMDVIEW, LPARAM(&mycmd));
 }
+
+void SendOut(CString e)
+{
+	pframe->SendMessage(SENDOUT, (WPARAM)&e);
+}
