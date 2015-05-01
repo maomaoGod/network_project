@@ -61,6 +61,7 @@ protected:
 	CmdView         *pcmd;
 	RespondView   *prespond;
 	BOOL               flag;
+	HWND             protocolwnd;
 public:
 	CSplitterWnd    m_splitter, s_splitter;
 
@@ -87,6 +88,7 @@ public:
 	*/
 	afx_msg LRESULT Dispatch(WPARAM wparam, LPARAM lparam);
 	afx_msg LRESULT SendOut(WPARAM wparam, LPARAM lparam);
+	afx_msg LRESULT Register(WPARAM  wparam, LPARAM lparam);
 	afx_msg void OnClose();
 	afx_msg void OnNETSET();
 	afx_msg BOOL OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct);

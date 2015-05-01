@@ -7,6 +7,8 @@
 #include "NetSet.h"
 #include "UIctrl.h"
 //#include<process.h>
+#define SERVE 1000
+#define CLIENT 2000
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -23,6 +25,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_SIZE()
 	ON_MESSAGE(DISPATCH,Dispatch)
 	ON_MESSAGE(SENDOUT,SendOut)
+	ON_MESSAGE(REGISTER,Register)
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_NETSET, &CMainFrame::OnNETSET)
 	ON_WM_COPYDATA()
@@ -49,6 +52,7 @@ CMainFrame::CMainFrame()
 	*TODO:  在此添加成员初始化代码
 	*/
 	flag = false;
+	protocolwnd = NULL;
 }
 
 CMainFrame::~CMainFrame()
@@ -281,22 +285,36 @@ void CMainFrame::OnNETSET()
 	*/
 	SetDlg.DoModal();
 }
-
-LRESULT CMainFrame::SendOut(WPARAM wparam, LPARAM lparam)
+LRESULT CMainFrame::Register(WPARAM wparam, LPARAM lparam)
 {
-	CString *sendtext = (CString *)wparam;
 	COPYDATASTRUCT mycp;
-	HWND revhwnd = ::FindWindow(NULL, _T("NetProtocol"));
-	if (revhwnd == NULL){
+	protocolwnd = ::FindWindow(NULL, _T("NetProtocol"));
+	if (protocolwnd == NULL){
 		AfxMessageBox(_T("网络协议未开启"));
 		return 0;
 	}
+	mycp.dwData = CLIENT;
+	mycp.cbData = NULL;
+	mycp.lpData = NULL;
+	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
+	return 0;
+}
+
+LRESULT CMainFrame::SendOut(WPARAM wparam, LPARAM lparam)
+{
+	if (protocolwnd == NULL)//目前默认网络服务是启动的
+		Register(NULL,NULL);
+	if (protocolwnd == NULL)
+		return 0;
+	CString *sendtext = (CString *)wparam;
+	COPYDATASTRUCT mycp;
 	mycp.dwData = _getpid();
 	mycp.cbData = (*sendtext).GetLength()*sizeof(TCHAR);
 	mycp.lpData = (void*)(*sendtext).GetBuffer(0);
-	::SendMessage(revhwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
+	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
 	return 0;
 }
+
 
 BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
 {

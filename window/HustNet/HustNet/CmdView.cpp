@@ -7,6 +7,8 @@
 #include "UserCmd.h"
 #include "UICtrl.h"
 
+#define CLIENT 100
+
 IMPLEMENT_DYNCREATE(CmdView, CEditView)
 
 CmdView::CmdView()
@@ -267,7 +269,9 @@ void CmdView::OnInitialUpdate()
 	/**
 	*@brief ´òÓ¡ÃüÁîÌáÊ¾Óï
 	*/
+
 	SetHint(_T("Command:"));
+	AfxGetMainWnd()->SendMessage(REGISTER, NULL, NULL);
 	myedit->ReplaceSel(Hint);
 	HintLine = 0;
 }

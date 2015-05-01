@@ -165,3 +165,4 @@ void SendOut(CString e)
 {
 	pframe->SendMessage(SENDOUT, (WPARAM)&e);
 }
+
