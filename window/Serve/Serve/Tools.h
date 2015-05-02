@@ -31,6 +31,18 @@ namespace Tools{
 			}
 		}
 
+		static LPCWSTR String2LPCWSTR(string str){
+			/*wstring w_str = ANSIToUnicode(str);
+			LPCWSTR L_str = w_str.c_str();
+			return L_str;*/
+			size_t origsize = str.length() + 1;
+			const size_t newsize = 100;
+			size_t convertedChars = 0;
+			wchar_t *wcstring = (wchar_t *)malloc(sizeof(wchar_t)*(str.length() - 1));
+			mbstowcs_s(&convertedChars, wcstring, origsize, str.c_str(), _TRUNCATE);
+			return wcstring;
+		}
+
 		static LPSTR CString2LPSTR(CString Subject){
 			LPSTR sub = (LPSTR)Subject.GetBuffer();
 			Subject.ReleaseBuffer();

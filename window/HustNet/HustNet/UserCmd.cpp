@@ -106,10 +106,10 @@ void  UserCmd::Connect(CString e){
 	aSocket.Close();
 }
 
-void UserCmd::Mail(CString e)
+void UserCmd::Http(CString e)
 {
-	//MailSend mail;
-	//mail.Begin();
+	//HttpSend Http;
+	//Http.Begin();
 	AppLayerHttp html;
 	html.Begin();
 }

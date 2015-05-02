@@ -103,7 +103,6 @@
   <ItemGroup>
     <ClInclude Include="ClientSocket.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="mycsocket.h" />
     <ClInclude Include="MyServeSocket.h" />
     <ClInclude Include="NetWork.h" />
     <ClInclude Include="Resource.h" />
@@ -117,7 +116,6 @@
   <ItemGroup>
     <ClCompile Include="ClientSocket.cpp" />
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="mycsocket.cpp" />
     <ClCompile Include="MyServeSocket.cpp" />
     <ClCompile Include="Serve.cpp" />
     <ClCompile Include="ServeDoc.cpp" />

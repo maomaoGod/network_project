@@ -25,6 +25,8 @@
 #define PORT 6500
 /**@brief Return the Message OK*/
 #define MSG_OK 200
+/**@brief Return the Message Created*/
+#define Created 201
 /**@brief Return the Message BAD_REQUEST*/
 #define BAD_REQUEST 400
 /**@brief Return the Message Not Found*/
@@ -182,6 +184,7 @@ namespace NetWork{
 			while (fscanf_s(fp, "%s", t, 1024)!= -1){
 				temp = new string(t);
 				RespondMsg += *temp;
+				delete temp;
 			}
 			fclose(fp);
 		}
@@ -243,7 +246,7 @@ namespace NetWork{
 		*return OK
 		*/
 		void POST(vector<string> data){
-
+			
 		}
 		/**
 		*@brief PUT method
@@ -261,7 +264,38 @@ namespace NetWork{
 		* 3.2 return HAVE_EXISTED
 		*/
 		void PUT(vector<string> data){
-
+			RespondMsg = "PUT :";
+			//string p = servepath + data[1];
+			char path[1024];
+			int retMsg;
+			int i;
+			//memcpy(path, data[1].c_str(), data.size());
+			//path[data.size()] = '\0';
+			for (i = 0; i < data[1].length(); i++){
+				path[i] = data[1][i];
+			}
+			path[i] = '\0';
+			FILE *fp;
+			if (!fopen_s(&fp, path, "r"))
+			{
+				fclose(fp);
+				DeleteFile(STR::String2LPCWSTR(data[1]));
+				ErrorCode = MSG_OK;
+				RespondMsg += "change the file existed in serve";
+			}
+			else
+				ErrorCode = Created;
+			fopen_s(&fp, path, "w");
+			char *temp;
+			if (data.size() < 3) data.push_back("");
+			temp = (char *)malloc(sizeof(char)*(data[2].length() + 1));
+			for (i = 0; i < data[2].length(); i++)
+				temp[i] = data[2][i];
+			temp[i] = 0;
+			fprintf_s(fp, "%s\n",temp);
+			free(temp);
+			fclose(fp);
+			return;
 		}
 
 		/**
@@ -279,10 +313,29 @@ namespace NetWork{
 		* 3.1 return OK anyway
 		* 3.2 return warnning "NOT_EXIST"
 		*/
-		/*
-		void DELETE(vector<string> data){
-
-		}*/
+		
+		void DELETEFILE(vector<string> data){
+			//find file
+			RespondMsg = "File"+ data[1] + " have been DELETE";
+			//string p = servepath + data[1];
+			char t[1024];
+			char path[1024];
+			int i;
+			//memcpy(path, data[1].c_str(), data.size());
+			//path[data.size()] = '\0';
+			for (i = 0; i < data[1].length(); i++){
+				path[i] = data[1][i];
+			}
+			path[i] = '\0';
+			FILE *fp;
+			if (fopen_s(&fp, path, "r")){
+				ErrorCode = NO_FOUND;
+				return;
+			}
+			ErrorCode = MSG_OK;
+			fclose(fp);
+			DeleteFile(STR::String2LPCWSTR(data[1]));
+		}
 
 		/**
 		*@brief some options of request methods
@@ -298,18 +351,13 @@ namespace NetWork{
 		void OPTIONS(vector<string> data){
 			//find files
 			RespondMsg = "OPTIONSMSG : ";
-		//	string temp;
-			//if (fopen_s(&fp, path, "r")){
-			//	ErroeCode = ERROR;//return false message
-			//	return;
-			//}
 			ErrorCode = MSG_OK;
 			RespondMsg += "GET : ";
 			RespondMsg += "Retrieve a simple request URL identifying the resources.";
 			RespondMsg += "\r\n";
 
 			RespondMsg += "HEAD : ";
-			RespondMsg += "The same as the GET method, the server returns only the status line and head.";
+			RespondMsg += "Same as the GET method, the server returns only the status line and head.";
 			RespondMsg += "\r\n";
 
 			RespondMsg += "POST : "; 
@@ -320,13 +368,18 @@ namespace NetWork{
 			RespondMsg += "The server save request data as the specified URL request of new content.";
 			RespondMsg += "\r\n";
 
+			RespondMsg += "DELETE : ";
+			RespondMsg += "delete the file on the server according to URL";
+			RespondMsg += "\r\n";
+
 			RespondMsg += "OPTIONS : ";
 			RespondMsg += "The request of the information about request methods of the server supports.";
 			RespondMsg += "\r\n";
 
 			RespondMsg += "CONNECT : "; 
-			RespondMsg += "The method, which has documented but unrealized currently, reserved for the tunnel processing.";
+			RespondMsg += "The method, which has documented but not implented currently, reserved for the tunnel processing.";
 			RespondMsg += "\r\n";
+
 		}
 		/**
 		*@brief don't Know what's it meaning
@@ -351,8 +404,10 @@ namespace NetWork{
 		*this function leaved to satifiy other function
 		*and it doesn't has a function now
 		*/
-		void CONNECT(vector<string> data){
-
+		void CONNECT(vector<string> data){ 
+			RespondMsg = "The request from client has been received"; 
+			//The Method has been documented but is not currently implented ,reserved for channel processing 
+        
 		}
 
 		/**
@@ -376,7 +431,7 @@ namespace NetWork{
 			  Map it to 4*/
 			Function["PUT"] = Function["put"] = &AppLayerHttp::PUT;
 			/**@brief 服务器删除URI中命名的资源的请求, Map it to 5*/
-			//Function["DELETE"] = Function["delete"] = &AppLayerHttp::DELETE;
+			Function["DELETE"] = Function["delete"] = &AppLayerHttp::DELETEFILE;
 			/**@brief 关于服务器支持的请求方法信息的请求,
 			  Map it to 6*/
 			Function["OPTIONS"] = Function["options"] = &AppLayerHttp::OPTIONS;

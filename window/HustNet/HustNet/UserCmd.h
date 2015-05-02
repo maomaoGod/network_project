@@ -22,7 +22,7 @@ public:
 	void UserCmd::Compute(CString);
 	void UserCmd::Test(CString);
 	void UserCmd::Connect(CString e);
-	void UserCmd::Mail(CString);
+	void UserCmd::Http(CString);
 	void UserCmd::Chat(CString e);
 	void UserCmd::SetDll(CString e);
 	void UserCmd::GetHtml(CString url);

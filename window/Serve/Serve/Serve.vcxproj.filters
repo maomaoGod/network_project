@@ -48,11 +48,7 @@
     <ClInclude Include="NetWork.h">
       <Filter>头文件</Filter>
     </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="mycsocket.h">
-=======
     <ClInclude Include="Tools.h">
->>>>>>> origin/master
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -76,9 +72,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ClientSocket.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="mycsocket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

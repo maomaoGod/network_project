@@ -13,7 +13,7 @@
 #include "map"
 #include "Tools.h"
 #include "UICtrl.h"
-//#import "dll/Jmail.dll"
+//#import "dll/JHttp.dll"
 
 using namespace std;
 using namespace Tools;
@@ -164,7 +164,7 @@ namespace NetWork{
 		
 		void Begin(){
 			CString mystr;
-			TakeOverCmd(_T("http>"));
+			TakeOverCmd(_T("Myhttp>"));
 			while ((mystr = GetLine()).Compare(_T("exit")) != 0){
 				CleanRp(NULL);
 				PrintLog(_T("Accept ") + mystr);
@@ -185,7 +185,7 @@ namespace NetWork{
 					return;
 				}
 				//send
-				if (!Send(code[0], code[1])){
+				if (!Send(code[0], &code)){
 					PrintLog(_T("Interrupt Error!"));
 					return;
 				}
@@ -209,12 +209,12 @@ namespace NetWork{
 		 *   else return false
          *@remarks the format of sending message is "CMD + " " + PATH + " " + HOST"
 		 */
-		bool Send(CString Method, CString url){
+		bool Send(CString Method, CStringArray *url){
 			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
-			int i = url.Find(_T('/'));
+			int i = url->GetAt(1).Find(_T('/'));
 			//int i = url.Find(_T('\\'));
-			IP = url.Mid(0, i);
-			Path = url.Mid(i + 1);//
+			IP = url->GetAt(1).Mid(0, i);
+			Path = url->GetAt(1).Mid(i + 1);//
 			PrintLog(IP);
 			PrintLog(Path);
 			if(aSocket->Connect(IP, 6500)){
@@ -228,7 +228,12 @@ namespace NetWork{
 				PrintLog(error);
 				return false;
 			}
-			CString Msg = Method + _T(' ') + Path;
+			CString Msg, temp;
+			Msg = Method + _T(' ') + Path;
+			for (i = 2; i < url->GetSize(); i++){
+				temp = url->GetAt(i).Mid(0);
+				Msg = Msg + _T(' ') + temp;
+			}
 			aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
 			return true;
 		}
@@ -273,11 +278,11 @@ namespace NetWork{
 /*
 =======
 >>>>>>> parent of 0a428e0... the Http on Serve
-	//send a mail
-	class MailSend // use the
+	//send a Http
+	class HttpSend // use the
 	{
 	public:
-		MailSend(){
+		HttpSend(){
 			init();
 			CoInitialize(NULL);
 			UserName = _T("wangluokecs2012@163.com");
@@ -287,20 +292,20 @@ namespace NetWork{
 			MsgText = _T("World Beautiful\n");
 			RevAddr = _T("authwork2@163.com");
 		}
-		~MailSend(){
+		~HttpSend(){
 		}
 		void Begin(){
 			CString mystr;
-			TakeOverCmd(_T("Mail>"));
+			TakeOverCmd(_T("Http>"));
 			while ((mystr = GetLine()).Compare(_T("exit")) != 0){
 				PrintLog(_T("Accept ") + mystr);
-				switch (MailCmd[mystr]){
+				switch (HttpCmd[mystr]){
 				case 0: break;
 				case 1: break;
 				case 2: break;
 				case 3: break;
 				case 4:
-					SendMail();
+					SendHttp();
 					break;
 				case 5: SetRev(mystr); PrintRp(_T("set to send to ") + this->RevAddr); break;
 				default: PrintLog(_T("Error Code"));
@@ -311,7 +316,7 @@ namespace NetWork{
 		void SetSub(CString Sub){ this->Subject = Sub; }
 		void SetMsg(CString Msg){ this->MsgText = Msg; }
 	private:
-		map<CString, int> MailCmd;
+		map<CString, int> HttpCmd;
 		CString UserName, PassWord;
 		CString RevAddr, SendAddr;
 		CString Subject, MsgText;
@@ -320,16 +325,16 @@ namespace NetWork{
 		//http://hi.baidu.com/alalmn/item/48c2e0d33e959494260ae7a5
 
 		void init(){
-			MailCmd[_T("exit")] = 0;//exit
-			MailCmd[_T("user")] = MailCmd[_T("User")] = 1;//u
-			MailCmd[_T("password")] = MailCmd[_T("Password")] = 2;//pw
-			MailCmd[_T("STMP")] = 3;//set stmp
-			MailCmd[_T("Send")] = MailCmd[_T("send")] = 4;//send mail
-			MailCmd[_T("To")] = MailCmd[_T("to")] = 5;//to someone
+			HttpCmd[_T("exit")] = 0;//exit
+			HttpCmd[_T("user")] = HttpCmd[_T("User")] = 1;//u
+			HttpCmd[_T("password")] = HttpCmd[_T("Password")] = 2;//pw
+			HttpCmd[_T("STMP")] = 3;//set stmp
+			HttpCmd[_T("Send")] = HttpCmd[_T("send")] = 4;//send Http
+			HttpCmd[_T("To")] = HttpCmd[_T("to")] = 5;//to someone
 		}
-		void SendMail(){
+		void SendHttp(){
 			try{
-			    jmail::IMessagePtr pMsg("JMail.Message");//waitjmail::Message
+			    jHttp::IMessagePtr pMsg("JHttp.Message");//waitjHttp::Message
 		     	pMsg->Priority = 3;
 		    	pMsg->Charset = "GB2312";
 				pMsg->From = "wangluokecs2012@163.com";//Tstr::CS2S(UserName).c_str();
@@ -342,8 +347,8 @@ namespace NetWork{
 				pMsg->Subject = "abcd";//Tstr::CS2S(Subject).c_str();
 				pMsg->Body = "123456789";//Tstr::CS2S(MsgText).c_str();
 		    	pMsg->AppendText("You can add any words when you want\n");
-				//pMsg->MailServerUserName = "wangluokecs2012@163.com";//Tstr::CS2S(UserName).c_str();
-				//pMsg->MailServerPassWord = "111111z";// Tstr::CS2S(PassWord).c_str();
+				//pMsg->HttpServerUserName = "wangluokecs2012@163.com";//Tstr::CS2S(UserName).c_str();
+				//pMsg->HttpServerPassWord = "111111z";// Tstr::CS2S(PassWord).c_str();
 				//CString SendInfo = _T("");
 		    	//SendInfo += UserName;
 				//SendInfo += _T(":");
@@ -356,7 +361,7 @@ namespace NetWork{
 			}
 			catch(_com_error e){
 				PrintLog(e.ErrorMessage());
-				PrintRp(_T("确保你正确安装了Jmail组件"));
+				PrintRp(_T("确保你正确安装了JHttp组件"));
 			}
 		}
 	};
