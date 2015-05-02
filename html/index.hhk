@@ -1,0 +1,821 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML><HEAD></HEAD><BODY>
+<OBJECT type="text/site properties">
+<param name="FrameName" value="right">
+</OBJECT>
+<UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="stdafx_8h.html#ab5fd5e01d3484ef3116a878a65b82980"><param name="Name" value="_AFX_ALL_WARNINGS"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="stdafx_8h.html#a137e19a46f145129447af81af06def9f"><param name="Name" value="_ATL_CSTRING_EXPLICIT_CONSTRUCTORS"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html"><param name="Name" value="_iphdr"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#a5af87184474f134bf96960c86fc941d2"><param name="Name" value="ih_daddr"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#adcfce5667ddd3d24665301a534b33b2f"><param name="Name" value="ih_flags"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#a578f6e123bc8b20a9ebc5fd6138f1a3f"><param name="Name" value="ih_ident"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#af55beec9fe79b06b958b07f3a2d5ec4d"><param name="Name" value="ih_len"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#a6a9f8c410ca6d931c13df3ebee9b31f5"><param name="Name" value="ih_offset"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#af3db0099773965fc6b4020541ca51d7a"><param name="Name" value="ih_protl"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#a3f6d9c9e846fe723f8891bb580628b5b"><param name="Name" value="ih_saddr"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#aba024f892ebeb8b59aa48de7ef96da83"><param name="Name" value="ih_sum"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#a676c285d0252e0d59d0b06e74a799df8"><param name="Name" value="ih_TTL"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#a66e003cd5e4d7be2c636144c33d4f972"><param name="Name" value="ih_version"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_link_8h.html#aa8c08c31bd37680556c9bd1fe668587d"><param name="Name" value="address"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06"><param name="Name" value="agrs"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#a7710528b428c8d4e56155c27dade2255"><param name="Name" value="ANSIToUnicode"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#a345dd8be1f5d36ac1b3739798ec2323c"><param name="Name" value="AppLayerHttp"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ad037b25feaa1b40af8a97d63526c82b0"><param name="Name" value="BAD_REQUEST"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#ad2e8c8742f2c630bd2d43ad843454d7d"><param name="Name" value="Begin"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#ad2e8c8742f2c630bd2d43ad843454d7d"><param name="Name" value="NetWork::AppLayerHttp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_chat_work.html#ac019f44ad1ecc33ce3eb2c42b6b537d9"><param name="Name" value="NetWork::ChatWork"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a21d1ede1d36a306ef9df5087f0e482df"><param name="Name" value="Bellman_Ford"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_i_p_8h.html#afdcfe6db5bea87bd493a3fe2c513d5ef"><param name="Name" value="Bool"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a9f6978044496279cda1bd5b173d25f98"><param name="Name" value="buffer"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_i_p_8h.html#ae3a497195d617519e5353ea7b417940f"><param name="Name" value="Byte"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_i_p_8h.html#ae3a497195d617519e5353ea7b417940f"><param name="Name" value="CMyIP.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ae3a497195d617519e5353ea7b417940f"><param name="Name" value="NetWork.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_about_dlg.html"><param name="Name" value="CAboutDlg"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_about_dlg.html#a6d1e6a33fef23bee6e75254189d865ce"><param name="Name" value="CAboutDlg"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_about_dlg.html#ab83db7484fec957282d7d5a21aed4df4"><param name="Name" value="DoDataExchange"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_about_dlg.html#a27a5d4c47f16acb8562522fcd22871f7ab6703c7538518b2b788243189e9f7981"><param name="Name" value="IDD"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#a71f90ef095ee478df8cc7eee7ad6b34a"><param name="Name" value="CCarg"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a8b9f5a09bef002aaefe10c43ae9ccea1"><param name="Name" value="Chat"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_chat_work.html#a1a2845971e163edf987fe44364835642"><param name="Name" value="ChatWork"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a51ee35f9735f30e40a06b2b8bd8b0374"><param name="Name" value="CheckSum"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_app.html"><param name="Name" value="CHustNetApp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_app.html#ab40df4baff256d646818edee59cc856d"><param name="Name" value="CHustNetApp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_app.html#a68c2182155763c823a90dfc7aef09aed"><param name="Name" value="ExitInstance"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_app.html#acc049928befa55dcff74b72cc4bd7c94"><param name="Name" value="InitInstance"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_app.html#a314419de6b254967400e5d3c4dc498a3"><param name="Name" value="OnAppAbout"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_doc.html"><param name="Name" value="CHustNetDoc"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_doc.html#a22ef948387aaa7f13947bddfef9edec8"><param name="Name" value="CHustNetDoc"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_doc.html#ac0013a01c31c936b1b5cbc7c36750761"><param name="Name" value="OnNewDocument"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_doc.html#ac7e20c0fe4ba7e48f7c9fc9aa73b3a27"><param name="Name" value="Serialize"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_doc.html#a90f475070e7a0ba314f7ade7a99c690c"><param name="Name" value="~CHustNetDoc"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a35321edda7ad4639415e2461e6ffee97"><param name="Name" value="CLEAN"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a4e5d4e1f36ff464407795283e4f5e6bb"><param name="Name" value="Clean"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a4e5d4e1f36ff464407795283e4f5e6bb"><param name="Name" value="LogView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#aed388e2e32b778c01d2d62d73605573a"><param name="Name" value="RespondView"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a85b3c9729953ae18b38d28b90d829786"><param name="Name" value="CleanLog"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a85b3c9729953ae18b38d28b90d829786"><param name="Name" value="NetWork.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a3705da6c53d30365e51cf626e202c46a"><param name="Name" value="UICtrl.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a3705da6c53d30365e51cf626e202c46a"><param name="Name" value="UICtrl.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#ad75e005ff165f5d645b2520b644528bc"><param name="Name" value="cleanlog"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a977b03c3a05bd232dbcf4d72c35e99e4"><param name="Name" value="CleanRp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a977b03c3a05bd232dbcf4d72c35e99e4"><param name="Name" value="NetWork.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#aa219c6f9ca379d0752919e557aff652c"><param name="Name" value="UICtrl.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#aa219c6f9ca379d0752919e557aff652c"><param name="Name" value="UICtrl.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a10f84fa025b752236348cc8abd2fa5c7"><param name="Name" value="cleanrp"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html"><param name="Name" value="CMainFrame"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#af3e997aeae4148d2aaa4a1e1ae7bdd53"><param name="Name" value="CMainFrame"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#aa6d39f3a16a2947355671c6e08935ac5"><param name="Name" value="Dispatch"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#acc8011350a4c0e09615544cec6ea54e2"><param name="Name" value="flag"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#aa3db1bf0da21c70be44922472ac21629"><param name="Name" value="m_splitter"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#ac01bafc03aee69cf982e6f029b4db6b0"><param name="Name" value="m_wndStatusBar"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a73024d794dce2fe918f6b117371c25fc"><param name="Name" value="m_wndToolBar"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a1d2d2b0b5a12fa591dcbf41ec0368cc9"><param name="Name" value="OnClose"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a48666466fd37412fcaeff75c3b12e0ed"><param name="Name" value="OnCreate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#ac863d694fd3637d492ef97396defbd8e"><param name="Name" value="OnCreateClient"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a0bc8eb5d4e349686e7f8e0c49d975960"><param name="Name" value="OnNETSET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#adf171bf1f2c6f10cc85dbe8db3fc93f7"><param name="Name" value="OnSize"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a9612f08a26a535c724d623310ae059e7"><param name="Name" value="pcmd"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a3acb5d8a8a26cb461b2e1a909d677754"><param name="Name" value="plog"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a549bf677c955c2898c3c683321633c16"><param name="Name" value="PreCreateWindow"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a514ed5597f05ea03ff791712c4954fd5"><param name="Name" value="prespond"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#adc9cee77a6a044675256ebbb6f4a6f85"><param name="Name" value="s_splitter"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a8ae555f23fdf97edb4feb4d3e1bfa4ee"><param name="Name" value="~CMainFrame"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_c_m_d.html"><param name="Name" value="CMD"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06"><param name="Name" value="agrs"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123"><param name="Name" value="ID"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a517aff3912f23f34cb41fb73f64ae3da"><param name="Name" value="CMDFLAG"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8h.html#ab94db7a7ee6fdfb5653d93420dd7e605"><param name="Name" value="CMDPROC"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html"><param name="Name" value="CmdView"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8cpp.html"><param name="Name" value="CmdView.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8cpp.html#a51d83de12f1ffac0d0c0b179a04da04b"><param name="Name" value="command"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8cpp.html#ac98fa79d0cd4a0ea8770adbdbed08523"><param name="Name" value="LINEFLAG"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8cpp.html#afe737fd4786d010c30e5420d86621d7a"><param name="Name" value="pframe"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8cpp.html#a0cd657b8e4787b025be448cda40806a8"><param name="Name" value="THREADFLAG"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8h.html"><param name="Name" value="CmdView.h"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html"><param name="Name" value="CmdView"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#ae31e663e4f74df1e40414963b9d4decd"><param name="Name" value="CmdView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#aa343e34b3fe9c6097c39a416c8ec5206"><param name="Name" value="DEALCMD"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a71dba2e0097271efdc1874ff3a01847a"><param name="Name" value="DealCmdOver"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a9db1b898ce61e9feeb9a3255ac45b82d"><param name="Name" value="DealEnter"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#aa7ac29e83d2121fe7e64c080c21d15f9"><param name="Name" value="Hint"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a37ebd702dd26dc6a4c378de8d4bf3953"><param name="Name" value="HintLine"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a1d35095ccfccf06a328829d24ec0b56e"><param name="Name" value="HintPLen"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a2f6f0916cd8879b3787e80cb6e5a2713"><param name="Name" value="HintSLen"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a9580e7450fe37a3f37776bee58239d0f"><param name="Name" value="CMDVIEW"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html"><param name="Name" value="CmdView"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a70cf028b2bc48ea3e0e6be3319911c85"><param name="Name" value="Initialcmd"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a19fb61e29f7be75474462793ea26d461"><param name="Name" value="MapTask"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#aa45975ce8093a3ccde02c709c3650efa"><param name="Name" value="my_map"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a6a65029c8dcb40ac7a5d8edbdd79ac8d"><param name="Name" value="myedit"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a9d336de836b1bc820625f3ff4b4b00e2"><param name="Name" value="myfont"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a7763f6d4cc758e91aa4ac6d97b5a275b"><param name="Name" value="OnChar"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a7af91d10764494ca973bc5a75c00d192"><param name="Name" value="OnEndInput"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a37a513e8262ea52c1859f8be73dac1b7"><param name="Name" value="OnInitialUpdate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#ad5bd581e866507e6e5df9bf21e713167"><param name="Name" value="OnKeyDown"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#af1b4dfc22c2a118afd063542685fc22b"><param name="Name" value="OnKillFocus"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a47f9c86d720fa331d817b9c5ea87faf2"><param name="Name" value="OnLButtonDblClk"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a5bf736e0984b05d37a4e616b4978a9cb"><param name="Name" value="OnLButtonDown"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#aba679b7e777987aa1907e926161061f5"><param name="Name" value="OnSetHint"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a0e232f93af6910da0f91276e53552b0c"><param name="Name" value="OnSize"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a66c8fe29e4e6a3eb0568c5e04e49bfce"><param name="Name" value="OnTakeOverCmd"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a0b534cd0dd9587ad5fc8229236f51aff"><param name="Name" value="PreCreateWindow"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a35969585c6cfd4a688e47a45305ebb19"><param name="Name" value="tm"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a2aec9190b97078bcfe52ad300f95d723"><param name="Name" value="~CmdView"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html"><param name="Name" value="CMyIP"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_i_p_8h.html"><param name="Name" value="CMyIP.h"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_i_p_8h.html#afdcfe6db5bea87bd493a3fe2c513d5ef"><param name="Name" value="Bool"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_i_p_8h.html#ae3a497195d617519e5353ea7b417940f"><param name="Name" value="Byte"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_i_p_8h.html#a26260dbdd7d57ad52dac74400ef5a806"><param name="Name" value="IP_HEADER"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_i_p_8h.html#a2a37b4217917105aac7557862ccc19c3"><param name="Name" value="MAXSIZE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_i_p_8h.html#a918d39ae34d3ec6e05d65d2c9cb0a91c"><param name="Name" value="Ushort"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html"><param name="Name" value="CMyIP"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a21d1ede1d36a306ef9df5087f0e482df"><param name="Name" value="Bellman_Ford"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a9f6978044496279cda1bd5b173d25f98"><param name="Name" value="buffer"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a126b32612c243018b3e9b5619d5eb856"><param name="Name" value="CMyIP"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a120bdc8113391219647816fa1343f898"><param name="Name" value="Dijkstra"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a07910c5652a36d8d9576060b3863847a"><param name="Name" value="GetChecksum"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a7ed5496a94d202be9448548d96a883b5"><param name="Name" value="Init"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a624cb9b4f56b256b6b293c099830e1d9"><param name="Name" value="IP"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#ab5c47cd1d67f977482ac97738949f70d"><param name="Name" value="msg"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a0a7a0d741b596ec8a8e18ccc283c0faf"><param name="Name" value="netrevc"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a5d7eec6ec62a195051d4ac932a606885"><param name="Name" value="nettran"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a271212c5bf9cfdfbccc6b4059af1667a"><param name="Name" value="RecvMsg"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#af11b6cd5559748f39b1bfa01de48d1f9"><param name="Name" value="searchPath"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a96a36b4c414599190a3b4db4f2fda9da"><param name="Name" value="select_algorithm"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a6deb75746eb93a9f25a610e67bb43881"><param name="Name" value="SendMsg"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#ac96db1b531b7db8a157988b8f117222e"><param name="Name" value="~CMyIP"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_link.html"><param name="Name" value="CMyLink"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_link_8h.html"><param name="Name" value="CMyLink.h"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_link_8h.html#aa8c08c31bd37680556c9bd1fe668587d"><param name="Name" value="address"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_link_8h.html#ae452996c2b817e98190c105664a44d02"><param name="Name" value="control"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_link_8h.html#a42d9ecf703a72a5d43cfa2c509ce1760"><param name="Name" value="FCS"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_link_8h.html#a60d27eb06c862c0b99dddff53cad637d"><param name="Name" value="Flag"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_link_8h.html#a2c9f6aaedfee6aa8e3eb34dcfd95c714"><param name="Name" value="information"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_link_8h.html#a94a51b0c523a2b3facfac5f967ea95a6"><param name="Name" value="unPackage"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_link.html"><param name="Name" value="CMyLink"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_link.html#a31fdbea4b3a202ae60b25604cd425d21"><param name="Name" value="detect"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_link.html#a949eed5096e3c2baafffa2b18092d877"><param name="Name" value="modify"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8cpp.html#a51d83de12f1ffac0d0c0b179a04da04b"><param name="Name" value="command"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8cpp.html#a51d83de12f1ffac0d0c0b179a04da04b"><param name="Name" value="CmdView.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a51d83de12f1ffac0d0c0b179a04da04b"><param name="Name" value="UICtrl.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a7e760ac67d39d2b210b7d2b4f8e8ad5b"><param name="Name" value="Compute"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#abdb2a891ebfa05f462586a00b13cbcfc"><param name="Name" value="Connect"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_link_8h.html#ae452996c2b817e98190c105664a44d02"><param name="Name" value="control"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#ab04f92e2138747b61a1b07b29bb66584"><param name="Name" value="CS2S"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#aa70d4e2f9bedc4bb38245992bf419d33"><param name="Name" value="CString2LPSTR"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_msg.html#aef6a9de57d53c09913df9f5f5df25636"><param name="Name" value="data"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a5eca8f2769c4fa476a771771081a27d2"><param name="Name" value="data_alloc"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_msg.html#a9aac8e3ccbe6fd29bf81cd8bccad9796"><param name="Name" value="data_len"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#aa343e34b3fe9c6097c39a416c8ec5206"><param name="Name" value="DEALCMD"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a71dba2e0097271efdc1874ff3a01847a"><param name="Name" value="DealCmdOver"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#aab66ee9bad6d3beb85a36a8764e1ce00"><param name="Name" value="DEALCMDOVER"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a98813d34e2c94ec8f9e2365bc879f713"><param name="Name" value="DealCmdOver"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a9db1b898ce61e9feeb9a3255ac45b82d"><param name="Name" value="DealEnter"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#a729b6cc4eb16ebf18274d09c7a316639"><param name="Name" value="DealWith"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_link.html#a31fdbea4b3a202ae60b25604cd425d21"><param name="Name" value="detect"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a120bdc8113391219647816fa1343f898"><param name="Name" value="Dijkstra"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#aa6d39f3a16a2947355671c6e08935ac5"><param name="Name" value="Dispatch"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a40314433b5f301aaff50f5597553cc8d"><param name="Name" value="DISPATCH"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_about_dlg.html#ab83db7484fec957282d7d5a21aed4df4"><param name="Name" value="DoDataExchange"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_about_dlg.html#ab83db7484fec957282d7d5a21aed4df4"><param name="Name" value="CAboutDlg"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_set.html#a61c04304029a7cf98f0d47abbe85b1c3"><param name="Name" value="NetSet"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a4f7324820bec84fcf8e8d97f8067c411"><param name="Name" value="ENDINPUT"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a4fdd03168a7e6952059fcf83e88c70f7"><param name="Name" value="EndInput"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a4fdd03168a7e6952059fcf83e88c70f7"><param name="Name" value="UICtrl.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a4fdd03168a7e6952059fcf83e88c70f7"><param name="Name" value="UICtrl.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_app.html#a68c2182155763c823a90dfc7aef09aed"><param name="Name" value="ExitInstance"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_link_8h.html#a42d9ecf703a72a5d43cfa2c509ce1760"><param name="Name" value="FCS"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_chat_work.html#a030a91ddddf4b6f27ce499962577b166"><param name="Name" value="Finish"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#acc8011350a4c0e09615544cec6ea54e2"><param name="Name" value="flag"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_link_8h.html#a60d27eb06c862c0b99dddff53cad637d"><param name="Name" value="Flag"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_dlluser.html#af292a249c08b51f722687ecf0e95dd3c"><param name="Name" value="free_dll"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a07910c5652a36d8d9576060b3863847a"><param name="Name" value="GetChecksum"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#aad0bc64454e338f4cb5b0c00660bb9e4"><param name="Name" value="GetData"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_dll.html#a98851c5ab77e42a6f84bcfa3584496cf"><param name="Name" value="GetFun"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_dlluser.html#a7d4c9e34f5850354669031eab6a899a4"><param name="Name" value="Getfun"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#ad5fa0ccaab5d2a8bf2b4aeccc6c4c01b"><param name="Name" value="GetHtml"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ab7520283bb1638c3850a041326fddbde"><param name="Name" value="GetLine"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ab7520283bb1638c3850a041326fddbde"><param name="Name" value="NetWork.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#ab7520283bb1638c3850a041326fddbde"><param name="Name" value="UICtrl.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#ab7520283bb1638c3850a041326fddbde"><param name="Name" value="UICtrl.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_html_msg.html#a5263fc8aef7a166fb9da888e9d7ed7bd"><param name="Name" value="GetLog"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_html_msg.html#af4ba27d3eda2e50abeda122a94d60edb"><param name="Name" value="GetText"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_html.html#a1d26b557eca7cab7c987aae38438c3ae"><param name="Name" value="getURLContext"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_msg.html#af3a90ba3d7c4e9f62ecdab1acb085abf"><param name="Name" value="head"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_msg.html#af73f42ddc527ac66d003cc19d5e35204"><param name="Name" value="head_len"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#aa7ac29e83d2121fe7e64c080c21d15f9"><param name="Name" value="Hint"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a37ebd702dd26dc6a4c378de8d4bf3953"><param name="Name" value="HintLine"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a1d35095ccfccf06a328829d24ec0b56e"><param name="Name" value="HintPLen"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a2f6f0916cd8879b3787e80cb6e5a2713"><param name="Name" value="HintSLen"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_html_msg.html#a18fd075f30f2ade3371aebe9841defaa"><param name="Name" value="HtmlAsk"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_html_msg.html#a7b3c09f752a3799a9092c1eb06d4d3af"><param name="Name" value="HtmlMsg"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8cpp.html"><param name="Name" value="HustNet.cpp"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html"><param name="Name" value="HustNet.h"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a35321edda7ad4639415e2461e6ffee97"><param name="Name" value="CLEAN"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a9580e7450fe37a3f37776bee58239d0f"><param name="Name" value="CMDVIEW"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#aab66ee9bad6d3beb85a36a8764e1ce00"><param name="Name" value="DEALCMDOVER"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a40314433b5f301aaff50f5597553cc8d"><param name="Name" value="DISPATCH"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a4f7324820bec84fcf8e8d97f8067c411"><param name="Name" value="ENDINPUT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#ab5b352492259f7b453a051455d5dca50"><param name="Name" value="LOGVIEW"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a8b43bafee90b30676faae508c21cb8d7"><param name="Name" value="PRINT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a30981e40d70623319139bbd53110598b"><param name="Name" value="RELEASECMD"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#af9bea6e1d400f8ad8a0b6beb284ec026"><param name="Name" value="RPVIEW"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a1493ac161e08fbb6362f6d87d020af73"><param name="Name" value="SETHINT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#ac8852a933bbfae8f0123bcaaff258178"><param name="Name" value="SETTEXT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#acc3a7ee63421609bd755137323f747f4"><param name="Name" value="TAKEOVERCMD"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a42459c8764a93b5cbce88b391b78cbaf"><param name="Name" value="theApp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123"><param name="Name" value="ID"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a53581c94d68a38214c88769cb8a6f872"><param name="Name" value="ID_32771"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#afac62c38d3d7d17bfa00cfaa8d7bff7b"><param name="Name" value="ID_32772"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a433a74af960e1a47f0547fc74b9013af"><param name="Name" value="ID_32776"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ae4a7f77ece0a590f7160839dcb4619e8"><param name="Name" value="ID_BUTTON32775"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ad46e28f1b8a587c4dcb2b8f94f8a9d19"><param name="Name" value="ID_NETSET"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#acfb35c4efbc593430638b09db17f2870"><param name="Name" value="IDC_BUTTON1"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a6acf6d252c94ab75397fd635ba891820"><param name="Name" value="IDC_BUTTON2"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a726d1b2a635cfd773d6ad2f93f1fc979"><param name="Name" value="IDC_BUTTON3"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a3ffa378d89aac79fc22e3ff3c38e3a2c"><param name="Name" value="IDC_BUTTON4"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#acbe20d5aa5875e8f927fad66b7610c09"><param name="Name" value="IDC_COMBO1"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a86578d71321de628de974a1e34f4af35"><param name="Name" value="IDC_COMBO2"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ad123446cb35c803caf42a339fc842813"><param name="Name" value="IDC_EDIT1"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a4aae7cdb86571102c3b4483889b88c6f"><param name="Name" value="IDC_EDIT2"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a78256ad6735cd239d1646b4ac4cc503c"><param name="Name" value="IDC_LOCAL_Browse"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ab0b2aafb4c46c19a593318e0849c5771"><param name="Name" value="IDC_local_text"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a07cc7e2769836e76ef4a7ffd214fb497"><param name="Name" value="IDC_Server_Browse"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ab95a60315659a9ce561576709b5a512b"><param name="Name" value="IDC_server_text"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_about_dlg.html#a27a5d4c47f16acb8562522fcd22871f7ab6703c7538518b2b788243189e9f7981"><param name="Name" value="IDD"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_about_dlg.html#a27a5d4c47f16acb8562522fcd22871f7ab6703c7538518b2b788243189e9f7981"><param name="Name" value="CAboutDlg"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_set.html#ab0ebc3a002ec7cd48102c770127f24dca314c9fa6bb7b538742f609c51f1a0055"><param name="Name" value="NetSet"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a77a06326b569136edbb6c766bc98c33c"><param name="Name" value="IDD_ABOUTBOX"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ab794ba40dfcf73e112ade9f50c4565da"><param name="Name" value="IDD_DIALOG1"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a51bfece3be552381b4720b44e67d6705"><param name="Name" value="IDD_SET"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a455fef2a9349aae3af8ef8f24f6fc9d8"><param name="Name" value="IDI_ICON1"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a3bc3617e97f6aa1d2ae8cde548dcf6b9"><param name="Name" value="IDP_OLE_INIT_FAILED"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#afa0946ea538dae892395ced0e1b48113"><param name="Name" value="IDP_SOCKETS_INIT_FAILED"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ab09c5e24906e745bdaea74f0edd1410e"><param name="Name" value="IDR_HustNetTYPE"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a9772c84d39896ad00b9aeb34b15d324d"><param name="Name" value="IDR_MAINFRAME"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#a5af87184474f134bf96960c86fc941d2"><param name="Name" value="ih_daddr"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#adcfce5667ddd3d24665301a534b33b2f"><param name="Name" value="ih_flags"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#a578f6e123bc8b20a9ebc5fd6138f1a3f"><param name="Name" value="ih_ident"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#af55beec9fe79b06b958b07f3a2d5ec4d"><param name="Name" value="ih_len"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#a6a9f8c410ca6d931c13df3ebee9b31f5"><param name="Name" value="ih_offset"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#af3db0099773965fc6b4020541ca51d7a"><param name="Name" value="ih_protl"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#a3f6d9c9e846fe723f8891bb580628b5b"><param name="Name" value="ih_saddr"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#aba024f892ebeb8b59aa48de7ef96da83"><param name="Name" value="ih_sum"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#a676c285d0252e0d59d0b06e74a799df8"><param name="Name" value="ih_TTL"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct__iphdr.html#a66e003cd5e4d7be2c636144c33d4f972"><param name="Name" value="ih_version"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_link_8h.html#a2c9f6aaedfee6aa8e3eb34dcfd95c714"><param name="Name" value="information"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a7ed5496a94d202be9448548d96a883b5"><param name="Name" value="Init"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a70cf028b2bc48ea3e0e6be3319911c85"><param name="Name" value="Initialcmd"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_app.html#acc049928befa55dcff74b72cc4bd7c94"><param name="Name" value="InitInstance"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a104f9ef3cf399d33d7701d699579784c"><param name="Name" value="INPUTFLAG"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a624cb9b4f56b256b6b293c099830e1d9"><param name="Name" value="IP"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_i_p_8h.html#a26260dbdd7d57ad52dac74400ef5a806"><param name="Name" value="IP_HEADER"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_i_p__msg.html"><param name="Name" value="IP_msg"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_i_p__msg.html#a4394d5ba191e0b726b497acb4d17a726"><param name="Name" value="iphdr"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_i_p__msg.html#a391335099dff6defc0932df6d46394df"><param name="Name" value="msg"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_i_p__msg.html#a4394d5ba191e0b726b497acb4d17a726"><param name="Name" value="iphdr"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8cpp.html#ac98fa79d0cd4a0ea8770adbdbed08523"><param name="Name" value="LINEFLAG"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8cpp.html#ac98fa79d0cd4a0ea8770adbdbed08523"><param name="Name" value="CmdView.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#ac98fa79d0cd4a0ea8770adbdbed08523"><param name="Name" value="UICtrl.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_dlluser.html#abd38a787bd3e514439c89a614fba58da"><param name="Name" value="Load_dll"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_dll.html#abb349ff2f7a5d0cfc0906e70f7716638"><param name="Name" value="LoadDll"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#ad9dddd42d25a4b2b8e2e95f15189cadb"><param name="Name" value="Log"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#ad9dddd42d25a4b2b8e2e95f15189cadb"><param name="Name" value="LogView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#a6ec4de80582d7d396df393db01d53709"><param name="Name" value="NetWork::AppLayerHttp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a0938f28499b61191e3a2851e678f0021"><param name="Name" value="logcount"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html"><param name="Name" value="LogView"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a4e5d4e1f36ff464407795283e4f5e6bb"><param name="Name" value="Clean"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#ab5b352492259f7b453a051455d5dca50"><param name="Name" value="LOGVIEW"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html"><param name="Name" value="LogView"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#ad9dddd42d25a4b2b8e2e95f15189cadb"><param name="Name" value="Log"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a0938f28499b61191e3a2851e678f0021"><param name="Name" value="logcount"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a2fb392d2f295480df2296c4b448f618e"><param name="Name" value="LogView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a085da623df212edc5622ef2ec3a0ce7a"><param name="Name" value="OnChar"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a232ff62ea49ec88508db135c660c5a55"><param name="Name" value="OnDraw"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a8e8e673b89e4607aae5897736c1f4391"><param name="Name" value="OnInitialUpdate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a23a272c617396b0186ebf9038f09752e"><param name="Name" value="OnLButtonDblClk"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#ae4a33885ad9482550ccdda860f8f4001"><param name="Name" value="OnLButtonDown"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a844773769caae10293e51f8aa31902c5"><param name="Name" value="PreCreateWindow"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a4766c5dae6123e25eca63fed4050813e"><param name="Name" value="Print"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a09bd9b2d7c2b955bf092ef10bc20326f"><param name="Name" value="~LogView"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a7915cc7d6f413f35a3b0289764ece231"><param name="Name" value="m_clientAddr"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#aa3db1bf0da21c70be44922472ac21629"><param name="Name" value="m_splitter"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#ac01bafc03aee69cf982e6f029b4db6b0"><param name="Name" value="m_wndStatusBar"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a73024d794dce2fe918f6b117371c25fc"><param name="Name" value="m_wndToolBar"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a9c55a5ff5c5d0fa3598e7aac6c40db34"><param name="Name" value="Mail"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a19fb61e29f7be75474462793ea26d461"><param name="Name" value="MapTask"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_html_8cpp.html#ae6648cd71a8bd49d58ae8ed33ba910d1"><param name="Name" value="MAXLEN"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_i_p_8h.html#a2a37b4217917105aac7557862ccc19c3"><param name="Name" value="MAXSIZE"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_link.html#a949eed5096e3c2baafffa2b18092d877"><param name="Name" value="modify"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_msg.html"><param name="Name" value="Msg"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#ab5c47cd1d67f977482ac97738949f70d"><param name="Name" value="msg"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_msg.html"><param name="Name" value="Msg"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_msg.html#aef6a9de57d53c09913df9f5f5df25636"><param name="Name" value="data"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_msg.html#a9aac8e3ccbe6fd29bf81cd8bccad9796"><param name="Name" value="data_len"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_msg.html#af3a90ba3d7c4e9f62ecdab1acb085abf"><param name="Name" value="head"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_msg.html#af73f42ddc527ac66d003cc19d5e35204"><param name="Name" value="head_len"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_i_p__msg.html#a391335099dff6defc0932df6d46394df"><param name="Name" value="msg"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a4ff2533d4f42b5b10b6caf648a4619b4"><param name="Name" value="MSG_OK"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a116745cb27f6ce58412709aef5426f8f"><param name="Name" value="MsgMaker"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#aa45975ce8093a3ccde02c709c3650efa"><param name="Name" value="my_map"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a4ff0d7302a63f90b2f2c443c718ed18e"><param name="Name" value="mydll"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a4ff0d7302a63f90b2f2c443c718ed18e"><param name="Name" value="UserCmd"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_user_cmd_8cpp.html#af6da4feffe5fc079ad3f5f0046951cdb"><param name="Name" value="UserCmd.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a6a65029c8dcb40ac7a5d8edbdd79ac8d"><param name="Name" value="myedit"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a9d336de836b1bc820625f3ff4b4b00e2"><param name="Name" value="myfont"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a7781340e923d5555bfedbb64977fd14a"><param name="Name" value="MySocket"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a4a77355aeef1dc1fa51e3a53e6ebe52aa79a6b7f188a0c6c0f32beb8d40d5804a"><param name="Name" value="NEED"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_dll.html"><param name="Name" value="NetDll"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_dll_8cpp.html"><param name="Name" value="NetDll.cpp"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_dll.html"><param name="Name" value="NetDll"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_dll.html#a98851c5ab77e42a6f84bcfa3584496cf"><param name="Name" value="GetFun"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_dll.html#abb349ff2f7a5d0cfc0906e70f7716638"><param name="Name" value="LoadDll"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_dll.html#aa014b4f97b72a8fb5bf936e8bb0d74c3"><param name="Name" value="NetDll"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_dll.html#a27e156c4e33270dcf98f78a7328b86bc"><param name="Name" value="OpenDll"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_dll.html#a7e2a70eeb5838b1270cddaa71e337fd3"><param name="Name" value="~NetDll"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_html.html"><param name="Name" value="NetHtml"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_html_8cpp.html"><param name="Name" value="NetHtml.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_html_8cpp.html#ae6648cd71a8bd49d58ae8ed33ba910d1"><param name="Name" value="MAXLEN"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_html_8cpp.html#a9c2b5e88743a9770d87dab4b3ec274ec"><param name="Name" value="PrintLog"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_html.html"><param name="Name" value="NetHtml"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_html.html#a1d26b557eca7cab7c987aae38438c3ae"><param name="Name" value="getURLContext"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_html.html#ad17ff6c30cc899ba62dc45705e24196f"><param name="Name" value="NetHtml"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_html.html#a55361638a8c068b7529fcde82fe3314f"><param name="Name" value="~NetHtml"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a0a7a0d741b596ec8a8e18ccc283c0faf"><param name="Name" value="netrevc"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_set.html"><param name="Name" value="NetSet"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_set.html#a61c04304029a7cf98f0d47abbe85b1c3"><param name="Name" value="DoDataExchange"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_set.html#ab0ebc3a002ec7cd48102c770127f24dca314c9fa6bb7b538742f609c51f1a0055"><param name="Name" value="IDD"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_set.html#a57ddccb688e56c1ad45fc77bcfb8e61d"><param name="Name" value="NetSet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_set.html#a01bdeb52ebe03f753caae8ec26b4d9e3"><param name="Name" value="OnBnClickedLocalBrowse"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_set.html#a92d3389ce5b02a8e990318b65eb58ccb"><param name="Name" value="OnBnClickedServerBrowse"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_set.html#a6e44c515adaf8376628d90401fef6a80"><param name="Name" value="~NetSet"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a5d7eec6ec62a195051d4ac932a606885"><param name="Name" value="nettran"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work.html"><param name="Name" value="NetWork"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html"><param name="Name" value="NetWork.h"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ad037b25feaa1b40af8a97d63526c82b0"><param name="Name" value="BAD_REQUEST"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ae3a497195d617519e5353ea7b417940f"><param name="Name" value="Byte"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a85b3c9729953ae18b38d28b90d829786"><param name="Name" value="CleanLog"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a977b03c3a05bd232dbcf4d72c35e99e4"><param name="Name" value="CleanRp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ab7520283bb1638c3850a041326fddbde"><param name="Name" value="GetLine"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a4ff2533d4f42b5b10b6caf648a4619b4"><param name="Name" value="MSG_OK"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ad45b816df259bad82243706918385af1"><param name="Name" value="NO_FOUND"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a40532645f280e46572745353996b0128"><param name="Name" value="NO_REV_DATA"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ad003eaab2df88485728651fad2200a08"><param name="Name" value="NO_SOCKET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a614217d263be1fb1a5f76e2ff7be19a2"><param name="Name" value="PORT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a9c2b5e88743a9770d87dab4b3ec274ec"><param name="Name" value="PrintLog"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a37f502656ead81caea91832807d5ba94"><param name="Name" value="PrintRp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a358523fdd66e66a540f9cbdf9e141b37"><param name="Name" value="SCOKETNUM"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a2c381264f349b11e7959d11e88ffecee"><param name="Name" value="SetHint"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a850221fdc22e3e0628077942ed82fefb"><param name="Name" value="SetRp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a633b0396ff93d336a088412a190a5072"><param name="Name" value="SOCKET_ERROR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ad0fd7e12f565bc4202d32e726131e5c0"><param name="Name" value="TakeOverCmd"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html"><param name="Name" value="NetWork::AppLayerHttp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#a345dd8be1f5d36ac1b3739798ec2323c"><param name="Name" value="AppLayerHttp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#ad2e8c8742f2c630bd2d43ad843454d7d"><param name="Name" value="Begin"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#a729b6cc4eb16ebf18274d09c7a316639"><param name="Name" value="DealWith"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#aad0bc64454e338f4cb5b0c00660bb9e4"><param name="Name" value="GetData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#a6ec4de80582d7d396df393db01d53709"><param name="Name" value="Log"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#a9a48436e104c1e531081f296798afaf1"><param name="Name" value="Rev"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#a76efd6e6e3cca0ef2fe061483c12639e"><param name="Name" value="Send"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#a873986da382616782ff658ae62626baf"><param name="Name" value="~AppLayerHttp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_chat_work.html"><param name="Name" value="NetWork::ChatWork"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_chat_work.html#ac019f44ad1ecc33ce3eb2c42b6b537d9"><param name="Name" value="Begin"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_chat_work.html#a1a2845971e163edf987fe44364835642"><param name="Name" value="ChatWork"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_chat_work.html#a030a91ddddf4b6f27ce499962577b166"><param name="Name" value="Finish"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_chat_work.html#a7d3d758072616d486b6f48ae69abb638"><param name="Name" value="~ChatWork"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_f_t_p_work.html"><param name="Name" value="NetWork::FTPWork"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html"><param name="Name" value="NetWork::MySocket"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a51ee35f9735f30e40a06b2b8bd8b0374"><param name="Name" value="CheckSum"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a5eca8f2769c4fa476a771771081a27d2"><param name="Name" value="data_alloc"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a7781340e923d5555bfedbb64977fd14a"><param name="Name" value="MySocket"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a90b7b8d2226949b563741391d0b7913e"><param name="Name" value="OnReceive"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a77762a348b0c61d92731dca8f3e81112"><param name="Name" value="Revcer"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a7fb65798aae6e6681a3ba295cb402f3a"><param name="Name" value="Sender"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a3c9b24878730ffa128fe34b624352179"><param name="Name" value="SetHead"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#aa48ffad0cb32f77abb3105609abc42db"><param name="Name" value="SetIP"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a23489dde9b816aeef3c12fae4a86c2bf"><param name="Name" value="ZeroMemory"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_t_c_p.html"><param name="Name" value="NetWork::MyTCP"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_t_c_p.html#a4bea5a21c8f6a12fdfe7d3c9404f620c"><param name="Name" value="TCP_Accept"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_t_c_p.html#a2d749ef1958fae79ba55b9e602e4abd5"><param name="Name" value="TCP_Conn"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_t_c_p.html#accaa2e7ce792d2b4b632ccf3fe6ba112"><param name="Name" value="TCP_DisConn"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_t_c_p.html#a18dbbc17ebc8ad62eef69c0d85e196ae"><param name="Name" value="TCP_Listen"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_t_c_p.html#a60cf2b94496e75142c4a327c33dc9bc1"><param name="Name" value="TCP_Receive"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_t_c_p.html#a7918dccd020958d14cc39e7199a358f1"><param name="Name" value="TCP_Send"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html"><param name="Name" value="NetWork::MyUDP"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a7915cc7d6f413f35a3b0289764ece231"><param name="Name" value="m_clientAddr"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a116745cb27f6ce58412709aef5426f8f"><param name="Name" value="MsgMaker"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a198cb9ab4181edc1cf935b9b7b75dd45"><param name="Name" value="OnReceive"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a6cf86ea04e517b8b9e78d549d0c408cf"><param name="Name" value="ReceiveFrom"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a380729c2a6e12310a669a565290ebfe7"><param name="Name" value="SOCKADDR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a327631e1ba2b2bc91da09b4b95917331"><param name="Name" value="SOCKADDR_IN"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a77b7b5d547aa4cab7b8b9927386286c9"><param name="Name" value="UDP_Send"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a7961efb94162db03f449f8c8481c13d0a59d02b47a666732cc6577f158272b099"><param name="Name" value="NEWLINE"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ad45b816df259bad82243706918385af1"><param name="Name" value="NO_FOUND"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a40532645f280e46572745353996b0128"><param name="Name" value="NO_REV_DATA"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ad003eaab2df88485728651fad2200a08"><param name="Name" value="NO_SOCKET"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a7961efb94162db03f449f8c8481c13d0a7a251faff1066db3bc6a5b4c0f8a3b02"><param name="Name" value="OLDLINE"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_app.html#a314419de6b254967400e5d3c4dc498a3"><param name="Name" value="OnAppAbout"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_set.html#a01bdeb52ebe03f753caae8ec26b4d9e3"><param name="Name" value="OnBnClickedLocalBrowse"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_set.html#a92d3389ce5b02a8e990318b65eb58ccb"><param name="Name" value="OnBnClickedServerBrowse"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a7763f6d4cc758e91aa4ac6d97b5a275b"><param name="Name" value="OnChar"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a7763f6d4cc758e91aa4ac6d97b5a275b"><param name="Name" value="CmdView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a085da623df212edc5622ef2ec3a0ce7a"><param name="Name" value="LogView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a21b3a25f33bf78d3368b04f090111476"><param name="Name" value="RespondView"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a1d2d2b0b5a12fa591dcbf41ec0368cc9"><param name="Name" value="OnClose"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a48666466fd37412fcaeff75c3b12e0ed"><param name="Name" value="OnCreate"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#ac863d694fd3637d492ef97396defbd8e"><param name="Name" value="OnCreateClient"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a232ff62ea49ec88508db135c660c5a55"><param name="Name" value="OnDraw"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a232ff62ea49ec88508db135c660c5a55"><param name="Name" value="LogView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a1a213bce4ad6173e2c33515ab77a03e4"><param name="Name" value="RespondView"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a7af91d10764494ca973bc5a75c00d192"><param name="Name" value="OnEndInput"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a37a513e8262ea52c1859f8be73dac1b7"><param name="Name" value="OnInitialUpdate"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a37a513e8262ea52c1859f8be73dac1b7"><param name="Name" value="CmdView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a8e8e673b89e4607aae5897736c1f4391"><param name="Name" value="LogView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a0583a1c43e19f58fc7ac65abfaaef7ad"><param name="Name" value="RespondView"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#ad5bd581e866507e6e5df9bf21e713167"><param name="Name" value="OnKeyDown"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#af1b4dfc22c2a118afd063542685fc22b"><param name="Name" value="OnKillFocus"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a47f9c86d720fa331d817b9c5ea87faf2"><param name="Name" value="OnLButtonDblClk"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a47f9c86d720fa331d817b9c5ea87faf2"><param name="Name" value="CmdView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a23a272c617396b0186ebf9038f09752e"><param name="Name" value="LogView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a2c45049a27a5981a028757c70b16aef3"><param name="Name" value="RespondView"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a5bf736e0984b05d37a4e616b4978a9cb"><param name="Name" value="OnLButtonDown"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a5bf736e0984b05d37a4e616b4978a9cb"><param name="Name" value="CmdView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#ae4a33885ad9482550ccdda860f8f4001"><param name="Name" value="LogView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a7f2ab7999f9d1c5c9610118b181068bc"><param name="Name" value="RespondView"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a0bc8eb5d4e349686e7f8e0c49d975960"><param name="Name" value="OnNETSET"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_doc.html#ac0013a01c31c936b1b5cbc7c36750761"><param name="Name" value="OnNewDocument"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a90b7b8d2226949b563741391d0b7913e"><param name="Name" value="OnReceive"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a90b7b8d2226949b563741391d0b7913e"><param name="Name" value="NetWork::MySocket"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a198cb9ab4181edc1cf935b9b7b75dd45"><param name="Name" value="NetWork::MyUDP"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#aba679b7e777987aa1907e926161061f5"><param name="Name" value="OnSetHint"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#adf171bf1f2c6f10cc85dbe8db3fc93f7"><param name="Name" value="OnSize"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#adf171bf1f2c6f10cc85dbe8db3fc93f7"><param name="Name" value="CMainFrame"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a0e232f93af6910da0f91276e53552b0c"><param name="Name" value="CmdView"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a66c8fe29e4e6a3eb0568c5e04e49bfce"><param name="Name" value="OnTakeOverCmd"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_dll.html#a27e156c4e33270dcf98f78a7328b86bc"><param name="Name" value="OpenDll"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a9612f08a26a535c724d623310ae059e7"><param name="Name" value="pcmd"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8cpp.html#afe737fd4786d010c30e5420d86621d7a"><param name="Name" value="pframe"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8cpp.html#afe737fd4786d010c30e5420d86621d7a"><param name="Name" value="CmdView.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#afe737fd4786d010c30e5420d86621d7a"><param name="Name" value="UICtrl.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a3acb5d8a8a26cb461b2e1a909d677754"><param name="Name" value="plog"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a614217d263be1fb1a5f76e2ff7be19a2"><param name="Name" value="PORT"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a549bf677c955c2898c3c683321633c16"><param name="Name" value="PreCreateWindow"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a549bf677c955c2898c3c683321633c16"><param name="Name" value="CMainFrame"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a0b534cd0dd9587ad5fc8229236f51aff"><param name="Name" value="CmdView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a844773769caae10293e51f8aa31902c5"><param name="Name" value="LogView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#ac29f4edb19ed7a3bcfa0f5c21de864ae"><param name="Name" value="RespondView"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a514ed5597f05ea03ff791712c4954fd5"><param name="Name" value="prespond"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a8b43bafee90b30676faae508c21cb8d7"><param name="Name" value="PRINT"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a4766c5dae6123e25eca63fed4050813e"><param name="Name" value="Print"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a4766c5dae6123e25eca63fed4050813e"><param name="Name" value="LogView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#afb27e494304030a307d1d70e2f6d91af"><param name="Name" value="RespondView"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_dll_8cpp.html#a9c2b5e88743a9770d87dab4b3ec274ec"><param name="Name" value="PrintLog"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_dll_8cpp.html#a9c2b5e88743a9770d87dab4b3ec274ec"><param name="Name" value="NetDll.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_html_8cpp.html#a9c2b5e88743a9770d87dab4b3ec274ec"><param name="Name" value="NetHtml.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a9c2b5e88743a9770d87dab4b3ec274ec"><param name="Name" value="NetWork.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#acd5d76443a9392735027919ea424c69c"><param name="Name" value="UICtrl.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#acd5d76443a9392735027919ea424c69c"><param name="Name" value="UICtrl.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a37f502656ead81caea91832807d5ba94"><param name="Name" value="PrintRp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a37f502656ead81caea91832807d5ba94"><param name="Name" value="NetWork.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#ab0b8ca5aa66c11f8980688e92787f4f8"><param name="Name" value="UICtrl.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#ab0b8ca5aa66c11f8980688e92787f4f8"><param name="Name" value="UICtrl.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a6cf86ea04e517b8b9e78d549d0c408cf"><param name="Name" value="ReceiveFrom"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a271212c5bf9cfdfbccc6b4059af1667a"><param name="Name" value="RecvMsg"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a30981e40d70623319139bbd53110598b"><param name="Name" value="RELEASECMD"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a03c7b50705d669a45a607b33e9257427"><param name="Name" value="Res"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html"><param name="Name" value="Resource.h"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a53581c94d68a38214c88769cb8a6f872"><param name="Name" value="ID_32771"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#afac62c38d3d7d17bfa00cfaa8d7bff7b"><param name="Name" value="ID_32772"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a433a74af960e1a47f0547fc74b9013af"><param name="Name" value="ID_32776"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ae4a7f77ece0a590f7160839dcb4619e8"><param name="Name" value="ID_BUTTON32775"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ad46e28f1b8a587c4dcb2b8f94f8a9d19"><param name="Name" value="ID_NETSET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#acfb35c4efbc593430638b09db17f2870"><param name="Name" value="IDC_BUTTON1"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a6acf6d252c94ab75397fd635ba891820"><param name="Name" value="IDC_BUTTON2"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a726d1b2a635cfd773d6ad2f93f1fc979"><param name="Name" value="IDC_BUTTON3"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a3ffa378d89aac79fc22e3ff3c38e3a2c"><param name="Name" value="IDC_BUTTON4"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#acbe20d5aa5875e8f927fad66b7610c09"><param name="Name" value="IDC_COMBO1"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a86578d71321de628de974a1e34f4af35"><param name="Name" value="IDC_COMBO2"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ad123446cb35c803caf42a339fc842813"><param name="Name" value="IDC_EDIT1"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a4aae7cdb86571102c3b4483889b88c6f"><param name="Name" value="IDC_EDIT2"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a78256ad6735cd239d1646b4ac4cc503c"><param name="Name" value="IDC_LOCAL_Browse"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ab0b2aafb4c46c19a593318e0849c5771"><param name="Name" value="IDC_local_text"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a07cc7e2769836e76ef4a7ffd214fb497"><param name="Name" value="IDC_Server_Browse"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ab95a60315659a9ce561576709b5a512b"><param name="Name" value="IDC_server_text"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a77a06326b569136edbb6c766bc98c33c"><param name="Name" value="IDD_ABOUTBOX"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ab794ba40dfcf73e112ade9f50c4565da"><param name="Name" value="IDD_DIALOG1"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a51bfece3be552381b4720b44e67d6705"><param name="Name" value="IDD_SET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a455fef2a9349aae3af8ef8f24f6fc9d8"><param name="Name" value="IDI_ICON1"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a3bc3617e97f6aa1d2ae8cde548dcf6b9"><param name="Name" value="IDP_OLE_INIT_FAILED"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#afa0946ea538dae892395ced0e1b48113"><param name="Name" value="IDP_SOCKETS_INIT_FAILED"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#ab09c5e24906e745bdaea74f0edd1410e"><param name="Name" value="IDR_HustNetTYPE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_resource_8h.html#a9772c84d39896ad00b9aeb34b15d324d"><param name="Name" value="IDR_MAINFRAME"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html"><param name="Name" value="RespondView"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#aed388e2e32b778c01d2d62d73605573a"><param name="Name" value="Clean"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a21b3a25f33bf78d3368b04f090111476"><param name="Name" value="OnChar"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a1a213bce4ad6173e2c33515ab77a03e4"><param name="Name" value="OnDraw"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a0583a1c43e19f58fc7ac65abfaaef7ad"><param name="Name" value="OnInitialUpdate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a2c45049a27a5981a028757c70b16aef3"><param name="Name" value="OnLButtonDblClk"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a7f2ab7999f9d1c5c9610118b181068bc"><param name="Name" value="OnLButtonDown"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#ac29f4edb19ed7a3bcfa0f5c21de864ae"><param name="Name" value="PreCreateWindow"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#afb27e494304030a307d1d70e2f6d91af"><param name="Name" value="Print"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a03c7b50705d669a45a607b33e9257427"><param name="Name" value="Res"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a9be40aab037d15a1a502519a77f1d038"><param name="Name" value="RespondView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a8c96d8080a1beebacd81c00f48652688"><param name="Name" value="SetText"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#ac9c59ee4f18e9bd2be4f88e272ad9b40"><param name="Name" value="tm"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a45df267cf707ce6edafa20c1c2dafc65"><param name="Name" value="~RespondView"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#a9a48436e104c1e531081f296798afaf1"><param name="Name" value="Rev"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a77762a348b0c61d92731dca8f3e81112"><param name="Name" value="Revcer"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a20e9d3b615977d0cfd7442fb6e620448ad41208b99e347d1726824779b11ea11b"><param name="Name" value="ROOT"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#af9bea6e1d400f8ad8a0b6beb284ec026"><param name="Name" value="RPVIEW"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#a6f9002ef49d85db27430acae6733a747"><param name="Name" value="S2Cstar"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#adc9cee77a6a044675256ebbb6f4a6f85"><param name="Name" value="s_splitter"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a358523fdd66e66a540f9cbdf9e141b37"><param name="Name" value="SCOKETNUM"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#af11b6cd5559748f39b1bfa01de48d1f9"><param name="Name" value="searchPath"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a96a36b4c414599190a3b4db4f2fda9da"><param name="Name" value="select_algorithm"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#a76efd6e6e3cca0ef2fe061483c12639e"><param name="Name" value="Send"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a7fb65798aae6e6681a3ba295cb402f3a"><param name="Name" value="Sender"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#a6deb75746eb93a9f25a610e67bb43881"><param name="Name" value="SendMsg"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_doc.html#ac7e20c0fe4ba7e48f7c9fc9aa73b3a27"><param name="Name" value="Serialize"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_dlluser.html#a2f4b4eb5dbbc70599dff66b18400a5aa"><param name="Name" value="Set_fun_name"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#acab5b5cbfcc9b92f860b3d48ae1c4ab5"><param name="Name" value="SetDll"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a3c9b24878730ffa128fe34b624352179"><param name="Name" value="SetHead"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a1493ac161e08fbb6362f6d87d020af73"><param name="Name" value="SETHINT"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a2c381264f349b11e7959d11e88ffecee"><param name="Name" value="SetHint"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a2c381264f349b11e7959d11e88ffecee"><param name="Name" value="NetWork.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a2c381264f349b11e7959d11e88ffecee"><param name="Name" value="UICtrl.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a2c381264f349b11e7959d11e88ffecee"><param name="Name" value="UICtrl.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#aa48ffad0cb32f77abb3105609abc42db"><param name="Name" value="SetIP"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_dlluser.html#a13cb9ce942d8a3a48b8601ab84d5e8be"><param name="Name" value="Setpath"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a850221fdc22e3e0628077942ed82fefb"><param name="Name" value="SetRp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a850221fdc22e3e0628077942ed82fefb"><param name="Name" value="NetWork.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a090c13e1e646196c7caa6e206bef2ab2"><param name="Name" value="UICtrl.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a090c13e1e646196c7caa6e206bef2ab2"><param name="Name" value="UICtrl.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#ac8852a933bbfae8f0123bcaaff258178"><param name="Name" value="SETTEXT"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a8c96d8080a1beebacd81c00f48652688"><param name="Name" value="SetText"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_html_msg.html#a5f310c4e546a62bab80d5818b6926391"><param name="Name" value="SetUrl"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a380729c2a6e12310a669a565290ebfe7"><param name="Name" value="SOCKADDR"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a327631e1ba2b2bc91da09b4b95917331"><param name="Name" value="SOCKADDR_IN"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#a633b0396ff93d336a088412a190a5072"><param name="Name" value="SOCKET_ERROR"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="stdafx_8h.html"><param name="Name" value="stdafx.h"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="stdafx_8h.html#ab5fd5e01d3484ef3116a878a65b82980"><param name="Name" value="_AFX_ALL_WARNINGS"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="stdafx_8h.html#a137e19a46f145129447af81af06def9f"><param name="Name" value="_ATL_CSTRING_EXPLICIT_CONSTRUCTORS"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="stdafx_8h.html#a0172fbace36625330d5f0f163a1ddc1a"><param name="Name" value="VC_EXTRALEAN"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#a73550e362f50715445fe5dc9fef26b1e"><param name="Name" value="String2LPCWSTR"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#acc3a7ee63421609bd755137323f747f4"><param name="Name" value="TAKEOVERCMD"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ad0fd7e12f565bc4202d32e726131e5c0"><param name="Name" value="TakeOverCmd"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_net_work_8h.html#ad0fd7e12f565bc4202d32e726131e5c0"><param name="Name" value="NetWork.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#ad0fd7e12f565bc4202d32e726131e5c0"><param name="Name" value="UICtrl.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#ad0fd7e12f565bc4202d32e726131e5c0"><param name="Name" value="UICtrl.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#af2dbe21365f53b0bd531cf356d6b566f"><param name="Name" value="Tchar2string"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_t_c_p.html#a4bea5a21c8f6a12fdfe7d3c9404f620c"><param name="Name" value="TCP_Accept"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_t_c_p.html#a2d749ef1958fae79ba55b9e602e4abd5"><param name="Name" value="TCP_Conn"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_t_c_p.html#accaa2e7ce792d2b4b632ccf3fe6ba112"><param name="Name" value="TCP_DisConn"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_t_c_p.html#a18dbbc17ebc8ad62eef69c0d85e196ae"><param name="Name" value="TCP_Listen"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_t_c_p.html#a60cf2b94496e75142c4a327c33dc9bc1"><param name="Name" value="TCP_Receive"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_t_c_p.html#a7918dccd020958d14cc39e7199a358f1"><param name="Name" value="TCP_Send"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a9c95465315585152c27c5cd5b9ace5a9"><param name="Name" value="Test"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8cpp.html#a42459c8764a93b5cbce88b391b78cbaf"><param name="Name" value="theApp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8cpp.html#a42459c8764a93b5cbce88b391b78cbaf"><param name="Name" value="HustNet.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_hust_net_8h.html#a42459c8764a93b5cbce88b391b78cbaf"><param name="Name" value="HustNet.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a275a67132f10277ada3a0ee3d616b647aab31e2753b087bbf42820595baed5604"><param name="Name" value="THREAD_EXIT"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a275a67132f10277ada3a0ee3d616b647a8ace4889a9b4f158f892668a64606a94"><param name="Name" value="THREAD_RUN"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a275a67132f10277ada3a0ee3d616b647adf9d72e375e5227ce6d75cb44d59bd54"><param name="Name" value="THREAD_WAIT"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8cpp.html#a0cd657b8e4787b025be448cda40806a8"><param name="Name" value="THREADFLAG"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_cmd_view_8cpp.html#a0cd657b8e4787b025be448cda40806a8"><param name="Name" value="CmdView.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a0cd657b8e4787b025be448cda40806a8"><param name="Name" value="UICtrl.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a35969585c6cfd4a688e47a45305ebb19"><param name="Name" value="tm"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a35969585c6cfd4a688e47a45305ebb19"><param name="Name" value="CmdView"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#ac9c59ee4f18e9bd2be4f88e272ad9b40"><param name="Name" value="RespondView"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools.html"><param name="Name" value="Tools"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_dlluser.html"><param name="Name" value="Tools::Dlluser"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_dlluser.html#af292a249c08b51f722687ecf0e95dd3c"><param name="Name" value="free_dll"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_dlluser.html#a7d4c9e34f5850354669031eab6a899a4"><param name="Name" value="Getfun"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_dlluser.html#abd38a787bd3e514439c89a614fba58da"><param name="Name" value="Load_dll"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_dlluser.html#a2f4b4eb5dbbc70599dff66b18400a5aa"><param name="Name" value="Set_fun_name"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_dlluser.html#a13cb9ce942d8a3a48b8601ab84d5e8be"><param name="Name" value="Setpath"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_html_msg.html"><param name="Name" value="Tools::HtmlMsg"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_html_msg.html#a5263fc8aef7a166fb9da888e9d7ed7bd"><param name="Name" value="GetLog"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_html_msg.html#af4ba27d3eda2e50abeda122a94d60edb"><param name="Name" value="GetText"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_html_msg.html#a18fd075f30f2ade3371aebe9841defaa"><param name="Name" value="HtmlAsk"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_html_msg.html#a7b3c09f752a3799a9092c1eb06d4d3af"><param name="Name" value="HtmlMsg"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_html_msg.html#a5f310c4e546a62bab80d5818b6926391"><param name="Name" value="SetUrl"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_html_msg.html#aa2f1e72cbb7f23b077e1a3d4f031abab"><param name="Name" value="~HtmlMsg"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html"><param name="Name" value="Tools::Tstr"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#a7710528b428c8d4e56155c27dade2255"><param name="Name" value="ANSIToUnicode"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#a71f90ef095ee478df8cc7eee7ad6b34a"><param name="Name" value="CCarg"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#ab04f92e2138747b61a1b07b29bb66584"><param name="Name" value="CS2S"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#aa70d4e2f9bedc4bb38245992bf419d33"><param name="Name" value="CString2LPSTR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#a6f9002ef49d85db27430acae6733a747"><param name="Name" value="S2Cstar"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#a73550e362f50715445fe5dc9fef26b1e"><param name="Name" value="String2LPCWSTR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_tstr.html#af2dbe21365f53b0bd531cf356d6b566f"><param name="Name" value="Tchar2string"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_u_d_p.html#a77b7b5d547aa4cab7b8b9927386286c9"><param name="Name" value="UDP_Send"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html"><param name="Name" value="UICtrl.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a3705da6c53d30365e51cf626e202c46a"><param name="Name" value="CleanLog"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#aa219c6f9ca379d0752919e557aff652c"><param name="Name" value="CleanRp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a517aff3912f23f34cb41fb73f64ae3da"><param name="Name" value="CMDFLAG"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a51d83de12f1ffac0d0c0b179a04da04b"><param name="Name" value="command"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a4fdd03168a7e6952059fcf83e88c70f7"><param name="Name" value="EndInput"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#ab7520283bb1638c3850a041326fddbde"><param name="Name" value="GetLine"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a104f9ef3cf399d33d7701d699579784c"><param name="Name" value="INPUTFLAG"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#ac98fa79d0cd4a0ea8770adbdbed08523"><param name="Name" value="LINEFLAG"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#afe737fd4786d010c30e5420d86621d7a"><param name="Name" value="pframe"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#acd5d76443a9392735027919ea424c69c"><param name="Name" value="PrintLog"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#ab0b8ca5aa66c11f8980688e92787f4f8"><param name="Name" value="PrintRp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a2c381264f349b11e7959d11e88ffecee"><param name="Name" value="SetHint"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a090c13e1e646196c7caa6e206bef2ab2"><param name="Name" value="SetRp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#ad0fd7e12f565bc4202d32e726131e5c0"><param name="Name" value="TakeOverCmd"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8cpp.html#a0cd657b8e4787b025be448cda40806a8"><param name="Name" value="THREADFLAG"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html"><param name="Name" value="UICtrl.h"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a3705da6c53d30365e51cf626e202c46a"><param name="Name" value="CleanLog"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#aa219c6f9ca379d0752919e557aff652c"><param name="Name" value="CleanRp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a98813d34e2c94ec8f9e2365bc879f713"><param name="Name" value="DealCmdOver"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a4fdd03168a7e6952059fcf83e88c70f7"><param name="Name" value="EndInput"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#ab7520283bb1638c3850a041326fddbde"><param name="Name" value="GetLine"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a4a77355aeef1dc1fa51e3a53e6ebe52aa79a6b7f188a0c6c0f32beb8d40d5804a"><param name="Name" value="NEED"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a7961efb94162db03f449f8c8481c13d0a59d02b47a666732cc6577f158272b099"><param name="Name" value="NEWLINE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a7961efb94162db03f449f8c8481c13d0a7a251faff1066db3bc6a5b4c0f8a3b02"><param name="Name" value="OLDLINE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#acd5d76443a9392735027919ea424c69c"><param name="Name" value="PrintLog"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#ab0b8ca5aa66c11f8980688e92787f4f8"><param name="Name" value="PrintRp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a20e9d3b615977d0cfd7442fb6e620448ad41208b99e347d1726824779b11ea11b"><param name="Name" value="ROOT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a2c381264f349b11e7959d11e88ffecee"><param name="Name" value="SetHint"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a090c13e1e646196c7caa6e206bef2ab2"><param name="Name" value="SetRp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#ad0fd7e12f565bc4202d32e726131e5c0"><param name="Name" value="TakeOverCmd"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a275a67132f10277ada3a0ee3d616b647aab31e2753b087bbf42820595baed5604"><param name="Name" value="THREAD_EXIT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a275a67132f10277ada3a0ee3d616b647a8ace4889a9b4f158f892668a64606a94"><param name="Name" value="THREAD_RUN"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a275a67132f10277ada3a0ee3d616b647adf9d72e375e5227ce6d75cb44d59bd54"><param name="Name" value="THREAD_WAIT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a4a77355aeef1dc1fa51e3a53e6ebe52aa5b45ac6888637801d48443ad9903513f"><param name="Name" value="UNNEED"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a20e9d3b615977d0cfd7442fb6e620448ae2d30a195cee6b2961cc2c23ea4b520b"><param name="Name" value="USER"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a4a77355aeef1dc1fa51e3a53e6ebe52aa5b45ac6888637801d48443ad9903513f"><param name="Name" value="UNNEED"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_link_8h.html#a94a51b0c523a2b3facfac5f967ea95a6"><param name="Name" value="unPackage"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_u_i_ctrl_8h.html#a20e9d3b615977d0cfd7442fb6e620448ae2d30a195cee6b2961cc2c23ea4b520b"><param name="Name" value="USER"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html"><param name="Name" value="UserCmd"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_user_cmd_8cpp.html"><param name="Name" value="UserCmd.cpp"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html"><param name="Name" value="UserCmd"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a8b9f5a09bef002aaefe10c43ae9ccea1"><param name="Name" value="Chat"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#ad75e005ff165f5d645b2520b644528bc"><param name="Name" value="cleanlog"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a10f84fa025b752236348cc8abd2fa5c7"><param name="Name" value="cleanrp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a7e760ac67d39d2b210b7d2b4f8e8ad5b"><param name="Name" value="Compute"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#abdb2a891ebfa05f462586a00b13cbcfc"><param name="Name" value="Connect"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#ad5fa0ccaab5d2a8bf2b4aeccc6c4c01b"><param name="Name" value="GetHtml"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a9c55a5ff5c5d0fa3598e7aac6c40db34"><param name="Name" value="Mail"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a4ff0d7302a63f90b2f2c443c718ed18e"><param name="Name" value="mydll"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#acab5b5cbfcc9b92f860b3d48ae1c4ab5"><param name="Name" value="SetDll"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a9c95465315585152c27c5cd5b9ace5a9"><param name="Name" value="Test"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#a8ef84a7f95b07422d00ec8853a955ce9"><param name="Name" value="UserCmd"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#ab62eae85b2647644549e6b27f8bfa5ee"><param name="Name" value="~UserCmd"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_c_my_i_p_8h.html#a918d39ae34d3ec6e05d65d2c9cb0a91c"><param name="Name" value="Ushort"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="stdafx_8h.html#a0172fbace36625330d5f0f163a1ddc1a"><param name="Name" value="VC_EXTRALEAN"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_my_socket.html#a23489dde9b816aeef3c12fae4a86c2bf"><param name="Name" value="ZeroMemory"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_app_layer_http.html#a873986da382616782ff658ae62626baf"><param name="Name" value="~AppLayerHttp"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_work_1_1_chat_work.html#a7d3d758072616d486b6f48ae69abb638"><param name="Name" value="~ChatWork"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_hust_net_doc.html#a90f475070e7a0ba314f7ade7a99c690c"><param name="Name" value="~CHustNetDoc"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_main_frame.html#a8ae555f23fdf97edb4feb4d3e1bfa4ee"><param name="Name" value="~CMainFrame"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_cmd_view.html#a2aec9190b97078bcfe52ad300f95d723"><param name="Name" value="~CmdView"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_c_my_i_p.html#ac96db1b531b7db8a157988b8f117222e"><param name="Name" value="~CMyIP"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tools_1_1_html_msg.html#aa2f1e72cbb7f23b077e1a3d4f031abab"><param name="Name" value="~HtmlMsg"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_log_view.html#a09bd9b2d7c2b955bf092ef10bc20326f"><param name="Name" value="~LogView"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_dll.html#a7e2a70eeb5838b1270cddaa71e337fd3"><param name="Name" value="~NetDll"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_html.html#a55361638a8c068b7529fcde82fe3314f"><param name="Name" value="~NetHtml"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_net_set.html#a6e44c515adaf8376628d90401fef6a80"><param name="Name" value="~NetSet"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_respond_view.html#a45df267cf707ce6edafa20c1c2dafc65"><param name="Name" value="~RespondView"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_user_cmd.html#ab62eae85b2647644549e6b27f8bfa5ee"><param name="Name" value="~UserCmd"></OBJECT>
+</UL>
+</BODY>
+</HTML>

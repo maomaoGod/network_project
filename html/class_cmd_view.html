@@ -1,0 +1,1059 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>My Project: CmdView类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">My Project
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.8.9.1 -->
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>首页</span></a></li>
+      <li><a href="namespaces.html"><span>命名空间</span></a></li>
+      <li class="current"><a href="annotated.html"><span>类</span></a></li>
+      <li><a href="files.html"><span>文件</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>类列表</span></a></li>
+      <li><a href="classes.html"><span>类索引</span></a></li>
+      <li><a href="inherits.html"><span>类继承关系</span></a></li>
+      <li><a href="functions.html"><span>类成员</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
+<a href="#pro-methods">Protected 成员函数</a> &#124;
+<a href="#pro-attribs">Protected 属性</a> &#124;
+<a href="class_cmd_view-members.html">所有成员列表</a>  </div>
+  <div class="headertitle">
+<div class="title">CmdView类 参考</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>CmdView位于主界面左上角,主要完成命令的输入(界面控制),命令解析和命令映射(功能映射)。  
+ <a href="class_cmd_view.html#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_cmd_view_8h_source.html">CmdView.h</a>&gt;</code></p>
+<div class="dynheader">
+类 CmdView 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view__inherit__graph.svg" width="94" height="112"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+CmdView 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view__coll__graph.svg" width="94" height="112"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a7763f6d4cc758e91aa4ac6d97b5a275b"><td class="memItemLeft" align="right" valign="top">afx_msg void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a7763f6d4cc758e91aa4ac6d97b5a275b">OnChar</a> (UINT nChar, UINT nRepCnt, UINT nFlags)</td></tr>
+<tr class="memdesc:a7763f6d4cc758e91aa4ac6d97b5a275b"><td class="mdescLeft">&#160;</td><td class="mdescRight">函数在按下非系统键时触发,在OnKeyDown之后,OnKeyUp之前。  <a href="#a7763f6d4cc758e91aa4ac6d97b5a275b">更多...</a><br /></td></tr>
+<tr class="separator:a7763f6d4cc758e91aa4ac6d97b5a275b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37a513e8262ea52c1859f8be73dac1b7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a37a513e8262ea52c1859f8be73dac1b7">OnInitialUpdate</a> ()</td></tr>
+<tr class="memdesc:a37a513e8262ea52c1859f8be73dac1b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">函数在视图附加到文档后触发,主要完成界面的初始化工作  <a href="#a37a513e8262ea52c1859f8be73dac1b7">更多...</a><br /></td></tr>
+<tr class="separator:a37a513e8262ea52c1859f8be73dac1b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b534cd0dd9587ad5fc8229236f51aff"><td class="memItemLeft" align="right" valign="top">virtual BOOL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a0b534cd0dd9587ad5fc8229236f51aff">PreCreateWindow</a> (CREATESTRUCT &amp;cs)</td></tr>
+<tr class="memdesc:a0b534cd0dd9587ad5fc8229236f51aff"><td class="mdescLeft">&#160;</td><td class="mdescRight">CmdView框体的属性设置  <a href="#a0b534cd0dd9587ad5fc8229236f51aff">更多...</a><br /></td></tr>
+<tr class="separator:a0b534cd0dd9587ad5fc8229236f51aff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bf736e0984b05d37a4e616b4978a9cb"><td class="memItemLeft" align="right" valign="top">afx_msg void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a5bf736e0984b05d37a4e616b4978a9cb">OnLButtonDown</a> (UINT nFlags, CPoint point)</td></tr>
+<tr class="memdesc:a5bf736e0984b05d37a4e616b4978a9cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">屏蔽鼠标单击<br />
+ <a href="#a5bf736e0984b05d37a4e616b4978a9cb">更多...</a><br /></td></tr>
+<tr class="separator:a5bf736e0984b05d37a4e616b4978a9cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47f9c86d720fa331d817b9c5ea87faf2"><td class="memItemLeft" align="right" valign="top">afx_msg void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a47f9c86d720fa331d817b9c5ea87faf2">OnLButtonDblClk</a> (UINT nFlags, CPoint point)</td></tr>
+<tr class="separator:a47f9c86d720fa331d817b9c5ea87faf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5bd581e866507e6e5df9bf21e713167"><td class="memItemLeft" align="right" valign="top">afx_msg void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#ad5bd581e866507e6e5df9bf21e713167">OnKeyDown</a> (UINT nChar, UINT nRepCnt, UINT nFlags)</td></tr>
+<tr class="memdesc:ad5bd581e866507e6e5df9bf21e713167"><td class="mdescLeft">&#160;</td><td class="mdescRight">限制光标移动<br />
+ <a href="#ad5bd581e866507e6e5df9bf21e713167">更多...</a><br /></td></tr>
+<tr class="separator:ad5bd581e866507e6e5df9bf21e713167"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e232f93af6910da0f91276e53552b0c"><td class="memItemLeft" align="right" valign="top">afx_msg void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a0e232f93af6910da0f91276e53552b0c">OnSize</a> (UINT nType, int cx, int cy)</td></tr>
+<tr class="memdesc:a0e232f93af6910da0f91276e53552b0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">窗口大小改变时重新确定提示行行号<br />
+ <a href="#a0e232f93af6910da0f91276e53552b0c">更多...</a><br /></td></tr>
+<tr class="separator:a0e232f93af6910da0f91276e53552b0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1b4dfc22c2a118afd063542685fc22b"><td class="memItemLeft" align="right" valign="top">afx_msg void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#af1b4dfc22c2a118afd063542685fc22b">OnKillFocus</a> (CWnd *pNewWnd)</td></tr>
+<tr class="memdesc:af1b4dfc22c2a118afd063542685fc22b"><td class="mdescLeft">&#160;</td><td class="mdescRight">保持拥有输入焦点  <a href="#af1b4dfc22c2a118afd063542685fc22b">更多...</a><br /></td></tr>
+<tr class="separator:af1b4dfc22c2a118afd063542685fc22b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba679b7e777987aa1907e926161061f5"><td class="memItemLeft" align="right" valign="top">afx_msg LRESULT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#aba679b7e777987aa1907e926161061f5">OnSetHint</a> (WPARAM wparam, LPARAM lparam)</td></tr>
+<tr class="memdesc:aba679b7e777987aa1907e926161061f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置命令提示语<br />
+ <a href="#aba679b7e777987aa1907e926161061f5">更多...</a><br /></td></tr>
+<tr class="separator:aba679b7e777987aa1907e926161061f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66c8fe29e4e6a3eb0568c5e04e49bfce"><td class="memItemLeft" align="right" valign="top">afx_msg LRESULT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a66c8fe29e4e6a3eb0568c5e04e49bfce">OnTakeOverCmd</a> (WPARAM wparam, LPARAM lparam)</td></tr>
+<tr class="memdesc:a66c8fe29e4e6a3eb0568c5e04e49bfce"><td class="mdescLeft">&#160;</td><td class="mdescRight">接管命令行输入窗口<br />
+ <a href="#a66c8fe29e4e6a3eb0568c5e04e49bfce">更多...</a><br /></td></tr>
+<tr class="separator:a66c8fe29e4e6a3eb0568c5e04e49bfce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7af91d10764494ca973bc5a75c00d192"><td class="memItemLeft" align="right" valign="top">afx_msg LRESULT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a7af91d10764494ca973bc5a75c00d192">OnEndInput</a> (WPARAM wparam, LPARAM lparam)</td></tr>
+<tr class="memdesc:a7af91d10764494ca973bc5a75c00d192"><td class="mdescLeft">&#160;</td><td class="mdescRight">用户模式下子命令已处理完成<br />
+ <a href="#a7af91d10764494ca973bc5a75c00d192">更多...</a><br /></td></tr>
+<tr class="separator:a7af91d10764494ca973bc5a75c00d192"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19fb61e29f7be75474462793ea26d461"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a19fb61e29f7be75474462793ea26d461">MapTask</a> ()</td></tr>
+<tr class="memdesc:a19fb61e29f7be75474462793ea26d461"><td class="mdescLeft">&#160;</td><td class="mdescRight">实现命令字符串到命令处理函数之间的映射  <a href="#a19fb61e29f7be75474462793ea26d461">更多...</a><br /></td></tr>
+<tr class="separator:a19fb61e29f7be75474462793ea26d461"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:aa343e34b3fe9c6097c39a416c8ec5206"><td class="memItemLeft" align="right" valign="top">static DWORD WINAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#aa343e34b3fe9c6097c39a416c8ec5206">DEALCMD</a> (LPVOID lParam)</td></tr>
+<tr class="memdesc:aa343e34b3fe9c6097c39a416c8ec5206"><td class="mdescLeft">&#160;</td><td class="mdescRight">监听命令处理状态  <a href="#aa343e34b3fe9c6097c39a416c8ec5206">更多...</a><br /></td></tr>
+<tr class="separator:aa343e34b3fe9c6097c39a416c8ec5206"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected 成员函数</h2></td></tr>
+<tr class="memitem:ae31e663e4f74df1e40414963b9d4decd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#ae31e663e4f74df1e40414963b9d4decd">CmdView</a> ()</td></tr>
+<tr class="separator:ae31e663e4f74df1e40414963b9d4decd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2aec9190b97078bcfe52ad300f95d723"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a2aec9190b97078bcfe52ad300f95d723">~CmdView</a> ()</td></tr>
+<tr class="separator:a2aec9190b97078bcfe52ad300f95d723"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9db1b898ce61e9feeb9a3255ac45b82d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a9db1b898ce61e9feeb9a3255ac45b82d">DealEnter</a> ()</td></tr>
+<tr class="memdesc:a9db1b898ce61e9feeb9a3255ac45b82d"><td class="mdescLeft">&#160;</td><td class="mdescRight">处理回车键消息,触发命令处理函数  <a href="#a9db1b898ce61e9feeb9a3255ac45b82d">更多...</a><br /></td></tr>
+<tr class="separator:a9db1b898ce61e9feeb9a3255ac45b82d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70cf028b2bc48ea3e0e6be3319911c85"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a70cf028b2bc48ea3e0e6be3319911c85">Initialcmd</a> ()</td></tr>
+<tr class="memdesc:a70cf028b2bc48ea3e0e6be3319911c85"><td class="mdescLeft">&#160;</td><td class="mdescRight">创建消息处理线程,注册消息映射  <a href="#a70cf028b2bc48ea3e0e6be3319911c85">更多...</a><br /></td></tr>
+<tr class="separator:a70cf028b2bc48ea3e0e6be3319911c85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71dba2e0097271efdc1874ff3a01847a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a71dba2e0097271efdc1874ff3a01847a">DealCmdOver</a> ()</td></tr>
+<tr class="memdesc:a71dba2e0097271efdc1874ff3a01847a"><td class="mdescLeft">&#160;</td><td class="mdescRight">命令已处理完成<br />
+ <a href="#a71dba2e0097271efdc1874ff3a01847a">更多...</a><br /></td></tr>
+<tr class="separator:a71dba2e0097271efdc1874ff3a01847a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected 属性</h2></td></tr>
+<tr class="memitem:aa45975ce8093a3ccde02c709c3650efa"><td class="memItemLeft" align="right" valign="top">map&lt; CString, <a class="el" href="_cmd_view_8h.html#ab94db7a7ee6fdfb5653d93420dd7e605">CMDPROC</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#aa45975ce8093a3ccde02c709c3650efa">my_map</a></td></tr>
+<tr class="separator:aa45975ce8093a3ccde02c709c3650efa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35969585c6cfd4a688e47a45305ebb19"><td class="memItemLeft" align="right" valign="top">TEXTMETRIC&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a35969585c6cfd4a688e47a45305ebb19">tm</a></td></tr>
+<tr class="separator:a35969585c6cfd4a688e47a45305ebb19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d336de836b1bc820625f3ff4b4b00e2"><td class="memItemLeft" align="right" valign="top">CFont&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a9d336de836b1bc820625f3ff4b4b00e2">myfont</a></td></tr>
+<tr class="separator:a9d336de836b1bc820625f3ff4b4b00e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a65029c8dcb40ac7a5d8edbdd79ac8d"><td class="memItemLeft" align="right" valign="top">CEdit *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a6a65029c8dcb40ac7a5d8edbdd79ac8d">myedit</a></td></tr>
+<tr class="separator:a6a65029c8dcb40ac7a5d8edbdd79ac8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7ac29e83d2121fe7e64c080c21d15f9"><td class="memItemLeft" align="right" valign="top">CString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#aa7ac29e83d2121fe7e64c080c21d15f9">Hint</a></td></tr>
+<tr class="separator:aa7ac29e83d2121fe7e64c080c21d15f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d35095ccfccf06a328829d24ec0b56e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a1d35095ccfccf06a328829d24ec0b56e">HintPLen</a></td></tr>
+<tr class="separator:a1d35095ccfccf06a328829d24ec0b56e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f6f0916cd8879b3787e80cb6e5a2713"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a2f6f0916cd8879b3787e80cb6e5a2713">HintSLen</a></td></tr>
+<tr class="separator:a2f6f0916cd8879b3787e80cb6e5a2713"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37ebd702dd26dc6a4c378de8d4bf3953"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cmd_view.html#a37ebd702dd26dc6a4c378de8d4bf3953">HintLine</a></td></tr>
+<tr class="separator:a37ebd702dd26dc6a4c378de8d4bf3953"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">详细描述</h2>
+<div class="textblock"><p>CmdView位于主界面左上角,主要完成命令的输入(界面控制),命令解析和命令映射(功能映射)。 </p>
+<p>该部分工作由两各线程共同完成，<br />
+主线程完成界面维护控制工作,界面控制方面包括控制cmdview的输入响应,控制光标以及鼠标响应以防止随意修改提示和命令输入<br />
+历史,并提供接管命令行的功能,即UserCmd命令集合中的命令可以获取相应的子命令输入(如进入Http会话模式后获取Get命令输入);<br />
+子线程在接收到主线程的命令解析完成信号后,调用命令集合中相应的命令处理函数,在本程序中,使用了简单的map映射机制,即把<br />
+命令字符串映射到命令的处理函数指针,通过指针调用相应的命令处理函数,在命令完成后,通知主线程,主线程完成相应的处理，如<br />
+输出提示信息字符串。CmdView的工作模式有2种,一种为普通命令模式，即一次完成一条命令，命令的解析和映射由框架完成；<br />
+另一种为用户接管模式,UserCmd中的命令接管CmdView后,可以获取其输入,从而调用子命令,子命令的解析工作由用户命令自行完成 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8h_source.html">CmdView.h</a> 第 <a class="el" href="_cmd_view_8h_source.html#l00026">26</a> 行定义.</p>
+</div><h2 class="groupheader">构造及析构函数说明</h2>
+<a class="anchor" id="ae31e663e4f74df1e40414963b9d4decd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">CmdView::CmdView </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>动态创建所使用的受保护的构造函数 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00021">21</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2aec9190b97078bcfe52ad300f95d723"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">CmdView::~CmdView </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00026">26</a> 行定义.</p>
+
+</div>
+</div>
+<h2 class="groupheader">成员函数说明</h2>
+<a class="anchor" id="aa343e34b3fe9c6097c39a416c8ec5206"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">DWORD WINAPI CmdView::DEALCMD </td>
+          <td>(</td>
+          <td class="paramtype">LPVOID&#160;</td>
+          <td class="paramname"><em>lParam</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>监听命令处理状态 </p>
+<p>监听命令处理状态 函数在InitalCmd中被调用,为创建的一个新线程,该线程进行循环测试,<br />
+若满足命令解析完成条件,<br />
+则开始执行命令,待执行完成后,进入等待状态,并通知主线程命令执行完成 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00098">98</a> 行定义.</p>
+
+<p><div class="dynheader">
+函数调用图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view_aa343e34b3fe9c6097c39a416c8ec5206_cgraph.svg" width="490" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+<p><div class="dynheader">
+这是这个函数的调用关系图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view_aa343e34b3fe9c6097c39a416c8ec5206_icgraph.svg" width="568" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a71dba2e0097271efdc1874ff3a01847a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CmdView::DealCmdOver </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>命令已处理完成<br />
+</p>
+<p>命令已处理完成<br />
+该函数由命令映射函数调用,当命令处理完成后,若当前模式处于用户命令模式,则退出用户命令模式,进入普通命令模式,<br />
+并重新设置命令提示语为默认的“Command:”。完成后命令行另起一行,获取输入焦点并输出命令提示语 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00359">359</a> 行定义.</p>
+
+<p><div class="dynheader">
+函数调用图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view_a71dba2e0097271efdc1874ff3a01847a_cgraph.svg" width="288" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+<p><div class="dynheader">
+这是这个函数的调用关系图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view_a71dba2e0097271efdc1874ff3a01847a_icgraph.svg" width="780" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a9db1b898ce61e9feeb9a3255ac45b82d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CmdView::DealEnter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>处理回车键消息,触发命令处理函数 </p>
+<p>本函数在按下Enter键时触发,函数获取当前输入命令行,并去除串首空格,通过标志位来将获取当前CmdView<br />
+工作模式,并将相应的命令发送到对应的命令处理过程;在普通命令模式下命令字符串会被发送到命令映射函数<br />
+MapTask中进行处理,在用户命令模式下,用户函数将在函数完成时获取子命令字符串 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00141">141</a> 行定义.</p>
+
+<p><div class="dynheader">
+函数调用图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view_a9db1b898ce61e9feeb9a3255ac45b82d_cgraph.svg" width="272" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+<p><div class="dynheader">
+这是这个函数的调用关系图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view_a9db1b898ce61e9feeb9a3255ac45b82d_icgraph.svg" width="331" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a70cf028b2bc48ea3e0e6be3319911c85"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CmdView::Initialcmd </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>创建消息处理线程,注册消息映射 </p>
+<p>创建消息处理线程,注册消息映射 本函数主要实现命令处理线程的创建,以及命令映射机制的建立<br />
+命令映射的建立通过map类实现,map类实现从字符串到一个UserCmd命令中相应的命令指针 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00118">118</a> 行定义.</p>
+
+<p><div class="dynheader">
+函数调用图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view_a70cf028b2bc48ea3e0e6be3319911c85_cgraph.svg" width="803" height="658"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+<p><div class="dynheader">
+这是这个函数的调用关系图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view_a70cf028b2bc48ea3e0e6be3319911c85_icgraph.svg" width="372" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a19fb61e29f7be75474462793ea26d461"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CmdView::MapTask </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>实现命令字符串到命令处理函数之间的映射 </p>
+<p><a class="el" href="class_cmd_view.html" title="CmdView位于主界面左上角,主要完成命令的输入(界面控制),命令解析和命令映射(功能映射)。 ...">CmdView</a> 诊断</p>
+<p><a class="el" href="class_cmd_view.html" title="CmdView位于主界面左上角,主要完成命令的输入(界面控制),命令解析和命令映射(功能映射)。 ...">CmdView</a> 消息处理程序 实现命令字符串到命令处理函数之间的映射<br />
+在普通命令模式下,由Enter键触发,实现命令映射并调用命令的处理函数;<br />
+ 本函数实现简单的命令检查,若命令为空,则直接返回;若并不存在相应的命令<br />
+处理函数与命令相对应,则在状态输出栏中输出"命令无效提示"<br />
+否则通过命令指针调用相关函数 任务分发 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00067">67</a> 行定义.</p>
+
+<p><div class="dynheader">
+函数调用图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view_a19fb61e29f7be75474462793ea26d461_cgraph.svg" width="268" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+<p><div class="dynheader">
+这是这个函数的调用关系图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view_a19fb61e29f7be75474462793ea26d461_icgraph.svg" width="755" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a7763f6d4cc758e91aa4ac6d97b5a275b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CmdView::OnChar </td>
+          <td>(</td>
+          <td class="paramtype">UINT&#160;</td>
+          <td class="paramname"><em>nChar</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">UINT&#160;</td>
+          <td class="paramname"><em>nRepCnt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">UINT&#160;</td>
+          <td class="paramname"><em>nFlags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>函数在按下非系统键时触发,在OnKeyDown之后,OnKeyUp之前。 </p>
+<p>CmdView监听每一次非系统键输入,监听到回车和回退按键时进行特殊处理</p>
+<p>函数在按下非系统键时触发,在OnKeyDown之后,OnKeyUp之前。<br />
+函数主要处理两个特殊的按键：回车键和回退键。监听回退键防止删除过程中删除了<br />
+输入提示,导致命令解析出现问题；监听回车键触发响应的命令处理过程进行命令处理 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00179">179</a> 行定义.</p>
+
+<p><div class="dynheader">
+函数调用图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view_a7763f6d4cc758e91aa4ac6d97b5a275b_cgraph.svg" width="450" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a7af91d10764494ca973bc5a75c00d192"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">LRESULT CmdView::OnEndInput </td>
+          <td>(</td>
+          <td class="paramtype">WPARAM&#160;</td>
+          <td class="paramname"><em>wparam</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">LPARAM&#160;</td>
+          <td class="paramname"><em>lparam</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>用户模式下子命令已处理完成<br />
+</p>
+<p>用户模式下子命令已处理完成<br />
+函数在窗体接收到ENDINPUT命令时触发,该消息由GetLine发送表明已经完成从命令输入框中获取了一行输入,<br />
+函数执行一个简单的判断,确认在用户模式下,在光标处输出命令提示语 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00378">378</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="a37a513e8262ea52c1859f8be73dac1b7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CmdView::OnInitialUpdate </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>函数在视图附加到文档后触发,主要完成界面的初始化工作 </p>
+<p>函数在视图附加到文档后触发,主要完成界面的初始化工作<br />
+函数主要实现命令出现线程的初始化,初始化完成后方建立起字符串到命令处理函数的映射<br />
+； 函数实现了字体的设置,本视图的字体设置为“Times New Roman”；函数在命令输入框内插入<br />
+Command提示字符,表明此时可以输入字符串命令 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00201">201</a> 行定义.</p>
+
+<p><div class="dynheader">
+函数调用图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view_a37a513e8262ea52c1859f8be73dac1b7_cgraph.svg" width="1024" height="658"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ad5bd581e866507e6e5df9bf21e713167"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CmdView::OnKeyDown </td>
+          <td>(</td>
+          <td class="paramtype">UINT&#160;</td>
+          <td class="paramname"><em>nChar</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">UINT&#160;</td>
+          <td class="paramname"><em>nRepCnt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">UINT&#160;</td>
+          <td class="paramname"><em>nFlags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>限制光标移动<br />
+</p>
+<p>限制光标移动<br />
+本函数在按下键盘按键时触发,主要限制光标移动；屏蔽光标的向上向下移动,位于提示行光标向左移动时,<br />
+不得超过约定的范围,该范围由输入的提示符显示长度决定 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00255">255</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="af1b4dfc22c2a118afd063542685fc22b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CmdView::OnKillFocus </td>
+          <td>(</td>
+          <td class="paramtype">CWnd *&#160;</td>
+          <td class="paramname"><em>pNewWnd</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>保持拥有输入焦点 </p>
+<p>保持拥有输入焦点 函数在即将失去输入焦点时触发,为保证CmdView一直拥有输入焦点,在其即将失去输入焦点时<br />
+重新获取输入焦点 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00306">306</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="a47f9c86d720fa331d817b9c5ea87faf2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CmdView::OnLButtonDblClk </td>
+          <td>(</td>
+          <td class="paramtype">UINT&#160;</td>
+          <td class="paramname"><em>nFlags</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">CPoint&#160;</td>
+          <td class="paramname"><em>point</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>屏蔽鼠标单击<br />
+ 屏蔽鼠标单击<br />
+本函数在鼠标双击时触发,函数通过单击选中文本可以修改相应的文本,本函数屏蔽该消息,防止修改命令历史 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00243">243</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5bf736e0984b05d37a4e616b4978a9cb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CmdView::OnLButtonDown </td>
+          <td>(</td>
+          <td class="paramtype">UINT&#160;</td>
+          <td class="paramname"><em>nFlags</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">CPoint&#160;</td>
+          <td class="paramname"><em>point</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>屏蔽鼠标单击<br />
+</p>
+<p>屏蔽鼠标单击<br />
+本函数在鼠标单击时触发,函数通过单击选中文本可以修改相应的文本,本函数屏蔽该消息,防止修改命令历史 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00233">233</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="aba679b7e777987aa1907e926161061f5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">LRESULT CmdView::OnSetHint </td>
+          <td>(</td>
+          <td class="paramtype">WPARAM&#160;</td>
+          <td class="paramname"><em>wparam</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">LPARAM&#160;</td>
+          <td class="paramname"><em>lparam</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置命令提示语<br />
+</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">wparam</td><td>接管后的命令提示语<br />
+ 设置命令提示语<br />
+ </td></tr>
+    <tr><td class="paramname">wparam</td><td>接管后的命令提示语<br />
+函数在窗口接收到SETHINT消息时触发,函数实现设置命令提示语的功能,<br />
+ 并重新计算命令提示语的显示长度和存储长度。显示长度控制光标的移动和回退键的删除,<br />
+保证不会删除命令历史而导致命令获取失败 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00323">323</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0e232f93af6910da0f91276e53552b0c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CmdView::OnSize </td>
+          <td>(</td>
+          <td class="paramtype">UINT&#160;</td>
+          <td class="paramname"><em>nType</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cy</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>窗口大小改变时重新确定提示行行号<br />
+</p>
+<p>窗口大小改变时重新确定提示行行号<br />
+函数在窗口大小改变时触发,窗口自动换行风格,在窗口的宽度改变时,其行号可能发生变化,<br />
+需重新确定提示行的行号,防止错误获取命令行 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00279">279</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="a66c8fe29e4e6a3eb0568c5e04e49bfce"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">LRESULT CmdView::OnTakeOverCmd </td>
+          <td>(</td>
+          <td class="paramtype">WPARAM&#160;</td>
+          <td class="paramname"><em>wparam</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">LPARAM&#160;</td>
+          <td class="paramname"><em>lparam</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>接管命令行输入窗口<br />
+</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">wparam</td><td>接管后的命令提示语<br />
+ 接管命令行输入窗口<br />
+</td></tr>
+    <tr><td class="paramname">wparam</td><td>接管后的命令提示语<br />
+函数在接收到TAKEOVERCMD消息时触发,函数完成从普通命令模式到用户命令模式的切换,<br />
+重新设置命令提示语并计算命令提示语的显示长度和存储长度,接管命令行输入窗口后,函数将<br />
+另起一行输出命令提示语,此后的命令输入将被直接被用户命令截获而不会被命令映射机制获得 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00341">341</a> 行定义.</p>
+
+<p><div class="dynheader">
+函数调用图:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_cmd_view_a66c8fe29e4e6a3eb0568c5e04e49bfce_cgraph.svg" width="307" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a0b534cd0dd9587ad5fc8229236f51aff"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BOOL CmdView::PreCreateWindow </td>
+          <td>(</td>
+          <td class="paramtype">CREATESTRUCT &amp;&#160;</td>
+          <td class="paramname"><em>cs</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>CmdView框体的属性设置 </p>
+<p>CmdView框体的属性设置 本函数在即将创建窗体前触发,函数主要通过传递进来的结构引用变量来设置相应的窗体风格,<br />
+本窗体的风格为拥有垂直滚动条,并实现自动换行,自动分解长字符串为多行,光标为不隐藏状态 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a> 第 <a class="el" href="_cmd_view_8cpp_source.html#l00223">223</a> 行定义.</p>
+
+</div>
+</div>
+<h2 class="groupheader">类成员变量说明</h2>
+<a class="anchor" id="aa7ac29e83d2121fe7e64c080c21d15f9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">CString CmdView::Hint</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>命令提示语 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8h_source.html">CmdView.h</a> 第 <a class="el" href="_cmd_view_8h_source.html#l00063">63</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="a37ebd702dd26dc6a4c378de8d4bf3953"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int CmdView::HintLine</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>命令提示标记行行号 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8h_source.html">CmdView.h</a> 第 <a class="el" href="_cmd_view_8h_source.html#l00074">74</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1d35095ccfccf06a328829d24ec0b56e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int CmdView::HintPLen</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>命令提示语屏显示长度 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8h_source.html">CmdView.h</a> 第 <a class="el" href="_cmd_view_8h_source.html#l00067">67</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2f6f0916cd8879b3787e80cb6e5a2713"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int CmdView::HintSLen</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>命令提示语存储长度 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8h_source.html">CmdView.h</a> 第 <a class="el" href="_cmd_view_8h_source.html#l00070">70</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa45975ce8093a3ccde02c709c3650efa"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">map&lt;CString, <a class="el" href="_cmd_view_8h.html#ab94db7a7ee6fdfb5653d93420dd7e605">CMDPROC</a>&gt; CmdView::my_map</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>实现从命令字符串到命令处理函数的映射结构 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8h_source.html">CmdView.h</a> 第 <a class="el" href="_cmd_view_8h_source.html#l00047">47</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6a65029c8dcb40ac7a5d8edbdd79ac8d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">CEdit* CmdView::myedit</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>CmdView的文本框 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8h_source.html">CmdView.h</a> 第 <a class="el" href="_cmd_view_8h_source.html#l00059">59</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9d336de836b1bc820625f3ff4b4b00e2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">CFont CmdView::myfont</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>CmdView显示的字体对象 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8h_source.html">CmdView.h</a> 第 <a class="el" href="_cmd_view_8h_source.html#l00055">55</a> 行定义.</p>
+
+</div>
+</div>
+<a class="anchor" id="a35969585c6cfd4a688e47a45305ebb19"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEXTMETRIC CmdView::tm</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>CmdView字体信息结构 </p>
+
+<p>在文件 <a class="el" href="_cmd_view_8h_source.html">CmdView.h</a> 第 <a class="el" href="_cmd_view_8h_source.html#l00051">51</a> 行定义.</p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>src/<a class="el" href="_cmd_view_8h_source.html">CmdView.h</a></li>
+<li>src/<a class="el" href="_cmd_view_8cpp_source.html">CmdView.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+生成于 2015年 四月 23日 星期四 23:13:08 , 为 My Project使用  &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>My Project: src/HustNet.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">My Project
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.8.9.1 -->
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>首页</span></a></li>
+      <li><a href="namespaces.html"><span>命名空间</span></a></li>
+      <li><a href="annotated.html"><span>类</span></a></li>
+      <li class="current"><a href="files.html"><span>文件</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>文件列表</span></a></li>
+      <li><a href="globals.html"><span>文件成员</span></a></li>
+    </ul>
+  </div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">HustNet.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="_hust_net_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef __AFXWIN_H__</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">    #error &quot;在包含此文件之前包含“stdafx.h”以生成 PCH 文件&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_resource_8h.html">resource.h</a>&quot;</span>       <span class="comment">// 主符号</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="_hust_net_8h.html#a9580e7450fe37a3f37776bee58239d0f">   16</a></span>&#160;<span class="preprocessor">#define CMDVIEW   0</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="_hust_net_8h.html#af9bea6e1d400f8ad8a0b6beb284ec026">   17</a></span>&#160;<span class="preprocessor">#define RPVIEW   1</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="_hust_net_8h.html#ab5b352492259f7b453a051455d5dca50">   18</a></span>&#160;<span class="preprocessor">#define LOGVIEW   2</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="_hust_net_8h.html#a8b43bafee90b30676faae508c21cb8d7">   20</a></span>&#160;<span class="preprocessor">#define PRINT                    WM_USER+1000</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="_hust_net_8h.html#a35321edda7ad4639415e2461e6ffee97">   21</a></span>&#160;<span class="preprocessor">#define CLEAN                   WM_USER+1001</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="_hust_net_8h.html#ac8852a933bbfae8f0123bcaaff258178">   22</a></span>&#160;<span class="preprocessor">#define SETTEXT                WM_USER+1002</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="_hust_net_8h.html#acc3a7ee63421609bd755137323f747f4">   23</a></span>&#160;<span class="preprocessor">#define TAKEOVERCMD     WM_USER+1003</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="_hust_net_8h.html#a30981e40d70623319139bbd53110598b">   24</a></span>&#160;<span class="preprocessor">#define RELEASECMD       WM_USER+1004</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="_hust_net_8h.html#a1493ac161e08fbb6362f6d87d020af73">   25</a></span>&#160;<span class="preprocessor">#define SETHINT                WM_USER+1005</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="_hust_net_8h.html#aab66ee9bad6d3beb85a36a8764e1ce00">   26</a></span>&#160;<span class="preprocessor">#define DEALCMDOVER    WM_USER+1006</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="_hust_net_8h.html#a40314433b5f301aaff50f5597553cc8d">   27</a></span>&#160;<span class="preprocessor">#define DISPATCH             WM_USER+1007</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="_hust_net_8h.html#a4f7324820bec84fcf8e8d97f8067c411">   28</a></span>&#160;<span class="preprocessor">#define ENDINPUT             WM_USER+1008</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="struct_c_m_d.html">   30</a></span>&#160;<span class="keyword">struct  </span><a class="code" href="struct_c_m_d.html">CMD</a>{</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123">   31</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123">ID</a>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06">   32</a></span>&#160;    <span class="keywordtype">void</span> * <a class="code" href="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06">agrs</a>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;};</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="class_c_hust_net_app.html">   42</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_c_hust_net_app.html">CHustNetApp</a> : <span class="keyword">public</span> CWinApp</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="class_c_hust_net_app.html#ab40df4baff256d646818edee59cc856d">CHustNetApp</a>();</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">virtual</span> BOOL <a class="code" href="class_c_hust_net_app.html#acc049928befa55dcff74b72cc4bd7c94">InitInstance</a>();</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_c_hust_net_app.html#a68c2182155763c823a90dfc7aef09aed">ExitInstance</a>();</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    afx_msg <span class="keywordtype">void</span> <a class="code" href="class_c_hust_net_app.html#a314419de6b254967400e5d3c4dc498a3">OnAppAbout</a>();</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    DECLARE_MESSAGE_MAP()</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">extern</span> <a class="code" href="class_c_hust_net_app.html">CHustNetApp</a> <a class="code" href="_hust_net_8h.html#a42459c8764a93b5cbce88b391b78cbaf">theApp</a>;</div>
+<div class="ttc" id="class_c_hust_net_app_html_a314419de6b254967400e5d3c4dc498a3"><div class="ttname"><a href="class_c_hust_net_app.html#a314419de6b254967400e5d3c4dc498a3">CHustNetApp::OnAppAbout</a></div><div class="ttdeci">afx_msg void OnAppAbout()</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8cpp_source.html#l00233">HustNet.cpp:233</a></div></div>
+<div class="ttc" id="class_c_hust_net_app_html_ab40df4baff256d646818edee59cc856d"><div class="ttname"><a href="class_c_hust_net_app.html#ab40df4baff256d646818edee59cc856d">CHustNetApp::CHustNetApp</a></div><div class="ttdeci">CHustNetApp()</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8cpp_source.html#l00042">HustNet.cpp:42</a></div></div>
+<div class="ttc" id="struct_c_m_d_html_a7f5be60349bf620b170b0a3fb9ee4123"><div class="ttname"><a href="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123">CMD::ID</a></div><div class="ttdeci">int ID</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00031">HustNet.h:31</a></div></div>
+<div class="ttc" id="class_c_hust_net_app_html_a68c2182155763c823a90dfc7aef09aed"><div class="ttname"><a href="class_c_hust_net_app.html#a68c2182155763c823a90dfc7aef09aed">CHustNetApp::ExitInstance</a></div><div class="ttdeci">virtual int ExitInstance()</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8cpp_source.html#l00176">HustNet.cpp:176</a></div></div>
+<div class="ttc" id="_resource_8h_html"><div class="ttname"><a href="_resource_8h.html">Resource.h</a></div></div>
+<div class="ttc" id="_hust_net_8h_html_a42459c8764a93b5cbce88b391b78cbaf"><div class="ttname"><a href="_hust_net_8h.html#a42459c8764a93b5cbce88b391b78cbaf">theApp</a></div><div class="ttdeci">CHustNetApp theApp</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8cpp_source.html#l00074">HustNet.cpp:74</a></div></div>
+<div class="ttc" id="class_c_hust_net_app_html_acc049928befa55dcff74b72cc4bd7c94"><div class="ttname"><a href="class_c_hust_net_app.html#acc049928befa55dcff74b72cc4bd7c94">CHustNetApp::InitInstance</a></div><div class="ttdeci">virtual BOOL InitInstance()</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8cpp_source.html#l00081">HustNet.cpp:81</a></div></div>
+<div class="ttc" id="struct_c_m_d_html_adab1e2eeee7dfcfecc6c30e780c1bf06"><div class="ttname"><a href="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06">CMD::agrs</a></div><div class="ttdeci">void * agrs</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00032">HustNet.h:32</a></div></div>
+<div class="ttc" id="class_c_hust_net_app_html"><div class="ttname"><a href="class_c_hust_net_app.html">CHustNetApp</a></div><div class="ttdoc">应用程序的主头文件 </div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00042">HustNet.h:42</a></div></div>
+<div class="ttc" id="struct_c_m_d_html"><div class="ttname"><a href="struct_c_m_d.html">CMD</a></div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00030">HustNet.h:30</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+生成于 2015年 四月 23日 星期四 23:13:08 , 为 My Project使用  &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

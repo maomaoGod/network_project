@@ -1,0 +1,5 @@
+<map id="NetWork::MailSend::Begin" name="NetWork::MailSend::Begin">
+<area shape="rect" id="node2" href="$class_user_cmd.html#a9c55a5ff5c5d0fa3598e7aac6c40db34" title="UserCmd::Mail" alt="" coords="196,13,304,39"/>
+<area shape="rect" id="node3" href="$class_cmd_view.html#a70cf028b2bc48ea3e0e6be3319911c85" title="创建消息处理线程,注册消息映射 " alt="" coords="352,13,492,39"/>
+<area shape="rect" id="node4" href="$class_cmd_view.html#a37a513e8262ea52c1859f8be73dac1b7" title="CmdView::OnInitialUpdate" alt="" coords="540,13,713,39"/>
+</map>

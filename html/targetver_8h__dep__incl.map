@@ -1,0 +1,23 @@
+<map id="src/targetver.h" name="src/targetver.h">
+<area shape="rect" id="node2" href="$stdafx_8h.html" title="stdafx.h : 标准系统包含文件的包含文件， &#160;或是经常使用但不常更改的 &#160;特定于项目的包含文件 ..." alt="" coords="754,80,845,107"/>
+<area shape="rect" id="node3" href="$_cmd_view_8cpp.html" title="CmdView.cpp : 实现文件 " alt="" coords="280,453,404,480"/>
+<area shape="rect" id="node4" href="$_user_cmd_8h.html" title="src/UserCmd.h" alt="" coords="306,155,416,181"/>
+<area shape="rect" id="node7" href="$_u_i_ctrl_8h.html" title="UICtrl. " alt="" coords="523,379,610,405"/>
+<area shape="rect" id="node8" href="$_net_dll_8cpp.html" title="NetDll. " alt="" coords="429,453,533,480"/>
+<area shape="rect" id="node9" href="$_net_html_8cpp.html" title="NetHtml.cpp. " alt="" coords="558,453,674,480"/>
+<area shape="rect" id="node10" href="$_u_i_ctrl_8cpp.html" title="src/UICtrl.cpp" alt="" coords="698,453,800,480"/>
+<area shape="rect" id="node11" href="$_user_cmd_8cpp.html" title="UserCmd.cpp. " alt="" coords="824,453,946,480"/>
+<area shape="rect" id="node12" href="$_hust_net_8cpp.html" title="HustNet.cpp : 定义应用程序的类行为。 " alt="" coords="30,379,146,405"/>
+<area shape="rect" id="node13" href="$_main_frm_8cpp.html" title="MainFrm.cpp : CMainFrame 类的实现 " alt="" coords="221,379,341,405"/>
+<area shape="rect" id="node14" href="$_c_my_i_p_8cpp.html" title="src/CMyIP.cpp" alt="" coords="888,155,996,181"/>
+<area shape="rect" id="node15" href="$_c_my_link_8h.html" title="src/CMyLink.h" alt="" coords="1021,155,1128,181"/>
+<area shape="rect" id="node17" href="$_hust_net_doc_8cpp.html" title="HustNetDoc.cpp : CHustNetDoc 类的实现 " alt="" coords="1152,155,1290,181"/>
+<area shape="rect" id="node18" href="$_log_view_8cpp.html" title="LogView.cpp : 实现文件 " alt="" coords="1315,155,1434,181"/>
+<area shape="rect" id="node19" href="$_net_set_8cpp.html" title="NetSet.cpp : 实现文件 " alt="" coords="1458,155,1568,181"/>
+<area shape="rect" id="node20" href="$_net_work_8h.html" title="TCP UDP方法集 " alt="" coords="837,304,944,331"/>
+<area shape="rect" id="node21" href="$_respond_view_8cpp.html" title="RespondView.cpp : 实现文件 " alt="" coords="1592,155,1740,181"/>
+<area shape="rect" id="node22" href="$stdafx_8cpp.html" title="src/stdafx.cpp" alt="" coords="1765,155,1869,181"/>
+<area shape="rect" id="node5" href="$_cmd_view_8h.html" title="src/CmdView.h" alt="" coords="76,229,187,256"/>
+<area shape="rect" id="node6" href="$_main_frm_8h.html" title="src/MainFrm.h" alt="" coords="125,304,232,331"/>
+<area shape="rect" id="node16" href="$_c_my_link_8cpp.html" title="src/CMyLink.cpp" alt="" coords="1014,229,1134,256"/>
+</map>

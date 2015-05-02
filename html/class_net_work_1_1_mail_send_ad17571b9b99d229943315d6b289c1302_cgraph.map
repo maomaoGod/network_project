@@ -1,0 +1,8 @@
+<map id="NetWork::MailSend::Begin" name="NetWork::MailSend::Begin">
+<area shape="rect" id="node2" href="$_u_i_ctrl_8cpp.html#ad0fd7e12f565bc4202d32e726131e5c0" title="TakeOverCmd" alt="" coords="196,5,299,32"/>
+<area shape="rect" id="node3" href="$_u_i_ctrl_8cpp.html#ab7520283bb1638c3850a041326fddbde" title="GetLine" alt="" coords="214,56,281,83"/>
+<area shape="rect" id="node6" href="$_net_dll_8cpp.html#a9c2b5e88743a9770d87dab4b3ec274ec" title="PrintLog" alt="" coords="212,107,283,133"/>
+<area shape="rect" id="node7" href="$_u_i_ctrl_8cpp.html#ab0b8ca5aa66c11f8980688e92787f4f8" title="PrintRp" alt="" coords="215,157,280,184"/>
+<area shape="rect" id="node4" href="$_u_i_ctrl_8cpp.html#acd5d76443a9392735027919ea424c69c" title="PrintLog" alt="" coords="348,31,419,57"/>
+<area shape="rect" id="node5" href="$_u_i_ctrl_8cpp.html#a4fdd03168a7e6952059fcf83e88c70f7" title="EndInput" alt="" coords="347,81,420,108"/>
+</map>

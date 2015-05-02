@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>My Project: src/HustNet.cpp 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">My Project
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.8.9.1 -->
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>首页</span></a></li>
+      <li><a href="namespaces.html"><span>命名空间</span></a></li>
+      <li><a href="annotated.html"><span>类</span></a></li>
+      <li class="current"><a href="files.html"><span>文件</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>文件列表</span></a></li>
+      <li><a href="globals.html"><span>文件成员</span></a></li>
+    </ul>
+  </div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">HustNet.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="_hust_net_8cpp.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="stdafx_8h.html">stdafx.h</a>&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;afxwinappex.h&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;afxdialogex.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_hust_net_8h.html">HustNet.h</a>&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_main_frm_8h.html">MainFrm.h</a>&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_hust_net_doc_8h.html">HustNetDoc.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_cmd_view_8h.html">CmdView.h</a>&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#ifdef _DEBUG</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#define new DEBUG_NEW</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;BEGIN_MESSAGE_MAP(<a class="code" href="class_c_hust_net_app.html">CHustNetApp</a>, CWinApp)</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    ON_COMMAND(ID_APP_ABOUT, &amp;<a class="code" href="class_c_hust_net_app.html">CHustNetApp</a>::OnAppAbout)</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    ON_COMMAND(ID_FILE_NEW, &amp;CWinApp::OnFileNew)</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    ON_COMMAND(ID_FILE_OPEN, &amp;CWinApp::OnFileOpen)</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    ON_COMMAND(ID_FILE_PRINT_SETUP, &amp;CWinApp::OnFilePrintSetup)</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;END_MESSAGE_MAP()</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="class_c_hust_net_app.html#ab40df4baff256d646818edee59cc856d">   42</a></span>&#160;<a class="code" href="class_c_hust_net_app.html">CHustNetApp</a>::<a class="code" href="class_c_hust_net_app.html">CHustNetApp</a>()</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_ALL_ASPECTS;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#ifdef _MANAGED</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    System::Windows::Forms::Application::SetUnhandledExceptionMode(System::Windows::Forms::UnhandledExceptionMode::ThrowException);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    SetAppID(_T(<span class="stringliteral">&quot;HustNet.AppID.NoVersion&quot;</span>));</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="_hust_net_8h.html#a42459c8764a93b5cbce88b391b78cbaf">   74</a></span>&#160;<a class="code" href="class_c_hust_net_app.html">CHustNetApp</a> <a class="code" href="_hust_net_8cpp.html#a42459c8764a93b5cbce88b391b78cbaf">theApp</a>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="class_c_hust_net_app.html#acc049928befa55dcff74b72cc4bd7c94">   81</a></span>&#160;BOOL <a class="code" href="class_c_hust_net_app.html#acc049928befa55dcff74b72cc4bd7c94">CHustNetApp::InitInstance</a>()</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;{</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    INITCOMMONCONTROLSEX InitCtrls;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    InitCtrls.dwSize = <span class="keyword">sizeof</span>(InitCtrls);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    InitCtrls.dwICC = ICC_WIN95_CLASSES;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    InitCommonControlsEx(&amp;InitCtrls);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    CWinApp::InitInstance();</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordflow">if</span> (!AfxSocketInit())</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    {</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        AfxMessageBox(<a class="code" href="_resource_8h.html#afa0946ea538dae892395ced0e1b48113">IDP_SOCKETS_INIT_FAILED</a>);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keywordflow">return</span> FALSE;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    }</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordflow">if</span> (!AfxOleInit())</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        AfxMessageBox(<a class="code" href="_resource_8h.html#a3bc3617e97f6aa1d2ae8cde548dcf6b9">IDP_OLE_INIT_FAILED</a>);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <span class="keywordflow">return</span> FALSE;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    }</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    AfxEnableControlContainer();</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    EnableTaskbarInteraction(FALSE);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    SetRegistryKey(_T(<span class="stringliteral">&quot;应用程序向导生成的本地应用程序&quot;</span>));</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    LoadStdProfileSettings(4);  </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    CSingleDocTemplate* pDocTemplate;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    pDocTemplate = <span class="keyword">new</span> CSingleDocTemplate(</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <a class="code" href="_resource_8h.html#a9772c84d39896ad00b9aeb34b15d324d">IDR_MAINFRAME</a>,</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        RUNTIME_CLASS(<a class="code" href="class_c_hust_net_doc.html">CHustNetDoc</a>),</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        RUNTIME_CLASS(<a class="code" href="class_c_main_frame.html">CMainFrame</a>),       <span class="comment">// 主 SDI 框架窗口</span></div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        RUNTIME_CLASS(<a class="code" href="class_cmd_view.html">CmdView</a>));</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keywordflow">if</span> (!pDocTemplate)</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">return</span> FALSE;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    AddDocTemplate(pDocTemplate);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    CCommandLineInfo cmdInfo;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    ParseCommandLine(cmdInfo);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keywordflow">if</span> (!ProcessShellCommand(cmdInfo))</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <span class="keywordflow">return</span> FALSE;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    m_pMainWnd-&gt;ShowWindow(SW_SHOW);</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    m_pMainWnd-&gt;UpdateWindow();</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keywordflow">return</span> TRUE;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;}</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;</div>
+<div class="line"><a name="l00176"></a><span class="lineno"><a class="line" href="class_c_hust_net_app.html#a68c2182155763c823a90dfc7aef09aed">  176</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="class_c_hust_net_app.html#a68c2182155763c823a90dfc7aef09aed">CHustNetApp::ExitInstance</a>()</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;{</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    AfxOleTerm(FALSE);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    <span class="keywordflow">return</span> CWinApp::ExitInstance();</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;}</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;</div>
+<div class="line"><a name="l00195"></a><span class="lineno"><a class="line" href="class_c_about_dlg.html">  195</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_c_about_dlg.html">CAboutDlg</a> : <span class="keyword">public</span> CDialogEx</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;{</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    <a class="code" href="class_c_about_dlg.html#a6d1e6a33fef23bee6e75254189d865ce">CAboutDlg</a>();</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;</div>
+<div class="line"><a name="l00203"></a><span class="lineno"><a class="line" href="class_c_about_dlg.html#a27a5d4c47f16acb8562522fcd22871f7ab6703c7538518b2b788243189e9f7981">  203</a></span>&#160;    <span class="keyword">enum</span> { <a class="code" href="class_c_about_dlg.html#a27a5d4c47f16acb8562522fcd22871f7ab6703c7538518b2b788243189e9f7981">IDD</a> = <a class="code" href="_resource_8h.html#a77a06326b569136edbb6c766bc98c33c">IDD_ABOUTBOX</a> };</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_c_about_dlg.html#ab83db7484fec957282d7d5a21aed4df4">DoDataExchange</a>(CDataExchange* pDX);   </div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    DECLARE_MESSAGE_MAP()</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;};</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;</div>
+<div class="line"><a name="l00218"></a><span class="lineno"><a class="line" href="class_c_about_dlg.html#a6d1e6a33fef23bee6e75254189d865ce">  218</a></span>&#160;<a class="code" href="class_c_about_dlg.html#a6d1e6a33fef23bee6e75254189d865ce">CAboutDlg::CAboutDlg</a>() : CDialogEx(<a class="code" href="class_c_about_dlg.html">CAboutDlg</a>::IDD)</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;{</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;}</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;</div>
+<div class="line"><a name="l00222"></a><span class="lineno"><a class="line" href="class_c_about_dlg.html#ab83db7484fec957282d7d5a21aed4df4">  222</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_c_about_dlg.html#ab83db7484fec957282d7d5a21aed4df4">CAboutDlg::DoDataExchange</a>(CDataExchange* pDX)</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;{</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    CDialogEx::DoDataExchange(pDX);</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;}</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;BEGIN_MESSAGE_MAP(<a class="code" href="class_c_about_dlg.html">CAboutDlg</a>, CDialogEx)</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;END_MESSAGE_MAP()</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;</div>
+<div class="line"><a name="l00233"></a><span class="lineno"><a class="line" href="class_c_hust_net_app.html#a314419de6b254967400e5d3c4dc498a3">  233</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_c_hust_net_app.html">CHustNetApp</a>::OnAppAbout()</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;{</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    <a class="code" href="class_c_about_dlg.html">CAboutDlg</a> aboutDlg;</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    aboutDlg.DoModal();</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;}</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="comment">// CHustNetApp 消息处理程序</span></div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;</div>
+<div class="ttc" id="class_c_about_dlg_html"><div class="ttname"><a href="class_c_about_dlg.html">CAboutDlg</a></div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8cpp_source.html#l00195">HustNet.cpp:195</a></div></div>
+<div class="ttc" id="_resource_8h_html_a9772c84d39896ad00b9aeb34b15d324d"><div class="ttname"><a href="_resource_8h.html#a9772c84d39896ad00b9aeb34b15d324d">IDR_MAINFRAME</a></div><div class="ttdeci">#define IDR_MAINFRAME</div><div class="ttdef"><b>Definition:</b> <a href="_resource_8h_source.html#l00011">Resource.h:11</a></div></div>
+<div class="ttc" id="class_c_about_dlg_html_a6d1e6a33fef23bee6e75254189d865ce"><div class="ttname"><a href="class_c_about_dlg.html#a6d1e6a33fef23bee6e75254189d865ce">CAboutDlg::CAboutDlg</a></div><div class="ttdeci">CAboutDlg()</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8cpp_source.html#l00218">HustNet.cpp:218</a></div></div>
+<div class="ttc" id="_resource_8h_html_afa0946ea538dae892395ced0e1b48113"><div class="ttname"><a href="_resource_8h.html#afa0946ea538dae892395ced0e1b48113">IDP_SOCKETS_INIT_FAILED</a></div><div class="ttdeci">#define IDP_SOCKETS_INIT_FAILED</div><div class="ttdef"><b>Definition:</b> <a href="_resource_8h_source.html#l00010">Resource.h:10</a></div></div>
+<div class="ttc" id="_main_frm_8h_html"><div class="ttname"><a href="_main_frm_8h.html">MainFrm.h</a></div></div>
+<div class="ttc" id="class_c_about_dlg_html_a27a5d4c47f16acb8562522fcd22871f7ab6703c7538518b2b788243189e9f7981"><div class="ttname"><a href="class_c_about_dlg.html#a27a5d4c47f16acb8562522fcd22871f7ab6703c7538518b2b788243189e9f7981">CAboutDlg::IDD</a></div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8cpp_source.html#l00203">HustNet.cpp:203</a></div></div>
+<div class="ttc" id="class_c_about_dlg_html_ab83db7484fec957282d7d5a21aed4df4"><div class="ttname"><a href="class_c_about_dlg.html#ab83db7484fec957282d7d5a21aed4df4">CAboutDlg::DoDataExchange</a></div><div class="ttdeci">virtual void DoDataExchange(CDataExchange *pDX)</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8cpp_source.html#l00222">HustNet.cpp:222</a></div></div>
+<div class="ttc" id="_resource_8h_html_a77a06326b569136edbb6c766bc98c33c"><div class="ttname"><a href="_resource_8h.html#a77a06326b569136edbb6c766bc98c33c">IDD_ABOUTBOX</a></div><div class="ttdeci">#define IDD_ABOUTBOX</div><div class="ttdef"><b>Definition:</b> <a href="_resource_8h_source.html#l00008">Resource.h:8</a></div></div>
+<div class="ttc" id="stdafx_8h_html"><div class="ttname"><a href="stdafx_8h.html">stdafx.h</a></div><div class="ttdoc">stdafx.h : 标准系统包含文件的包含文件，  或是经常使用但不常更改的  特定于项目的包含文件 ...</div></div>
+<div class="ttc" id="_cmd_view_8h_html"><div class="ttname"><a href="_cmd_view_8h.html">CmdView.h</a></div></div>
+<div class="ttc" id="_hust_net_8h_html"><div class="ttname"><a href="_hust_net_8h.html">HustNet.h</a></div></div>
+<div class="ttc" id="_resource_8h_html_a3bc3617e97f6aa1d2ae8cde548dcf6b9"><div class="ttname"><a href="_resource_8h.html#a3bc3617e97f6aa1d2ae8cde548dcf6b9">IDP_OLE_INIT_FAILED</a></div><div class="ttdeci">#define IDP_OLE_INIT_FAILED</div><div class="ttdef"><b>Definition:</b> <a href="_resource_8h_source.html#l00009">Resource.h:9</a></div></div>
+<div class="ttc" id="class_c_main_frame_html"><div class="ttname"><a href="class_c_main_frame.html">CMainFrame</a></div><div class="ttdoc">类的接口 </div><div class="ttdef"><b>Definition:</b> <a href="_main_frm_8h_source.html#l00013">MainFrm.h:13</a></div></div>
+<div class="ttc" id="_hust_net_doc_8h_html"><div class="ttname"><a href="_hust_net_doc_8h.html">HustNetDoc.h</a></div></div>
+<div class="ttc" id="class_c_hust_net_app_html_a68c2182155763c823a90dfc7aef09aed"><div class="ttname"><a href="class_c_hust_net_app.html#a68c2182155763c823a90dfc7aef09aed">CHustNetApp::ExitInstance</a></div><div class="ttdeci">virtual int ExitInstance()</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8cpp_source.html#l00176">HustNet.cpp:176</a></div></div>
+<div class="ttc" id="class_cmd_view_html"><div class="ttname"><a href="class_cmd_view.html">CmdView</a></div><div class="ttdoc">CmdView位于主界面左上角,主要完成命令的输入(界面控制),命令解析和命令映射(功能映射)。 ...</div><div class="ttdef"><b>Definition:</b> <a href="_cmd_view_8h_source.html#l00026">CmdView.h:26</a></div></div>
+<div class="ttc" id="class_c_hust_net_app_html_acc049928befa55dcff74b72cc4bd7c94"><div class="ttname"><a href="class_c_hust_net_app.html#acc049928befa55dcff74b72cc4bd7c94">CHustNetApp::InitInstance</a></div><div class="ttdeci">virtual BOOL InitInstance()</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8cpp_source.html#l00081">HustNet.cpp:81</a></div></div>
+<div class="ttc" id="class_c_hust_net_app_html"><div class="ttname"><a href="class_c_hust_net_app.html">CHustNetApp</a></div><div class="ttdoc">应用程序的主头文件 </div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00042">HustNet.h:42</a></div></div>
+<div class="ttc" id="class_c_hust_net_doc_html"><div class="ttname"><a href="class_c_hust_net_doc.html">CHustNetDoc</a></div><div class="ttdoc">CHustNetDoc 类的接口 </div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_doc_8h_source.html#l00013">HustNetDoc.h:13</a></div></div>
+<div class="ttc" id="_hust_net_8cpp_html_a42459c8764a93b5cbce88b391b78cbaf"><div class="ttname"><a href="_hust_net_8cpp.html#a42459c8764a93b5cbce88b391b78cbaf">theApp</a></div><div class="ttdeci">CHustNetApp theApp</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8cpp_source.html#l00074">HustNet.cpp:74</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+生成于 2015年 四月 23日 星期四 23:13:08 , 为 My Project使用  &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

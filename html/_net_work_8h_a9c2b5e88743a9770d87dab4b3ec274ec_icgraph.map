@@ -1,0 +1,7 @@
+<map id="PrintLog" name="PrintLog">
+<area shape="rect" id="node2" href="$class_net_work_1_1_chat_work.html#ac019f44ad1ecc33ce3eb2c42b6b537d9" title="NetWork::ChatWork::\lBegin" alt="" coords="131,5,277,47"/>
+<area shape="rect" id="node6" href="$class_net_work_1_1_app_layer_http.html#ad2e8c8742f2c630bd2d43ad843454d7d" title="NetWork::AppLayerHttp\l::Begin" alt="" coords="124,71,284,112"/>
+<area shape="rect" id="node3" href="$class_user_cmd.html#a8b9f5a09bef002aaefe10c43ae9ccea1" title="UserCmd::Chat" alt="" coords="332,13,443,39"/>
+<area shape="rect" id="node4" href="$class_cmd_view.html#a70cf028b2bc48ea3e0e6be3319911c85" title="创建消息处理线程,注册消息映射 " alt="" coords="491,13,631,39"/>
+<area shape="rect" id="node5" href="$class_cmd_view.html#a37a513e8262ea52c1859f8be73dac1b7" title="函数在视图附加到文档后触发,主要完成界面的初始化工作 " alt="" coords="679,13,852,39"/>
+</map>

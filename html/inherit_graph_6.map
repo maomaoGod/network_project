@@ -1,0 +1,5 @@
+<map id="类继承关系图" name="类继承关系图">
+<area shape="rect" id="node2" href="$class_cmd_view.html" title="CmdView位于主界面左上角,主要完成命令的输入(界面控制),命令解析和命令映射(功能映射)。 ..." alt="" coords="148,5,225,32"/>
+<area shape="rect" id="node3" href="$class_log_view.html" title="LogView 视图 " alt="" coords="151,56,222,83"/>
+<area shape="rect" id="node4" href="$class_respond_view.html" title="RespondView 视图 " alt="" coords="136,107,237,133"/>
+</map>

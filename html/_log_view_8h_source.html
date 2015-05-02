@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>My Project: src/LogView.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">My Project
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.8.9.1 -->
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>首页</span></a></li>
+      <li><a href="namespaces.html"><span>命名空间</span></a></li>
+      <li><a href="annotated.html"><span>类</span></a></li>
+      <li class="current"><a href="files.html"><span>文件</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>文件列表</span></a></li>
+      <li><a href="globals.html"><span>文件成员</span></a></li>
+    </ul>
+  </div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">LogView.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="_log_view_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="class_log_view.html">   12</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_log_view.html">LogView</a> : <span class="keyword">public</span> CEditView</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    DECLARE_DYNCREATE(<a class="code" href="class_log_view.html">LogView</a>)</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="class_log_view.html#a2fb392d2f295480df2296c4b448f618e">LogView</a>();           </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="class_log_view.html#a09bd9b2d7c2b955bf092ef10bc20326f">~LogView</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_log_view.html#a0938f28499b61191e3a2851e678f0021">   22</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_log_view.html#a0938f28499b61191e3a2851e678f0021">logcount</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="class_log_view.html#ad9dddd42d25a4b2b8e2e95f15189cadb">   24</a></span>&#160;    CString  <a class="code" href="class_log_view.html#ad9dddd42d25a4b2b8e2e95f15189cadb">Log</a>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_log_view.html#a232ff62ea49ec88508db135c660c5a55">OnDraw</a>(CDC* pDC);      </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#ifdef _DEBUG</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> AssertValid() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#ifndef _WIN32_WCE</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> Dump(CDumpContext&amp; dc) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    DECLARE_MESSAGE_MAP()</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    afx_msg LRESULT <a class="code" href="class_log_view.html#a4766c5dae6123e25eca63fed4050813e">Print</a>(WPARAM wparam, LPARAM lparam);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    afx_msg LRESULT <a class="code" href="class_log_view.html#a4e5d4e1f36ff464407795283e4f5e6bb">Clean</a>(WPARAM wparam, LPARAM lparam);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;public:</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    virtual <span class="keywordtype">void</span>    <a class="code" href="class_log_view.html#a8e8e673b89e4607aae5897736c1f4391">OnInitialUpdate</a>();</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    virtual BOOL <a class="code" href="class_log_view.html#a844773769caae10293e51f8aa31902c5">PreCreateWindow</a>(CREATESTRUCT&amp; cs);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    afx_msg <span class="keywordtype">void</span> <a class="code" href="class_log_view.html#ae4a33885ad9482550ccdda860f8f4001">OnLButtonDown</a>(UINT nFlags, CPoint point);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    afx_msg <span class="keywordtype">void</span> <a class="code" href="class_log_view.html#a23a272c617396b0186ebf9038f09752e">OnLButtonDblClk</a>(UINT nFlags, CPoint point);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    afx_msg <span class="keywordtype">void</span> <a class="code" href="class_log_view.html#a085da623df212edc5622ef2ec3a0ce7a">OnChar</a>(UINT nChar, UINT nRepCnt, UINT nFlags);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;};</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="ttc" id="class_log_view_html_ad9dddd42d25a4b2b8e2e95f15189cadb"><div class="ttname"><a href="class_log_view.html#ad9dddd42d25a4b2b8e2e95f15189cadb">LogView::Log</a></div><div class="ttdeci">CString Log</div><div class="ttdef"><b>Definition:</b> <a href="_log_view_8h_source.html#l00024">LogView.h:24</a></div></div>
+<div class="ttc" id="class_log_view_html_a09bd9b2d7c2b955bf092ef10bc20326f"><div class="ttname"><a href="class_log_view.html#a09bd9b2d7c2b955bf092ef10bc20326f">LogView::~LogView</a></div><div class="ttdeci">virtual ~LogView()</div><div class="ttdef"><b>Definition:</b> <a href="_log_view_8cpp_source.html#l00025">LogView.cpp:25</a></div></div>
+<div class="ttc" id="class_log_view_html_a085da623df212edc5622ef2ec3a0ce7a"><div class="ttname"><a href="class_log_view.html#a085da623df212edc5622ef2ec3a0ce7a">LogView::OnChar</a></div><div class="ttdeci">afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)</div><div class="ttdef"><b>Definition:</b> <a href="_log_view_8cpp_source.html#l00136">LogView.cpp:136</a></div></div>
+<div class="ttc" id="class_log_view_html_a232ff62ea49ec88508db135c660c5a55"><div class="ttname"><a href="class_log_view.html#a232ff62ea49ec88508db135c660c5a55">LogView::OnDraw</a></div><div class="ttdeci">virtual void OnDraw(CDC *pDC)</div><div class="ttdef"><b>Definition:</b> <a href="_log_view_8cpp_source.html#l00045">LogView.cpp:45</a></div></div>
+<div class="ttc" id="class_log_view_html_a844773769caae10293e51f8aa31902c5"><div class="ttname"><a href="class_log_view.html#a844773769caae10293e51f8aa31902c5">LogView::PreCreateWindow</a></div><div class="ttdeci">virtual BOOL PreCreateWindow(CREATESTRUCT &amp;cs)</div><div class="ttdoc">CmdView框体的属性设置 </div><div class="ttdef"><b>Definition:</b> <a href="_log_view_8cpp_source.html#l00097">LogView.cpp:97</a></div></div>
+<div class="ttc" id="class_log_view_html_a4e5d4e1f36ff464407795283e4f5e6bb"><div class="ttname"><a href="class_log_view.html#a4e5d4e1f36ff464407795283e4f5e6bb">LogView::Clean</a></div><div class="ttdeci">afx_msg LRESULT Clean(WPARAM wparam, LPARAM lparam)</div><div class="ttdoc">清空日志窗口 </div><div class="ttdef"><b>Definition:</b> <a href="_log_view_8cpp_source.html#l00168">LogView.cpp:168</a></div></div>
+<div class="ttc" id="class_log_view_html_a8e8e673b89e4607aae5897736c1f4391"><div class="ttname"><a href="class_log_view.html#a8e8e673b89e4607aae5897736c1f4391">LogView::OnInitialUpdate</a></div><div class="ttdeci">virtual void OnInitialUpdate()</div><div class="ttdoc">LogView 初始化 </div><div class="ttdef"><b>Definition:</b> <a href="_log_view_8cpp_source.html#l00078">LogView.cpp:78</a></div></div>
+<div class="ttc" id="class_log_view_html"><div class="ttname"><a href="class_log_view.html">LogView</a></div><div class="ttdoc">LogView 视图 </div><div class="ttdef"><b>Definition:</b> <a href="_log_view_8h_source.html#l00012">LogView.h:12</a></div></div>
+<div class="ttc" id="class_log_view_html_a23a272c617396b0186ebf9038f09752e"><div class="ttname"><a href="class_log_view.html#a23a272c617396b0186ebf9038f09752e">LogView::OnLButtonDblClk</a></div><div class="ttdeci">afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point)</div><div class="ttdoc">屏蔽鼠标双击 </div><div class="ttdef"><b>Definition:</b> <a href="_log_view_8cpp_source.html#l00123">LogView.cpp:123</a></div></div>
+<div class="ttc" id="class_log_view_html_a4766c5dae6123e25eca63fed4050813e"><div class="ttname"><a href="class_log_view.html#a4766c5dae6123e25eca63fed4050813e">LogView::Print</a></div><div class="ttdeci">afx_msg LRESULT Print(WPARAM wparam, LPARAM lparam)</div><div class="ttdoc">在LogView打印一行文字输出 </div><div class="ttdef"><b>Definition:</b> <a href="_log_view_8cpp_source.html#l00151">LogView.cpp:151</a></div></div>
+<div class="ttc" id="class_log_view_html_a2fb392d2f295480df2296c4b448f618e"><div class="ttname"><a href="class_log_view.html#a2fb392d2f295480df2296c4b448f618e">LogView::LogView</a></div><div class="ttdeci">LogView()</div><div class="ttdoc">LogView构造函数 构造函数创建类对象，并进行简单的初始化工作。函数初始化窗体记录字符串为空，并将记录标�...</div><div class="ttdef"><b>Definition:</b> <a href="_log_view_8cpp_source.html#l00019">LogView.cpp:19</a></div></div>
+<div class="ttc" id="class_log_view_html_a0938f28499b61191e3a2851e678f0021"><div class="ttname"><a href="class_log_view.html#a0938f28499b61191e3a2851e678f0021">LogView::logcount</a></div><div class="ttdeci">int logcount</div><div class="ttdef"><b>Definition:</b> <a href="_log_view_8h_source.html#l00022">LogView.h:22</a></div></div>
+<div class="ttc" id="class_log_view_html_ae4a33885ad9482550ccdda860f8f4001"><div class="ttname"><a href="class_log_view.html#ae4a33885ad9482550ccdda860f8f4001">LogView::OnLButtonDown</a></div><div class="ttdeci">afx_msg void OnLButtonDown(UINT nFlags, CPoint point)</div><div class="ttdoc">屏蔽鼠标单击 </div><div class="ttdef"><b>Definition:</b> <a href="_log_view_8cpp_source.html#l00110">LogView.cpp:110</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+生成于 2015年 四月 23日 星期四 23:13:08 , 为 My Project使用  &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>My Project: src/NetHtml.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">My Project
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.8.9.1 -->
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>首页</span></a></li>
+      <li><a href="namespaces.html"><span>命名空间</span></a></li>
+      <li><a href="annotated.html"><span>类</span></a></li>
+      <li class="current"><a href="files.html"><span>文件</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>文件列表</span></a></li>
+      <li><a href="globals.html"><span>文件成员</span></a></li>
+    </ul>
+  </div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">NetHtml.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="_net_html_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;afxinet.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="class_net_html.html">    7</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_net_html.html">NetHtml</a></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;{</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <a class="code" href="class_net_html.html#ad17ff6c30cc899ba62dc45705e24196f">NetHtml</a>();</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <a class="code" href="class_net_html.html#a55361638a8c068b7529fcde82fe3314f">~NetHtml</a>();</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    CString  <a class="code" href="class_net_html.html#a1d26b557eca7cab7c987aae38438c3ae">NetHtml::getURLContext</a>(LPCTSTR pstrURL);</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;};</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="ttc" id="class_net_html_html"><div class="ttname"><a href="class_net_html.html">NetHtml</a></div><div class="ttdef"><b>Definition:</b> <a href="_net_html_8h_source.html#l00007">NetHtml.h:7</a></div></div>
+<div class="ttc" id="class_net_html_html_a55361638a8c068b7529fcde82fe3314f"><div class="ttname"><a href="class_net_html.html#a55361638a8c068b7529fcde82fe3314f">NetHtml::~NetHtml</a></div><div class="ttdeci">~NetHtml()</div><div class="ttdef"><b>Definition:</b> <a href="_net_html_8cpp_source.html#l00021">NetHtml.cpp:21</a></div></div>
+<div class="ttc" id="class_net_html_html_a1d26b557eca7cab7c987aae38438c3ae"><div class="ttname"><a href="class_net_html.html#a1d26b557eca7cab7c987aae38438c3ae">NetHtml::getURLContext</a></div><div class="ttdeci">CString getURLContext(LPCTSTR pstrURL)</div><div class="ttdoc">函数通过CSocket获取对应的html文件字符流。 函数通过CSocket和url对应的服务器建立连接,并将请求资源报文发送给服务器，成功响应后一行行的获取从服务器发来的数据， 并将数据转码为Unicode，拼接到返回的字符串myhtml </div><div class="ttdef"><b>Definition:</b> <a href="_net_html_8cpp_source.html#l00032">NetHtml.cpp:32</a></div></div>
+<div class="ttc" id="class_net_html_html_ad17ff6c30cc899ba62dc45705e24196f"><div class="ttname"><a href="class_net_html.html#ad17ff6c30cc899ba62dc45705e24196f">NetHtml::NetHtml</a></div><div class="ttdeci">NetHtml()</div><div class="ttdef"><b>Definition:</b> <a href="_net_html_8cpp_source.html#l00016">NetHtml.cpp:16</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+生成于 2015年 四月 23日 星期四 23:13:08 , 为 My Project使用  &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>My Project: src/NetSet.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">My Project
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.8.9.1 -->
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>首页</span></a></li>
+      <li><a href="namespaces.html"><span>命名空间</span></a></li>
+      <li><a href="annotated.html"><span>类</span></a></li>
+      <li class="current"><a href="files.html"><span>文件</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>文件列表</span></a></li>
+      <li><a href="globals.html"><span>文件成员</span></a></li>
+    </ul>
+  </div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">NetSet.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="_net_set_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="class_net_set.html">   12</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_net_set.html">NetSet</a> : <span class="keyword">public</span> CDialogEx</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    DECLARE_DYNAMIC(<a class="code" href="class_net_set.html">NetSet</a>)</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="class_net_set.html#a57ddccb688e56c1ad45fc77bcfb8e61d">NetSet</a>(CWnd* pParent = NULL);   </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="class_net_set.html#a6e44c515adaf8376628d90401fef6a80">~NetSet</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="class_net_set.html#ab0ebc3a002ec7cd48102c770127f24dca314c9fa6bb7b538742f609c51f1a0055">   26</a></span>&#160;    <span class="keyword">enum</span> { <a class="code" href="class_net_set.html#ab0ebc3a002ec7cd48102c770127f24dca314c9fa6bb7b538742f609c51f1a0055">IDD</a> = <a class="code" href="_resource_8h.html#a51bfece3be552381b4720b44e67d6705">IDD_SET</a> };</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_net_set.html#a61c04304029a7cf98f0d47abbe85b1c3">DoDataExchange</a>(CDataExchange* pDX);   </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    DECLARE_MESSAGE_MAP()</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;public:</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    afx_msg <span class="keywordtype">void</span> <a class="code" href="class_net_set.html#a01bdeb52ebe03f753caae8ec26b4d9e3">OnBnClickedLocalBrowse</a>();</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    afx_msg <span class="keywordtype">void</span> <a class="code" href="class_net_set.html#a92d3389ce5b02a8e990318b65eb58ccb">OnBnClickedServerBrowse</a>();</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;};</div>
+<div class="ttc" id="class_net_set_html_ab0ebc3a002ec7cd48102c770127f24dca314c9fa6bb7b538742f609c51f1a0055"><div class="ttname"><a href="class_net_set.html#ab0ebc3a002ec7cd48102c770127f24dca314c9fa6bb7b538742f609c51f1a0055">NetSet::IDD</a></div><div class="ttdef"><b>Definition:</b> <a href="_net_set_8h_source.html#l00026">NetSet.h:26</a></div></div>
+<div class="ttc" id="class_net_set_html"><div class="ttname"><a href="class_net_set.html">NetSet</a></div><div class="ttdoc">NetSet 对话框 </div><div class="ttdef"><b>Definition:</b> <a href="_net_set_8h_source.html#l00012">NetSet.h:12</a></div></div>
+<div class="ttc" id="_resource_8h_html_a51bfece3be552381b4720b44e67d6705"><div class="ttname"><a href="_resource_8h.html#a51bfece3be552381b4720b44e67d6705">IDD_SET</a></div><div class="ttdeci">#define IDD_SET</div><div class="ttdef"><b>Definition:</b> <a href="_resource_8h_source.html#l00014">Resource.h:14</a></div></div>
+<div class="ttc" id="class_net_set_html_a92d3389ce5b02a8e990318b65eb58ccb"><div class="ttname"><a href="class_net_set.html#a92d3389ce5b02a8e990318b65eb58ccb">NetSet::OnBnClickedServerBrowse</a></div><div class="ttdeci">afx_msg void OnBnClickedServerBrowse()</div><div class="ttdef"><b>Definition:</b> <a href="_net_set_8cpp_source.html#l00063">NetSet.cpp:63</a></div></div>
+<div class="ttc" id="class_net_set_html_a01bdeb52ebe03f753caae8ec26b4d9e3"><div class="ttname"><a href="class_net_set.html#a01bdeb52ebe03f753caae8ec26b4d9e3">NetSet::OnBnClickedLocalBrowse</a></div><div class="ttdeci">afx_msg void OnBnClickedLocalBrowse()</div><div class="ttdoc">NetSet 消息处理程序 </div><div class="ttdef"><b>Definition:</b> <a href="_net_set_8cpp_source.html#l00044">NetSet.cpp:44</a></div></div>
+<div class="ttc" id="class_net_set_html_a57ddccb688e56c1ad45fc77bcfb8e61d"><div class="ttname"><a href="class_net_set.html#a57ddccb688e56c1ad45fc77bcfb8e61d">NetSet::NetSet</a></div><div class="ttdeci">NetSet(CWnd *pParent=NULL)</div><div class="ttdoc">NetSet 对话框 </div><div class="ttdef"><b>Definition:</b> <a href="_net_set_8cpp_source.html#l00018">NetSet.cpp:18</a></div></div>
+<div class="ttc" id="class_net_set_html_a61c04304029a7cf98f0d47abbe85b1c3"><div class="ttname"><a href="class_net_set.html#a61c04304029a7cf98f0d47abbe85b1c3">NetSet::DoDataExchange</a></div><div class="ttdeci">virtual void DoDataExchange(CDataExchange *pDX)</div><div class="ttdef"><b>Definition:</b> <a href="_net_set_8cpp_source.html#l00028">NetSet.cpp:28</a></div></div>
+<div class="ttc" id="class_net_set_html_a6e44c515adaf8376628d90401fef6a80"><div class="ttname"><a href="class_net_set.html#a6e44c515adaf8376628d90401fef6a80">NetSet::~NetSet</a></div><div class="ttdeci">virtual ~NetSet()</div><div class="ttdef"><b>Definition:</b> <a href="_net_set_8cpp_source.html#l00024">NetSet.cpp:24</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+生成于 2015年 四月 23日 星期四 23:13:08 , 为 My Project使用  &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

@@ -1,0 +1,8 @@
+<map id="UserCmd::GetHtml" name="UserCmd::GetHtml">
+<area shape="rect" id="node2" href="$class_net_html.html#a1d26b557eca7cab7c987aae38438c3ae" title="函数通过CSocket获取对应的html文件字符流。 函数通过CSocket和url对应的服务器建立连接,并将请求资源报文发送给服务器，成功响应后一行行的获取从服务器发来的数据， 并将数据转码为Unicode，拼接到返回的字符串myhtml " alt="" coords="185,81,351,108"/>
+<area shape="rect" id="node7" href="$_net_work_8h.html#a850221fdc22e3e0628077942ed82fefb" title="设置相应窗口的内容 函数发送SETTEXT消息到RespondView窗口，并将字符串封装到lparam中，RespondView窗口接 ..." alt="" coords="239,132,297,159"/>
+<area shape="rect" id="node3" href="$class_tools_1_1_tstr.html#af2dbe21365f53b0bd531cf356d6b566f" title="Tools::Tstr::Tchar2string" alt="" coords="415,5,577,32"/>
+<area shape="rect" id="node4" href="$class_tools_1_1_tstr.html#a73550e362f50715445fe5dc9fef26b1e" title="Tools::Tstr::String2LPCWSTR" alt="" coords="399,56,593,83"/>
+<area shape="rect" id="node5" href="$class_tools_1_1_tstr.html#a6f9002ef49d85db27430acae6733a747" title="Tools::Tstr::S2Cstar" alt="" coords="427,107,565,133"/>
+<area shape="rect" id="node6" href="$_net_html_8cpp.html#a9c2b5e88743a9770d87dab4b3ec274ec" title="打印一行文字到日志窗口 函数发送PRINT消息到LogView窗口，并将字符串封装到lparam中，LogView窗口接收到该�..." alt="" coords="461,157,531,184"/>
+</map>

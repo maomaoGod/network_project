@@ -1,0 +1,4 @@
+<map id="CMyIP::select_algorithm" name="CMyIP::select_algorithm">
+<area shape="rect" id="node2" href="$class_c_my_i_p.html#a120bdc8113391219647816fa1343f898" title="n为路由器个数，v为源节点，*dist为随着算法进行本次迭代，从源节点到目的v的最低费用路径的费用, *prev为从源节点v沿着当前最低费用路径的前一节点, c[maxnum][maxnum]为从节点x到节点y的链路费用矩阵, 如果x和y不是直连的，则 c(x,y)=maxint 链路状态选路算法的实现. " alt="" coords="235,5,349,32"/>
+<area shape="rect" id="node3" href="$class_c_my_i_p.html#a21d1ede1d36a306ef9df5087f0e482df" title="n为节点数，dis[x][y]表示节点x到y的距离， *D[x]表示节点x的距离向量， V[x][y]=1表示节点x到y有一条边， c..." alt="" coords="217,56,367,83"/>
+</map>

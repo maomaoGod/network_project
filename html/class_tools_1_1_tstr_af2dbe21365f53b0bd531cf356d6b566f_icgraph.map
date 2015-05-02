@@ -1,0 +1,6 @@
+<map id="Tools::Tstr::Tchar2string" name="Tools::Tstr::Tchar2string">
+<area shape="rect" id="node2" href="$class_net_html.html#a1d26b557eca7cab7c987aae38438c3ae" title="函数通过CSocket获取对应的html文件字符流。 函数通过CSocket和url对应的服务器建立连接,并将请求资源报文发送给服务器，成功响应后一行行的获取从服务器发来的数据， 并将数据转码为Unicode，拼接到返回的字符串myhtml " alt="" coords="216,5,381,32"/>
+<area shape="rect" id="node3" href="$class_user_cmd.html#ad5fa0ccaab5d2a8bf2b4aeccc6c4c01b" title="UserCmd::GetHtml" alt="" coords="429,5,561,32"/>
+<area shape="rect" id="node4" href="$class_cmd_view.html#a70cf028b2bc48ea3e0e6be3319911c85" title="创建消息处理线程,注册消息映射 " alt="" coords="609,5,749,32"/>
+<area shape="rect" id="node5" href="$class_cmd_view.html#a37a513e8262ea52c1859f8be73dac1b7" title="函数在视图附加到文档后触发,主要完成界面的初始化工作 " alt="" coords="797,5,971,32"/>
+</map>

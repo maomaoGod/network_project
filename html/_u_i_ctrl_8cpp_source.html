@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>My Project: src/UICtrl.cpp 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">My Project
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.8.9.1 -->
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>首页</span></a></li>
+      <li><a href="namespaces.html"><span>命名空间</span></a></li>
+      <li><a href="annotated.html"><span>类</span></a></li>
+      <li class="current"><a href="files.html"><span>文件</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>文件列表</span></a></li>
+      <li><a href="globals.html"><span>文件成员</span></a></li>
+    </ul>
+  </div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">UICtrl.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="_u_i_ctrl_8cpp.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include  &quot;<a class="code" href="stdafx_8h.html">stdafx.h</a>&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include  &quot;<a class="code" href="_u_i_ctrl_8h.html">UICtrl.h</a>&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include  &quot;<a class="code" href="_hust_net_8h.html">HustNet.h</a>&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
+<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8cpp.html#a0cd657b8e4787b025be448cda40806a8">   10</a></span>&#160;<a class="code" href="_u_i_ctrl_8h.html#a275a67132f10277ada3a0ee3d616b647">STATE</a>   <a class="code" href="_u_i_ctrl_8cpp.html#a0cd657b8e4787b025be448cda40806a8">THREADFLAG</a>;</div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8cpp.html#ac98fa79d0cd4a0ea8770adbdbed08523">   11</a></span>&#160;<a class="code" href="_u_i_ctrl_8h.html#a7961efb94162db03f449f8c8481c13d0">LINESTATE</a> <a class="code" href="_u_i_ctrl_8cpp.html#ac98fa79d0cd4a0ea8770adbdbed08523">LINEFLAG</a>;</div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8cpp.html#a104f9ef3cf399d33d7701d699579784c">   12</a></span>&#160;<a class="code" href="_u_i_ctrl_8h.html#a4a77355aeef1dc1fa51e3a53e6ebe52a">INPUTSTATE</a> <a class="code" href="_u_i_ctrl_8cpp.html#a104f9ef3cf399d33d7701d699579784c">INPUTFLAG</a>;</div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8cpp.html#a517aff3912f23f34cb41fb73f64ae3da">   13</a></span>&#160;<a class="code" href="_u_i_ctrl_8h.html#a20e9d3b615977d0cfd7442fb6e620448">CMDMODE</a> <a class="code" href="_u_i_ctrl_8cpp.html#a517aff3912f23f34cb41fb73f64ae3da">CMDFLAG</a>;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8cpp.html#afe737fd4786d010c30e5420d86621d7a">   15</a></span>&#160;<a class="code" href="class_c_main_frame.html">CMainFrame</a>  *<a class="code" href="_u_i_ctrl_8cpp.html#afe737fd4786d010c30e5420d86621d7a">pframe</a>;</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8cpp.html#a51d83de12f1ffac0d0c0b179a04da04b">   16</a></span>&#160;CString <a class="code" href="_u_i_ctrl_8cpp.html#a51d83de12f1ffac0d0c0b179a04da04b">command</a>;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8h.html#acd5d76443a9392735027919ea424c69c">   24</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_u_i_ctrl_8cpp.html#acd5d76443a9392735027919ea424c69c">PrintLog</a>(CString log)</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;{</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="struct_c_m_d.html">CMD</a> mycmd;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123">ID</a> = <a class="code" href="_hust_net_8h.html#a8b43bafee90b30676faae508c21cb8d7">PRINT</a>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06">agrs</a> = &amp;log;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    pframe-&gt;SendMessage(<a class="code" href="_hust_net_8h.html#a40314433b5f301aaff50f5597553cc8d">DISPATCH</a>, <a class="code" href="_hust_net_8h.html#ab5b352492259f7b453a051455d5dca50">LOGVIEW</a>, (LPARAM)(&amp;mycmd));</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;}</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8h.html#ab0b8ca5aa66c11f8980688e92787f4f8">   39</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_u_i_ctrl_8cpp.html#ab0b8ca5aa66c11f8980688e92787f4f8">PrintRp</a>(CString rp)</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="struct_c_m_d.html">CMD</a> mycmd;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123">ID</a> = <a class="code" href="_hust_net_8h.html#a8b43bafee90b30676faae508c21cb8d7">PRINT</a>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06">agrs</a> = &amp;rp;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    pframe-&gt;SendMessage(<a class="code" href="_hust_net_8h.html#a40314433b5f301aaff50f5597553cc8d">DISPATCH</a>, <a class="code" href="_hust_net_8h.html#af9bea6e1d400f8ad8a0b6beb284ec026">RPVIEW</a>, (LPARAM)(&amp;mycmd));</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8h.html#a3705da6c53d30365e51cf626e202c46a">   51</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_u_i_ctrl_8cpp.html#a3705da6c53d30365e51cf626e202c46a">CleanLog</a>(CString e)</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;{</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="struct_c_m_d.html">CMD</a> mycmd;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123">ID</a> = <a class="code" href="_hust_net_8h.html#a35321edda7ad4639415e2461e6ffee97">CLEAN</a>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06">agrs</a> = NULL;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    pframe-&gt;SendMessage(<a class="code" href="_hust_net_8h.html#a40314433b5f301aaff50f5597553cc8d">DISPATCH</a>, <a class="code" href="_hust_net_8h.html#ab5b352492259f7b453a051455d5dca50">LOGVIEW</a>, LPARAM(&amp;mycmd));</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8h.html#aa219c6f9ca379d0752919e557aff652c">   63</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_u_i_ctrl_8cpp.html#aa219c6f9ca379d0752919e557aff652c">CleanRp</a>(CString e)</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;{</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <a class="code" href="struct_c_m_d.html">CMD</a> mycmd;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123">ID</a> = <a class="code" href="_hust_net_8h.html#a35321edda7ad4639415e2461e6ffee97">CLEAN</a>;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06">agrs</a> = NULL;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    pframe-&gt;SendMessage(<a class="code" href="_hust_net_8h.html#a40314433b5f301aaff50f5597553cc8d">DISPATCH</a>,<a class="code" href="_hust_net_8h.html#af9bea6e1d400f8ad8a0b6beb284ec026">RPVIEW</a> , LPARAM(&amp;mycmd));</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8h.html#a090c13e1e646196c7caa6e206bef2ab2">   78</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_u_i_ctrl_8cpp.html#a090c13e1e646196c7caa6e206bef2ab2">SetRp</a>(CString e)</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;{</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <a class="code" href="struct_c_m_d.html">CMD</a> mycmd;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123">ID</a> = <a class="code" href="_hust_net_8h.html#ac8852a933bbfae8f0123bcaaff258178">SETTEXT</a>;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06">agrs</a> = &amp;e;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    pframe-&gt;SendMessage(<a class="code" href="_hust_net_8h.html#a40314433b5f301aaff50f5597553cc8d">DISPATCH</a>, <a class="code" href="_hust_net_8h.html#af9bea6e1d400f8ad8a0b6beb284ec026">RPVIEW</a>, LPARAM(&amp;mycmd));</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;}</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8h.html#a2c381264f349b11e7959d11e88ffecee">   92</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_u_i_ctrl_8cpp.html#a2c381264f349b11e7959d11e88ffecee">SetHint</a>(CString e)</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;{</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <a class="code" href="struct_c_m_d.html">CMD</a> mycmd;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123">ID</a> = <a class="code" href="_hust_net_8h.html#a1493ac161e08fbb6362f6d87d020af73">SETHINT</a>;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06">agrs</a> = &amp;e;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    pframe-&gt;SendMessage(<a class="code" href="_hust_net_8h.html#a40314433b5f301aaff50f5597553cc8d">DISPATCH</a>, <a class="code" href="_hust_net_8h.html#a9580e7450fe37a3f37776bee58239d0f">CMDVIEW</a>, LPARAM(&amp;mycmd));</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;}</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
+<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8h.html#ad0fd7e12f565bc4202d32e726131e5c0">  108</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_u_i_ctrl_8cpp.html#ad0fd7e12f565bc4202d32e726131e5c0">TakeOverCmd</a>(CString e)</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;{</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <a class="code" href="struct_c_m_d.html">CMD</a> mycmd;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123">ID</a> = <a class="code" href="_hust_net_8h.html#acc3a7ee63421609bd755137323f747f4">TAKEOVERCMD</a>;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06">agrs</a> = &amp;e;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    pframe-&gt;SendMessage(<a class="code" href="_hust_net_8h.html#a40314433b5f301aaff50f5597553cc8d">DISPATCH</a>, <a class="code" href="_hust_net_8h.html#a9580e7450fe37a3f37776bee58239d0f">CMDVIEW</a>, LPARAM(&amp;mycmd));</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;}</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;</div>
+<div class="line"><a name="l00121"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8h.html#ab7520283bb1638c3850a041326fddbde">  121</a></span>&#160;CString  <a class="code" href="_u_i_ctrl_8cpp.html#ab7520283bb1638c3850a041326fddbde">GetLine</a>()</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;{</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keyword">static</span> CString  myline;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="_u_i_ctrl_8cpp.html#a517aff3912f23f34cb41fb73f64ae3da">CMDFLAG</a> != <a class="code" href="_u_i_ctrl_8h.html#a20e9d3b615977d0cfd7442fb6e620448ae2d30a195cee6b2961cc2c23ea4b520b">USER</a>){</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <a class="code" href="_u_i_ctrl_8cpp.html#acd5d76443a9392735027919ea424c69c">PrintLog</a>(_T(<span class="stringliteral">&quot;未接管CmdView窗口&quot;</span>));</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <span class="keywordflow">return</span> NULL;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    }</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <a class="code" href="_u_i_ctrl_8cpp.html#a104f9ef3cf399d33d7701d699579784c">INPUTFLAG</a> = <a class="code" href="_u_i_ctrl_8h.html#a4a77355aeef1dc1fa51e3a53e6ebe52aa79a6b7f188a0c6c0f32beb8d40d5804a">NEED</a>;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keywordflow">while</span> (<a class="code" href="_u_i_ctrl_8cpp.html#ac98fa79d0cd4a0ea8770adbdbed08523">LINEFLAG</a> != <a class="code" href="_u_i_ctrl_8h.html#a7961efb94162db03f449f8c8481c13d0a59d02b47a666732cc6577f158272b099">NEWLINE</a>)</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        ;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    myline = <a class="code" href="_u_i_ctrl_8cpp.html#a51d83de12f1ffac0d0c0b179a04da04b">command</a>;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <a class="code" href="_u_i_ctrl_8cpp.html#a4fdd03168a7e6952059fcf83e88c70f7">EndInput</a>();</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <a class="code" href="_u_i_ctrl_8cpp.html#a104f9ef3cf399d33d7701d699579784c">INPUTFLAG</a> = <a class="code" href="_u_i_ctrl_8h.html#a4a77355aeef1dc1fa51e3a53e6ebe52aa5b45ac6888637801d48443ad9903513f">UNNEED</a>;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <a class="code" href="_u_i_ctrl_8cpp.html#ac98fa79d0cd4a0ea8770adbdbed08523">LINEFLAG</a> = <a class="code" href="_u_i_ctrl_8h.html#a7961efb94162db03f449f8c8481c13d0a7a251faff1066db3bc6a5b4c0f8a3b02">OLDLINE</a>;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keywordflow">return</span> myline;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;}</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
+<div class="line"><a name="l00142"></a><span class="lineno"><a class="line" href="_u_i_ctrl_8h.html#a4fdd03168a7e6952059fcf83e88c70f7">  142</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_u_i_ctrl_8cpp.html#a4fdd03168a7e6952059fcf83e88c70f7">EndInput</a>()</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;{</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    <a class="code" href="struct_c_m_d.html">CMD</a> mycmd;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123">ID</a> = <a class="code" href="_hust_net_8h.html#a4f7324820bec84fcf8e8d97f8067c411">ENDINPUT</a>;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    mycmd.<a class="code" href="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06">agrs</a> = NULL;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    pframe-&gt;SendMessage(<a class="code" href="_hust_net_8h.html#a40314433b5f301aaff50f5597553cc8d">DISPATCH</a>, <a class="code" href="_hust_net_8h.html#a9580e7450fe37a3f37776bee58239d0f">CMDVIEW</a>, LPARAM(&amp;mycmd));</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;}</div>
+<div class="ttc" id="_u_i_ctrl_8h_html_a275a67132f10277ada3a0ee3d616b647"><div class="ttname"><a href="_u_i_ctrl_8h.html#a275a67132f10277ada3a0ee3d616b647">STATE</a></div><div class="ttdeci">STATE</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8h_source.html#l00011">UICtrl.h:11</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_a0cd657b8e4787b025be448cda40806a8"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#a0cd657b8e4787b025be448cda40806a8">THREADFLAG</a></div><div class="ttdeci">STATE THREADFLAG</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00010">UICtrl.cpp:10</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_ad0fd7e12f565bc4202d32e726131e5c0"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#ad0fd7e12f565bc4202d32e726131e5c0">TakeOverCmd</a></div><div class="ttdeci">void TakeOverCmd(CString e)</div><div class="ttdoc">设置CmdView的命令提示语，接管CmdView的输入 函数发送TAKEOVERCMD消息到CmdView窗口，并将字符串封装到lpar...</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00108">UICtrl.cpp:108</a></div></div>
+<div class="ttc" id="_hust_net_8h_html_ab5b352492259f7b453a051455d5dca50"><div class="ttname"><a href="_hust_net_8h.html#ab5b352492259f7b453a051455d5dca50">LOGVIEW</a></div><div class="ttdeci">#define LOGVIEW</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00018">HustNet.h:18</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_acd5d76443a9392735027919ea424c69c"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#acd5d76443a9392735027919ea424c69c">PrintLog</a></div><div class="ttdeci">void PrintLog(CString log)</div><div class="ttdoc">打印一行文字到日志窗口 函数发送PRINT消息到LogView窗口，并将字符串封装到lparam中，LogView窗口接收到该�...</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00024">UICtrl.cpp:24</a></div></div>
+<div class="ttc" id="_hust_net_8h_html_a35321edda7ad4639415e2461e6ffee97"><div class="ttname"><a href="_hust_net_8h.html#a35321edda7ad4639415e2461e6ffee97">CLEAN</a></div><div class="ttdeci">#define CLEAN</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00021">HustNet.h:21</a></div></div>
+<div class="ttc" id="_hust_net_8h_html_a4f7324820bec84fcf8e8d97f8067c411"><div class="ttname"><a href="_hust_net_8h.html#a4f7324820bec84fcf8e8d97f8067c411">ENDINPUT</a></div><div class="ttdeci">#define ENDINPUT</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00028">HustNet.h:28</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8h_html_a4a77355aeef1dc1fa51e3a53e6ebe52aa79a6b7f188a0c6c0f32beb8d40d5804a"><div class="ttname"><a href="_u_i_ctrl_8h.html#a4a77355aeef1dc1fa51e3a53e6ebe52aa79a6b7f188a0c6c0f32beb8d40d5804a">NEED</a></div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8h_source.html#l00012">UICtrl.h:12</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_a51d83de12f1ffac0d0c0b179a04da04b"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#a51d83de12f1ffac0d0c0b179a04da04b">command</a></div><div class="ttdeci">CString command</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00016">UICtrl.cpp:16</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8h_html_a20e9d3b615977d0cfd7442fb6e620448"><div class="ttname"><a href="_u_i_ctrl_8h.html#a20e9d3b615977d0cfd7442fb6e620448">CMDMODE</a></div><div class="ttdeci">CMDMODE</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8h_source.html#l00013">UICtrl.h:13</a></div></div>
+<div class="ttc" id="_hust_net_8h_html_a8b43bafee90b30676faae508c21cb8d7"><div class="ttname"><a href="_hust_net_8h.html#a8b43bafee90b30676faae508c21cb8d7">PRINT</a></div><div class="ttdeci">#define PRINT</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00020">HustNet.h:20</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8h_html_a7961efb94162db03f449f8c8481c13d0a7a251faff1066db3bc6a5b4c0f8a3b02"><div class="ttname"><a href="_u_i_ctrl_8h.html#a7961efb94162db03f449f8c8481c13d0a7a251faff1066db3bc6a5b4c0f8a3b02">OLDLINE</a></div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8h_source.html#l00010">UICtrl.h:10</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_a104f9ef3cf399d33d7701d699579784c"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#a104f9ef3cf399d33d7701d699579784c">INPUTFLAG</a></div><div class="ttdeci">INPUTSTATE INPUTFLAG</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00012">UICtrl.cpp:12</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_a090c13e1e646196c7caa6e206bef2ab2"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#a090c13e1e646196c7caa6e206bef2ab2">SetRp</a></div><div class="ttdeci">void SetRp(CString e)</div><div class="ttdoc">设置相应窗口的内容 函数发送SETTEXT消息到RespondView窗口，并将字符串封装到lparam中，RespondView窗口接 ...</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00078">UICtrl.cpp:78</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_a4fdd03168a7e6952059fcf83e88c70f7"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#a4fdd03168a7e6952059fcf83e88c70f7">EndInput</a></div><div class="ttdeci">void EndInput()</div><div class="ttdoc">通知主窗口命令已获取完成 函数发送ENDINPUT消息到CmdView，通知用户模式下成功获取了一行输入。CmdView接收...</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00142">UICtrl.cpp:142</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_a2c381264f349b11e7959d11e88ffecee"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#a2c381264f349b11e7959d11e88ffecee">SetHint</a></div><div class="ttdeci">void SetHint(CString e)</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00092">UICtrl.cpp:92</a></div></div>
+<div class="ttc" id="stdafx_8h_html"><div class="ttname"><a href="stdafx_8h.html">stdafx.h</a></div><div class="ttdoc">stdafx.h : 标准系统包含文件的包含文件，  或是经常使用但不常更改的  特定于项目的包含文件 ...</div></div>
+<div class="ttc" id="_hust_net_8h_html"><div class="ttname"><a href="_hust_net_8h.html">HustNet.h</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_ac98fa79d0cd4a0ea8770adbdbed08523"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#ac98fa79d0cd4a0ea8770adbdbed08523">LINEFLAG</a></div><div class="ttdeci">LINESTATE LINEFLAG</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00011">UICtrl.cpp:11</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8h_html_a4a77355aeef1dc1fa51e3a53e6ebe52aa5b45ac6888637801d48443ad9903513f"><div class="ttname"><a href="_u_i_ctrl_8h.html#a4a77355aeef1dc1fa51e3a53e6ebe52aa5b45ac6888637801d48443ad9903513f">UNNEED</a></div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8h_source.html#l00012">UICtrl.h:12</a></div></div>
+<div class="ttc" id="_hust_net_8h_html_ac8852a933bbfae8f0123bcaaff258178"><div class="ttname"><a href="_hust_net_8h.html#ac8852a933bbfae8f0123bcaaff258178">SETTEXT</a></div><div class="ttdeci">#define SETTEXT</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00022">HustNet.h:22</a></div></div>
+<div class="ttc" id="class_c_main_frame_html"><div class="ttname"><a href="class_c_main_frame.html">CMainFrame</a></div><div class="ttdoc">类的接口 </div><div class="ttdef"><b>Definition:</b> <a href="_main_frm_8h_source.html#l00013">MainFrm.h:13</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_aa219c6f9ca379d0752919e557aff652c"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#aa219c6f9ca379d0752919e557aff652c">CleanRp</a></div><div class="ttdeci">void CleanRp(CString e)</div><div class="ttdoc">清空响应窗口 函数发送CLEAN消息到LogView窗口，RespondView窗口接收到该消息后打印相应字符串到LogView窗口...</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00063">UICtrl.cpp:63</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8h_html_a20e9d3b615977d0cfd7442fb6e620448ae2d30a195cee6b2961cc2c23ea4b520b"><div class="ttname"><a href="_u_i_ctrl_8h.html#a20e9d3b615977d0cfd7442fb6e620448ae2d30a195cee6b2961cc2c23ea4b520b">USER</a></div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8h_source.html#l00013">UICtrl.h:13</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8h_html_a7961efb94162db03f449f8c8481c13d0a59d02b47a666732cc6577f158272b099"><div class="ttname"><a href="_u_i_ctrl_8h.html#a7961efb94162db03f449f8c8481c13d0a59d02b47a666732cc6577f158272b099">NEWLINE</a></div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8h_source.html#l00010">UICtrl.h:10</a></div></div>
+<div class="ttc" id="struct_c_m_d_html_a7f5be60349bf620b170b0a3fb9ee4123"><div class="ttname"><a href="struct_c_m_d.html#a7f5be60349bf620b170b0a3fb9ee4123">CMD::ID</a></div><div class="ttdeci">int ID</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00031">HustNet.h:31</a></div></div>
+<div class="ttc" id="_hust_net_8h_html_a9580e7450fe37a3f37776bee58239d0f"><div class="ttname"><a href="_hust_net_8h.html#a9580e7450fe37a3f37776bee58239d0f">CMDVIEW</a></div><div class="ttdeci">#define CMDVIEW</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00016">HustNet.h:16</a></div></div>
+<div class="ttc" id="_hust_net_8h_html_af9bea6e1d400f8ad8a0b6beb284ec026"><div class="ttname"><a href="_hust_net_8h.html#af9bea6e1d400f8ad8a0b6beb284ec026">RPVIEW</a></div><div class="ttdeci">#define RPVIEW</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00017">HustNet.h:17</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_ab0b8ca5aa66c11f8980688e92787f4f8"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#ab0b8ca5aa66c11f8980688e92787f4f8">PrintRp</a></div><div class="ttdeci">void PrintRp(CString rp)</div><div class="ttdoc">打印一行文字到响应窗口 函数发送PRINT消息到RespondView窗口，并将字符串封装到lparam中，RespondView窗口�...</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00039">UICtrl.cpp:39</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_ab7520283bb1638c3850a041326fddbde"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#ab7520283bb1638c3850a041326fddbde">GetLine</a></div><div class="ttdeci">CString GetLine()</div><div class="ttdoc">从CmdView中获取一行输入 函数在用户命令模式下从Cmd获取一行输入。函数首先判断当前是否处于用户命令模式 ...</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00121">UICtrl.cpp:121</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8h_html_a4a77355aeef1dc1fa51e3a53e6ebe52a"><div class="ttname"><a href="_u_i_ctrl_8h.html#a4a77355aeef1dc1fa51e3a53e6ebe52a">INPUTSTATE</a></div><div class="ttdeci">INPUTSTATE</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8h_source.html#l00012">UICtrl.h:12</a></div></div>
+<div class="ttc" id="struct_c_m_d_html_adab1e2eeee7dfcfecc6c30e780c1bf06"><div class="ttname"><a href="struct_c_m_d.html#adab1e2eeee7dfcfecc6c30e780c1bf06">CMD::agrs</a></div><div class="ttdeci">void * agrs</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00032">HustNet.h:32</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_afe737fd4786d010c30e5420d86621d7a"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#afe737fd4786d010c30e5420d86621d7a">pframe</a></div><div class="ttdeci">CMainFrame * pframe</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00015">UICtrl.cpp:15</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_a3705da6c53d30365e51cf626e202c46a"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#a3705da6c53d30365e51cf626e202c46a">CleanLog</a></div><div class="ttdeci">void CleanLog(CString e)</div><div class="ttdoc">清空日志窗口 函数发送CLEAN消息到LogView窗口，LogView窗口接收到该消息后打印相应字符串到LogView窗口 ...</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00051">UICtrl.cpp:51</a></div></div>
+<div class="ttc" id="struct_c_m_d_html"><div class="ttname"><a href="struct_c_m_d.html">CMD</a></div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00030">HustNet.h:30</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8h_html"><div class="ttname"><a href="_u_i_ctrl_8h.html">UICtrl.h</a></div><div class="ttdoc">UICtrl. </div></div>
+<div class="ttc" id="_hust_net_8h_html_a40314433b5f301aaff50f5597553cc8d"><div class="ttname"><a href="_hust_net_8h.html#a40314433b5f301aaff50f5597553cc8d">DISPATCH</a></div><div class="ttdeci">#define DISPATCH</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00027">HustNet.h:27</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8cpp_html_a517aff3912f23f34cb41fb73f64ae3da"><div class="ttname"><a href="_u_i_ctrl_8cpp.html#a517aff3912f23f34cb41fb73f64ae3da">CMDFLAG</a></div><div class="ttdeci">CMDMODE CMDFLAG</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8cpp_source.html#l00013">UICtrl.cpp:13</a></div></div>
+<div class="ttc" id="_hust_net_8h_html_a1493ac161e08fbb6362f6d87d020af73"><div class="ttname"><a href="_hust_net_8h.html#a1493ac161e08fbb6362f6d87d020af73">SETHINT</a></div><div class="ttdeci">#define SETHINT</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00025">HustNet.h:25</a></div></div>
+<div class="ttc" id="_u_i_ctrl_8h_html_a7961efb94162db03f449f8c8481c13d0"><div class="ttname"><a href="_u_i_ctrl_8h.html#a7961efb94162db03f449f8c8481c13d0">LINESTATE</a></div><div class="ttdeci">LINESTATE</div><div class="ttdef"><b>Definition:</b> <a href="_u_i_ctrl_8h_source.html#l00010">UICtrl.h:10</a></div></div>
+<div class="ttc" id="_hust_net_8h_html_acc3a7ee63421609bd755137323f747f4"><div class="ttname"><a href="_hust_net_8h.html#acc3a7ee63421609bd755137323f747f4">TAKEOVERCMD</a></div><div class="ttdeci">#define TAKEOVERCMD</div><div class="ttdef"><b>Definition:</b> <a href="_hust_net_8h_source.html#l00023">HustNet.h:23</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+生成于 2015年 四月 23日 星期四 23:13:08 , 为 My Project使用  &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<map id="CmdView::Initialcmd" name="CmdView::Initialcmd">
+<area shape="rect" id="node2" href="$class_cmd_view.html#aa343e34b3fe9c6097c39a416c8ec5206" title="监听命令处理状态 " alt="" coords="193,56,341,83"/>
+<area shape="rect" id="node4" href="$_net_dll_8cpp.html#a9c2b5e88743a9770d87dab4b3ec274ec" title="打印一行文字到日志窗口 函数发送PRINT消息到LogView窗口，并将字符串封装到lparam中，LogView窗口接收到该�..." alt="" coords="665,161,735,188"/>
+<area shape="rect" id="node7" href="$class_user_cmd.html#a10f84fa025b752236348cc8abd2fa5c7" title="UserCmd::cleanrp" alt="" coords="204,421,331,448"/>
+<area shape="rect" id="node9" href="$class_user_cmd.html#ad75e005ff165f5d645b2520b644528bc" title="UserCmd::cleanlog" alt="" coords="201,475,333,501"/>
+<area shape="rect" id="node11" href="$class_user_cmd.html#a7e760ac67d39d2b210b7d2b4f8e8ad5b" title="UserCmd::Compute" alt="" coords="404,259,540,285"/>
+<area shape="rect" id="node14" href="$class_user_cmd.html#abdb2a891ebfa05f462586a00b13cbcfc" title="UserCmd::Connect" alt="" coords="406,309,538,336"/>
+<area shape="rect" id="node17" href="$class_user_cmd.html#acab5b5cbfcc9b92f860b3d48ae1c4ab5" title="UserCmd::SetDll" alt="" coords="208,157,327,184"/>
+<area shape="rect" id="node19" href="$class_user_cmd.html#ad5fa0ccaab5d2a8bf2b4aeccc6c4c01b" title="UserCmd::GetHtml" alt="" coords="201,527,333,553"/>
+<area shape="rect" id="node26" href="$class_user_cmd.html#a9c55a5ff5c5d0fa3598e7aac6c40db34" title="UserCmd::Mail" alt="" coords="213,577,321,604"/>
+<area shape="rect" id="node27" href="$class_user_cmd.html#a8b9f5a09bef002aaefe10c43ae9ccea1" title="UserCmd::Chat" alt="" coords="212,367,323,393"/>
+<area shape="rect" id="node3" href="$class_cmd_view.html#a19fb61e29f7be75474462793ea26d461" title="实现命令字符串到命令处理函数之间的映射 " alt="" coords="403,56,541,83"/>
+<area shape="rect" id="node5" href="$class_cmd_view.html#a71dba2e0097271efdc1874ff3a01847a" title="命令已处理完成 " alt="" coords="390,5,554,32"/>
+<area shape="rect" id="node6" href="$_net_work_8h.html#a2c381264f349b11e7959d11e88ffecee" title="SetHint" alt="" coords="667,5,733,32"/>
+<area shape="rect" id="node8" href="$_net_work_8h.html#a977b03c3a05bd232dbcf4d72c35e99e4" title="CleanRp" alt="" coords="437,427,507,453"/>
+<area shape="rect" id="node10" href="$_net_work_8h.html#a85b3c9729953ae18b38d28b90d829786" title="CleanLog" alt="" coords="434,477,510,504"/>
+<area shape="rect" id="node12" href="$class_net_dll.html#a98851c5ab77e42a6f84bcfa3584496cf" title="NetDll::GetFun" alt="" coords="646,216,754,243"/>
+<area shape="rect" id="node13" href="$_net_work_8h.html#a37f502656ead81caea91832807d5ba94" title="打印一行文字到响应窗口 函数发送PRINT消息到RespondView窗口，并将字符串封装到lparam中，RespondView窗口�..." alt="" coords="667,267,733,293"/>
+<area shape="rect" id="node15" href="$_net_work_8h.html#ad0fd7e12f565bc4202d32e726131e5c0" title="设置CmdView的命令提示语，接管CmdView的输入 函数发送TAKEOVERCMD消息到CmdView窗口，并将字符串封装到lpar..." alt="" coords="649,317,751,344"/>
+<area shape="rect" id="node16" href="$_net_work_8h.html#ab7520283bb1638c3850a041326fddbde" title="从CmdView中获取一行输入 函数在用户命令模式下从Cmd获取一行输入。函数首先判断当前是否处于用户命令模式 ..." alt="" coords="667,368,733,395"/>
+<area shape="rect" id="node18" href="$class_net_dll.html#abb349ff2f7a5d0cfc0906e70f7716638" title="NetDll::LoadDll" alt="" coords="418,157,526,184"/>
+<area shape="rect" id="node20" href="$class_net_html.html#a1d26b557eca7cab7c987aae38438c3ae" title="函数通过CSocket获取对应的html文件字符流。 函数通过CSocket和url对应的服务器建立连接,并将请求资源报文发送给服务器，成功响应后一行行的获取从服务器发来的数据， 并将数据转码为Unicode，拼接到返回的字符串myhtml " alt="" coords="389,528,555,555"/>
+<area shape="rect" id="node25" href="$_net_work_8h.html#a850221fdc22e3e0628077942ed82fefb" title="设置相应窗口的内容 函数发送SETTEXT消息到RespondView窗口，并将字符串封装到lparam中，RespondView窗口接 ..." alt="" coords="443,579,501,605"/>
+<area shape="rect" id="node21" href="$class_tools_1_1_tstr.html#af2dbe21365f53b0bd531cf356d6b566f" title="Tools::Tstr::Tchar2string" alt="" coords="619,524,781,551"/>
+<area shape="rect" id="node22" href="$class_tools_1_1_tstr.html#a73550e362f50715445fe5dc9fef26b1e" title="Tools::Tstr::String2LPCWSTR" alt="" coords="603,575,797,601"/>
+<area shape="rect" id="node23" href="$class_tools_1_1_tstr.html#a6f9002ef49d85db27430acae6733a747" title="Tools::Tstr::S2Cstar" alt="" coords="631,625,769,652"/>
+<area shape="rect" id="node24" href="$_net_html_8cpp.html#a9c2b5e88743a9770d87dab4b3ec274ec" title="打印一行文字到日志窗口 函数发送PRINT消息到LogView窗口，并将字符串封装到lparam中，LogView窗口接收到该�..." alt="" coords="665,473,735,500"/>
+<area shape="rect" id="node28" href="$class_net_work_1_1_chat_work.html#ac019f44ad1ecc33ce3eb2c42b6b537d9" title="NetWork::ChatWork::\lBegin" alt="" coords="399,361,545,402"/>
+<area shape="rect" id="node29" href="$_net_work_8h.html#a9c2b5e88743a9770d87dab4b3ec274ec" title="打印一行文字到日志窗口 函数发送PRINT消息到LogView窗口，并将字符串封装到lparam中，LogView窗口接收到该�..." alt="" coords="665,419,735,445"/>
+</map>

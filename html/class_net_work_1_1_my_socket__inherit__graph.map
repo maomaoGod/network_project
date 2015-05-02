@@ -1,0 +1,4 @@
+<map id="NetWork::MySocket" name="NetWork::MySocket">
+<area shape="rect" id="node2" href="$class_net_work_1_1_my_t_c_p.html" title="该类封装TCP协议方法. " alt="" coords="5,80,129,107"/>
+<area shape="rect" id="node3" href="$class_net_work_1_1_my_u_d_p.html" title="继承自MySocket，实现UDPSocket " alt="" coords="153,80,280,107"/>
+</map>

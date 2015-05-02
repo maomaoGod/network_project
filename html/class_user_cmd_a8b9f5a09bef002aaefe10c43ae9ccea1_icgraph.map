@@ -1,0 +1,4 @@
+<map id="UserCmd::Chat" name="UserCmd::Chat">
+<area shape="rect" id="node2" href="$class_cmd_view.html#a70cf028b2bc48ea3e0e6be3319911c85" title="创建消息处理线程,注册消息映射 " alt="" coords="164,5,304,32"/>
+<area shape="rect" id="node3" href="$class_cmd_view.html#a37a513e8262ea52c1859f8be73dac1b7" title="函数在视图附加到文档后触发,主要完成界面的初始化工作 " alt="" coords="352,5,525,32"/>
+</map>

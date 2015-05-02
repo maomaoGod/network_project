@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>My Project: src/CMyLink.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">My Project
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.8.9.1 -->
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>首页</span></a></li>
+      <li><a href="namespaces.html"><span>命名空间</span></a></li>
+      <li><a href="annotated.html"><span>类</span></a></li>
+      <li class="current"><a href="files.html"><span>文件</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>文件列表</span></a></li>
+      <li><a href="globals.html"><span>文件成员</span></a></li>
+    </ul>
+  </div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">CMyLink.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="_c_my_link_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="stdafx_8h.html">stdafx.h</a>&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="_c_my_link_8h.html#a60d27eb06c862c0b99dddff53cad637d">   10</a></span>&#160;<span class="keyword">class </span>frame｛</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;public：</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;short       <a class="code" href="_c_my_link_8h.html#a60d27eb06c862c0b99dddff53cad637d">Flag</a>;</div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="_c_my_link_8h.html#aa8c08c31bd37680556c9bd1fe668587d">   13</a></span>&#160;Int64       <a class="code" href="_c_my_link_8h.html#aa8c08c31bd37680556c9bd1fe668587d">address</a>;</div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="_c_my_link_8h.html#ae452996c2b817e98190c105664a44d02">   14</a></span>&#160;Int64       <a class="code" href="_c_my_link_8h.html#ae452996c2b817e98190c105664a44d02">control</a>;</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="_c_my_link_8h.html#a2c9f6aaedfee6aa8e3eb34dcfd95c714">   15</a></span>&#160;Char*       <a class="code" href="_c_my_link_8h.html#a2c9f6aaedfee6aa8e3eb34dcfd95c714">information</a>;</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="_c_my_link_8h.html#a42d9ecf703a72a5d43cfa2c509ce1760">   16</a></span>&#160;int64       <a class="code" href="_c_my_link_8h.html#a42d9ecf703a72a5d43cfa2c509ce1760">FCS</a>;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;}</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">* @return</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">* PACKAGE_ERR 封装帧时出错</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">* PACKAGE_SUC 封装帧成功</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">* @note</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">* 该方法负责IP数据报插入到帧的中间部位，</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">* 然后在帧的开始和结尾分别插入SOH和EOT，</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">* 首部SOH用00000001表示，</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">* 尾部EOT用00000100表示。</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">* 检查IP数据报的内容，完成透明传输。</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">* 如果数据中出现SOH或者EOT，则填冲转意字符ESC。</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">* 如果转意字符ESC出现在IP数据报中，则在转意字符前加入转意字符</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment">*</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">*／</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">bool  package(char* ip_data)</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment">* @return</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment">* NULL        解析失败</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment">* string字符串   IP数据报内容</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment">* @note</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">* 该方法解析information属性中存储的帧，提取出IP数据包。</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">* 检验数据报中的转意字符ESC，对其进行转意义</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">* 在解析时提取首部信息SOH和尾部EOT</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">* 首部SOH用00000001表示</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">* 尾部EOT用00000100表示</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment">* 将解析的ip数据包存储在类ip_data中</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">*/</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keywordtype">char</span> *  <a class="code" href="_c_my_link_8h.html#a94a51b0c523a2b3facfac5f967ea95a6">unPackage</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="class_c_my_link.html">   48</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_c_my_link.html">CMyLink</a>{</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="class_c_my_link.html#a31fdbea4b3a202ae60b25604cd425d21">detect</a>(data_in, exam_code);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;data_out <a class="code" href="class_c_my_link.html#a949eed5096e3c2baafffa2b18092d877">modify</a>(data_in);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
+<div class="ttc" id="_c_my_link_8h_html_a42d9ecf703a72a5d43cfa2c509ce1760"><div class="ttname"><a href="_c_my_link_8h.html#a42d9ecf703a72a5d43cfa2c509ce1760">FCS</a></div><div class="ttdeci">int64 FCS</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_link_8h_source.html#l00016">CMyLink.h:16</a></div></div>
+<div class="ttc" id="_c_my_link_8h_html_a60d27eb06c862c0b99dddff53cad637d"><div class="ttname"><a href="_c_my_link_8h.html#a60d27eb06c862c0b99dddff53cad637d">Flag</a></div><div class="ttdeci">class frame｛ public： short Flag</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_link_8h_source.html#l00010">CMyLink.h:10</a></div></div>
+<div class="ttc" id="_c_my_link_8h_html_a2c9f6aaedfee6aa8e3eb34dcfd95c714"><div class="ttname"><a href="_c_my_link_8h.html#a2c9f6aaedfee6aa8e3eb34dcfd95c714">information</a></div><div class="ttdeci">Char * information</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_link_8h_source.html#l00015">CMyLink.h:15</a></div></div>
+<div class="ttc" id="_c_my_link_8h_html_ae452996c2b817e98190c105664a44d02"><div class="ttname"><a href="_c_my_link_8h.html#ae452996c2b817e98190c105664a44d02">control</a></div><div class="ttdeci">Int64 control</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_link_8h_source.html#l00014">CMyLink.h:14</a></div></div>
+<div class="ttc" id="_c_my_link_8h_html_a94a51b0c523a2b3facfac5f967ea95a6"><div class="ttname"><a href="_c_my_link_8h.html#a94a51b0c523a2b3facfac5f967ea95a6">unPackage</a></div><div class="ttdeci">char * unPackage(void)</div></div>
+<div class="ttc" id="stdafx_8h_html"><div class="ttname"><a href="stdafx_8h.html">stdafx.h</a></div><div class="ttdoc">stdafx.h : 标准系统包含文件的包含文件，  或是经常使用但不常更改的  特定于项目的包含文件 ...</div></div>
+<div class="ttc" id="class_c_my_link_html"><div class="ttname"><a href="class_c_my_link.html">CMyLink</a></div><div class="ttdoc">To achieve the function of internet chain. </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_link_8h_source.html#l00048">CMyLink.h:48</a></div></div>
+<div class="ttc" id="class_c_my_link_html_a31fdbea4b3a202ae60b25604cd425d21"><div class="ttname"><a href="class_c_my_link.html#a31fdbea4b3a202ae60b25604cd425d21">CMyLink::detect</a></div><div class="ttdeci">bool detect(data_in, exam_code)</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_link_8cpp_source.html#l00002">CMyLink.cpp:2</a></div></div>
+<div class="ttc" id="_c_my_link_8h_html_aa8c08c31bd37680556c9bd1fe668587d"><div class="ttname"><a href="_c_my_link_8h.html#aa8c08c31bd37680556c9bd1fe668587d">address</a></div><div class="ttdeci">Int64 address</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_link_8h_source.html#l00013">CMyLink.h:13</a></div></div>
+<div class="ttc" id="class_c_my_link_html_a949eed5096e3c2baafffa2b18092d877"><div class="ttname"><a href="class_c_my_link.html#a949eed5096e3c2baafffa2b18092d877">CMyLink::modify</a></div><div class="ttdeci">data_out modify(data_in)</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_link_8cpp_source.html#l00012">CMyLink.cpp:12</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+生成于 2015年 四月 23日 星期四 23:13:08 , 为 My Project使用  &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

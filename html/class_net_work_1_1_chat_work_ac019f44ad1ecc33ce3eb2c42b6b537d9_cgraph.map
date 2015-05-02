@@ -1,0 +1,6 @@
+<map id="NetWork::ChatWork::Begin" name="NetWork::ChatWork::Begin">
+<area shape="rect" id="node2" href="$_net_work_8h.html#ad0fd7e12f565bc4202d32e726131e5c0" title="设置CmdView的命令提示语，接管CmdView的输入 函数发送TAKEOVERCMD消息到CmdView窗口，并将字符串封装到lpar..." alt="" coords="200,5,303,32"/>
+<area shape="rect" id="node3" href="$_net_work_8h.html#ab7520283bb1638c3850a041326fddbde" title="从CmdView中获取一行输入 函数在用户命令模式下从Cmd获取一行输入。函数首先判断当前是否处于用户命令模式 ..." alt="" coords="218,56,285,83"/>
+<area shape="rect" id="node4" href="$_net_work_8h.html#a9c2b5e88743a9770d87dab4b3ec274ec" title="打印一行文字到日志窗口 函数发送PRINT消息到LogView窗口，并将字符串封装到lparam中，LogView窗口接收到该�..." alt="" coords="216,107,287,133"/>
+<area shape="rect" id="node5" href="$_net_work_8h.html#a37f502656ead81caea91832807d5ba94" title="打印一行文字到响应窗口 函数发送PRINT消息到RespondView窗口，并将字符串封装到lparam中，RespondView窗口�..." alt="" coords="219,157,284,184"/>
+</map>

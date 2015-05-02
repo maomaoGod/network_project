@@ -1,0 +1,5 @@
+<map id="类继承关系图" name="类继承关系图">
+<area shape="rect" id="node1" href="$class_net_work_1_1_my_socket.html" title="TCP和UDP的公共部分，支持可靠传输和不可靠传输的实现 " alt="" coords="5,31,145,57"/>
+<area shape="rect" id="node2" href="$class_net_work_1_1_my_t_c_p.html" title="该类封装TCP协议方法. " alt="" coords="195,5,319,32"/>
+<area shape="rect" id="node3" href="$class_net_work_1_1_my_u_d_p.html" title="继承自MySocket，实现UDPSocket " alt="" coords="193,56,320,83"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="CMainFrame" name="CMainFrame">
+<area shape="rect" id="node3" href="$class_cmd_view.html" title="CmdView位于主界面左上角,主要完成命令的输入(界面控制),命令解析和命令映射(功能映射)。 ..." alt="" coords="125,81,202,108"/>
+<area shape="rect" id="node5" href="$class_respond_view.html" title="RespondView 视图 " alt="" coords="226,81,327,108"/>
+<area shape="rect" id="node6" href="$class_log_view.html" title="LogView 视图 " alt="" coords="352,81,423,108"/>
+</map>

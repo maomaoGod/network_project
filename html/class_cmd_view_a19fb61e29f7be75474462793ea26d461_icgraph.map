@@ -1,0 +1,5 @@
+<map id="CmdView::MapTask" name="CmdView::MapTask">
+<area shape="rect" id="node2" href="$class_cmd_view.html#aa343e34b3fe9c6097c39a416c8ec5206" title="监听命令处理状态 " alt="" coords="192,5,340,32"/>
+<area shape="rect" id="node3" href="$class_cmd_view.html#a70cf028b2bc48ea3e0e6be3319911c85" title="创建消息处理线程,注册消息映射 " alt="" coords="388,5,528,32"/>
+<area shape="rect" id="node4" href="$class_cmd_view.html#a37a513e8262ea52c1859f8be73dac1b7" title="函数在视图附加到文档后触发,主要完成界面的初始化工作 " alt="" coords="576,5,749,32"/>
+</map>

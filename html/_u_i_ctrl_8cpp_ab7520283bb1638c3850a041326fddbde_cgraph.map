@@ -1,0 +1,4 @@
+<map id="GetLine" name="GetLine">
+<area shape="rect" id="node2" href="$_u_i_ctrl_8cpp.html#acd5d76443a9392735027919ea424c69c" title="打印一行文字到日志窗口 函数发送PRINT消息到LogView窗口，并将字符串封装到lparam中，LogView窗口接收到该�..." alt="" coords="121,5,192,32"/>
+<area shape="rect" id="node3" href="$_u_i_ctrl_8cpp.html#a4fdd03168a7e6952059fcf83e88c70f7" title="通知主窗口命令已获取完成 函数发送ENDINPUT消息到CmdView，通知用户模式下成功获取了一行输入。CmdView接收..." alt="" coords="120,56,193,83"/>
+</map>

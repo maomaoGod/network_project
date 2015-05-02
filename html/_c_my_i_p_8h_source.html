@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>My Project: src/CMyIP.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">My Project
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.8.9.1 -->
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>首页</span></a></li>
+      <li><a href="namespaces.html"><span>命名空间</span></a></li>
+      <li><a href="annotated.html"><span>类</span></a></li>
+      <li class="current"><a href="files.html"><span>文件</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>文件列表</span></a></li>
+      <li><a href="globals.html"><span>文件成员</span></a></li>
+    </ul>
+  </div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">CMyIP.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="_c_my_i_p_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
+<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="_c_my_i_p_8h.html#ae3a497195d617519e5353ea7b417940f">    9</a></span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> <a class="code" href="_c_my_i_p_8h.html#ae3a497195d617519e5353ea7b417940f">Byte</a>;</div>
+<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="_c_my_i_p_8h.html#a918d39ae34d3ec6e05d65d2c9cb0a91c">   10</a></span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> <a class="code" href="_c_my_i_p_8h.html#a918d39ae34d3ec6e05d65d2c9cb0a91c">Ushort</a>;</div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="_c_my_i_p_8h.html#afdcfe6db5bea87bd493a3fe2c513d5ef">   11</a></span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">int</span> <a class="code" href="_c_my_i_p_8h.html#afdcfe6db5bea87bd493a3fe2c513d5ef">Bool</a>;</div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="_c_my_i_p_8h.html#a2a37b4217917105aac7557862ccc19c3">   12</a></span>&#160;<span class="preprocessor">#define MAXSIZE 512</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="struct__iphdr.html">   21</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="struct__iphdr.html">_iphdr</a> <span class="comment">//定义IP首部 </span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;{</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="struct__iphdr.html#a66e003cd5e4d7be2c636144c33d4f972">   23</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> <a class="code" href="struct__iphdr.html#a66e003cd5e4d7be2c636144c33d4f972">ih_version</a>;  </div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="struct__iphdr.html#af55beec9fe79b06b958b07f3a2d5ec4d">   24</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> <a class="code" href="struct__iphdr.html#af55beec9fe79b06b958b07f3a2d5ec4d">ih_len</a>;      </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="struct__iphdr.html#a578f6e123bc8b20a9ebc5fd6138f1a3f">   25</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> <a class="code" href="struct__iphdr.html#a578f6e123bc8b20a9ebc5fd6138f1a3f">ih_ident</a>;    </div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="struct__iphdr.html#adcfce5667ddd3d24665301a534b33b2f">   26</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> <a class="code" href="struct__iphdr.html#adcfce5667ddd3d24665301a534b33b2f">ih_flags</a>;    </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="struct__iphdr.html#a6a9f8c410ca6d931c13df3ebee9b31f5">   27</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> <a class="code" href="struct__iphdr.html#a6a9f8c410ca6d931c13df3ebee9b31f5">ih_offset</a>;   </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="struct__iphdr.html#a676c285d0252e0d59d0b06e74a799df8">   28</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> <a class="code" href="struct__iphdr.html#a676c285d0252e0d59d0b06e74a799df8">ih_TTL</a>;      </div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="struct__iphdr.html#af3db0099773965fc6b4020541ca51d7a">   29</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> <a class="code" href="struct__iphdr.html#af3db0099773965fc6b4020541ca51d7a">ih_protl</a>;    </div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="struct__iphdr.html#aba024f892ebeb8b59aa48de7ef96da83">   30</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> <a class="code" href="struct__iphdr.html#aba024f892ebeb8b59aa48de7ef96da83">ih_sum</a>;      </div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="struct__iphdr.html#a3f6d9c9e846fe723f8891bb580628b5b">   31</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="struct__iphdr.html#a3f6d9c9e846fe723f8891bb580628b5b">ih_saddr</a>;      </div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="struct__iphdr.html#a5af87184474f134bf96960c86fc941d2">   32</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="struct__iphdr.html#a5af87184474f134bf96960c86fc941d2">ih_daddr</a>;      </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;} <a class="code" href="_c_my_i_p_8h.html#a26260dbdd7d57ad52dac74400ef5a806">IP_HEADER</a>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="struct_msg.html">   35</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="struct_msg.html">Msg</a>{</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="struct_msg.html#aef6a9de57d53c09913df9f5f5df25636">   36</a></span>&#160;        <a class="code" href="_c_my_i_p_8h.html#ae3a497195d617519e5353ea7b417940f">Byte</a> *<a class="code" href="struct_msg.html#aef6a9de57d53c09913df9f5f5df25636">data</a>;         </div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="struct_msg.html#a9aac8e3ccbe6fd29bf81cd8bccad9796">   37</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="struct_msg.html#a9aac8e3ccbe6fd29bf81cd8bccad9796">data_len</a>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="struct_msg.html#af3a90ba3d7c4e9f62ecdab1acb085abf">   38</a></span>&#160;        <a class="code" href="_c_my_i_p_8h.html#ae3a497195d617519e5353ea7b417940f">Byte</a> *<a class="code" href="struct_msg.html#af3a90ba3d7c4e9f62ecdab1acb085abf">head</a>;         </div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="struct_msg.html#af73f42ddc527ac66d003cc19d5e35204">   39</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="struct_msg.html#af73f42ddc527ac66d003cc19d5e35204">head_len</a>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;};</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="struct_i_p__msg.html">   42</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="struct_i_p__msg.html">IP_msg</a>{</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="struct_i_p__msg.html#a4394d5ba191e0b726b497acb4d17a726">   43</a></span>&#160;    <a class="code" href="struct__iphdr.html">IP_HEADER</a> *<a class="code" href="struct_i_p__msg.html#a4394d5ba191e0b726b497acb4d17a726">iphdr</a>;    </div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="struct_i_p__msg.html#a391335099dff6defc0932df6d46394df">   44</a></span>&#160;    <a class="code" href="struct_msg.html">Msg</a> <a class="code" href="struct_i_p__msg.html#a391335099dff6defc0932df6d46394df">msg</a>;             </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;};</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="class_c_my_i_p.html">   55</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_c_my_i_p.html">CMyIP</a></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;{</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="class_c_my_i_p.html#a624cb9b4f56b256b6b293c099830e1d9">   58</a></span>&#160;    <a class="code" href="_c_my_i_p_8h.html#ae3a497195d617519e5353ea7b417940f">Byte</a> <a class="code" href="class_c_my_i_p.html#a624cb9b4f56b256b6b293c099830e1d9">IP</a>;          </div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="class_c_my_i_p.html#a9f6978044496279cda1bd5b173d25f98">   59</a></span>&#160;    <a class="code" href="struct_i_p__msg.html">IP_msg</a> *<a class="code" href="class_c_my_i_p.html#a9f6978044496279cda1bd5b173d25f98">buffer</a>;   </div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="class_c_my_i_p.html#ab5c47cd1d67f977482ac97738949f70d">   60</a></span>&#160;    <a class="code" href="struct_msg.html">Msg</a> <a class="code" href="class_c_my_i_p.html#ab5c47cd1d67f977482ac97738949f70d">msg</a>;          </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <a class="code" href="class_c_my_i_p.html#a126b32612c243018b3e9b5619d5eb856">CMyIP</a>();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <a class="code" href="class_c_my_i_p.html#ac96db1b531b7db8a157988b8f117222e">~CMyIP</a>();</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_c_my_i_p.html#a7ed5496a94d202be9448548d96a883b5">Init</a>();</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <a class="code" href="_c_my_i_p_8h.html#afdcfe6db5bea87bd493a3fe2c513d5ef">Bool</a> <a class="code" href="class_c_my_i_p.html#a271212c5bf9cfdfbccc6b4059af1667a">RecvMsg</a>();</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    BOOL <a class="code" href="class_c_my_i_p.html#a6deb75746eb93a9f25a610e67bb43881">SendMsg</a>();</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <a class="code" href="_c_my_i_p_8h.html#afdcfe6db5bea87bd493a3fe2c513d5ef">Bool</a> <a class="code" href="class_c_my_i_p.html#a5d7eec6ec62a195051d4ac932a606885">nettran</a>(<a class="code" href="struct_msg.html">Msg</a> msg, <a class="code" href="_c_my_i_p_8h.html#ae3a497195d617519e5353ea7b417940f">Byte</a> IP);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <a class="code" href="_c_my_i_p_8h.html#afdcfe6db5bea87bd493a3fe2c513d5ef">Bool</a> <a class="code" href="class_c_my_i_p.html#a0a7a0d741b596ec8a8e18ccc283c0faf">netrevc</a>(<a class="code" href="struct_msg.html">Msg</a> &amp;msg);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> <a class="code" href="class_c_my_i_p.html#a07910c5652a36d8d9576060b3863847a">GetChecksum</a>(<a class="code" href="struct_i_p__msg.html">IP_msg</a> *buffer);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_c_my_i_p.html#a96a36b4c414599190a3b4db4f2fda9da">select_algorithm</a>(<span class="keywordtype">int</span> mode);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_c_my_i_p.html#a120bdc8113391219647816fa1343f898">Dijkstra</a>(<span class="keywordtype">int</span> n, <span class="keywordtype">int</span> v, <span class="keywordtype">int</span> *dist, <span class="keywordtype">int</span> *prev, <span class="keywordtype">int</span> c[<a class="code" href="_c_my_i_p_8h.html#a2a37b4217917105aac7557862ccc19c3">MAXSIZE</a>][<a class="code" href="_c_my_i_p_8h.html#a2a37b4217917105aac7557862ccc19c3">MAXSIZE</a>]);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_c_my_i_p.html#a21d1ede1d36a306ef9df5087f0e482df">Bellman_Ford</a>(<span class="keywordtype">int</span> n, <span class="keywordtype">int</span> *D[x], <span class="keywordtype">int</span> dis[n][n], <span class="keywordtype">int</span> V[n][n], <span class="keywordtype">int</span> cost[n][n]);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_c_my_i_p.html#af11b6cd5559748f39b1bfa01de48d1f9">searchPath</a>(<span class="keywordtype">int</span> *prev, <span class="keywordtype">int</span> v, <span class="keywordtype">int</span> u);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;};</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;</div>
+<div class="ttc" id="class_c_my_i_p_html_a5d7eec6ec62a195051d4ac932a606885"><div class="ttname"><a href="class_c_my_i_p.html#a5d7eec6ec62a195051d4ac932a606885">CMyIP::nettran</a></div><div class="ttdeci">Bool nettran(Msg msg, Byte IP)</div><div class="ttdoc">从运输层接收数据及IP地址的函数 </div></div>
+<div class="ttc" id="struct_msg_html_a9aac8e3ccbe6fd29bf81cd8bccad9796"><div class="ttname"><a href="struct_msg.html#a9aac8e3ccbe6fd29bf81cd8bccad9796">Msg::data_len</a></div><div class="ttdeci">int data_len</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00037">CMyIP.h:37</a></div></div>
+<div class="ttc" id="struct_msg_html_af73f42ddc527ac66d003cc19d5e35204"><div class="ttname"><a href="struct_msg.html#af73f42ddc527ac66d003cc19d5e35204">Msg::head_len</a></div><div class="ttdeci">int head_len</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00039">CMyIP.h:39</a></div></div>
+<div class="ttc" id="struct_msg_html_aef6a9de57d53c09913df9f5f5df25636"><div class="ttname"><a href="struct_msg.html#aef6a9de57d53c09913df9f5f5df25636">Msg::data</a></div><div class="ttdeci">Byte * data</div><div class="ttdoc">数据 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00036">CMyIP.h:36</a></div></div>
+<div class="ttc" id="_c_my_i_p_8h_html_a26260dbdd7d57ad52dac74400ef5a806"><div class="ttname"><a href="_c_my_i_p_8h.html#a26260dbdd7d57ad52dac74400ef5a806">IP_HEADER</a></div><div class="ttdeci">struct _iphdr IP_HEADER</div></div>
+<div class="ttc" id="struct__iphdr_html_a3f6d9c9e846fe723f8891bb580628b5b"><div class="ttname"><a href="struct__iphdr.html#a3f6d9c9e846fe723f8891bb580628b5b">_iphdr::ih_saddr</a></div><div class="ttdeci">unsigned int ih_saddr</div><div class="ttdoc">32位源IP </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00031">CMyIP.h:31</a></div></div>
+<div class="ttc" id="struct__iphdr_html_a676c285d0252e0d59d0b06e74a799df8"><div class="ttname"><a href="struct__iphdr.html#a676c285d0252e0d59d0b06e74a799df8">_iphdr::ih_TTL</a></div><div class="ttdeci">unsigned short ih_TTL</div><div class="ttdoc">数据报的寿命 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00028">CMyIP.h:28</a></div></div>
+<div class="ttc" id="struct_msg_html_af3a90ba3d7c4e9f62ecdab1acb085abf"><div class="ttname"><a href="struct_msg.html#af3a90ba3d7c4e9f62ecdab1acb085abf">Msg::head</a></div><div class="ttdeci">Byte * head</div><div class="ttdoc">数据头 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00038">CMyIP.h:38</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html_a96a36b4c414599190a3b4db4f2fda9da"><div class="ttname"><a href="class_c_my_i_p.html#a96a36b4c414599190a3b4db4f2fda9da">CMyIP::select_algorithm</a></div><div class="ttdeci">void select_algorithm(int mode)</div><div class="ttdoc">根据菜单提供的选项选择选路算法 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8cpp_source.html#l00100">CMyIP.cpp:100</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html_a120bdc8113391219647816fa1343f898"><div class="ttname"><a href="class_c_my_i_p.html#a120bdc8113391219647816fa1343f898">CMyIP::Dijkstra</a></div><div class="ttdeci">void Dijkstra(int n, int v, int *dist, int *prev, int c[MAXSIZE][MAXSIZE])</div><div class="ttdoc">n为路由器个数，v为源节点，*dist为随着算法进行本次迭代，从源节点到目的v的最低费用路径的费用, *prev为从源节点v沿着当前最低费用路径的前一节点, c[maxnum][maxnum]为从节点x到节点y的链路费用矩阵, 如果x和y不是直连的，则 c(x,y)=maxint 链路状态选路算法的实现. </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8cpp_source.html#l00114">CMyIP.cpp:114</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html_ac96db1b531b7db8a157988b8f117222e"><div class="ttname"><a href="class_c_my_i_p.html#ac96db1b531b7db8a157988b8f117222e">CMyIP::~CMyIP</a></div><div class="ttdeci">~CMyIP()</div><div class="ttdoc">CMyIP类的析构函数 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8cpp_source.html#l00031">CMyIP.cpp:31</a></div></div>
+<div class="ttc" id="struct__iphdr_html_af55beec9fe79b06b958b07f3a2d5ec4d"><div class="ttname"><a href="struct__iphdr.html#af55beec9fe79b06b958b07f3a2d5ec4d">_iphdr::ih_len</a></div><div class="ttdeci">unsigned short ih_len</div><div class="ttdoc">16位数据报长度 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00024">CMyIP.h:24</a></div></div>
+<div class="ttc" id="struct__iphdr_html_adcfce5667ddd3d24665301a534b33b2f"><div class="ttname"><a href="struct__iphdr.html#adcfce5667ddd3d24665301a534b33b2f">_iphdr::ih_flags</a></div><div class="ttdeci">unsigned short ih_flags</div><div class="ttdoc">数据报的标志 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00026">CMyIP.h:26</a></div></div>
+<div class="ttc" id="struct_i_p__msg_html_a391335099dff6defc0932df6d46394df"><div class="ttname"><a href="struct_i_p__msg.html#a391335099dff6defc0932df6d46394df">IP_msg::msg</a></div><div class="ttdeci">Msg msg</div><div class="ttdoc">封装的TCP/UDP协议的头部及数据 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00044">CMyIP.h:44</a></div></div>
+<div class="ttc" id="struct_msg_html"><div class="ttname"><a href="struct_msg.html">Msg</a></div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00035">CMyIP.h:35</a></div></div>
+<div class="ttc" id="_c_my_i_p_8h_html_a2a37b4217917105aac7557862ccc19c3"><div class="ttname"><a href="_c_my_i_p_8h.html#a2a37b4217917105aac7557862ccc19c3">MAXSIZE</a></div><div class="ttdeci">#define MAXSIZE</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00012">CMyIP.h:12</a></div></div>
+<div class="ttc" id="struct__iphdr_html"><div class="ttname"><a href="struct__iphdr.html">_iphdr</a></div><div class="ttdoc">存放ip首部的结构体 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00021">CMyIP.h:21</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html_a7ed5496a94d202be9448548d96a883b5"><div class="ttname"><a href="class_c_my_i_p.html#a7ed5496a94d202be9448548d96a883b5">CMyIP::Init</a></div><div class="ttdeci">void Init()</div><div class="ttdoc">初始化CMyIP类的函数 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8cpp_source.html#l00040">CMyIP.cpp:40</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html_a0a7a0d741b596ec8a8e18ccc283c0faf"><div class="ttname"><a href="class_c_my_i_p.html#a0a7a0d741b596ec8a8e18ccc283c0faf">CMyIP::netrevc</a></div><div class="ttdeci">Bool netrevc(Msg &amp;msg)</div><div class="ttdoc">发送数据到运输层的函数 </div></div>
+<div class="ttc" id="class_c_my_i_p_html_ab5c47cd1d67f977482ac97738949f70d"><div class="ttname"><a href="class_c_my_i_p.html#ab5c47cd1d67f977482ac97738949f70d">CMyIP::msg</a></div><div class="ttdeci">Msg msg</div><div class="ttdoc">定义封装的TCP/UDP协议的头部及数据 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00060">CMyIP.h:60</a></div></div>
+<div class="ttc" id="struct__iphdr_html_a5af87184474f134bf96960c86fc941d2"><div class="ttname"><a href="struct__iphdr.html#a5af87184474f134bf96960c86fc941d2">_iphdr::ih_daddr</a></div><div class="ttdeci">unsigned int ih_daddr</div><div class="ttdoc">32位目的IP </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00032">CMyIP.h:32</a></div></div>
+<div class="ttc" id="struct__iphdr_html_a66e003cd5e4d7be2c636144c33d4f972"><div class="ttname"><a href="struct__iphdr.html#a66e003cd5e4d7be2c636144c33d4f972">_iphdr::ih_version</a></div><div class="ttdeci">unsigned short ih_version</div><div class="ttdoc">标识了数据包的IP版本号,一共4位, 0100表示IPv4, 0110表示IPv6 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00023">CMyIP.h:23</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html_af11b6cd5559748f39b1bfa01de48d1f9"><div class="ttname"><a href="class_c_my_i_p.html#af11b6cd5559748f39b1bfa01de48d1f9">CMyIP::searchPath</a></div><div class="ttdeci">void searchPath(int *prev, int v, int u)</div><div class="ttdoc">根据所选的选路算法，找出从原地址v到目的地址u的最低费用路径，即根据首部值u，确定一个到v的转发表 ...</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8cpp_source.html#l00210">CMyIP.cpp:210</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html_a6deb75746eb93a9f25a610e67bb43881"><div class="ttname"><a href="class_c_my_i_p.html#a6deb75746eb93a9f25a610e67bb43881">CMyIP::SendMsg</a></div><div class="ttdeci">BOOL SendMsg()</div><div class="ttdoc">往链路层发送数据的函数 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8cpp_source.html#l00068">CMyIP.cpp:68</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html_a07910c5652a36d8d9576060b3863847a"><div class="ttname"><a href="class_c_my_i_p.html#a07910c5652a36d8d9576060b3863847a">CMyIP::GetChecksum</a></div><div class="ttdeci">unsigned short GetChecksum(IP_msg *buffer)</div><div class="ttdoc">计算待发送数据的检验和 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8cpp_source.html#l00082">CMyIP.cpp:82</a></div></div>
+<div class="ttc" id="_c_my_i_p_8h_html_ae3a497195d617519e5353ea7b417940f"><div class="ttname"><a href="_c_my_i_p_8h.html#ae3a497195d617519e5353ea7b417940f">Byte</a></div><div class="ttdeci">unsigned char Byte</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00009">CMyIP.h:9</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html_a9f6978044496279cda1bd5b173d25f98"><div class="ttname"><a href="class_c_my_i_p.html#a9f6978044496279cda1bd5b173d25f98">CMyIP::buffer</a></div><div class="ttdeci">IP_msg * buffer</div><div class="ttdoc">定义IP报文 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00059">CMyIP.h:59</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html_a624cb9b4f56b256b6b293c099830e1d9"><div class="ttname"><a href="class_c_my_i_p.html#a624cb9b4f56b256b6b293c099830e1d9">CMyIP::IP</a></div><div class="ttdeci">Byte IP</div><div class="ttdoc">客户端地址 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00058">CMyIP.h:58</a></div></div>
+<div class="ttc" id="struct__iphdr_html_aba024f892ebeb8b59aa48de7ef96da83"><div class="ttname"><a href="struct__iphdr.html#aba024f892ebeb8b59aa48de7ef96da83">_iphdr::ih_sum</a></div><div class="ttdeci">unsigned short ih_sum</div><div class="ttdoc">16位首部检验和 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00030">CMyIP.h:30</a></div></div>
+<div class="ttc" id="struct_i_p__msg_html_a4394d5ba191e0b726b497acb4d17a726"><div class="ttname"><a href="struct_i_p__msg.html#a4394d5ba191e0b726b497acb4d17a726">IP_msg::iphdr</a></div><div class="ttdeci">IP_HEADER * iphdr</div><div class="ttdoc">指向ip首部的指针 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00043">CMyIP.h:43</a></div></div>
+<div class="ttc" id="_c_my_i_p_8h_html_a918d39ae34d3ec6e05d65d2c9cb0a91c"><div class="ttname"><a href="_c_my_i_p_8h.html#a918d39ae34d3ec6e05d65d2c9cb0a91c">Ushort</a></div><div class="ttdeci">unsigned short Ushort</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00010">CMyIP.h:10</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html_a126b32612c243018b3e9b5619d5eb856"><div class="ttname"><a href="class_c_my_i_p.html#a126b32612c243018b3e9b5619d5eb856">CMyIP::CMyIP</a></div><div class="ttdeci">CMyIP()</div><div class="ttdoc">CMyIP类的构造函数 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8cpp_source.html#l00020">CMyIP.cpp:20</a></div></div>
+<div class="ttc" id="_c_my_i_p_8h_html_afdcfe6db5bea87bd493a3fe2c513d5ef"><div class="ttname"><a href="_c_my_i_p_8h.html#afdcfe6db5bea87bd493a3fe2c513d5ef">Bool</a></div><div class="ttdeci">int Bool</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00011">CMyIP.h:11</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html_a271212c5bf9cfdfbccc6b4059af1667a"><div class="ttname"><a href="class_c_my_i_p.html#a271212c5bf9cfdfbccc6b4059af1667a">CMyIP::RecvMsg</a></div><div class="ttdeci">Bool RecvMsg()</div><div class="ttdoc">从链路层接收数据的函数 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8cpp_source.html#l00054">CMyIP.cpp:54</a></div></div>
+<div class="ttc" id="struct__iphdr_html_a578f6e123bc8b20a9ebc5fd6138f1a3f"><div class="ttname"><a href="struct__iphdr.html#a578f6e123bc8b20a9ebc5fd6138f1a3f">_iphdr::ih_ident</a></div><div class="ttdeci">unsigned short ih_ident</div><div class="ttdoc">数据报的16位标识 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00025">CMyIP.h:25</a></div></div>
+<div class="ttc" id="struct_i_p__msg_html"><div class="ttname"><a href="struct_i_p__msg.html">IP_msg</a></div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00042">CMyIP.h:42</a></div></div>
+<div class="ttc" id="struct__iphdr_html_a6a9f8c410ca6d931c13df3ebee9b31f5"><div class="ttname"><a href="struct__iphdr.html#a6a9f8c410ca6d931c13df3ebee9b31f5">_iphdr::ih_offset</a></div><div class="ttdeci">unsigned short ih_offset</div><div class="ttdoc">数据报的片偏移 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00027">CMyIP.h:27</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html_a21d1ede1d36a306ef9df5087f0e482df"><div class="ttname"><a href="class_c_my_i_p.html#a21d1ede1d36a306ef9df5087f0e482df">CMyIP::Bellman_Ford</a></div><div class="ttdeci">void Bellman_Ford(int n, int *D[x], int dis[n][n], int V[n][n], int cost[n][n])</div><div class="ttdoc">n为节点数，dis[x][y]表示节点x到y的距离， *D[x]表示节点x的距离向量， V[x][y]=1表示节点x到y有一条边， c...</div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8cpp_source.html#l00165">CMyIP.cpp:165</a></div></div>
+<div class="ttc" id="class_c_my_i_p_html"><div class="ttname"><a href="class_c_my_i_p.html">CMyIP</a></div><div class="ttdoc">基于IP协议与客户端实现可靠传输与不可靠传输的类 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00055">CMyIP.h:55</a></div></div>
+<div class="ttc" id="struct__iphdr_html_af3db0099773965fc6b4020541ca51d7a"><div class="ttname"><a href="struct__iphdr.html#af3db0099773965fc6b4020541ca51d7a">_iphdr::ih_protl</a></div><div class="ttdeci">unsigned short ih_protl</div><div class="ttdoc">数据报的协议 </div><div class="ttdef"><b>Definition:</b> <a href="_c_my_i_p_8h_source.html#l00029">CMyIP.h:29</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+生成于 2015年 四月 23日 星期四 23:13:08 , 为 My Project使用  &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>
