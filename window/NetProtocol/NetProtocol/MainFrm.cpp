@@ -147,42 +147,45 @@ LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
 	return 0;
 }
 
-LRESULT OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包传输数据到应用层的接口
+//传输层完成该函数，函数return前最后一句为::SendMessage(port2hwnd[port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pmyCopyDataStruct)
+LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包传输数据到应用层的接口
 { //使用sendmessage向应用程序发送消息
-  //example 向端口号为0的应用程序发送pCopyDataStruct数据  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
-  //应用层发往传输层的数据在OnCopyData中获取
+	//example 向端口号为0的应用程序发送pCopyDataStruct数据  ::SendMessage(port2hwnd[port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
+	//应用层发往传输层的数据在OnCopyData中获取
 	return 0;
 }
 
-LRESULT OnIP2Trans(WPARAM wparam, LPARAM lparam) //网络层解包传输到传输层的接口
+//网络层完成该函数，函数return前最后一句为SendMessage(ONTrans2App,参数...)；
+LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //网络层解包传输到传输层的接口
 { //
 	return 0;
 }
 
-LRESULT OnLink2IP(WPARAM wparam, LPARAM lparam) //链路层解包传输数据网络层的接口
+//链路层完成该函数，函数return前最后一句为SendMessage(ONIP2Trans,参数...)；
+LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //链路层解包传输数据网络层的接口
 {//
 	return 0;
 }
 
-LRESULT OnTrans2IP(WPARAM wparam, LPARAM lparam) //传输层打包数据发送到网络层的接口
+//传输层完成该函数，函数return前最后一句为SendMessage(ONIP2Link,参数...)；
+LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //传输层打包数据发送到网络层的接口
 { //使用sendmessage向应用程序发送消息
 	//example 向端口号为0的应用程序发送pCopyDataStruct数据  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//应用层发往传输层的数据在OnCopyData中获取
 	return 0;
 }
 
-LRESULT OnIP2Link(WPARAM wparam, LPARAM lparam) //网络层打包数据发送到链路层接口
+//网络层完成该函数，函数return前最后一句为SendMessage(ONLinkSend,参数...)；
+LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //网络层打包数据发送到链路层接口
 { //
 	return 0;
 }
 
-LRESULT OnLinkSend(WPARAM wparam, LPARAM lparam) //链路层打包数据发送出去接口
+//链路层完成该函数，函数实现发包
+LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //链路层打包数据发送出去接口
 {//
 	return 0;
 }
-
-
-
 
 
 
