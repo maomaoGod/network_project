@@ -25,7 +25,7 @@ class my_linker
 	};
 
   public:
-  int send_by_frame(struct IP_Msg *data_gram,pcap_t * adapterHandle, unsigned short i);
+  int send(struct IP_Msg *data_gram, unsigned short i);
 	my_linker();
 	~my_linker();
 };
