@@ -53,6 +53,7 @@ int my_linker::send(struct IP_Msg *data_grame, unsigned short i){
 		printf("error sending frames!\n");
 		return -1;
 	}
+	return 0;
 }
 
 int send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle, unsigned short i)
