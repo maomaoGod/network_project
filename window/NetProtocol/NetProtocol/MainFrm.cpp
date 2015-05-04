@@ -20,6 +20,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_COPYDATA()
 	ON_MESSAGE(CHECKHWND,  OnCheck)
 	ON_MESSAGE(TRANSTOAPP, OnTrans2App)
+	ON_MESSAGE(APPTOTRANS, OnApp2Trans)
 	ON_MESSAGE(IPTOTRANS, OnIP2Trans)
 	ON_MESSAGE(LINKTOIP, OnLink2IP)
 	ON_MESSAGE(TRANSTOIP, OnTrans2IP)
@@ -122,9 +123,9 @@ BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
            CString mystr;
            memcpy(mystr.GetBuffer(dwLength/sizeof(TCHAR)), pszText, dwLength);
            mystr.ReleaseBuffer();
-           PrintView(mystr);
-		   HWND swnd = ::FindWindow(NULL,_T("华中科技大学网络实验平台"));
-           ::SendMessage(port2hwnd[pwnd2port[pWnd]], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
+		   SendMessage(APPTOTRANS, (WPARAM)&mystr,(LPARAM)&pwnd2port[pWnd]);
+		   //HWND swnd = ::FindWindow(NULL,_T("华中科技大学网络实验平台"));
+           //::SendMessage(port2hwnd[pwnd2port[pWnd]], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
        }
       return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
 }
@@ -147,11 +148,22 @@ LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
 	return 0;
 }
 
-//传输层完成该函数，函数return前最后一句为::SendMessage(port2hwnd[port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pmyCopyDataStruct)
-LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包传输数据到应用层的接口
-{ //使用sendmessage向应用程序发送消息
+//传输层完成该函数，函数return前最后一句为
+LRESULT CMainFrame::OnApp2Trans(WPARAM wparam, LPARAM lparam) //传输层解包传输数据到应用层的接口
+{   //使用sendmessage向应用程序发送消息
 	//example 向端口号为0的应用程序发送pCopyDataStruct数据  ::SendMessage(port2hwnd[port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//应用层发往传输层的数据在OnCopyData中获取
+	SendMessage(TRANSTOIP, wparam, lparam);
+	return 0;
+}
+
+//传输层完成该函数，函数return前最后一句为::SendMessage(port2hwnd[port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pmyCopyDataStruct)
+LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包传输数据到应用层的接口
+{   //使用sendmessage向应用程序发送消息
+	//example 向端口号为0的应用程序发送pCopyDataStruct数据  ::SendMessage(port2hwnd[port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
+	//应用层发往传输层的数据在OnCopyData中获取
+	CString mystr = *((CString *)wparam);
+	int port = *((int *)lparam);
 	return 0;
 }
 

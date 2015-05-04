@@ -22,6 +22,7 @@
 #define  TRANSTOAPP  WM_USER+1003
 #define  IPTOTRANS      WM_USER+1004
 #define  LINKTOIP          WM_USER+1005
+#define  APPTOTRANS   WM_USER+1006
 
 
 
