@@ -1,5 +1,5 @@
 
-// MainFrm.cpp : CMainFrame ÀàµÄÊµÏÖ , ÊµÏÖ´«Êä²ã,ÍøÂç²ã,Á´Â·²ãµÄ¹²ÓÃ¡£
+// MainFrm.cpp : CMainFrame ç±»çš„å®ç° , å®ç°ä¼ è¾“å±‚,ç½‘ç»œå±‚,é“¾è·¯å±‚çš„å…±ç”¨ã€‚
 //
 #include "stdafx.h"
 #include "NetProtocol.h"
@@ -35,19 +35,19 @@ END_MESSAGE_MAP()
 
 static UINT indicators[] =
 {
-	ID_SEPARATOR,           // ×´Ì¬ĞĞÖ¸Ê¾Æ÷
+	ID_SEPARATOR,           // çŠ¶æ€è¡ŒæŒ‡ç¤ºå™¨
 	ID_INDICATOR_CAPS,
 	ID_INDICATOR_NUM,
 	ID_INDICATOR_SCRL,
 };
 
-// CMainFrame ¹¹Ôì/Îö¹¹
+// CMainFrame æ„é€ /ææ„
 
 CMainFrame::CMainFrame()
 {
-	// TODO:  ÔÚ´ËÌí¼Ó³ÉÔ±³õÊ¼»¯´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æˆå‘˜åˆå§‹åŒ–ä»£ç 
 	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
-		AfxMessageBox(_T("´´½¨×¥°üÏß³ÌÊ§°Ü£¡"));
+		AfxMessageBox(_T("åˆ›å»ºæŠ“åŒ…çº¿ç¨‹å¤±è´¥ï¼"));
 	numprocess = 0;
 }
 
@@ -63,18 +63,18 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
 		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
 	{
-		TRACE0("Î´ÄÜ´´½¨¹¤¾ßÀ¸\n");
-		return -1;      // Î´ÄÜ´´½¨
+		TRACE0("æœªèƒ½åˆ›å»ºå·¥å…·æ \n");
+		return -1;      // æœªèƒ½åˆ›å»º
 	}
 
 	if (!m_wndStatusBar.Create(this))
 	{
-		TRACE0("Î´ÄÜ´´½¨×´Ì¬À¸\n");
-		return -1;      // Î´ÄÜ´´½¨
+		TRACE0("æœªèƒ½åˆ›å»ºçŠ¶æ€æ \n");
+		return -1;      // æœªèƒ½åˆ›å»º
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
 
-	// TODO:  Èç¹û²»ĞèÒª¿ÉÍ£¿¿¹¤¾ßÀ¸£¬ÔòÉ¾³ıÕâÈıĞĞ
+	// TODO:  å¦‚æœä¸éœ€è¦å¯åœé å·¥å…·æ ï¼Œåˆ™åˆ é™¤è¿™ä¸‰è¡Œ
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);
@@ -85,13 +85,13 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	if (!CFrameWnd::PreCreateWindow(cs))
 		return FALSE;
-	// TODO:  ÔÚ´Ë´¦Í¨¹ıĞŞ¸Ä
-	//  CREATESTRUCT cs À´ĞŞ¸Ä´°¿ÚÀà»òÑùÊ½
+	// TODO:  åœ¨æ­¤å¤„é€šè¿‡ä¿®æ”¹
+	//  CREATESTRUCT cs æ¥ä¿®æ”¹çª—å£ç±»æˆ–æ ·å¼
 	cs.style &= ~FWS_ADDTOTITLE;
 	return TRUE;
 }
 
-// CMainFrame Õï¶Ï
+// CMainFrame è¯Šæ–­
 
 #ifdef _DEBUG
 void CMainFrame::AssertValid() const
@@ -105,10 +105,10 @@ void CMainFrame::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
-BOOL CALLBACK lpEnumHwnd(HWND hwnd, LPARAM lParam)//±éÀúËùÓĞ´°¿Ú£¬Ñ°ÕÒ¿Í»§¶ËºÍ·şÎñÆ÷³ÌĞò
+BOOL CALLBACK lpEnumHwnd(HWND hwnd, LPARAM lParam)//éå†æ‰€æœ‰çª—å£ï¼Œå¯»æ‰¾å®¢æˆ·ç«¯å’ŒæœåŠ¡å™¨ç¨‹åº
 {
 	CString Client, Serve;
-	Client = _T("»ªÖĞ¿Æ¼¼´óÑ§ÍøÂçÊµÑéÆ½Ì¨");
+	Client = _T("åä¸­ç§‘æŠ€å¤§å­¦ç½‘ç»œå®éªŒå¹³å°");
 	Serve = _T("NetServe");
 	TCHAR str[100];
 	::GetWindowText(hwnd, str, 100);
@@ -119,19 +119,19 @@ BOOL CALLBACK lpEnumHwnd(HWND hwnd, LPARAM lParam)//±éÀúËùÓĞ´°¿Ú£¬Ñ°ÕÒ¿Í»§¶ËºÍ·ş
 
 BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
 {
-	// TODO:  ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-	if (pwnd2port.find(pWnd) == pwnd2port.end()){  //Ó¦ÓÃ³ÌĞò×¢²á
+	// TODO:  åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+	if (pwnd2port.find(pWnd) == pwnd2port.end()){  //åº”ç”¨ç¨‹åºæ³¨å†Œ
 		EnumWindows(lpEnumHwnd, (LPARAM)pWnd);
 		return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
 	}
-	if (pCopyDataStruct != NULL){//½ÓÊÜÀ´×ÔÓ¦ÓÃ³ÌĞòµÄÏûÏ¢
+	if (pCopyDataStruct != NULL){//æ¥å—æ¥è‡ªåº”ç”¨ç¨‹åºçš„æ¶ˆæ¯
 		LPCTSTR pszText = (LPCTSTR)(pCopyDataStruct->lpData);
 		DWORD   dwLength = (DWORD)(pCopyDataStruct->cbData);
 		CString mystr;
 		memcpy(mystr.GetBuffer(dwLength / sizeof(TCHAR)), pszText, dwLength);
 		mystr.ReleaseBuffer();
 		PrintView(mystr);
-		HWND swnd = ::FindWindow(NULL, _T("»ªÖĞ¿Æ¼¼´óÑ§ÍøÂçÊµÑéÆ½Ì¨"));
+		HWND swnd = ::FindWindow(NULL, _T("åä¸­ç§‘æŠ€å¤§å­¦ç½‘ç»œå®éªŒå¹³å°"));
 		::SendMessage(port2hwnd[pwnd2port[pWnd]], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	}
 	return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
@@ -140,14 +140,14 @@ BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
 LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
 {
 	HWND mywnd = *((HWND *)wparam);
-	PPwnd = ::FindWindow(NULL, _T("»ªÖĞ¿Æ¼¼´óÑ§ÍøÂçÊµÑéÆ½Ì¨"));
+	PPwnd = ::FindWindow(NULL, _T("åä¸­ç§‘æŠ€å¤§å­¦ç½‘ç»œå®éªŒå¹³å°"));
 	int index;
 	TCHAR str[100];
 	::GetWindowText(mywnd, str, 100);
 	for (index = 0; index < numprocess; index++)
 	if (port2hwnd[index] == mywnd)
 		break;
-	if (index == numprocess&&pwnd2port.find((CWnd *)lparam) == pwnd2port.end()){ //Ò»¸ö´°¿ÚÖ»ÄÜ×¢²áÒ»´Î
+	if (index == numprocess&&pwnd2port.find((CWnd *)lparam) == pwnd2port.end()){ //ä¸€ä¸ªçª—å£åªèƒ½æ³¨å†Œä¸€æ¬¡
 		pwnd2port[(CWnd *)lparam] = numprocess;
 		port2hwnd[numprocess] = mywnd;
 		numprocess = numprocess + 1;
@@ -155,51 +155,55 @@ LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
 	return 0;
 }
 
-LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı¾İµ½Ó¦ÓÃ²ãµÄ½Ó¿Ú
-{ //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
-	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
-	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
+LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //ä¼ è¾“å±‚è§£åŒ…ä¼ è¾“æ•°æ®åˆ°åº”ç”¨å±‚çš„æ¥å£
+{ //ä½¿ç”¨sendmessageå‘åº”ç”¨ç¨‹åºå‘é€æ¶ˆæ¯
+	//example å‘ç«¯å£å·ä¸º0çš„åº”ç”¨ç¨‹åºå‘é€pCopyDataStructæ•°æ®  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
+	//åº”ç”¨å±‚å‘å¾€ä¼ è¾“å±‚çš„æ•°æ®åœ¨OnCopyDataä¸­è·å–
 	return 0;
 }
 
-LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´«Êä²ãµÄ½Ó¿Ú
+LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ç½‘ç»œå±‚è§£åŒ…ä¼ è¾“åˆ°ä¼ è¾“å±‚çš„æ¥å£
 { //
-	///< ¸ù¾İÁ´Â·²ã·¢ËÍµÄÊı¾İ½øĞĞ°şÀëµÃµ½±¨ÎÄ³¤¶ÈÒÔ¼°Æ«ÒÆ, ±È½ÏÆ«ÒÆÁ¿ÊÇ·ñµÈÓÚ±¨ÎÄ³¤¶È
-	///< Èô·¢ÏÖ·ÖÆ¬È±Ê§»òÕß¼ìÑéºÍ³ö´íÔò return FALSE;
-	///< ÈôÊÇÔòÊı¾İ³É¹¦½ÓÊÕ ½øĞĞÉÙÁ¿µÄ¼ìÑéºÍ¼ì²é, ÈôÃ»ÓĞ´íÎó
-	///< Ôò½«IP_msg½á¹¹°şÀë³öMsg½á¹¹
+	///< æ ¹æ®é“¾è·¯å±‚å‘é€çš„æ•°æ®è¿›è¡Œå‰¥ç¦»å¾—åˆ°æŠ¥æ–‡é•¿åº¦ä»¥åŠåç§», æ¯”è¾ƒåç§»é‡æ˜¯å¦ç­‰äºæŠ¥æ–‡é•¿åº¦
+	///< è‹¥å‘ç°åˆ†ç‰‡ç¼ºå¤±æˆ–è€…æ£€éªŒå’Œå‡ºé”™åˆ™ return FALSE;
+	///< è‹¥æ˜¯åˆ™æ•°æ®æˆåŠŸæ¥æ”¶ è¿›è¡Œå°‘é‡çš„æ£€éªŒå’Œæ£€æŸ¥, è‹¥æ²¡æœ‰é”™è¯¯
+	///< åˆ™å°†IP_msgç»“æ„å‰¥ç¦»å‡ºMsgç»“æ„
 
 	if (!ip.IP2Trans(wparam, lparam))
 		return true;
 	return false;
 }
 
-LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊı¾İÍøÂç²ãµÄ½Ó¿Ú
+LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //é“¾è·¯å±‚è§£åŒ…ä¼ è¾“æ•°æ®ç½‘ç»œå±‚çš„æ¥å£
 {//
 	return 0;
 }
 
-LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢ËÍµ½ÍøÂç²ãµÄ½Ó¿Ú
-{ //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
-	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
-	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
+LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //ä¼ è¾“å±‚æ‰“åŒ…æ•°æ®å‘é€åˆ°ç½‘ç»œå±‚çš„æ¥å£
+{ //ä½¿ç”¨sendmessageå‘åº”ç”¨ç¨‹åºå‘é€æ¶ˆæ¯
+	//example å‘ç«¯å£å·ä¸º0çš„åº”ç”¨ç¨‹åºå‘é€pCopyDataStructæ•°æ®  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
+	//åº”ç”¨å±‚å‘å¾€ä¼ è¾“å±‚çš„æ•°æ®åœ¨OnCopyDataä¸­è·å–
 	return 0;
 }
 
-LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊı¾İ·¢ËÍµ½Á´Â·²ã½Ó¿Ú
+LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ç½‘ç»œå±‚æ‰“åŒ…æ•°æ®å‘é€åˆ°é“¾è·¯å±‚æ¥å£
 {
-	///< ½«ÔËÊä²ãËÍÀ´µÄMsg½á¹¹ºÍIPµØÖ·²åÈëµ½IP_msg½á¹¹ÖĞ,
-	///< Èç¹ûĞÅÏ¢³¬¹ıÈİÁ¿¾Í½øĞĞ·ÖÆ¬´¦Àí, 
-	///< µ÷ÓÃÁ´Â·²ãµÄ·¢ËÍº¯ÊıÈç¹û·¢ËÍÊ§°Ü return FALSE;
-	///< ·ñÔò return TRUE;
+	///< å°†è¿è¾“å±‚é€æ¥çš„Msgç»“æ„å’ŒIPåœ°å€æ’å…¥åˆ°IP_msgç»“æ„ä¸­,
+	///< å¦‚æœä¿¡æ¯è¶…è¿‡å®¹é‡å°±è¿›è¡Œåˆ†ç‰‡å¤„ç†, 
+	///< è°ƒç”¨é“¾è·¯å±‚çš„å‘é€å‡½æ•°å¦‚æœå‘é€å¤±è´¥ return FALSE;
+	///< å¦åˆ™ return TRUE;
 	if (!ip.IP2Link(wparam, lparam))
 		return true;
 	return false;
 }
 
-LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊı¾İ·¢ËÍ³öÈ¥½Ó¿Ú
-{//
-	return 0;
+LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //é“¾è·¯å±‚æ‰“åŒ…æ•°æ®å‘é€å‡ºå»æ¥å£
+{
+	if(send((struct IP_Msg *)wparam,(unsigned short)lparam)!=0)
+	{
+		printf("error sending datagram!\n");
+	}
+	return;
 }
 
 DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
