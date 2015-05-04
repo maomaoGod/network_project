@@ -4,6 +4,7 @@
 #pragma once
 #include <map>
 #include "CMyIP.h"
+#include "MainFrmTransTools.h"
 using namespace std;
 
 class CMainFrame : public CFrameWnd

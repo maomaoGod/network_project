@@ -5,6 +5,7 @@
 #include "MainFrm.h"
 #include "CMyIP.h"
 #include "string.h"
+#include "Tools.h"
 
 struct _iphdr IP_HEADER;
 struct Msg IP_data;
@@ -158,6 +159,19 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 { //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
+	//CString mystr = *((CString *)wparam);
+	//int port = *((int *)lparam);
+
+
+
+	// UDP
+	if (true/* edited later */)
+	{
+		
+	}
+
+	// TCP
+
 	return 0;
 }
 
@@ -182,6 +196,45 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 { //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
+	CString mystr = *((CString *)wparam);
+	unsigned int src_port = *((unsigned int *)lparam);
+	
+	// ÇĞ·Ö´«µİµÄÊı¾İ£¬¸ñÊ½Îª¡°IP+Ä¿µÄ¶Ë¿ÚºÅ+DATA¡±
+	int split_ip = mystr.Find(_T(':'), 0);
+	int split_port = mystr.Find(_T(' '), split_ip);
+	using namespace Tools;
+	unsigned int dst_ip = IP_string2uint(Tstr::CS2S(mystr.Mid(0, 
+split_ip)));
+	unsigned int dst_port = port_string2uint(Tstr::CS2S(mystr.Mid(split_ip
++1, split_port-split_ip-1)));
+	unsigned int src_ip = getIP();
+
+	// ÏÈ×ª»¯Îª¶à×Ö½Ú£¬ÔÙ¼ÆËã³¤¶È£¬ÒÔÃâ¼ÆËãÉÙÁË×Ö½ÚÊı
+	// ÕâÀï¿ÉÄÜĞèÒªÈÕºó¸ü¸ÄÎªÓ¦ÓÃ²ã×Ô¼º×ªÂë£¬ÕâÑùÀíÂÛÉÏ¿ÉÒÔ¼õÉÙ´«ÊäµÄ×Ö½ÚÊı
+	CString temp_data = mystr.Mid(split_ip);
+	unsigned int data_len = CStringA(temp_data).GetLength();
+
+	// UDP
+	if (true/* edited later */)
+	{
+		struct udp_message new_udp_msg;
+		// ÌîÈëUDP±¨ÎÄ¶Î½á¹¹
+		new_udp_msg.udp_src_port = src_port;
+		new_udp_msg.udp_dst_port = dst_port;
+		new_udp_msg.udp_msg_length = 8+data_len;
+		new_udp_msg.udp_app_data = temp_data;
+		new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)
+src_port, (u16)dst_port, data_len%2, (u16 *)&temp_data);
+
+		// UDPÎŞÓµÈû¿ØÖÆ
+		OnIP2Link((WPARAM)&new_udp_msg, lparam);
+	}
+	// TCP
+	else
+	{
+		struct tcp_message new_tcp_msg;
+	}
+
 	return 0;
 }
 
