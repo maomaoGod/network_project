@@ -275,6 +275,7 @@ LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´
 				}
 			}
 		}
+		(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOTRANS, wparam, lparam);
 	}
 	else
 	{
@@ -303,8 +304,8 @@ LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´
 				}
 			}
 		}
+		(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOTRANS, wparam, lparam);
 	}
-	(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOTRANS, wparam, lparam);
 	return 0;
 }
 
@@ -348,6 +349,7 @@ LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊý¾Ý·¢ËÍ
 			MyIP.ih_num = MyTCP.tcphdr->th_num;
 			MyIP.ih_ack = MyTCP.tcphdr->th_ack;
 			strncpy(MyIP.data, MyTCP.data, MAXSIZE);
+			(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOLINK, wparam, lparam);
 		}
 		MyIP.iphdr->ih_saddr = MyTCP.tcphdr->th_saddr;
 		MyIP.iphdr->ih_daddr = MyTCP.tcphdr->th_daddr;
@@ -364,6 +366,7 @@ LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊý¾Ý·¢ËÍ
 		MyIP.ih_num = MyTCP.tcphdr->th_num;
 		MyIP.ih_ack = MyTCP.tcphdr->th_ack;
 		strncpy(MyIP.data, MyTCP.data, MyTCP.tcphdr->th_len - offset * 8);
+		(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOLINK, wparam, lparam);
 	}
 	else
 	{
@@ -385,6 +388,7 @@ LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊý¾Ý·¢ËÍ
 			MyIP.ih_sport = MyUDP.udphdr->uh_sport;
 			MyIP.ih_dport = MyUDP.udphdr->uh_dport;
 			strncpy(MyIP.data, MyTCP.data, MAXSIZE);
+			(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOLINK, wparam, lparam);
 		}
 		MyIP.iphdr->ih_saddr = MyUDP.udphdr->uh_saddr;
 		MyIP.iphdr->ih_daddr = MyUDP.udphdr->uh_daddr;
@@ -399,8 +403,8 @@ LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊý¾Ý·¢ËÍ
 		MyIP.ih_sport = MyUDP.udphdr->uh_sport;
 		MyIP.ih_dport = MyUDP.udphdr->uh_dport;
 		strncpy(MyIP.data, MyTCP.data, MyUDP.udphdr->uh_len - offset * 8);
+		(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOLINK, wparam, lparam);
 	}
-	(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOLINK, wparam, lparam);
 	return 0;
 }
 
