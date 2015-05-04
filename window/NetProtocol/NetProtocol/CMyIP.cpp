@@ -48,28 +48,29 @@ BOOL CMyIP::IP2Link(WPARAM wparam, LPARAM lparam)
 	///< 否则 return TRUE;
 	int offset = 0, ident = 0;
 	ident++;
-	while (strlen(IP_data.data) - 8 * offset > MAXSIZE)
+	IP_data = (struct Msg*)wparam;
+	while (strlen(IP_data->data) - 8 * offset > MAXSIZE)
 	{
-		MyIP.iphdr->ih_saddr = IP_data.sip;
-		MyIP.iphdr->ih_daddr = IP_data.dip;
-		MyIP.iphdr->ih_flags = 1;
-		MyIP.iphdr->ih_ident = ident;
-		MyIP.iphdr->ih_offset = offset;
-		MyIP.iphdr->ih_len = strlen(IP_data.data) + 20;
+		MyIP->iphdr->ih_saddr = IP_data->sip;
+		MyIP->iphdr->ih_daddr = IP_data->dip;
+		MyIP->iphdr->ih_flags = 1;
+		MyIP->iphdr->ih_ident = ident;
+		MyIP->iphdr->ih_offset = offset;
+		MyIP->iphdr->ih_len = strlen(IP_data->data) + 20;
 		offset = offset + MAXSIZE / 8;
-		MyIP.iphdr->ih_version = 4;
-		strncpy_s(MyIP.data, MAXSIZE, IP_data.data, MAXSIZE);
-		(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOLINK, wparam, lparam);
+		MyIP->iphdr->ih_version = 4;
+		strncpy_s(MyIP->data, MAXSIZE, IP_data->data, MAXSIZE);
+		(AfxGetApp()->m_pMainWnd)->SendMessage(LINKSEND, (WPARAM)MyIP, lparam);
 	}
-	MyIP.iphdr->ih_saddr = IP_data.sip;
-	MyIP.iphdr->ih_daddr = IP_data.dip;
-	MyIP.iphdr->ih_flags = 0;
-	MyIP.iphdr->ih_ident = ident;
-	MyIP.iphdr->ih_offset = offset;
-	MyIP.iphdr->ih_len = strlen(IP_data.data) + 20;
-	MyIP.iphdr->ih_version = 4;
-	strncpy_s(MyIP.data, strlen(IP_data.data) - offset * 8, IP_data.data, strlen(IP_data.data) - offset * 8);
-	(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOLINK, wparam, lparam);
+	MyIP->iphdr->ih_saddr = IP_data->sip;
+	MyIP->iphdr->ih_daddr = IP_data->dip;
+	MyIP->iphdr->ih_flags = 0;
+	MyIP->iphdr->ih_ident = ident;
+	MyIP->iphdr->ih_offset = offset;
+	MyIP->iphdr->ih_len = strlen(IP_data->data) + 20;
+	MyIP->iphdr->ih_version = 4;
+	strncpy_s(MyIP->data, strlen(IP_data->data) - offset * 8, IP_data->data, strlen(IP_data->data) - offset * 8);
+	(AfxGetApp()->m_pMainWnd)->SendMessage(LINKSEND, (WPARAM)MyIP, lparam);
 
 	return 0;
 }
@@ -88,25 +89,26 @@ Bool CMyIP::IP2Trans(WPARAM wparam, LPARAM lparam)
 	///< 则将IP_msg结构剥离出Msg结构
 	int offset = 0, ident = 0;
 	ident++;
-	while (MyIP.iphdr->ih_len - offset > 0)
+	MyIP = (struct IP_Msg*)wparam;
+	while (MyIP->iphdr->ih_len - offset > 0)
 	{
-		if (MyIP.iphdr->ih_ident == ident)
+		if (MyIP->iphdr->ih_ident == ident)
 		{
-			if (MyIP.iphdr->ih_offset * 8 == offset)
+			if (MyIP->iphdr->ih_offset * 8 == offset)
 			{
-				if (MyIP.iphdr->ih_flags){
-					strncpy_s(IP_data.data + offset, MAXSIZE, MyIP.data, MAXSIZE);
+				if (MyIP->iphdr->ih_flags){
+					strncpy_s(IP_data->data + offset, MAXSIZE, MyIP->data, MAXSIZE);
 					offset = offset + MAXSIZE;
-					IP_data.sip = MyIP.iphdr->ih_saddr;
-					IP_data.dip = MyIP.iphdr->ih_daddr;
-					(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOTRANS, wparam, lparam);
+					IP_data->sip = MyIP->iphdr->ih_saddr;
+					IP_data->dip = MyIP->iphdr->ih_daddr;
+					(AfxGetApp()->m_pMainWnd)->SendMessage(TRANSTOAPP, (WPARAM)IP_data, lparam);
 				}
 				else{
-					strncpy_s(IP_data.data + offset, MAXSIZE, MyIP.data, MyIP.iphdr->ih_len - offset);
-					offset = MyIP.iphdr->ih_len;
-					IP_data.sip = MyIP.iphdr->ih_saddr;
-					IP_data.dip = MyIP.iphdr->ih_daddr;
-					(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOTRANS, wparam, lparam);
+					strncpy_s(IP_data->data + offset, MAXSIZE, MyIP->data, MyIP->iphdr->ih_len - offset);
+					offset = MyIP->iphdr->ih_len;
+					IP_data->sip = MyIP->iphdr->ih_saddr;
+					IP_data->dip = MyIP->iphdr->ih_daddr;
+					(AfxGetApp()->m_pMainWnd)->SendMessage(TRANSTOAPP, (WPARAM)IP_data, lparam);
 				}
 			}
 		}
