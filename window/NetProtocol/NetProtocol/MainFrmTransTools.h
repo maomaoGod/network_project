@@ -1,6 +1,6 @@
 /** @file
  * @brief udp tcp checksum
- * @author sunyiwei
+ * @author ACM1201
  * @date 2015/05/02
  * @version 0.1
  *
