@@ -45,6 +45,7 @@ public:
 	afx_msg BOOL OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct);
 	afx_msg LRESULT OnCheck(WPARAM, LPARAM);
 	afx_msg LRESULT OnTrans2App(WPARAM, LPARAM);
+	afx_msg LRESULT OnApp2Trans(WPARAM, LPARAM);
 	afx_msg LRESULT OnIP2Trans(WPARAM, LPARAM);
 	afx_msg LRESULT OnLink2IP(WPARAM, LPARAM);
 	afx_msg LRESULT OnTrans2IP(WPARAM, LPARAM);

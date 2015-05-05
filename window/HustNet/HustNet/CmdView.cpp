@@ -13,7 +13,7 @@ IMPLEMENT_DYNCREATE(CmdView, CEditView)
 
 CmdView::CmdView()
 {
-
+	myedit = (CEdit *)this;
 }
 
 CmdView::~CmdView()
@@ -260,7 +260,6 @@ void CmdView::OnInitialUpdate()
 	CEditView::OnInitialUpdate();
 
 	// TODO:  在此添加专用代码和/或调用基类
-	myedit = (CEdit *)this;
 	Initialcmd();
 	/**
 	*@brief 设置字体

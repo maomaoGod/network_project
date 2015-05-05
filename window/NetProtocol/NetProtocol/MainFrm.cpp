@@ -244,11 +244,9 @@ LRESULT CMainFrame::OnApp2Trans(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 
 
 LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı¾İµ½Ó¦ÓÃ²ãµÄ½Ó¿Ú
-{ //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
+{   //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
-	CString mystr = *((CString *)wparam);
-	int port = *((int *)lparam);
 	return 0;
 }
 
@@ -323,13 +321,16 @@ LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´
 
 LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊı¾İÍøÂç²ãµÄ½Ó¿Ú
 {//
+
 	return 0;
 }
 
 LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢ËÍµ½ÍøÂç²ãµÄ½Ó¿Ú
 { //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
-	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
+	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
+	CString mystr = *((CString *)wparam);
+	int port = *((int *)lparam);
 	return 0;
 }
 

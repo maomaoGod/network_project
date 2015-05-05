@@ -24,10 +24,8 @@
 #define  LINKTOIP          WM_USER+1005
 #define  APPTOTRANS   WM_USER+1006
 
-
-
 class CNetProtocolApp : public CWinApp
-{
+{ 
 public:
 	CNetProtocolApp();
 
