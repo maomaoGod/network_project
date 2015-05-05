@@ -25,8 +25,10 @@ namespace Tools{
 					if (Seq[j] == div) break;
 				}
 				/**<for a substring is*/
-				if(j > i)substring = Seq.substr(i, j-i);
-				strArray->push_back(substring);
+				if (j > i){
+					substring = Seq.substr(i, j - i);
+					strArray->push_back(substring);
+				}
 				i = j;
 			}
 		}

@@ -1,33 +1,35 @@
-// HttpClientSocket.cpp : 实现文件
+// FTPClientSocket.cpp : 实现文件
 //
 
+#pragma once
 #include "stdafx.h"
 #include "Serve.h"
-#include "HttpClientSocket.h"
+#include "FTPClientSocket.h"
+
 #include "Network.h"
 #include <map>
 
 using namespace std;
 using namespace NetWork;
 extern void PrintView(CString e);
-extern map <HttpClientSocket *, int> myclient;
-// HttpClientSocket
+extern map <FTPClientSocket *, int> myclient;
 
-HttpClientSocket::HttpClientSocket()
+// FTPClientSocket
+
+FTPClientSocket::FTPClientSocket()
 {
 }
 
-HttpClientSocket::~HttpClientSocket()
+FTPClientSocket::~FTPClientSocket()
 {
 }
 
 
-// HttpClientSocket 成员函数
-
-void HttpClientSocket::OnReceive(int nErrorCode)
+AppLayerFtp app;
+// FTPClientSocket 成员函数
+void FTPClientSocket::OnReceive(int nErrorCode)
 {
-// TODO:  在此添加专用代码和/或调用基类
-	AppLayerHttp app;
+	// TODO:  在此添加专用代码和/或调用基类
 	vector<string> path;
 	if (nErrorCode == 0){
 		CString result, back;
@@ -37,33 +39,28 @@ void HttpClientSocket::OnReceive(int nErrorCode)
 		PrintView(result);
 		app.GetData(STR::CS2S(result));
 		app.DealWith(app.GetCMD());
-		//back = STR::ANSIToUnicode(app.GetResMsg());
-		char *stemp;
-		if (app.GetCode() != MSG_OK){
-			back.Format(_T("%d"),app.GetCode());
-		}
-		else {
-			back = STR::S2CS(app.GetResMsg());
-		}
-		//PrintView(back);
+		//char *stemp;
+		back.Format(_T("%d"), app.GetCode());
+		back = back + _T("\r\n") + STR::S2CS(app.GetResMsg());
+		PrintView(back);
 		//back.Format(_T("成功接收消息:%s"), Buffer);
 		Send(back, back.GetLength()*sizeof(TCHAR));
-		this->Close();
+		//Exit the Socket
+		if (app.GetCode() == -1)  this->Close();
 	}
-CAsyncSocket::OnReceive(nErrorCode);
+	CAsyncSocket::OnReceive(nErrorCode);
 }
 
-
-void HttpClientSocket::OnSend(int nErrorCode)
+void FTPClientSocket::OnSend(int nErrorCode)
 {
 	// TODO:  在此添加专用代码和/或调用基类
 	CString back;
-	back.Format(_T("应答第%d次网页请求，已连接，请等待网页数据"), myclient[this] + 1);
+	back.Format(_T("已通过匿名连接，请等待网页数据"), myclient[this] + 1);
 	Send(back, back.GetLength()*sizeof(TCHAR));
 	CAsyncSocket::OnSend(nErrorCode);
 }
 
-void HttpClientSocket::OnClose(int nErrorCode)
+void FTPClientSocket::OnClose(int nErrorCode)
 {
 	// TODO:  在此添加专用代码和/或调用基类
 	CString log;

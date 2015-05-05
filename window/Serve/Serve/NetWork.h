@@ -14,7 +14,8 @@
 #include<io.h>
 #include "map"
 #include "Tools.h"
-#include "MyServeSocket.h"
+#include "windows.h"
+#include "HttpServeSocket.h"
 #include <strstream>
 /**@brief Socket Number*/
 #define SCOKETNUM 1024
@@ -92,7 +93,6 @@ namespace NetWork{
 		*map the CMD to the real function
 		*@remarks
 		*/
-		
 		string GetCMD(){
 			return data[0];
 		}
@@ -132,7 +132,7 @@ namespace NetWork{
 		vector<string> data;
 		/**@brief
 		 *the Socket is the class we design, map it to the count
-		 *map <ClientSocket *, int> myclient;
+		 *map <HttpHttpClientSocket *, int> myclient;
 		 *the file in the "/" path
 		 */
 		int ErrorCode;
@@ -206,7 +206,6 @@ namespace NetWork{
 			RespondMsg = "HEADMSG :";
 			string temp;
 			//string p = servepath + data[1];
-			char t[1024];
 			char path[1024];
 			int i;
 			//memcpy(path, data[1].c_str(), data.size());
@@ -264,7 +263,6 @@ namespace NetWork{
 			RespondMsg = "PUT :";
 			//string p = servepath + data[1];
 			char path[1024];
-			int retMsg;
 			int i;
 			//memcpy(path, data[1].c_str(), data.size());
 			//path[data.size()] = '\0';
@@ -470,6 +468,7 @@ namespace NetWork{
 #define Sign_Fail 300
 #define OP_OK 120
 #define OP_Fail 302
+#define EXIT -1
 
 	class AppLayerFtp{
 		class people{
@@ -513,6 +512,7 @@ namespace NetWork{
 				//“void (__thiscall CUtil::* )(int)”类型的操作数非法的错误
 				//注意2：这里必须使用*解引用，才能实现函数调用，
 				//否则会有error C2064: 项不会计算为接受 1 个参数的函数的错误
+				RespondMsg = "";
 				(this->*Function[CMD])(data);//args
 			}
 			catch (exception e){
@@ -530,13 +530,19 @@ namespace NetWork{
 		int ErrorCode;
 		string RespondMsg;
 		//CMD ＋ user + pass
-		void SIGNIN(vector<string> data){
-			//char path[1024];
+		void SIGNIN(vector<string> data){//char path[1024];
+			if (Sign_in != NULL) delete Sign_in;//over it
 			Sign_in = new people();
-			Sign_in->path = "ftp/" + data[1] + data[2];
-			FILE *fp;
-			if (!fopen_s(&fp, Sign_in->path.c_str(), "r")){
-				
+			Sign_in->name = data[1];
+			Sign_in->path = "ftp/" + data[1] + '_' + data[2];
+			if (!_access(Sign_in->path.c_str(),0)){
+				FILE *fp;
+				string path = Sign_in->path + '/' + data[1] + ".config";
+				if (!fopen_s(&fp, path.c_str(), "r")){
+					fscanf_s(fp, "%d", &Sign_in->p);
+				}
+				RespondMsg = data[1] + " has logged in";
+				ErrorCode = Sign_SU;
 			}
 			else{
 				delete Sign_in;
@@ -547,7 +553,7 @@ namespace NetWork{
 		void QUIT(vector<string> data){
 			delete Sign_in;
 			Sign_in = NULL;
-			ErrorCode = OP_OK;
+			ErrorCode = EXIT;
 			return;
 		}
 		void CD(vector<string> data){
@@ -558,55 +564,46 @@ namespace NetWork{
 			Sign_in->path = Sign_in->path + "/" + data[1];
 			data[1] = Sign_in->path+ "/*";
 			File_Handle = _findfirst(data[1].c_str() , &files);
-			if (File_Handle == -1)
-			{
+			if (File_Handle == -1){
 				ErrorCode = OP_Fail;
 				return;
 			}
-			do
-			{
-				//printf("%s \n",files.name);
+			do{
 				temp=new string(files.name);
 				RespondMsg = *temp + " ";
 			} while (0 == _findnext(File_Handle, &files));
 			_findclose(File_Handle);
-			//printf("Find %d files\n",i);
 			return;
 		}
 		void MKDIR(vector<string> data){
 				//char filename[100], filename2[105];
-			     struct _finddata_t files;
-			     int File_Handle;
-			     int i = 0;
-			    string *temp;
-			    string filename = Sign_in->path + "/" + data[1];
-				if (access(filename.c_str(), 0))//判断目录是否存在
-				{
-					filename = "md  "+ filename;
-					system(filename.c_str());
-					RespondMsg += "Creat success";
-				}
-				else
-				{
-					RespondMsg += "The fold alreay exists";
-					RespondMsg += "/r/n";
-				}
-				Sign_in->path = Sign_in->path + "/" + data[1];
-				data[1] = Sign_in->path + "/*";
-				File_Handle = _findfirst(data[1].c_str(), &files);
-				if (File_Handle == -1)
-				{
-					ErrorCode = OP_Fail;
-					return;
-				}
-				do
-				{
-					temp = new string(files.name);
-					RespondMsg = *temp + " ";
-				} while (0 == _findnext(File_Handle, &files));
-				_findclose(File_Handle);
+			 struct _finddata_t files;
+			 int File_Handle;
+			 int i = 0;
+			 string *temp;
+			 string filename = Sign_in->path + "/" + data[1];
+		     if (_access(filename.c_str(), 0)){//判断目录是否存在
+				filename = "md  "+ filename;
+				system(filename.c_str());
+				RespondMsg += "Creat success";
+			}
+			else{
+				RespondMsg += "The fold alreay exists";
+				RespondMsg += "/r/n";
+			}
+			Sign_in->path = Sign_in->path + "/" + data[1];
+			data[1] = Sign_in->path + "/*";
+			File_Handle = _findfirst(data[1].c_str(), &files);
+			if (File_Handle == -1){
+				ErrorCode = OP_Fail;
 				return;
-			
+			}
+			do{
+				temp = new string(files.name);
+				RespondMsg = *temp + " ";
+			} while (0 == _findnext(File_Handle, &files));
+			_findclose(File_Handle);
+			return;
 		}
 		void DELETEFILE(vector<string> data){
 			//find file
@@ -704,54 +701,52 @@ namespace NetWork{
 			int File_Handle;
 			int i = 0;
 			string *temp;
-			string filename = Sign_in->path + "/" + data[1];
+			string filename = "ftp/" + data[1] + '_' + data[2];
 			if (Sign_in->p == root_power)
 			{
-				if (access(filename.c_str(), 0))//判断目录是否存在
+				if (_access(filename.c_str(), 0))//判断目录是否存在
 				{
 					filename = "md  " + filename;
 					system(filename.c_str());
-					RespondMsg += "Creat success";
+					RespondMsg += "Creat success\r\n";
+					filename += "/";
+					filename += (data[1] + ".config");
+					fopen_s(&fp, filename.c_str(), "w");
+					fprintf_s(fp, "%d\n", 3);
+					fclose(fp);
 				}
-				else
-				{
-					RespondMsg += "The fold alreay exists";
-					RespondMsg += "/r/n";
+				else{
+					RespondMsg += "The User alreay exists/r/n";
 				}
-				if ((fp = fopen_s("filename/data[2].configure", "wb")) == NUll)
-				{
-					fputs("3", fp);
-				}
-				fclose(fp);
+				ErrorCode = OP_OK;
 			}
 			else {
+				ErrorCode = OP_Fail;
 				RespondMsg += "User has no access to root";
 				RespondMsg += "/r/n";
 			}
 		}
 		void DELUSER(vector<string> data){
 			int status;
+			string op;
 			if (Sign_in->p == root_power)
 			{
-				_unlink();
-				status = access("",0);
-				if (status == 0)
-				{
-					RespondMsg += "User  delete failed";
-					RespondMsg += "/r/n";
+				ErrorCode = OP_OK;
+				status = _access(Sign_in->path.c_str(),0);
+				if (status == 0){
+					op = "rmdir  " + Sign_in->path;
+					system(op.c_str());
+					RespondMsg += "User has been deleted/r/n";
 				}
-				else
-				{
-					RespondMsg += "User has been deleted";
-					RespondMsg += "/r/n";
+				else{
+					RespondMsg += "No such User/r/n";
 				}
-				     
 			}
 			else {
+				ErrorCode = OP_Fail;
 				RespondMsg += "User has no access to root";
 				RespondMsg += "/r/n";
 			}
-			
 		}
 	 	void HELP(vector<string> data){
 			RespondMsg = "HELPMSG : ";
@@ -811,5 +806,6 @@ namespace NetWork{
 			Function["DELUSER"] = Function["deluser"] = &AppLayerFtp::DELUSER;
 			Function["HELP"] = Function["help"] = &AppLayerFtp::HELP;
 		}
+
 	};
 }

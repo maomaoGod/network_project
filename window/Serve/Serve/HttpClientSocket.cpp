@@ -1,5 +1,6 @@
 // HttpClientSocket.cpp : 实现文件
 //
+#pragma once
 
 #include "stdafx.h"
 #include "Serve.h"

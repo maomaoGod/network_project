@@ -44,8 +44,10 @@ CServeView::CServeView()
 	// TODO:  在此处添加构造代码
 	mylog.Empty();
 	AfxSocketInit();
-	ManagerSocket.Create(6500);
-	ManagerSocket.Listen();
+	HttpManagerSocket.Create(6500);
+	HttpManagerSocket.Listen();
+	FtpManagerSocket.Create(7600);
+	FtpManagerSocket.Listen();
 }
 
 CServeView::~CServeView()

@@ -1,13 +1,12 @@
 #pragma once
 
-// HttpClientSocket 命令目标
+// FTPClientSocket 命令目标
 
-
-class HttpClientSocket : public CAsyncSocket
+class FTPClientSocket : public CAsyncSocket
 {
 public:
-	HttpClientSocket();
-	virtual ~HttpClientSocket();
+	FTPClientSocket();
+	virtual ~FTPClientSocket();
 	TCHAR Buffer[100];
 	int MAXLEN = 100;
 	virtual void OnReceive(int nErrorCode);

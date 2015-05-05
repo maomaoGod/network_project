@@ -101,9 +101,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ClientSocket.h" />
+    <ClInclude Include="FTPClientSocket.h" />
+    <ClInclude Include="FTPServeSocket.h" />
+    <ClInclude Include="HttpClientSocket.h" />
+    <ClInclude Include="HttpServeSocket.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="MyServeSocket.h" />
     <ClInclude Include="NetWork.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Serve.h" />
@@ -114,9 +116,11 @@
     <ClInclude Include="Tools.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ClientSocket.cpp" />
+    <ClCompile Include="FTPClientSocket.cpp" />
+    <ClCompile Include="FTPServeSocket.cpp" />
+    <ClCompile Include="HttpClientSocket.cpp" />
+    <ClCompile Include="HttpServeSocket.cpp" />
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="MyServeSocket.cpp" />
     <ClCompile Include="Serve.cpp" />
     <ClCompile Include="ServeDoc.cpp" />
     <ClCompile Include="ServeView.cpp" />

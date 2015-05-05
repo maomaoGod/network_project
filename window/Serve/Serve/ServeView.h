@@ -1,7 +1,8 @@
 
 // ServeView.h : CServeView 类的接口
 //
-#include "MyServeSocket.h"
+#include "HttpServeSocket.h"
+#include "FTPServeSocket.h"
 #pragma once
 
 class CServeView : public CEditView
@@ -18,8 +19,8 @@ public:
 public:
 
 protected :
-	MyServeSocket  ManagerSocket;
-
+	HttpServeSocket  HttpManagerSocket;
+	FTPServeSocket FtpManagerSocket;
 // 重写
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
