@@ -129,10 +129,6 @@ namespace NetWork{
 		map<string, DealWithFunciton> Function;
 		/**@brief the divided data*/
 		vector<string> data;
-		/**@brief  */
-		bool Mark[SCOKETNUM];
-		/**@brief turn */
-		MyServeSocket *mysocket[SCOKETNUM];
 		/**@brief
 		 *the Socket is the class we design, map it to the count
 		 *map <ClientSocket *, int> myclient;
@@ -464,6 +460,278 @@ namespace NetWork{
 		}
 
 
+	};
+
+#define PORT 7600
+#define root_power 0
+#define user_power 3
+
+	class AppLayerFtp{
+		struct people{
+			string name;
+			int p;
+			string path;
+		};
+	public:
+		AppLayerFtp(){
+			/**@brief init the map function*/
+			Ftp_init();
+			/**@brief launch a listen thread*/
+		}
+		/**@brief remove the map*/
+		~AppLayerFtp(){
+			//delete &Function;
+		}
+
+		void GetData(string RevData){
+			STR::Split(RevData, &data, ' ');
+		}
+		string GetCMD(){
+			return data[0];
+		}
+		int GetCode(){
+			return ErrorCode;
+		}
+		string GetResMsg(){
+			return RespondMsg;
+		}
+		//, vector<string> args
+		void DealWith(string CMD){
+			/**@brief DON'T HAVE THIS CMD return BADxxx */
+			if (Function.find(CMD) == Function.end()){
+				ErrorCode = BAD_REQUEST;
+				return;
+			}
+			try{
+				//注意1：这里必须使用this->，否则会有error C2171: “*”:
+				//“void (__thiscall CUtil::* )(int)”类型的操作数非法的错误
+				//注意2：这里必须使用*解引用，才能实现函数调用，
+				//否则会有error C2064: 项不会计算为接受 1 个参数的函数的错误
+				(this->*Function[CMD])(data);//args
+			}
+			catch (exception e){
+				Log = e.what();
+				return;
+			}
+		}
+
+	private:
+		people Sign_in;
+		string Log;
+		typedef void(AppLayerFtp::*DealWithFunciton)(vector<string> data);
+		map<string, DealWithFunciton> Function;
+		vector<string> data;
+		int ErrorCode;
+		string RespondMsg;
+
+		void SIGNIN(vector<string> data){
+			//find file
+			RespondMsg = "";
+			string *temp;
+			//string p = servepath + data[1];
+			char t[1024];
+			char path[1024];
+			int i;
+			//memcpy(path, data[1].c_str(), data.size());
+			//path[data.size()] = '\0';
+			for (i = 0; i < data[1].length(); i++){
+				path[i] = data[1][i];
+			}
+			path[i] = '\0';
+			FILE *fp;
+			if (fopen_s(&fp, path, "r")){
+				ErrorCode = NO_FOUND;
+				return;
+			}
+			ErrorCode = MSG_OK;
+			while (fscanf_s(fp, "%s", t, 1024) != -1){
+				temp = new string(t);
+				RespondMsg += *temp;
+				delete temp;
+			}
+			fclose(fp);
+		}
+		void EXIT(vector<string> data){
+			//find file
+			RespondMsg = "HEADMSG :";
+			string temp;
+			//string p = servepath + data[1];
+			char t[1024];
+			char path[1024];
+			int i;
+			//memcpy(path, data[1].c_str(), data.size());
+			//path[data.size()] = '\0';
+			for (i = 0; i < data[1].length(); i++){
+				path[i] = data[1][i];
+			}
+			path[i] = '\0';
+			FILE *fp;
+			if (fopen_s(&fp, path, "r")){
+				ErrorCode = NO_FOUND;
+				return;
+			}
+			ErrorCode = MSG_OK;
+			strstream ss;
+			ss << ErrorCode;
+			ss >> temp;//Errorcode
+			RespondMsg += temp;
+			RespondMsg += "\r\n";
+			RespondMsg += ("path in serve: " + data[1]);
+			fclose(fp);
+		}
+		void CD(vector<string> data){
+
+		}
+		void MKDIR(vector<string> data){
+			RespondMsg = "PUT :";
+			//string p = servepath + data[1];
+			char path[1024];
+			int retMsg;
+			int i;
+			//memcpy(path, data[1].c_str(), data.size());
+			//path[data.size()] = '\0';
+			for (i = 0; i < data[1].length(); i++){
+				path[i] = data[1][i];
+			}
+			path[i] = '\0';
+			FILE *fp;
+			if (!fopen_s(&fp, path, "r"))
+			{
+				fclose(fp);
+				DeleteFile(STR::String2LPCWSTR(data[1]));
+				ErrorCode = MSG_OK;
+				RespondMsg += "change the file existed in serve";
+			}
+			else
+				ErrorCode = Created;
+			fopen_s(&fp, path, "w");
+			char *temp;
+			if (data.size() < 3) data.push_back("");
+			temp = (char *)malloc(sizeof(char)*(data[2].length() + 1));
+			for (i = 0; i < data[2].length(); i++)
+				temp[i] = data[2][i];
+			temp[i] = 0;
+			fprintf_s(fp, "%s\n", temp);
+			free(temp);
+			fclose(fp);
+			return;
+		}
+		void DELETEFILE(vector<string> data){
+			//find file
+			RespondMsg = "File" + data[1] + " have been DELETE";
+			//string p = servepath + data[1];
+			char t[1024];
+			char path[1024];
+			int i;
+			//memcpy(path, data[1].c_str(), data.size());
+			//path[data.size()] = '\0';
+			for (i = 0; i < data[1].length(); i++){
+				path[i] = data[1][i];
+			}
+			path[i] = '\0';
+			FILE *fp;
+			if (fopen_s(&fp, path, "r")){
+				ErrorCode = NO_FOUND;
+				return;
+			}
+			ErrorCode = MSG_OK;
+			fclose(fp);
+			DeleteFile(STR::String2LPCWSTR(data[1]));
+		}
+		void UPLOAD(vector<string> data){
+			//find files
+			RespondMsg = "OPTIONSMSG : ";
+			ErrorCode = MSG_OK;
+			RespondMsg += "GET : ";
+			RespondMsg += "Retrieve a simple request URL identifying the resources.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "HEAD : ";
+			RespondMsg += "Same as the GET method, the server returns only the status line and head.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "POST : ";
+			RespondMsg += "The server accepts the request of the data that are written to the client output stream.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "PUT : ";
+			RespondMsg += "The server save request data as the specified URL request of new content.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "DELETE : ";
+			RespondMsg += "delete the file on the server according to URL";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "OPTIONS : ";
+			RespondMsg += "The request of the information about request methods of the server supports.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "CONNECT : ";
+			RespondMsg += "The method, which has documented but not implented currently, reserved for the tunnel processing.";
+			RespondMsg += "\r\n";
+
+		}
+		void DOWNLOAD(vector<string> data){
+			//find files
+			RespondMsg = "OPTIONSMSG : ";
+			ErrorCode = MSG_OK;
+			RespondMsg += "GET : ";
+			RespondMsg += "Retrieve a simple request URL identifying the resources.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "HEAD : ";
+			RespondMsg += "Same as the GET method, the server returns only the status line and head.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "POST : ";
+			RespondMsg += "The server accepts the request of the data that are written to the client output stream.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "PUT : ";
+			RespondMsg += "The server save request data as the specified URL request of new content.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "DELETE : ";
+			RespondMsg += "delete the file on the server according to URL";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "OPTIONS : ";
+			RespondMsg += "The request of the information about request methods of the server supports.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "CONNECT : ";
+			RespondMsg += "The method, which has documented but not implented currently, reserved for the tunnel processing.";
+			RespondMsg += "\r\n";
+
+		}
+		void ADDUSER(vector<string> data){
+			RespondMsg = "The request from client has been received";
+			//The Method has been documented but is not currently implented ,reserved for channel processing 
+
+		}
+		void DELUSER(vector<string> data){
+			RespondMsg = "The request from client has been received";
+			//The Method has been documented but is not currently implented ,reserved for channel processing 
+
+		}
+		void HELP(vector<string> data){
+			RespondMsg = "The request from client has been received";
+			//The Method has been documented but is not currently implented ,reserved for channel processing 
+
+		}
+		
+		void Ftp_init(){
+			Function["SIGNIN"] = Function["signin"] = &AppLayerFtp::SIGNIN;
+			Function["EXIT"] = Function["exit"] = &AppLayerFtp::EXIT;
+			Function["CD"] = Function["cd"] = &AppLayerFtp::CD;	
+			Function["MKDIR"] = Function["mkdir"] = &AppLayerFtp::MKDIR;
+			Function["DELETE"] = Function["delete"] = &AppLayerFtp::DELETEFILE;	
+			Function["UPLOAD"] = Function["upload"] = &AppLayerFtp::UPLOAD;
+			Function["DOWNLOAD"] = Function["download"] = &AppLayerFtp::DOWNLOAD;
+			Function["ADDUSER"] = Function["adduser"] = &AppLayerFtp::ADDUSER;
+			Function["DELUSER"] = Function["deluser"] = &AppLayerFtp::DELUSER;
+			Function["HELP"] = Function["help"] = &AppLayerFtp::HELP;
+		}
 	};
 
 	/**
