@@ -9,6 +9,7 @@ class CMainFrame : public CFrameWnd
 	
 protected: // 仅从序列化创建
 	CMainFrame();
+	HWND             protocolwnd;
 	DECLARE_DYNCREATE(CMainFrame)
 
 // 特性
@@ -36,8 +37,12 @@ protected:  // 控件条嵌入成员
 // 生成的消息映射函数
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg LRESULT Register(WPARAM, LPARAM);
 	DECLARE_MESSAGE_MAP()
 
+public:
+	afx_msg BOOL OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct);
+	afx_msg LRESULT SendOut(WPARAM wparam, LPARAM lparam);
 };
 
 

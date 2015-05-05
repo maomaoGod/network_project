@@ -22,12 +22,12 @@
 #define SETHINT                WM_USER+1005
 #define DEALCMDOVER    WM_USER+1006
 #define DISPATCH              WM_USER+1007
-#define ENDINPUT             WM_USER+1008
+#define ENDINPUT              WM_USER+1008
 #define GETCOMMAND      WM_USER+1009
 #define GETCMDSTATE      WM_USER+1010
 #define GETLINESTATE      WM_USER+1011
-#define SENDOUT             WM_USER+1012
-#define REGISTER            WM_USER+1013
+#define SENDOUT              WM_USER+1012
+#define REGISTER             WM_USER+1013
 
 /**
 *@brief 用户自定义消息的参数传递结构

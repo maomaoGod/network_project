@@ -8,7 +8,10 @@
 
 #include "stdafx.h"
 #include "winsock2.h"
+#include "string.h"
 #pragma comment(lib,"ws2_32.lib")
+
+using namespace std;
 
 /**
 *@class UDP报文段结构
