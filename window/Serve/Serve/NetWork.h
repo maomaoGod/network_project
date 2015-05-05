@@ -462,12 +462,17 @@ namespace NetWork{
 
 	};
 
-#define PORT 7600
+#define FTP_PORT 7600
 #define root_power 0
 #define user_power 3
+#define Sign_SU 200
+#define Sign_Fail 300
+#define OP_OK 120
+#define OP_Fail 302
 
 	class AppLayerFtp{
-		struct people{
+		class people{
+		public:
 			string name;
 			int p;
 			string path;
@@ -516,68 +521,33 @@ namespace NetWork{
 		}
 
 	private:
-		people Sign_in;
+		people *Sign_in;
 		string Log;
 		typedef void(AppLayerFtp::*DealWithFunciton)(vector<string> data);
 		map<string, DealWithFunciton> Function;
 		vector<string> data;
 		int ErrorCode;
 		string RespondMsg;
-
+		//CMD ＋ user + pass
 		void SIGNIN(vector<string> data){
-			//find file
-			RespondMsg = "";
-			string *temp;
-			//string p = servepath + data[1];
-			char t[1024];
-			char path[1024];
-			int i;
-			//memcpy(path, data[1].c_str(), data.size());
-			//path[data.size()] = '\0';
-			for (i = 0; i < data[1].length(); i++){
-				path[i] = data[1][i];
-			}
-			path[i] = '\0';
+			//char path[1024];
+			Sign_in = new people();
+			Sign_in->path = "ftp/" + data[1] + data[2];
 			FILE *fp;
-			if (fopen_s(&fp, path, "r")){
-				ErrorCode = NO_FOUND;
+			if (!fopen_s(&fp, Sign_in->path.c_str(), "r")){
+				
+			}
+			else{
+				delete Sign_in;
+				ErrorCode = Sign_Fail;
 				return;
 			}
-			ErrorCode = MSG_OK;
-			while (fscanf_s(fp, "%s", t, 1024) != -1){
-				temp = new string(t);
-				RespondMsg += *temp;
-				delete temp;
-			}
-			fclose(fp);
 		}
-		void EXIT(vector<string> data){
-			//find file
-			RespondMsg = "HEADMSG :";
-			string temp;
-			//string p = servepath + data[1];
-			char t[1024];
-			char path[1024];
-			int i;
-			//memcpy(path, data[1].c_str(), data.size());
-			//path[data.size()] = '\0';
-			for (i = 0; i < data[1].length(); i++){
-				path[i] = data[1][i];
-			}
-			path[i] = '\0';
-			FILE *fp;
-			if (fopen_s(&fp, path, "r")){
-				ErrorCode = NO_FOUND;
-				return;
-			}
-			ErrorCode = MSG_OK;
-			strstream ss;
-			ss << ErrorCode;
-			ss >> temp;//Errorcode
-			RespondMsg += temp;
-			RespondMsg += "\r\n";
-			RespondMsg += ("path in serve: " + data[1]);
-			fclose(fp);
+		void QUIT(vector<string> data){
+			delete Sign_in;
+			Sign_in = NULL;
+			ErrorCode = OP_OK;
+			return;
 		}
 		void CD(vector<string> data){
 
@@ -722,7 +692,7 @@ namespace NetWork{
 		
 		void Ftp_init(){
 			Function["SIGNIN"] = Function["signin"] = &AppLayerFtp::SIGNIN;
-			Function["EXIT"] = Function["exit"] = &AppLayerFtp::EXIT;
+			Function["QUIT"] = Function["quit"] = &AppLayerFtp::QUIT;
 			Function["CD"] = Function["cd"] = &AppLayerFtp::CD;	
 			Function["MKDIR"] = Function["mkdir"] = &AppLayerFtp::MKDIR;
 			Function["DELETE"] = Function["delete"] = &AppLayerFtp::DELETEFILE;	
@@ -732,484 +702,5 @@ namespace NetWork{
 			Function["DELUSER"] = Function["deluser"] = &AppLayerFtp::DELUSER;
 			Function["HELP"] = Function["help"] = &AppLayerFtp::HELP;
 		}
-	};
-
-	/**
-	*@class <MySocket>
-	*@brief TCP和UDP的公共部分，支持可靠传输和不可靠传输的实现
-	*@author  ACM2012
-	*@note
-	*Msg -> 报文
-	*  head -> 报文头
-	*  data -> 数据区
-	*  IP -> 应用层的HOST
-	*  MORE
-	*/
-	/** @file
-	* @brief TCP UDP方法集
-	* @author ACM2012
-	* @date 2015/04/19
-	* @version 0.1
-	* @note
-	* 用类似CSocket的方法定义TCP连接，但是实现时分别实现TCP，UDP的功能
-	* 首先解决比较难的TCP连接，待TCP的功能实现后再来补全UDP的部分
-	* 具体实现部分包括报文头的构造，连接的实现，可靠传输机制，流量控制等
-	* 具体定义在后面详细说明
-	* 该文件中的UDP类尚未定义,待实现TCP后，再来补全相应部分.
-	*/
-	class MySocket{
-	public:
-		//NOT USE NOW
-		/*
-		bool data_alloc(int len, T Msg, int Word_size){
-			this->data = (Byte *)malloc(sizeof(Byte)*len);
-			int i;
-			for (i = 0; i < len; i++){
-				while (Word_size){
-					Word_size -= 8;
-
-				}
-			}
-		}*/
-
-		/**
-		*@author  ACM2012
-		*@note
-		*标准构造函数
-		*@remarks
-		*/
-		MySocket(){
-			message.head_len = 0;
-			message.data_len = 0;
-			message.head = NULL;
-			message.data = NULL;
-		}
-
-		/**
-		*@author  ACM2012
-		*@param [in] <len> the length of data
-		*@param [in] <Msg> the length of Message header
-		*@note
-		*if TCP & UDP to create a object, and they want to recv Msg, use it
-		*also you can use this methon when sending a Msg
-		*@remarks
-		*/
-		MySocket(int head_len, int data_len){
-			message.head_len = head_len;
-			message.data_len = data_len;
-			message.head = (Byte *)malloc(sizeof(Byte) * message.head_len);
-			message.data = (Byte *)malloc(sizeof(Byte) * message.data_len);
-		}
-
-		/**
-		*@author  ACM2012
-		*@param [in] <len> the length of data
-		*@param [in] <Msg> the Message
-		*@return return true if allocate memory to data successfully
-		*@note
-		*if get a string , I'd like to turn it to Byte
-		*@remarks
-		*/
-		bool data_alloc(int len, string Msg){
-			//if there are data exist in data, delete it
-			if (message.data_len) delete message.data;
-			//create it
-			this->message.data = (Byte *)malloc(sizeof(Byte)*len);
-			int i;
-			for (i = 0; i < len; i++){
-				this->message.data[i] = Msg[i];
-			}
-			return true;
-		}
-
-		/**
-		*@author  ACM2012
-		*@param [in] <len> the length of data
-		*@param [in] <Msg> the address of Message
-		*@return return true if allocate memory to data successfully
-		*@note
-		*if get a char array , just set it to Byte
-		*@remarks
-		*/
-		bool data_alloc(int len, Byte *Msg){
-			//if there are data exist in data, delete it
-			if (message.data_len) delete message.data;
-			//create it
-			this->message.data = (Byte *)malloc(sizeof(Byte)*len);
-			int i;
-			for (i = 0; i < len; i++){
-				this->message.data[i] = Msg[i];
-			}
-			return true;
-		}
-		/**
-		*@author  ACM2012
-		*@param [in] <head> the head of message
-		*@return true
-		*@note
-		*if get a string , I'd like to turn it to Byte
-		*@remarks
-		*/
-		bool SetHead(string head){
-			this->message.head = (Byte *)malloc(sizeof(Byte)*head.length());
-			memcpy(this->message.head, head.c_str(), head.length());
-			this->message.head_len = head.length();
-			return true;
-		}
-		/**
-		*@author  ACM2012
-		*@param [in] <head> the head of message
-		*@param [in] <len> the length of message
-		*@return true
-		*@note
-		*if get a char array , just set it to Byte
-		*@remarks
-		*/
-		bool SetHead(Byte *head, int len){
-			this->message.head = head;
-			this->message.head_len = len;
-			return true;
-		}
-		/**
-		*@author  ACM2012
-		*@param [in] <a> the head of message
-		*@param [in] <b> the length of message
-		*@param [in] <c> the head of message
-		*@param [in] <d> the length of message
-		*@return void
-		*@note
-		*
-		*@remarks
-		*/
-		void SetIP(Byte a, Byte b, Byte c, Byte d){
-			IP[0] = a;
-			IP[1] = b;
-			IP[2] = c;
-			IP[3] = d;
-		}
-
-		/**
-		*@brief send the Msg to NET layer
-		*@author  ACM2012
-		*@return if(!nettran(message)) return false
-		*@note
-		* if the NET layer has the CHICK
-		JUST CHICK IT
-		if the len don't satisfy it, return false
-		if the NET is busy or not preparing well, return false
-		goto send
-		NET nettran
-		if(!nettran(message, IP)) return false;
-		*@remarks
-		*/
-		bool Sender(){
-			//if the NET layer has the CHICK
-			//JUST CHICK IT
-			//if the len don't satisfy it, return false
-			//if the NET is busy or not preparing well, return false 
-			//goto send
-			//NET nettran
-			//if(!nettran(message, IP)) return false;
-			return true;
-		}
-		/**
-		*@author  ACM2012
-		*@return if(!netrevc(&message)) return false
-		*@note
-		*get the Msg from NET layer
-		*@remarks
-		*/
-		bool Revcer(){
-			//if(!netrevc(&message)) return false;
-			//JUST FINISHED
-			return true;
-		}
-		/**@brief the check function, return the answer */
-		short CheckSum(){
-			//steps 
-		}
-		/**@brief check the Msg is right or not*/
-		bool CheckSum(short num){
-			//steps
-		
-		}
-		/*
-		void ZeroMemory(Byte *recBuf){
-			memset(recBuf, 0, sizeof(recBuf));
-		}*/
-
-		void OnReceive(int nErrorCode){
-
-		}
-	private:
-		struct Msg{
-		    Byte *data;///<the data
-			int data_len;
-		    Byte *head;///<brief the head before data
-			int head_len;
-		};
-		Msg message;
-		Byte IP[4];///<initial IP array
-	};
-
-	class MyUDP :MySocket{
-		/**@brief 构造函数*/
-		MyUDP();
-		/**@brief 析构函数*/
-		virtual ~MyUDP();
-
-	protected:
-		typedef Byte SOCKADDR;
-		typedef Byte SOCKADDR_IN;
-
-		SOCKADDR_IN m_clientAddr;
-		
-		int ReceiveFrom(Byte *Buf, int len, SOCKADDR* client_addr, int *addr_len, int mode){
-
-		}
-		/**@brief 重写OnReceive函数*/
-		virtual void OnReceive(int nErrorCode)
-		{
-			Byte recBuf[1024];
-			/**@brief Socket地址长度，属性继承自CAsyncSocket*/
-			int len = sizeof(SOCKADDR_IN);
-			/**@brief 清空buffer*/
-			//ZeroMemory(recBuf);
-			/**@brief 调用ReceiveFrom函数，接收数据*/
-			int recBytes = ReceiveFrom(recBuf, 1023, (SOCKADDR*)&m_clientAddr, &len, 0);
-			
-			/**@brief 判断接收数据的情况*/
-			if (recBytes == 0)
-			{
-				/**@brief 提示UDP未收到信息*/
-			}
-			else if (recBytes == SOCKET_ERROR)
-			{
-				/**@brief 提示接受错误*/
-			}
-			else
-			{
-				/**@brief 收到数据，将数据给出*/
-			}
-
-			MySocket::OnReceive(nErrorCode);
-		}
-		/**
-		*@brief creat the message from received data
-		*@author  ACM2012
-		*@return if(data_alloc && sethead) true
-		*@note
-		*@remarks
-		*/
-		bool MsgMaker(){
-			string Msg;
-			int len;
-			bool temp;
-			//get the Msg and the length of Msg from APP
-			temp = data_alloc(len, Msg);
-			//get the IP from App
-			//GetIP();
-			//the port of serve is defined by 6500
-			Byte  in_Port[2];
-			//get Port from App
-			//GetPort()
-			Byte  out_Port[2];
-			//transform message.data_len to Byte[2]
-			Byte length[2];
-			//CheckSum from message.data
-			//transform the result of checksum to Byte[16];
-			Byte check[2];
-			CheckSum();
-		    //从head指针开始，头2位放源端口号，3-4位放目的端口号，5-6位放收到的数据的长度，7-8位放检验和
-			Byte *head = (Byte *)malloc(sizeof(Byte) * 8);
-			//Byte *head = in_Port;
-			//*(head + 2) = *out_Port;
-			//*(head + 2) = *length;
-			//*(head + 2) = *check;
-			memcpy(head, in_Port, 2);
-			memcpy(head + 2, out_Port, 2);
-			memcpy(head + 4, length, 2);
-			memcpy(head + 6, check, 2);
-			//creat the head of the message
-			if (temp && SetHead(head, sizeof(head)))
-				return true;
-			free(head);
-		}
-		/**
-		*@brief 用来将上面生成的message发送出去
-		*@author  ACM2012
-		*@return 发送成功返回true，发送失败返回false
-		*@note
-		*@remarks
-		*/
-		bool UDP_Send(){
-			//调用基类函数sender将上述生成的报文发出去
-			if (Sender())
-				return true;
-			else return false;
-		}
-	};
-
-	/**
-	* @class
-	* @brief 该类封装TCP协议方法.
-	* @author ACM2012
-	* @note
-	* 此类包含该类的构造函数和析构函数，将实现TCP协议.
-	* 构造函数MyTCP应传入对象进程的地址及端口号
-	* 析构函数根据需要设置
-	* 连接函数TCP_Conn 应当完成TCP协议的三次握手
-	* 被连接函数TCP_Accept应当能够正确的和请求连接的进程进行通讯
-	* 监视函数TCP_Listen应当监视外部请求，当收到请求时再调用其它成员来处理
-	* 设置函数TCP_SetOpt应当设置TCP中各项参数，如报文头中部分参数以及拥塞控制相关参数
-	* 不直接修改对应变量主要是出于安全考虑-------->>>>>初步实现可不使用此函数来控制
-	* 发送函数Simple_Send实现简单的发送一段报文的功能，具体的可靠协议在TCP_Send中实现
-	* 发送函数TCP_Send实现发送功能，同时实现中应该考虑到可靠传输的各项机制，如确认重传等
-	* 接收函数TCP_Receive实现接收数据的功能，注意这个函数可以设置阻塞的功能，
-	* 同时依然需要考虑可靠传输的问题
-	* 解除连接TCP_DisConn 完成解除连接的功能
-	* 类定义并不完整，只给出整体思路及框架
-	*/
-
-	class MyTCP :MySocket
-	{
-		/** @brief 构造函数*/
-		MyTCP();
-		/** @brief 析构函数*/
-		virtual ~MyTCP();
-	public:
-		/** @brief 连接函数,
-		* @note
-		* 对于一个连接，应当返回连接成功与否相关信息
-		* 此处应该完成三次握手的可靠方案
-		* 包括SYN,ACK等标志位的设置
-		*/
-		bool TCP_Conn();
-
-		/** @brief 被连接函数,
-		* @note
-		* 应当能够正确的和请求连接的进程进行连接
-		*/
-		void TCP_Accept();
-
-		/** @brief 监听函数,
-		* @note
-		* 监视外部请求，当收到请求时再调用其它成员来处理
-		*/
-		void TCP_Listen();
-
-		/** @brief 发送函数,
-		* @note
-		* 实现发送功能，同时实现中应该考虑到可靠传输的各项机制
-		* 注意重传的参数，如定时等不应使用局部变量
-		* 可靠传输包括：超时重传，三次冗余ACK重传
-		* 重传使用回退N步方法
-		*/
-		void TCP_Send();
-
-		/** @brief 接收函数,
-		* @note
-		* 实现接收数据的功能
-		* 注意可靠机制下的确认报文发送
-		* 需要解决处理丢失的方法，包括累积确认等
-		*/
-		void TCP_Receive();
-
-		/** @brief 解除连接函数,
-		* @note
-		* 完成解除连接的功能
-		*/
-		void TCP_DisConn();
-	private:
-		/** @brief 报文头结构
-		* @note
-		*其中选项部分根据需要额外添加
-		*/
-		struct TCP_Head
-		{
-			unsigned short SourcePort;
-			unsigned short DesPort;
-			unsigned int No;
-			unsigned int AckNo;
-			short Len_Flag;
-			unsigned short Receive_Window;
-			unsigned short CheckSum;
-			unsigned short Urgent_Pt;
-		};
-		/** @brief 简单发送
-		* @note
-		* 简单发送报文，用户不应该能使用这个函数，因为他并没有可靠机制
-		*/
-		void Simple_Send();
-		/** @brief 简单接收
-		* @note
-		* 简单接收报文，用户不应该能使用这个函数，因为他并没有可靠机制
-		*/
-		void Simple_Receive();
-
-		/** @brief 定义结构体，包含用于拥塞控制的参数
-		* @note
-		* SS:慢启动状态
-		* CA：拥塞避免状态
-		* RTT：一个往返时延
-		* MSS：发送方与接收方协商最大报文段长度
-		* CongWin：拥塞窗口
-		* Threshold：阈值
-		* redundancy_ACK：冗余ACK个数
-		* state：当前状态
-		* Time_out：超时
-		*/
-		struct CC
-		{
-			const Byte SS = 1;
-			const Byte CA = 2;
-			int RTT;
-			int MSS;
-			int CongWin;
-			int Threshold;
-			Byte redundancy_ACK;
-			Byte state;
-			bool Time_out;
-		};
-
-		/** @brief 拥塞控制函数,
-		* @note
-		* (1)收到未确认数据的ACK，
-		* 若处于慢启动状态：每过一个RTT，拥塞窗口翻倍，若拥塞窗口超过阈值，状态改变为"拥塞避免"
-		* 若处于拥塞避免状态：每过一个RTT，拥塞窗口增加一个MSS
-		* (2)发生丢包，
-		* 若由3个冗余ACK引发：拥塞窗口和阈值都设为CongWin的一半，设置状态为“拥塞避免”
-		* 若由超时引发：阈值设为拥塞窗口的一半，拥塞窗口设置为1个MSS，设置状态为“慢启动”
-		*/
-		/*
-		void Congestion_Control()
-		{
-			if (redundancy_ACK >= 3)
-			{
-				Threshold = CongWin / 2;
-				CongWin = Threshold;
-				state = CA;
-			}
-			else if (Time_out)
-			{
-				Threshold = CongWin / 2;
-				CongWin = MSS;
-				state = SS;
-			}
-			else
-			{
-				if (state == SS)
-				{
-					CongWin += MSS;
-					if (CongWin > Threshold)
-						state = CA;
-				}
-				else
-				{
-					CongWin += MSS * MSS / CongWin;
-				}
-			}
-		}*/
-
 	};
 }
