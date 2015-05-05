@@ -550,14 +550,119 @@ namespace NetWork{
 			return;
 		}
 		void CD(vector<string> data){
+			/*
+				int count = 0;
+				char **fileNameList = NULL;
+				struct dirent* ent = NULL;
+				DIR *pDir;
+				char dir[512];
+				struct stat statbuf;
 
+				//打开目录
+				if ((pDir = opendir(path)) == NULL)
+				{
+				myLog("Cannot open directory:%s\n", path);
+				return NULL;
+				}
+				//读取目录
+				while ((ent = readdir(pDir)) != NULL)
+				{ //统计当前文件夹下有多少文件（不包括文件夹）
+				//得到读取文件的绝对路径名
+				snprintf(dir, 512, "%s/%s", path, ent->d_name);
+				//得到文件信息
+				lstat(dir, &statbuf);
+				//判断是目录还是文件
+				if (!S_ISDIR(statbuf.st_mode))
+				{
+				count++;
+				}
+				} //while
+				//关闭目录
+				closedir(pDir);
+				//  myLog("共%d个文件\n", count);
+
+				//开辟字符指针数组，用于下一步的开辟容纳文件名字符串的空间
+				if ((fileNameList = (char**)myMalloc(sizeof(char*)* count)) == NULL)
+				{
+				myLog("Malloc heap failed!\n");
+				return NULL;
+				}
+
+				//打开目录
+				if ((pDir = opendir(path)) == NULL)
+				{
+				myLog("Cannot open directory:%s\n", path);
+				return NULL;
+				}
+				//读取目录
+				int i;
+				for (i = 0; (ent = readdir(pDir)) != NULL && i < count;)
+				{
+				if (strlen(ent->d_name) <= 0)
+				{
+				continue;
+				}
+				//得到读取文件的绝对路径名
+				snprintf(dir, 512, "%s/%s", path, ent->d_name);
+				//得到文件信息
+				lstat(dir, &statbuf);
+				//判断是目录还是文件
+				if (!S_ISDIR(statbuf.st_mode))
+				{
+				if ((fileNameList[i] = (char*)myMalloc(strlen(ent->d_name) + 1))
+				== NULL)
+				{
+				myLog("Malloc heap failed!\n");
+				return NULL;
+				}
+				memset(fileNameList[i], 0, strlen(ent->d_name) + 1);
+				strcpy(fileNameList[i], ent->d_name);
+				myLog("第%d个文件:%s\n", i, ent->d_name);
+				i++;
+				}
+				} //for
+				//关闭目录
+				closedir(pDir);
+
+				*fileCount = count;
+				return fileNameList;
+				}
+				*/
 		}
 		void MKDIR(vector<string> data){
-			RespondMsg = "PUT :";
+			
+		}
+		void DELETEFILE(vector<string> data){
+			//find file
+			RespondMsg = "File" + data[1] + " have been DELETE";
+			//string p = servepath + data[1];
+			char t[1024];
+			char path[1024];
+			int i;
+			data[1] = Sign_in->path +"/"+ data[1];
+			//memcpy(path, data[1].c_str(), data.size());
+			//path[data.size()] = '\0';
+			for (i = 0; i < data[1].length(); i++){
+				path[i] = data[1][i];
+			}
+			path[i] = '\0';
+			FILE *fp;
+			if (fopen_s(&fp, path, "r")){
+				ErrorCode = OP_Fail;
+				return;
+			}
+			ErrorCode = OP_OK;
+			fclose(fp);
+			DeleteFile(STR::String2LPCWSTR(data[1]));
+		}
+		void UPLOAD(vector<string> data){
+			//find files
+			RespondMsg = "UPLOAD :";
 			//string p = servepath + data[1];
 			char path[1024];
 			int retMsg;
 			int i;
+			data[2] = Sign_in->path +"/"+ data[2];
 			//memcpy(path, data[1].c_str(), data.size());
 			//path[data.size()] = '\0';
 			for (i = 0; i < data[1].length(); i++){
@@ -569,11 +674,11 @@ namespace NetWork{
 			{
 				fclose(fp);
 				DeleteFile(STR::String2LPCWSTR(data[1]));
-				ErrorCode = MSG_OK;
+				ErrorCode = OP_OK;
 				RespondMsg += "change the file existed in serve";
 			}
 			else
-				ErrorCode = Created;
+				ErrorCode = OP_OK;
 			fopen_s(&fp, path, "w");
 			char *temp;
 			if (data.size() < 3) data.push_back("");
@@ -585,14 +690,16 @@ namespace NetWork{
 			free(temp);
 			fclose(fp);
 			return;
+
 		}
-		void DELETEFILE(vector<string> data){
-			//find file
-			RespondMsg = "File" + data[1] + " have been DELETE";
+		void DOWNLOAD(vector<string> data){
+			RespondMsg = "";
+			string *temp;
 			//string p = servepath + data[1];
 			char t[1024];
 			char path[1024];
 			int i;
+			data[1] = Sign_in->path + "/" + data[1];
 			//memcpy(path, data[1].c_str(), data.size());
 			//path[data.size()] = '\0';
 			for (i = 0; i < data[1].length(); i++){
@@ -601,78 +708,17 @@ namespace NetWork{
 			path[i] = '\0';
 			FILE *fp;
 			if (fopen_s(&fp, path, "r")){
-				ErrorCode = NO_FOUND;
+				ErrorCode = OP_Fail;
 				return;
 			}
-			ErrorCode = MSG_OK;
+			ErrorCode = OP_OK;
+			while (fscanf_s(fp, "%s", t, 1024) != -1){
+				temp = new string(t);
+				RespondMsg += *temp;
+				delete temp;
+			}
 			fclose(fp);
-			DeleteFile(STR::String2LPCWSTR(data[1]));
-		}
-		void UPLOAD(vector<string> data){
-			//find files
-			RespondMsg = "OPTIONSMSG : ";
-			ErrorCode = MSG_OK;
-			RespondMsg += "GET : ";
-			RespondMsg += "Retrieve a simple request URL identifying the resources.";
-			RespondMsg += "\r\n";
-
-			RespondMsg += "HEAD : ";
-			RespondMsg += "Same as the GET method, the server returns only the status line and head.";
-			RespondMsg += "\r\n";
-
-			RespondMsg += "POST : ";
-			RespondMsg += "The server accepts the request of the data that are written to the client output stream.";
-			RespondMsg += "\r\n";
-
-			RespondMsg += "PUT : ";
-			RespondMsg += "The server save request data as the specified URL request of new content.";
-			RespondMsg += "\r\n";
-
-			RespondMsg += "DELETE : ";
-			RespondMsg += "delete the file on the server according to URL";
-			RespondMsg += "\r\n";
-
-			RespondMsg += "OPTIONS : ";
-			RespondMsg += "The request of the information about request methods of the server supports.";
-			RespondMsg += "\r\n";
-
-			RespondMsg += "CONNECT : ";
-			RespondMsg += "The method, which has documented but not implented currently, reserved for the tunnel processing.";
-			RespondMsg += "\r\n";
-
-		}
-		void DOWNLOAD(vector<string> data){
-			//find files
-			RespondMsg = "OPTIONSMSG : ";
-			ErrorCode = MSG_OK;
-			RespondMsg += "GET : ";
-			RespondMsg += "Retrieve a simple request URL identifying the resources.";
-			RespondMsg += "\r\n";
-
-			RespondMsg += "HEAD : ";
-			RespondMsg += "Same as the GET method, the server returns only the status line and head.";
-			RespondMsg += "\r\n";
-
-			RespondMsg += "POST : ";
-			RespondMsg += "The server accepts the request of the data that are written to the client output stream.";
-			RespondMsg += "\r\n";
-
-			RespondMsg += "PUT : ";
-			RespondMsg += "The server save request data as the specified URL request of new content.";
-			RespondMsg += "\r\n";
-
-			RespondMsg += "DELETE : ";
-			RespondMsg += "delete the file on the server according to URL";
-			RespondMsg += "\r\n";
-
-			RespondMsg += "OPTIONS : ";
-			RespondMsg += "The request of the information about request methods of the server supports.";
-			RespondMsg += "\r\n";
-
-			RespondMsg += "CONNECT : ";
-			RespondMsg += "The method, which has documented but not implented currently, reserved for the tunnel processing.";
-			RespondMsg += "\r\n";
-
+			
 		}
 		void ADDUSER(vector<string> data){
 			RespondMsg = "The request from client has been received";
@@ -685,7 +731,47 @@ namespace NetWork{
 
 		}
 		void HELP(vector<string> data){
-			RespondMsg = "The request from client has been received";
+			RespondMsg = "HELPMSG : ";
+			ErrorCode = OP_OK;
+			RespondMsg += "SIGNIN : ";
+			RespondMsg += "Log on to server.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "QUIT : ";
+			RespondMsg += "Log out from server.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "CD : ";
+			RespondMsg += "Open an existed folder.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "MKDIR : ";
+			RespondMsg += "Creat a new folder.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "DELETEFILE : ";
+			RespondMsg += "delete the file on the server ";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "UPLOAD : ";
+			RespondMsg += "Upload the file to the server.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "DOWNLOAD : ";
+			RespondMsg += "Download the requested file from server.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "ADDUSER : ";
+			RespondMsg += "Add a new user.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "DELUSER : ";
+			RespondMsg += "Delete an existed user.";
+			RespondMsg += "\r\n";
+
+			RespondMsg += "HELP : ";
+			RespondMsg += "The request of the information about request methods of the server supports.";
+			RespondMsg += "\r\n";
 			//The Method has been documented but is not currently implented ,reserved for channel processing 
 
 		}
