@@ -1,4 +1,4 @@
-//tools for other to use
+ï»¿//tools for other to use
 #pragma once
 #include <string>
 //#include <windows.h>
@@ -68,8 +68,18 @@ namespace Tools{
 		}
 
 		static string CS2S(CString Subject){
-			string sub = CString2LPSTR(Subject);//Subject.GetBuffer(0);
+			string sub = Tchar2string(Subject.GetBuffer());//Subject.GetBuffer(0);
+			Subject.ReleaseBuffer();
 			return sub;
+		}
+
+		static CString S2CS(string Subject){
+			int nBufferSize = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)(Subject.c_str()), -1, NULL, 0);
+			TCHAR *pBuffer = new TCHAR[nBufferSize + 1];
+			memset(pBuffer, 0, (nBufferSize + 1)*sizeof(TCHAR));
+			MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)(LPCSTR)(Subject.c_str()), -1, pBuffer, nBufferSize*sizeof(TCHAR));//UTF-8×ªUnicode
+			CString myhtml = pBuffer;
+			return myhtml;
 		}
 
 		static char *S2Cstar(string Subject)
@@ -200,30 +210,33 @@ namespace Tools{
 			CHttpFile* htmlFile = NULL; //http file
 			TCHAR src[1024];
 			try{
-				htmlFile = (CHttpFile*)mySession.OpenURL(this->url);//½¨Á¢Á¬½Ó»ñÈ¡ÊäÈë;
-				while (htmlFile->ReadString(src, 1024)){//´¦ÀíÁ÷ÖÐÃ¿Ò»ÐÐ
+				htmlFile = (CHttpFile*)mySession.OpenURL(this->url);//å»ºç«‹è¿žæŽ¥èŽ·å–è¾“å…¥;
+				while (htmlFile->ReadString(src, 1024)){//å¤„ç†æµä¸­æ¯ä¸€è¡Œ
 					int nBufferSize = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)src, -1, NULL, 0);
 					TCHAR *pBuffer = new TCHAR[nBufferSize + 1];
 					memset(pBuffer, 0, (nBufferSize + 1)*sizeof(TCHAR));
-					MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)src, -1, pBuffer, nBufferSize*sizeof(TCHAR));//UTF-8×ªUnicode
+					MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)src, -1, pBuffer, nBufferSize*sizeof(TCHAR));//UTF-8è½¬Unicode
 					document += pBuffer;
 					document += _T("\r\n");
 					delete pBuffer;
 				}
 				htmlFile->Close();
-				mySession.Close(); //¹Ø±Õ»á»°
+				mySession.Close(); //å…³é—­ä¼šè¯
 			}
-			catch (CException *e) {  //Òì³£´¦Àí
+			catch (CException *e) {  //å¼‚å¸¸å¤„ç†
 				this->finish = true;
 				this->success = false;
-				this->Log = _T("»ñÈ¡Êý¾ÝÊ§°Ü" );//+ e->
+				this->Log = _T("èŽ·å–æ•°æ®å¤±è´¥" );//+ e->
 				
-				//AfxMessageBox(_T("»ñÈ¡Êý¾ÝÊ§°Ü"));
+				//AfxMessageBox(_T("èŽ·å–æ•°æ®å¤±è´¥"));
 			}
 			this->finish = true;
 			this->success = true;
 		};
 	};
+	
+	
+
 }
 
 
