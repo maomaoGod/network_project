@@ -555,8 +555,8 @@ namespace NetWork{
 			int File_Handle;
 			int i = 0;
 			string *temp;
-			data[1] = data[1] + "/*";
-
+			Sign_in->path = Sign_in->path + "/" + data[1];
+			data[1] = Sign_in->path+ "/*";
 			File_Handle = _findfirst(data[1].c_str() , &files);
 			if (File_Handle == -1)
 			{
@@ -574,11 +574,44 @@ namespace NetWork{
 			return;
 		}
 		void MKDIR(vector<string> data){
+				//char filename[100], filename2[105];
+			     struct _finddata_t files;
+			     int File_Handle;
+			     int i = 0;
+			    string *temp;
+			    string filename = Sign_in->path + "/" + data[1];
+				if (access(filename.c_str(), 0))//ÅÐ¶ÏÄ¿Â¼ÊÇ·ñ´æÔÚ
+				{
+					filename = "md  "+ filename;
+					system(filename.c_str());
+					RespondMsg += "Creat success";
+				}
+				else
+				{
+					RespondMsg += "The fold alreay exists";
+					RespondMsg += "/r/n";
+				}
+				Sign_in->path = Sign_in->path + "/" + data[1];
+				data[1] = Sign_in->path + "/*";
+				File_Handle = _findfirst(data[1].c_str(), &files);
+				if (File_Handle == -1)
+				{
+					ErrorCode = OP_Fail;
+					return;
+				}
+				do
+				{
+					temp = new string(files.name);
+					RespondMsg = *temp + " ";
+				} while (0 == _findnext(File_Handle, &files));
+				_findclose(File_Handle);
+				return;
 			
 		}
 		void DELETEFILE(vector<string> data){
 			//find file
-			RespondMsg = "File" + data[1] + " have been DELETE";
+			RespondMsg += "File" + data[1] + " have been DELETE";
+			RespondMsg += "/r/n";
 			//string p = servepath + data[1];
 			char t[1024];
 			char path[1024];
@@ -601,7 +634,8 @@ namespace NetWork{
 		}
 		void UPLOAD(vector<string> data){
 			//find files
-			RespondMsg = "UPLOAD :";
+			RespondMsg += "UPLOAD :";
+			RespondMsg += "/r/n";
 			//string p = servepath + data[1];
 			char path[1024];
 			int retMsg;
@@ -665,16 +699,61 @@ namespace NetWork{
 			
 		}
 		void ADDUSER(vector<string> data){
-			RespondMsg = "The request from client has been received";
-			//The Method has been documented but is not currently implented ,reserved for channel processing 
-
+			struct _finddata_t files;
+			FILE* fp;
+			int File_Handle;
+			int i = 0;
+			string *temp;
+			string filename = Sign_in->path + "/" + data[1];
+			if (Sign_in->p == root_power)
+			{
+				if (access(filename.c_str(), 0))//ÅÐ¶ÏÄ¿Â¼ÊÇ·ñ´æÔÚ
+				{
+					filename = "md  " + filename;
+					system(filename.c_str());
+					RespondMsg += "Creat success";
+				}
+				else
+				{
+					RespondMsg += "The fold alreay exists";
+					RespondMsg += "/r/n";
+				}
+				if ((fp = fopen_s("filename/data[2].configure", "wb")) == NUll)
+				{
+					fputs("3", fp);
+				}
+				fclose(fp);
+			}
+			else {
+				RespondMsg += "User has no access to root";
+				RespondMsg += "/r/n";
+			}
 		}
 		void DELUSER(vector<string> data){
-			RespondMsg = "The request from client has been received";
-			//The Method has been documented but is not currently implented ,reserved for channel processing 
-
+			int status;
+			if (Sign_in->p == root_power)
+			{
+				_unlink();
+				status = access("",0);
+				if (status == 0)
+				{
+					RespondMsg += "User  delete failed";
+					RespondMsg += "/r/n";
+				}
+				else
+				{
+					RespondMsg += "User has been deleted";
+					RespondMsg += "/r/n";
+				}
+				     
+			}
+			else {
+				RespondMsg += "User has no access to root";
+				RespondMsg += "/r/n";
+			}
+			
 		}
-		void HELP(vector<string> data){
+	 	void HELP(vector<string> data){
 			RespondMsg = "HELPMSG : ";
 			ErrorCode = OP_OK;
 			RespondMsg += "SIGNIN : ";
