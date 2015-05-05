@@ -1,29 +1,32 @@
-
 // MainFrm.h : CMainFrame 类的接口
 //
 
 #pragma once
 #include <map>
+#include "CMyIP.h"
+#include "MainFrmTransTools.h"
 using namespace std;
 
 class CMainFrame : public CFrameWnd
 {
-	
+
 protected: // 仅从序列化创建
 	CMainFrame();
 	DECLARE_DYNCREATE(CMainFrame)
 
-// 特性
+	// 特性
 public:
 
-// 操作
+	// 操作
 public:
 
-// 重写
+public:
+	CMyIP ip;
+	// 重写
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	HWND PPwnd;
-// 实现
+	// 实现
 public:
 	virtual ~CMainFrame();
 #ifdef _DEBUG
@@ -34,12 +37,13 @@ public:
 protected:  // 控件条嵌入成员
 	CToolBar            m_wndToolBar;
 	CStatusBar        m_wndStatusBar;
-	map <CWnd *,int>  pwnd2port;
-	map <int ,HWND>  port2hwnd;
+	map <CWnd *, int>  pwnd2port;
+	map <int, HWND>  port2hwnd;
 	int  numprocess;
-// 生成的消息映射函数
+	// 生成的消息映射函数
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	static DWORD WINAPI packcap(LPVOID lParam);
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg BOOL OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct);
@@ -52,5 +56,3 @@ public:
 	afx_msg LRESULT OnIP2Link(WPARAM, LPARAM);
 	afx_msg LRESULT OnLinkSend(WPARAM, LPARAM);
 };
-
-

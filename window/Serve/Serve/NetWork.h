@@ -808,7 +808,7 @@ namespace NetWork{
 		/** @brief 构造函数*/
 		MyTCP();
 		/** @brief 析构函数*/
-		~MyTCP();
+		virtual ~MyTCP();
 	public:
 		/** @brief 连接函数,
 		* @note

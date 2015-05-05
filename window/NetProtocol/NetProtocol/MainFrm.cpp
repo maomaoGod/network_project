@@ -1,94 +1,14 @@
-
 // MainFrm.cpp : CMainFrame ÀàµÄÊµÏÖ , ÊµÏÖ´«Êä²ã,ÍøÂç²ã,Á´Â·²ãµÄ¹²ÓÃ¡£
 //
 #include "stdafx.h"
 #include "NetProtocol.h"
 #include "MainFrm.h"
+#include "CMyIP.h"
+#include "string.h"
+#include "Tools.h"
 
-typedef unsigned char Byte;
-typedef unsigned short Ushort;
-typedef int Bool;
-#define MAXSIZE 1480
-
-int flag = 0; ///< ±êÖ¾ÊÇTCP»òUDP
-
-/**
-*@class <_iphdr>
-*@brief ´æ·ÅIPÊ×²¿µÄ½á¹¹Ìå
-*@author ACM2012
-*@note
-*×Ô¼º¶¨ÒåµÄIP±¨ÎÄÊ×²¿
-*/
-typedef struct _iphdr //¶¨ÒåIPÊ×²¿ 
-{
-	unsigned short ih_version;  ///< ±êÊ¶ÁËÊı¾İ°üµÄIP°æ±¾ºÅ,Ò»¹²4Î», 0100±íÊ¾IPv4, 0110±íÊ¾IPv6
-	unsigned short ih_len;	    ///< 16Î»Êı¾İ±¨³¤¶È
-	unsigned short ih_ident;	///< Êı¾İ±¨µÄ16Î»±êÊ¶
-	unsigned short ih_flags;    ///< Êı¾İ±¨µÄ±êÖ¾
-	unsigned short ih_offset;	///< Êı¾İ±¨µÄÆ¬Æ«ÒÆ
-	unsigned short ih_TTL;		///< Êı¾İ±¨µÄÊÙÃü
-	unsigned short ih_protl;	///< Êı¾İ±¨µÄĞ­Òé
-	unsigned short ih_sum;		///< 16Î»Ê×²¿¼ìÑéºÍ
-	unsigned int ih_saddr;		///< 32Î»Ô´IP
-	unsigned int ih_daddr;		///< 32Î»Ä¿µÄIP
-} IP_HEADER;
-
-/**
-*@class <_udphdr>
-*@brief ´æ·ÅUDPÊ×²¿µÄ½á¹¹Ìå
-*@author ACM1201
-*@note
-*×Ô¼º¶¨ÒåµÄUDPÊ×²¿µÄ½á¹¹
-*/
-typedef struct _udphdr //¶¨ÒåUDPÊ×²¿ 
-{
-	unsigned short uh_saddr;	///<16Î»Ô´IP
-	unsigned short uh_daddr;	///<16Î»Ä¿µÄIP
-	unsigned short uh_sport;	///<16Î»Ô´¶Ë¿Ú
-	unsigned short uh_dport;	///<16Î»Ä¿µÄ¶Ë¿Ú
-	unsigned short uh_len;		///<16Î»³¤¶È
-	unsigned short uh_sum;		///<16Î»Ğ£ÑéºÍ
-} UDP_HEADER;
-
-/**
-*@class <_tcphdr>
-*@brief ´æ·ÅTCPÊ×²¿µÄ½á¹¹Ìå
-*@author ACM1201
-*@note
-*×Ô¼º¶¨ÒåµÄTCPÊ×²¿µÄ½á¹¹
-*/
-typedef struct _tcphdr //¶¨ÒåTCPÊ×²¿ 
-{
-	unsigned short th_saddr;	///<16Î»Ô´IP
-	unsigned short th_daddr;	///<16Î»Ä¿µÄIP
-	unsigned short th_sport;	///<16Î»Ô´¶Ë¿Ú
-	unsigned short th_dport;	///<16Î»Ä¿µÄ¶Ë¿Ú
-	unsigned short th_len;		///<16Î»³¤¶È
-	unsigned short th_sum;		///<16Î»Ğ£ÑéºÍ
-	unsigned short th_num;      ///<ĞòºÅ
-	unsigned short th_ack;		///<È·ÈÏºÅ
-} TCP_HEADER;
-
-struct UDP_Msg{
-	UDP_HEADER *udphdr;				///<udpÍ·²¿
-	char *data;					///<Êı¾İ
-};
-struct UDP_Msg MyUDP;
-
-struct TCP_Msg{
-	TCP_HEADER *tcphdr;				///<tcpÍ·²¿
-	char *data;					///<Êı¾İ
-};
-struct TCP_Msg MyTCP;
-
-struct IP_Msg{
-	IP_HEADER *iphdr;			///<Ö¸ÏòipÊ×²¿µÄÖ¸Õë
-	unsigned short ih_sport;	///<16Î»Ô´¶Ë¿Ú
-	unsigned short ih_dport;	///<16Î»Ä¿µÄ¶Ë¿Ú
-	unsigned short ih_num;      ///<ĞòºÅ
-	unsigned short ih_ack;		///<È·ÈÏºÅ
-	char *data;					///<Êı¾İ
-};
+struct _iphdr IP_HEADER;
+struct Msg IP_data;
 struct IP_Msg MyIP;
 
 #ifdef _DEBUG
@@ -106,7 +26,6 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_COPYDATA()
 	ON_MESSAGE(CHECKHWND, OnCheck)
 	ON_MESSAGE(TRANSTOAPP, OnTrans2App)
-	ON_MESSAGE(APPTOTRANS, OnApp2Trans)
 	ON_MESSAGE(IPTOTRANS, OnIP2Trans)
 	ON_MESSAGE(LINKTOIP, OnLink2IP)
 	ON_MESSAGE(TRANSTOIP, OnTrans2IP)
@@ -127,6 +46,8 @@ static UINT indicators[] =
 CMainFrame::CMainFrame()
 {
 	// TODO:  ÔÚ´ËÌí¼Ó³ÉÔ±³õÊ¼»¯´úÂë
+	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
+		AfxMessageBox(_T("´´½¨×¥°üÏß³ÌÊ§°Ü£¡"));
 	numprocess = 0;
 }
 
@@ -198,22 +119,22 @@ BOOL CALLBACK lpEnumHwnd(HWND hwnd, LPARAM lParam)//±éÀúËùÓĞ´°¿Ú£¬Ñ°ÕÒ¿Í»§¶ËºÍ·ş
 
 BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
 {
-// TODO:  ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-       if (pwnd2port.find(pWnd) == pwnd2port.end()){  //Ó¦ÓÃ³ÌĞò×¢²á
-		   EnumWindows(lpEnumHwnd, (LPARAM)pWnd);
-		   return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
-       }
-      if (pCopyDataStruct != NULL){//½ÓÊÜÀ´×ÔÓ¦ÓÃ³ÌĞòµÄÏûÏ¢
-           LPCTSTR pszText =    (LPCTSTR)(pCopyDataStruct->lpData);
-           DWORD   dwLength = (DWORD)(pCopyDataStruct->cbData);
-           CString mystr;
-           memcpy(mystr.GetBuffer(dwLength/sizeof(TCHAR)), pszText, dwLength);
-           mystr.ReleaseBuffer();
-		   SendMessage(APPTOTRANS, (WPARAM)&mystr,(LPARAM)&pwnd2port[pWnd]);
-		   //HWND swnd = ::FindWindow(NULL,_T("»ªÖĞ¿Æ¼¼´óÑ§ÍøÂçÊµÑéÆ½Ì¨"));
-           //::SendMessage(port2hwnd[pwnd2port[pWnd]], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
-       }
-      return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
+	// TODO:  ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	if (pwnd2port.find(pWnd) == pwnd2port.end()){  //Ó¦ÓÃ³ÌĞò×¢²á
+		EnumWindows(lpEnumHwnd, (LPARAM)pWnd);
+		return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
+	}
+	if (pCopyDataStruct != NULL){//½ÓÊÜÀ´×ÔÓ¦ÓÃ³ÌĞòµÄÏûÏ¢
+		LPCTSTR pszText = (LPCTSTR)(pCopyDataStruct->lpData);
+		DWORD   dwLength = (DWORD)(pCopyDataStruct->cbData);
+		CString mystr;
+		memcpy(mystr.GetBuffer(dwLength / sizeof(TCHAR)), pszText, dwLength);
+		mystr.ReleaseBuffer();
+		PrintView(mystr);
+		HWND swnd = ::FindWindow(NULL, _T("»ªÖĞ¿Æ¼¼´óÑ§ÍøÂçÊµÑéÆ½Ì¨"));
+		::SendMessage(port2hwnd[pwnd2port[pWnd]], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
+	}
+	return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
 }
 
 LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
@@ -233,20 +154,55 @@ LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
 	}
 	return 0;
 }
-//´«Êä²ãÍê³É¸Ãº¯Êı£¬º¯ÊıreturnÇ°×îºóÒ»¾äÎª
-LRESULT CMainFrame::OnApp2Trans(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı¾İµ½Ó¦ÓÃ²ãµÄ½Ó¿Ú
-{   //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
-	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
-	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
-	SendMessage(TRANSTOIP, wparam, lparam);
-	return 0;
-}
-
 
 LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı¾İµ½Ó¦ÓÃ²ãµÄ½Ó¿Ú
-{   //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
+{ //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
+
+	// UDP
+	if (true/* edited later */)
+	{
+		struct udp_message new_udp_msg = *((struct udp_message *)wparam);
+
+		// ¼ìÑéºÍ
+		if (!udpcheck(new_udp_msg.udp_msg_length-8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length%2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
+		{
+			// ÉáÆú±¨ÎÄ
+			return -1;
+		}
+
+		COPYDATASTRUCT CopyDataStruct;
+		// ×Ö½ÚÊı
+		CopyDataStruct.cbData = new_udp_msg.udp_msg_length-8;
+		// ·¢ËÍÄÚÈİ
+		CopyDataStruct.lpData = &(new_udp_msg.udp_app_data);
+		// ½ø³Ì¼äÍ¨ĞÅ
+		::SendMessage(port2hwnd[new_udp_msg.udp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
+	}
+	// TCP
+	else
+	{
+		struct tcp_message new_tcp_msg = *((struct tcp_message *)wparam);
+		// optsºÍdataÒ»Í¬½øĞĞ¼ìÑé
+		unsigned data_len = CStringA(new_tcp_msg.tcp_opts_and_app_data).GetLength();
+
+		// ¼ìÑéºÍ
+		if (!udpcheck(data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, data_len%2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
+		{
+			// ÉáÆú±¨ÎÄ
+			return -1;
+		}
+
+		COPYDATASTRUCT CopyDataStruct;
+		// ×Ö½ÚÊı
+		CopyDataStruct.cbData = data_len;
+		// ·¢ËÍÄÚÈİ£¬ÔİÊ±²»·Ö¿ªoptsºÍdata
+		CopyDataStruct.lpData = &(new_tcp_msg.tcp_opts_and_app_data);
+		// ½ø³Ì¼äÍ¨ĞÅ
+		::SendMessage(port2hwnd[new_tcp_msg.tcp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
+	}
+
 	return 0;
 }
 
@@ -256,83 +212,111 @@ LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´
 	///< Èô·¢ÏÖ·ÖÆ¬È±Ê§»òÕß¼ìÑéºÍ³ö´íÔò return FALSE;
 	///< ÈôÊÇÔòÊı¾İ³É¹¦½ÓÊÕ ½øĞĞÉÙÁ¿µÄ¼ìÑéºÍ¼ì²é, ÈôÃ»ÓĞ´íÎó
 	///< Ôò½«IP_msg½á¹¹°şÀë³öMsg½á¹¹
-	if (MyIP.iphdr->ih_protl)
-	{
-		int offset = 0, ident = 0;
-		ident++;
-		MyTCP.tcphdr->th_saddr = MyIP.iphdr->ih_saddr;
-		MyTCP.tcphdr->th_daddr = MyIP.iphdr->ih_daddr;
-		MyTCP.tcphdr->th_len = MyIP.iphdr->ih_len;
-		MyTCP.tcphdr->th_sport = MyIP.ih_sport;
-		MyTCP.tcphdr->th_dport = MyIP.ih_dport;
-		MyTCP.tcphdr->th_sum = MyIP.iphdr->ih_sum;
-		MyTCP.tcphdr->th_num = MyIP.ih_num;
-		MyTCP.tcphdr->th_ack = MyIP.ih_ack;
-		while (MyTCP.tcphdr->th_len - offset > 0)
-		{
-			if (MyIP.iphdr->ih_ident == ident)
-			{
-				if (MyIP.iphdr->ih_offset == offset)
-				{
-					if (MyIP.iphdr->ih_flags){
-						strncpy(MyTCP.data + offset, MyIP.data, MAXSIZE);
-						offset = offset + MAXSIZE / 8;
-					}
-					else{
-						strncpy(MyTCP.data + offset, MyIP.data, MyTCP.tcphdr->th_len - offset);
-						offset = MyTCP.tcphdr->th_len;
-					}
-				}
-			}
-		}
-		(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOTRANS, wparam, lparam);
-	}
-	else
-	{
-		int offset = 0, ident = 0;
-		ident++;
-		MyUDP.udphdr->uh_saddr = MyIP.iphdr->ih_saddr;
-		MyUDP.udphdr->uh_daddr = MyIP.iphdr->ih_daddr;
-		MyUDP.udphdr->uh_len = MyIP.iphdr->ih_len;
-		MyUDP.udphdr->uh_sport = MyIP.ih_sport;
-		MyUDP.udphdr->uh_dport = MyIP.ih_dport;
-		MyUDP.udphdr->uh_sum = MyIP.iphdr->ih_sum;
-		while (MyUDP.udphdr->uh_len - offset > 0)
-		{
-			if (MyIP.iphdr->ih_ident == ident)
-			{
-				if (MyIP.iphdr->ih_offset == offset)
-				{
-					if (MyIP.iphdr->ih_flags){
-						strncpy(MyTCP.data + offset, MyIP.data, MAXSIZE);
-						offset = offset + MAXSIZE / 8;
-					}
-					else{
-						strncpy(MyTCP.data + offset, MyIP.data, MyUDP.udphdr->uh_len - offset);
-						offset = MyUDP.udphdr->uh_len;
-					}
-				}
-			}
-		}
-		(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOTRANS, wparam, lparam);
-	}
-	return 0;
+
+	if (!ip.IP2Trans(wparam, lparam))
+		return true;
+	return false;
 }
 
 LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊı¾İÍøÂç²ãµÄ½Ó¿Ú
 {//
-
 	return 0;
 }
 
 LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢ËÍµ½ÍøÂç²ãµÄ½Ó¿Ú
 { //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
-	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ
+	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
 	CString mystr = *((CString *)wparam);
-	int port = *((int *)lparam);
+	unsigned int src_port = *((unsigned int *)lparam);
+	
+	// ÇĞ·Ö´«µİµÄÊı¾İ£¬¸ñÊ½Îª¡°IP+Ä¿µÄ¶Ë¿ÚºÅ+DATA¡±
+	int split_ip = mystr.Find(_T(':'), 0);
+	int split_port = mystr.Find(_T(' '), split_ip);
+	using namespace Tools;
+	unsigned int dst_ip = IP_string2uint(Tstr::CS2S(mystr.Mid(0, split_ip)));
+	unsigned int dst_port = port_string2uint(Tstr::CS2S(mystr.Mid(split_ip+1, split_port-split_ip-1)));
+	unsigned int src_ip = getIP();
+
+	// ÏÈ×ª»¯Îª¶à×Ö½Ú£¬ÔÙ¼ÆËã³¤¶È£¬ÒÔÃâ¼ÆËãÉÙÁË×Ö½ÚÊı
+	// ÕâÀï¿ÉÄÜĞèÒªÈÕºó¸ü¸ÄÎªÓ¦ÓÃ²ã×Ô¼º×ªÂë£¬ÕâÑùÀíÂÛÉÏ¿ÉÒÔ¼õÉÙ´«ÊäµÄ×Ö½ÚÊı
+	CString temp_data = mystr.Mid(split_ip);
+	unsigned int data_len = CStringA(temp_data).GetLength();
+
+	// UDP
+	if (true/* edited later */)
+	{
+		struct udp_message new_udp_msg;
+		// ÌîÈëUDP±¨ÎÄ¶Î½á¹¹
+		new_udp_msg.udp_src_port = src_port;
+		new_udp_msg.udp_dst_port = dst_port;
+		new_udp_msg.udp_msg_length = 8+data_len;
+		new_udp_msg.udp_app_data = temp_data;
+		new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)src_port, (u16)dst_port, data_len%2, (u16 *)&temp_data);
+
+		// UDPÎŞÓµÈû¿ØÖÆ
+		OnIP2Link((WPARAM)&new_udp_msg, lparam);
+	}
+	// TCP
+	else
+	{
+		struct tcp_message new_tcp_msg;
+		// Ä¿Ç°µÄTCPÊµÏÖ½á¹¹ÓĞÎÊÌâ£¬¸Ğ¾õÃæ¶ÔÃ¿Ò»¸öÁ¬½Ó£¬ĞèÒªÓĞÒ»¸öÏß³ÌÅÜTCP¸ºÔğÓ¦´ğACK£¬µ÷Õû´°¿Ú
+		// µ±TCPÁ¬½Ó¶Ï¿ªÊ±Ïß³ÌÏûÊÅ
+		// »òÕßÖ»¿ªÒ»¸öÏß³Ì£¬ÓÃÓÚTCP×Ü¿Ø£¬¸ºÔğÎ¬»¤TCP×´Ì¬Á´±í£¬²¢Ó¦´ğACKµÈ
+		// È»ºóÁ¬½ÓÊ±´´½¨TCPÁ¬½Óµ½TCPÁ´±í£¬¶Ï¿ªÊ±´ÓÁ´±í°şÀë
+		// ¿ÉÒÔ¿¼ÂÇ½ø³Ì¼ä·¢ÏûÏ¢£¬Ò²¿ÉÒÔ¿¼ÂÇÖ±½ÓÓÃÈ«¾Ö±äÁ¿×ö±êÖ¾Î»
+
+		// ·½·¨ÅĞ¶Ï
+		if (true/* method == SK_CONNECT */)
+		{
+			// µ÷ÓÃMainFrmTransToolsÖĞÊµÏÖµÄÈı´ÎÎÕÊÖ
+			//ShakeHands();
+		}
+		else if (true/* method == SK_SEND */)
+		{
+			// ¶ÔÎ¬»¤µÄTCP×´Ì¬Á´±í½øĞĞ²éÑ¯£¬ÊÇ·ñÒÑ½¨Á¢Á¬½Ó
+			// ÈôÎ´½¨Á¢Á¬½ÓÔò±¨´í
+		}
+	}
+
 	return 0;
 }
+
+
+// TCP_controller
+{
+	// µ¥Ïß³Ì×Ü¿ØµÄÁ÷³Ì
+	for (;;)
+	{
+		if (New_TCP_Link_Created)
+		{
+			// ´°¿Ú³õÊ¼»¯
+		}
+
+		foreach (TCP_Entity in TCP_Active_List)
+		{
+			Update(TCP_Entity.State);
+			// ÓµÈû¿ØÖÆ¸üĞÂ´°¿Ú´óĞ¡
+			Update(TCP_Entity.Window);
+
+			// Í³¼Æ¸÷±¨ÎÄÊÇ·ñack
+			foreach (Msg_Entity in TCP_Entity.Msg_List)
+			{
+				Update(Msg_Entity.ACK_Cnt);
+				Update(Msg_Entity.State);
+				// ±ÈÈç3´Îackµ÷Õû´°¿Ú
+				Update(TCP_Entity.Window);
+			}
+		}
+
+		if (TCP_Link_Destroyed)
+		{
+			// ´ÓÁ´±íÖĞ°şÀë
+		}
+	}
+}
+
 
 LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊı¾İ·¢ËÍµ½Á´Â·²ã½Ó¿Ú
 {
@@ -340,94 +324,22 @@ LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊı¾İ·¢ËÍ
 	///< Èç¹ûĞÅÏ¢³¬¹ıÈİÁ¿¾Í½øĞĞ·ÖÆ¬´¦Àí, 
 	///< µ÷ÓÃÁ´Â·²ãµÄ·¢ËÍº¯ÊıÈç¹û·¢ËÍÊ§°Ü return FALSE;
 	///< ·ñÔò return TRUE;
-	if (flag)
-	{
-		int offset = 0, ident = 0;
-		ident++;
-		while (MyTCP.tcphdr->th_len - offset > MAXSIZE)
-		{
-			MyIP.iphdr->ih_saddr = MyTCP.tcphdr->th_saddr;
-			MyIP.iphdr->ih_daddr = MyTCP.tcphdr->th_daddr;
-			MyIP.iphdr->ih_flags = 1;
-			MyIP.iphdr->ih_ident = ident;
-			MyIP.iphdr->ih_len = MyTCP.tcphdr->th_len;
-			MyIP.iphdr->ih_offset = offset;
-			offset = offset + MAXSIZE / 8;
-			MyIP.iphdr->ih_protl = 1;
-			MyIP.iphdr->ih_sum = MyTCP.tcphdr->th_sum;
-			MyIP.iphdr->ih_TTL = MAXSIZE;
-			MyIP.iphdr->ih_version = 4;
-			MyIP.ih_sport = MyTCP.tcphdr->th_sport;
-			MyIP.ih_dport = MyTCP.tcphdr->th_dport;
-			MyIP.ih_num = MyTCP.tcphdr->th_num;
-			MyIP.ih_ack = MyTCP.tcphdr->th_ack;
-			strncpy(MyIP.data, MyTCP.data, MAXSIZE);
-			(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOLINK, wparam, lparam);
-		}
-		MyIP.iphdr->ih_saddr = MyTCP.tcphdr->th_saddr;
-		MyIP.iphdr->ih_daddr = MyTCP.tcphdr->th_daddr;
-		MyIP.iphdr->ih_flags = 0;
-		MyIP.iphdr->ih_ident = ident;
-		MyIP.iphdr->ih_len = MyTCP.tcphdr->th_len;
-		MyIP.iphdr->ih_offset = offset;
-		MyIP.iphdr->ih_protl = 1;
-		MyIP.iphdr->ih_sum = MyTCP.tcphdr->th_sum;
-		MyIP.iphdr->ih_TTL = MAXSIZE;
-		MyIP.iphdr->ih_version = 4;
-		MyIP.ih_sport = MyTCP.tcphdr->th_sport;
-		MyIP.ih_dport = MyTCP.tcphdr->th_dport;
-		MyIP.ih_num = MyTCP.tcphdr->th_num;
-		MyIP.ih_ack = MyTCP.tcphdr->th_ack;
-		strncpy(MyIP.data, MyTCP.data, MyTCP.tcphdr->th_len - offset * 8);
-		(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOLINK, wparam, lparam);
-	}
-	else
-	{
-		int offset = 0, ident = 0;
-		ident++;
-		while (MyUDP.udphdr->uh_len - offset > MAXSIZE)
-		{
-			MyIP.iphdr->ih_saddr = MyUDP.udphdr->uh_saddr;
-			MyIP.iphdr->ih_daddr = MyUDP.udphdr->uh_daddr;
-			MyIP.iphdr->ih_flags = 1;
-			MyIP.iphdr->ih_ident = ident;
-			MyIP.iphdr->ih_len = MyUDP.udphdr->uh_len;
-			MyIP.iphdr->ih_offset = offset;
-			offset = offset + MAXSIZE / 8;
-			MyIP.iphdr->ih_protl = 0;
-			MyIP.iphdr->ih_sum = MyUDP.udphdr->uh_sum;
-			MyIP.iphdr->ih_TTL = MAXSIZE;
-			MyIP.iphdr->ih_version = 4;
-			MyIP.ih_sport = MyUDP.udphdr->uh_sport;
-			MyIP.ih_dport = MyUDP.udphdr->uh_dport;
-			strncpy(MyIP.data, MyTCP.data, MAXSIZE);
-			(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOLINK, wparam, lparam);
-		}
-		MyIP.iphdr->ih_saddr = MyUDP.udphdr->uh_saddr;
-		MyIP.iphdr->ih_daddr = MyUDP.udphdr->uh_daddr;
-		MyIP.iphdr->ih_flags = 0;
-		MyIP.iphdr->ih_ident = ident;
-		MyIP.iphdr->ih_len = MyUDP.udphdr->uh_len;
-		MyIP.iphdr->ih_offset = offset;
-		MyIP.iphdr->ih_protl = 0;
-		MyIP.iphdr->ih_sum = MyUDP.udphdr->uh_sum;
-		MyIP.iphdr->ih_TTL = MAXSIZE;
-		MyIP.iphdr->ih_version = 4;
-		MyIP.ih_sport = MyUDP.udphdr->uh_sport;
-		MyIP.ih_dport = MyUDP.udphdr->uh_dport;
-		strncpy(MyIP.data, MyTCP.data, MyUDP.udphdr->uh_len - offset * 8);
-		(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOLINK, wparam, lparam);
-	}
-	return 0;
+	if (!ip.IP2Link(wparam, lparam))
+		return true;
+	return false;
 }
 
 LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊı¾İ·¢ËÍ³öÈ¥½Ó¿Ú
-{//
-	return 0;
+{
+	if(send((struct IP_Msg *)wparam,(unsigned short)lparam)!=0)
+	{
+		printf("error sending datagram!\n");
+	}
+	return;
 }
 
+DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
+{
+	return 0;
 
-
-
-
-
+}

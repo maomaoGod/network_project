@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{FDDD8928-7D5A-4A7D-8EFA-E4D0843B8B33}</ProjectGuid>
+    <ProjectGuid>{7AE6A5F1-AA30-4878-9FCD-78C0F0D07099}</ProjectGuid>
     <RootNamespace>NetProtocol</RootNamespace>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MainFrmTransTools.h" />
     <ClInclude Include="NetProtocol.h" />
     <ClInclude Include="NetProtocolDoc.h" />
     <ClInclude Include="NetProtocolView.h" />
@@ -111,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MainFrmTransTools.cpp" />
     <ClCompile Include="NetProtocol.cpp" />
     <ClCompile Include="NetProtocolDoc.cpp" />
     <ClCompile Include="NetProtocolView.cpp" />
