@@ -146,7 +146,127 @@ namespace NetWork{
 	};
 
 	class FTPWork{
+	public:
+		FTPWork(){
+			AfxSocketInit();
+		}
+		void Begin(){
+			CString mystr;
+			TakeOverCmd(_T("Myftp>"));
+			aSocket = new CSocket();
+			if (!aSocket->Create()){
+				CString error;
+				error.Format(_T("创建失败:%d"), aSocket->GetLastError());
+				PrintLog(error);
+				return;
+			}
+			while ((mystr = GetLine()).Compare(_T("exit")) != 0){
+				CleanRp(NULL);
+				PrintLog(_T("Accept ") + mystr);
+				CStringArray code;
+				Tstr::CCarg(&code, mystr, _T(' '));
+				if (code[0] == _T("Conn")){
+					if (aSocket->Connect(IP, 7600)){
+						aSocket->Receive((void *)szRecValue, 1024);
+						rev.Format(_T("来自服务器的消息:%s"), szRecValue);
+						PrintRp(rev);
+					}
+					else{
+						CString error;
+						error.Format(_T("连接服务器失败:%d"), aSocket->GetLastError());
+						PrintLog(error);
+						return;
+					}
+				}
+				//UPLOAD + client_path + serve_path
+				else if (code[0] == _T("UPLOAD") || code[0] == _T("upload")){
+					if (Uploadfile(&code)){
+						PrintLog(_T("Interrupt Error!"));
+					}
+					else Rev();
+				}
+				//DOWNLOAD + serve_path + client_path
+				else if (code[0] == _T("DOWNLOAD") || code[0] == _T("download")){
+					if (!Send(code[0], &code)){
+						PrintLog(_T("Interrupt Error!"));
+					}
+					else Downloadfile(&code);
+				}
+				else{
+					if (!Send(code[0], &code)){
+						PrintLog(_T("Interrupt Error!"));
+					}
+					else Rev();
+				}
+			}
+			aSocket->Close();
+			delete aSocket;
+		}
+		//UPLOAD + client_path + serve_path
+		bool Uploadfile(CStringArray *data){
+			string path = Tstr::CS2S(data->GetAt(1));
+			string *temp;
+			string read;
+			char t[1024];
+			CString Msg;
+			FILE *fp;
+			if (fopen_s(&fp, path.c_str(), "r")){
+				PrintRp(_T("NONE FILE"));
+				return false;
+			}
+			else{
+				while (fscanf_s(fp, "%s", t, 1024) != -1){
+					temp = new string(t);
+					read += *temp;
+					delete temp;
+				}
+			}
+			Msg = data->GetAt(0) + _T(' ') + Tstr::S2CS(read) + _T(' ') + data->GetAt(2);
+			aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
+			return true;
+		}
+		//DOWNLOAD + serve_path + client_path
+		void Downloadfile(CStringArray *data){
+			string path = Tstr::CS2S(data->GetAt(2));//client_path
+			CString temp;
+			FILE *fp;
+			fopen_s(&fp, path.c_str(), "w");
+			while (aSocket->Receive((void *)szRecValue, 1024)){
+				temp.Format(_T("%s"), szRecValue);
+				fprintf_s(fp, "%s\n", temp);
+			}
+			PrintRp(_T("Rev OK"));
+		}
+		bool Send(CString Method, CStringArray *url){
+			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
+			int i;
+			CString Msg, temp;
+			Msg = Method + _T(' ') + Path;
+			for (i = 1; i < url->GetSize(); i++){
+				temp = url->GetAt(i).Mid(0);
+				Msg = Msg + _T(' ') + temp;
+			}
+			aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
+			return true;
+		}
+		void Rev(){
+			rev = _T("");
+			CString temp;
+			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
+			while (aSocket->Receive((void *)szRecValue, 1024)){
+				temp.Format(_T("%s"), szRecValue);
+				rev += temp;
+				memset(szRecValue, 0, 1024 * sizeof(TCHAR));
+			}
+			PrintRp(rev);
+		}
 
+	private:
+		CSocket *aSocket;
+		CString IP;
+		CString Path;
+		CString rev;
+		TCHAR szRecValue[1024];
 	};
 
 	/**
