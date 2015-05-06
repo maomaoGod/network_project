@@ -39,10 +39,10 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MainFrmTransTools.h">
+    <ClInclude Include="CMyIP.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CMyIP.h">
+    <ClInclude Include="TransLayerTools.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,10 +62,10 @@
     <ClCompile Include="NetProtocolView.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="MainFrmTransTools.cpp">
+    <ClCompile Include="CMyIP.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CMyIP.cpp">
+    <ClCompile Include="TransLayerTools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

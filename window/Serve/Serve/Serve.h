@@ -17,7 +17,7 @@
 #define  SOCKBIND                    201
 #define  SOCKLISTEN                 202
 #define  SOCKSEND                   203
-#define  SOCKSENDOUT             204
+#define  SOCKSENDTO               204
 #define  SOCKRECEIVE              205
 
 struct sockstruct {

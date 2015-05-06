@@ -36,6 +36,8 @@ public:
 	*/
 	void  OnReceive(int nErrorCode);
 
+	bool Bind(UINT nSocketPort);
+
 	void  char2Tchar(LPSTR src, LPCTSTR dst,int maxlen);
 
 	void  Tchar2char(LPCTSTR src, LPSTR dst);

@@ -94,3 +94,10 @@ bool Cmysocket::Create()
 {
 	return true;
 }
+
+bool Cmysocket::Bind(UINT nSocketPort)
+{
+	mysock.bindport = nSocketPort;
+	AfxGetApp()->GetMainWnd()->SendMessage(SENDTONPC, (WPARAM)SOCKBIND, (LPARAM)&mysock);
+	return true;
+}
