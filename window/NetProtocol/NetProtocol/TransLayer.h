@@ -25,3 +25,13 @@ struct tcplist
 	int count;      //当前已经有多少报文得到正确ACK
 	struct tcpmsg tcp_msg[1024];  //当前TCP下发送的报文
 };
+
+bool createNodeList();
+
+bool addNode(tcplist* tcp_list);
+
+bool deletenode(tcplist* p);
+
+tcplist *getNode(unsigned int ip);
+
+void TCP_controller();

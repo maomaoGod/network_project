@@ -77,7 +77,7 @@ bool deletenode(tcplist* p)
 	}
 }
 
-tcplist* GetNode(unsigned int ip)
+tcplist *getNode(unsigned int ip)
 {//在带头结点的单链表head中查找第i个结点，若找到（0≤i≤n），
 	//则返回该结点的存储位置，否则返回NULL。
 	tcplist *p;
@@ -92,18 +92,50 @@ tcplist* GetNode(unsigned int ip)
 	return NULL;
 }
 
+bool global_TCP_new_flag;
+bool global_TCP_send_flag;
+bool global_TCP_receive_flag;
+bool global_TCP_resend_flag;
+bool global_TCP_destroy_flag;
+
+void TCP_new()
+{
+	global_TCP_new_flag = true;
+}
+
+void TCP_send()
+{
+	global_TCP_send_flag = true;
+}
+
+void TCP_receive()
+{
+	global_TCP_receive_flag = true;
+}
+
+void TCP_resend()
+{
+	global_TCP_resend_flag = true;
+}
+
+void TCP_destroy()
+{
+	global_TCP_destroy_flag = true;
+}
+
 void TCP_controller()
 {
 	// 单线程总控的流程
 	createNodeList();
+	global_TCP_new_flag = global_TCP_send_flag = global_TCP_resend_flag = global_TCP_receive_flag = global_TCP_destroy_flag = false;
 	for (;;)
 	{
 	    unsigned int global_ip;
 		int global_no_;
 		if (true/*要求发送报文*/)
 		{
-			tcplist* temp1;
-			temp1 = GetNode(global_ip);  //请求报文的源ip(+端口号)
+			tcplist *temp1;
+			temp1 = getNode(global_ip);  //请求报文的源ip(+端口号)
 			if (temp1 == NULL)   //如果请求报文的源ip对应的TCP当前未建立连接，则新建一个TCP，加入链表尾部
 			{
 				tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list));
@@ -144,7 +176,7 @@ void TCP_controller()
 		{
 			//得到响应报文的目标ip(+端口号)
 			tcplist* temp2;
-			temp2 = GetNode(global_ip);
+			temp2 = getNode(global_ip);
 			temp2->tcp_msg[temp2->count].time = GetTickCount();
 			if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number >= ACK_global)   //冗余ACK计数
 			{
@@ -176,7 +208,7 @@ void TCP_controller()
 
 		if (true/* TCP_Link_Destroyed */)
 		{
-		    deletenode(GetNode(global_ip));
+		    deletenode(getNode(global_ip));
 		}
 	}
 }
