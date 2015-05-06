@@ -69,12 +69,12 @@ struct _iphdr //定义IP首部
 struct Msg{                     ///<数据
 	unsigned int sip;
 	unsigned int dip;
-	char data[1024];
+	char data[2048];
 };
 
 struct IP_Msg{
 	_iphdr *iphdr;			///<指向ip首部的指针
-	char data[1024];
+	char data[2048];
 };
 
 class CNetProtocolApp : public CWinApp

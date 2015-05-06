@@ -248,21 +248,17 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 { //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
-	CString mystr = *((CString *)wparam);
-	unsigned int src_port = *((unsigned int *)lparam);
-	
-	// ÇĞ·Ö´«µİµÄÊı¾İ£¬¸ñÊ½Îª¡°IP+Ä¿µÄ¶Ë¿ÚºÅ+DATA¡±
-	int split_ip = mystr.Find(_T(':'), 0);
-	int split_port = mystr.Find(_T(' '), split_ip);
-	using namespace Tools;
-	unsigned int dst_ip = IP_string2uint(Tstr::CS2S(mystr.Mid(0, split_ip)));
-	unsigned int dst_port = port_string2uint(Tstr::CS2S(mystr.Mid(split_ip+1, split_port-split_ip-1)));
-	unsigned int src_ip = getIP();
+	struct sockstruct data_from_applayer = *((struct sockstruct *)wparam);
+	unsigned int dst_ip = IP_chars2uint(data_from_applayer.dstip);
+	unsigned short dst_port = data_from_applayer.dstport;
+	unsigned short src_port = data_from_applayer.srcport;
+	unsigned int src_ip = IP_chars2uint(data_from_applayer.srcip);
+	unsigned int data_len = data_from_applayer.datalength;
 
-	// ÏÈ×ª»¯Îª¶à×Ö½Ú£¬ÔÙ¼ÆËã³¤¶È£¬ÒÔÃâ¼ÆËãÉÙÁË×Ö½ÚÊı
-	// ÕâÀï¿ÉÄÜĞèÒªÈÕºó¸ü¸ÄÎªÓ¦ÓÃ²ã×Ô¼º×ªÂë£¬ÕâÑùÀíÂÛÉÏ¿ÉÒÔ¼õÉÙ´«ÊäµÄ×Ö½ÚÊı
-	CString temp_data = mystr.Mid(split_ip);
-	unsigned int data_len = CStringA(temp_data).GetLength();
+	//// ÏÈ×ª»¯Îª¶à×Ö½Ú£¬ÔÙ¼ÆËã³¤¶È£¬ÒÔÃâ¼ÆËãÉÙÁË×Ö½ÚÊı
+	//// ÕâÀï¿ÉÄÜĞèÒªÈÕºó¸ü¸ÄÎªÓ¦ÓÃ²ã×Ô¼º×ªÂë£¬ÕâÑùÀíÂÛÉÏ¿ÉÒÔ¼õÉÙ´«ÊäµÄ×Ö½ÚÊı
+	//CString temp_data = mystr.Mid(split_ip);
+	//unsigned int data_len = CStringA(temp_data).GetLength();
 
 	// UDP
 	if (true/* edited later */)
@@ -272,11 +268,15 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 		new_udp_msg.udp_src_port = src_port;
 		new_udp_msg.udp_dst_port = dst_port;
 		new_udp_msg.udp_msg_length = 8+data_len;
-		new_udp_msg.udp_app_data = temp_data;
+		memcpy(new_udp_msg.udp_app_data, data_from_applayer.data, data_len+1); // +1 for \0
 		new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)src_port, (u16)dst_port, data_len%2, (u16 *)&temp_data);
 
 		// UDPÎŞÓµÈû¿ØÖÆ
-		OnIP2Link((WPARAM)&new_udp_msg, lparam);
+		struct Msg new_ip_msg;
+		new_ip_msg.sip = src_ip;
+		new_ip_msg.dip = dst_ip;
+		memcpy(new_ip_msg.data, &new_udp_msg, new_udp_msg.udp_msg_length+1); // +1 for \0
+		OnIP2Link((WPARAM)&new_ip_msg, lparam);
 	}
 	// TCP
 	else
@@ -287,6 +287,8 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 		// »òÕßÖ»¿ªÒ»¸öÏß³Ì£¬ÓÃÓÚTCP×Ü¿Ø£¬¸ºÔğÎ¬»¤TCP×´Ì¬Á´±í£¬²¢Ó¦´ğACKµÈ
 		// È»ºóÁ¬½ÓÊ±´´½¨TCPÁ¬½Óµ½TCPÁ´±í£¬¶Ï¿ªÊ±´ÓÁ´±í°şÀë
 		// ¿ÉÒÔ¿¼ÂÇ½ø³Ì¼ä·¢ÏûÏ¢£¬Ò²¿ÉÒÔ¿¼ÂÇÖ±½ÓÓÃÈ«¾Ö±äÁ¿×ö±êÖ¾Î»
+		new_tcp_msg.tcp_src_port = src_port;
+		new_tcp_msg.tcp_dst_port = dst_port;
 
 		// ·½·¨ÅĞ¶Ï
 		if (true/* method == SK_CONNECT */)

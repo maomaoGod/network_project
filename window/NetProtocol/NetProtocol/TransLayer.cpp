@@ -98,18 +98,18 @@ void TCP_controller()
 	createNodeList();
 	for (;;)
 	{
-	    unsigned int ip;
-		int no_;
+	    unsigned int global_ip;
+		int global_no_;
 		if (true/*要求发送报文*/)
 		{
 			tcplist* temp1;
-			temp1 = GetNode(ip);  //请求报文的源ip(+端口号)
+			temp1 = GetNode(global_ip);  //请求报文的源ip(+端口号)
 			if (temp1 == NULL)   //如果请求报文的源ip对应的TCP当前未建立连接，则新建一个TCP，加入链表尾部
 			{
 				tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list));
 				node1->MSG_num = 1;
 				node1->cwnd = MSS;
-				node1->IP = ip;
+				node1->IP = global_ip;
 				node1->count = 0;
 				node1->Threshold = 65 * 1024;
 				node1->tcp_msg[node1->MSG_num - 1].ACK = 0;
@@ -144,7 +144,7 @@ void TCP_controller()
 		{
 			//得到响应报文的目标ip(+端口号)
 			tcplist* temp2;
-			temp2 = GetNode(ip);
+			temp2 = GetNode(global_ip);
 			temp2->tcp_msg[temp2->count].time = GetTickCount();
 			if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number >= ACK_global)   //冗余ACK计数
 			{
@@ -176,7 +176,7 @@ void TCP_controller()
 
 		if (true/* TCP_Link_Destroyed */)
 		{
-		    deletenode(GetNode(ip));
+		    deletenode(GetNode(global_ip));
 		}
 	}
 }

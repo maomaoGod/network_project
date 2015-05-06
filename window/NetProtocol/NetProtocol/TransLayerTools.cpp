@@ -158,6 +158,26 @@ unsigned int getIP()
 	return ip_number;
 }
 
+unsigned int IP_chars2uint(char ip[])
+{
+	// 将ip从字符串转为unsigned int
+	unsigned int ip_number = 0;
+	unsigned int ip_seg_number = 0;
+	for (int i = 0; i < 15 && ip[i]; ++i)
+	{
+		if (ip[i] == '.')
+		{
+			ip_number += ip_seg_number;
+		}
+		else
+		{
+			ip_seg_number = ip_seg_number*10+ip[i]-48;
+		}
+	}
+	ip_number += ip_seg_number;
+	return ip_number;
+}
+
 unsigned int IP_string2uint(string ip)
 {
 	// 将ip从字符串转为unsigned int
