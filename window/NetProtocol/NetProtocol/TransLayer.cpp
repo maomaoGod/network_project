@@ -130,6 +130,31 @@ void TCP_controller()
 	global_TCP_new_flag = global_TCP_send_flag = global_TCP_resend_flag = global_TCP_receive_flag = global_TCP_destroy_flag = false;
 	for (;;)
 	{
+		if (global_TCP_new_flag)
+		{
+			// 新建TCP连接
+		}
+		
+		if (global_TCP_send_flag)
+		{
+			// 新建对应TCP连接的Msg
+		}
+
+		if (global_TCP_receive_flag)
+		{
+			// 更新对应TCP和Msg的window和ack
+		}
+
+		if (global_TCP_resend_flag)
+		{
+			// 快速重传，通知Trans2IP
+		}
+
+		if (global_TCP_destroy_flag)
+		{
+			// 拆除TCP连接
+		}
+
 	    unsigned int global_ip;
 		int global_no_;
 		if (true/*要求发送报文*/)
