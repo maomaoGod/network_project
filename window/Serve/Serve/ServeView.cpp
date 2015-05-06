@@ -46,7 +46,7 @@ CServeView::CServeView()
 	AfxSocketInit();
 	HttpManagerSocket.Create(6500);
 	HttpManagerSocket.Listen();
-	FtpManagerSocket.Create(7600);
+	FtpManagerSocket.Create(5601);//7600
 	FtpManagerSocket.Listen();
 }
 

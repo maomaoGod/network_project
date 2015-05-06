@@ -402,7 +402,7 @@ namespace NetWork{
 		void CONNECT(vector<string> data){ 
 			RespondMsg = "The request from client has been received"; 
 			//The Method has been documented but is not currently implented ,reserved for channel processing 
-        
+			ErrorCode = MSG_OK;
 		}
 
 		/**
@@ -435,7 +435,7 @@ namespace NetWork{
 			//Function["TRACE"] = Function["trace"] = &AppLayerHttp::TRACE;
 			/**@brief 已文档化但当前未实现的一个方法，
 			  预留做隧道处理, Map it to 8*/
-			Function["CONNECT"] = Function["connet"] = &AppLayerHttp::CONNECT;
+			Function["CONNECT"] = Function["connect"] = &AppLayerHttp::CONNECT;
 		}
 
 		/**
@@ -461,14 +461,14 @@ namespace NetWork{
 
 	};
 
-#define FTP_PORT 7600
+#define FTP_PORT 5601//7600
 #define root_power 0
 #define user_power 3
 #define Sign_SU 200
 #define Sign_Fail 300
 #define OP_OK 120
 #define OP_Fail 302
-#define EXIT -1
+#define QUIT_EXIT 303
 
 	class AppLayerFtp{
 		class people{
@@ -541,8 +541,22 @@ namespace NetWork{
 				if (!fopen_s(&fp, path.c_str(), "r")){
 					fscanf_s(fp, "%d", &Sign_in->p);
 				}
-				RespondMsg = data[1] + " has logged in";
+				RespondMsg = data[1] + " has logged in\r\n";
 				ErrorCode = Sign_SU;
+				struct _finddata_t files;
+				int File_Handle;
+				string *temp;
+				string pathfind = Sign_in->path + "/*";
+				File_Handle = _findfirst(pathfind.c_str(), &files);
+				if (File_Handle == -1){
+					return;
+				}
+				do{
+					temp = new string(files.name);
+					RespondMsg += (*temp + " ");
+				} while (0 == _findnext(File_Handle, &files));
+				_findclose(File_Handle);
+				return;
 			}
 			else{
 				delete Sign_in;
@@ -553,7 +567,8 @@ namespace NetWork{
 		void QUIT(vector<string> data){
 			delete Sign_in;
 			Sign_in = NULL;
-			ErrorCode = EXIT;
+			ErrorCode = QUIT_EXIT;
+			RespondMsg = "Sign Out!";
 			return;
 		}
 		void CD(vector<string> data){
@@ -570,7 +585,7 @@ namespace NetWork{
 			}
 			do{
 				temp=new string(files.name);
-				RespondMsg = *temp + " ";
+				RespondMsg += (*temp + " ");
 			} while (0 == _findnext(File_Handle, &files));
 			_findclose(File_Handle);
 			return;
@@ -583,15 +598,15 @@ namespace NetWork{
 			 string *temp;
 			 string filename = Sign_in->path + "/" + data[1];
 		     if (_access(filename.c_str(), 0)){//判断目录是否存在
-				filename = "md  "+ filename;
-				system(filename.c_str());
+				//filename = "md  "+ filename;
+				//system(filename.c_str());
+				CreateDirectory(STR::S2CS(filename), NULL);
 				RespondMsg += "Creat success";
 			}
 			else{
 				RespondMsg += "The fold alreay exists";
 				RespondMsg += "/r/n";
 			}
-			Sign_in->path = Sign_in->path + "/" + data[1];
 			data[1] = Sign_in->path + "/*";
 			File_Handle = _findfirst(data[1].c_str(), &files);
 			if (File_Handle == -1){
@@ -600,7 +615,7 @@ namespace NetWork{
 			}
 			do{
 				temp = new string(files.name);
-				RespondMsg = *temp + " ";
+				RespondMsg += (*temp + " ");
 			} while (0 == _findnext(File_Handle, &files));
 			_findclose(File_Handle);
 			return;
@@ -608,7 +623,7 @@ namespace NetWork{
 		void DELETEFILE(vector<string> data){
 			//find file
 			RespondMsg += "File" + data[1] + " have been DELETE";
-			RespondMsg += "/r/n";
+			RespondMsg += "\r\n";
 			//string p = servepath + data[1];
 			char t[1024];
 			char path[1024];
@@ -632,29 +647,17 @@ namespace NetWork{
 		void UPLOAD(vector<string> data){
 			//find files
 			RespondMsg += "UPLOAD :";
-			RespondMsg += "/r/n";
+			RespondMsg += "\r\n";
 			//string p = servepath + data[1];
 			char path[1024];
 			int retMsg;
 			int i;
-			data[2] = Sign_in->path +"/"+ data[2];
+			FILE *fp;
+			data[1] = Sign_in->path +"/"+ data[1];
+			ErrorCode = OP_OK;
 			//memcpy(path, data[1].c_str(), data.size());
 			//path[data.size()] = '\0';
-			for (i = 0; i < data[1].length(); i++){
-				path[i] = data[1][i];
-			}
-			path[i] = '\0';
-			FILE *fp;
-			if (!fopen_s(&fp, path, "r"))
-			{
-				fclose(fp);
-				DeleteFile(STR::String2LPCWSTR(data[1]));
-				ErrorCode = OP_OK;
-				RespondMsg += "change the file existed in serve";
-			}
-			else
-				ErrorCode = OP_OK;
-			fopen_s(&fp, path, "w");
+			fopen_s(&fp, data[1].c_str(), "w");
 			char *temp;
 			if (data.size() < 3) data.push_back("");
 			temp = (char *)malloc(sizeof(char)*(data[2].length() + 1));
@@ -706,8 +709,9 @@ namespace NetWork{
 			{
 				if (_access(filename.c_str(), 0))//判断目录是否存在
 				{
-					filename = "md  " + filename;
-					system(filename.c_str());
+					//filename = "md  " + filename;
+					//system(filename.c_str());
+					CreateDirectory(STR::S2CS(filename), NULL);
 					RespondMsg += "Creat success\r\n";
 					filename += "/";
 					filename += (data[1] + ".config");
@@ -728,28 +732,31 @@ namespace NetWork{
 		}
 		void DELUSER(vector<string> data){
 			int status;
-			string op;
+			string filename;
 			if (Sign_in->p == root_power)
 			{
+				filename = "ftp/" + data[1] + '_' + data[2];
 				ErrorCode = OP_OK;
-				status = _access(Sign_in->path.c_str(),0);
+				status = _access(filename.c_str(), 0);
 				if (status == 0){
-					op = "rmdir  " + Sign_in->path;
-					system(op.c_str());
-					RespondMsg += "User has been deleted/r/n";
+					//op = "rmdir  " + Sign_in->path;
+					//system(op.c_str());
+					MYFILE::myDeleteDirectory(STR::S2CS(filename));
+					RemoveDirectory(STR::S2CS(filename));
+					RespondMsg += "User has been deleted\r\n";
 				}
 				else{
-					RespondMsg += "No such User/r/n";
+					RespondMsg += "No such User\r\n";
 				}
 			}
 			else {
 				ErrorCode = OP_Fail;
 				RespondMsg += "User has no access to root";
-				RespondMsg += "/r/n";
+				RespondMsg += "\r\n";
 			}
 		}
 	 	void HELP(vector<string> data){
-			RespondMsg = "HELPMSG : ";
+			RespondMsg = "HELPMSG : \r\n";
 			ErrorCode = OP_OK;
 			RespondMsg += "SIGNIN : ";
 			RespondMsg += "Log on to server.";
