@@ -47,11 +47,13 @@ struct  CMD{
 };
 
 struct sockstruct {
-	unsigned short  dstport;    //目的端口号
-	unsigned short  bindport;  //绑定端口号
-	int    datalength;              //有效数据长度
-	char dstip[20];                 //目的IP
-	char data[2048];              //有效数据
+	unsigned short  dstport;   //目的端口号
+	unsigned short  srcport;   //源端口号
+	unsigned short  bindport; //绑定端口号
+	int    datalength;             //数据长度
+	char srcip[20];                //原地址ip
+	char dstip[20];                //目标地址ip
+	char data[2048];             //数据
 };
 
 /**

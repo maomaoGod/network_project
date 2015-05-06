@@ -32,12 +32,15 @@
 #define  SOCKRECEIVE              205
 
 struct sockstruct {
-	unsigned short  dstport;
-	unsigned short  bindport;
-	int    datalength;
-	char dstip[20];
-	char data[2048];
+	unsigned short  dstport;   //目的端口号
+	unsigned short  srcport;   //源端口号
+	unsigned short  bindport; //绑定端口号
+	int    datalength;             //数据长度
+	char srcip[20];                //原地址ip
+	char dstip[20];                //目标地址ip
+	char data[2048];             //数据
 };
+
 
  
 typedef unsigned char Byte;
