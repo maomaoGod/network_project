@@ -305,40 +305,6 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 }
 
 
-// TCP_controller
-/*{
-	// µ¥Ïß³Ì×Ü¿ØµÄÁ÷³Ì
-	for (;;)
-	{
-		if (New_TCP_Link_Created)
-		{
-			// ´°¿Ú³õÊ¼»¯
-		}
-
-		foreach (TCP_Entity in TCP_Active_List)
-		{
-			Update(TCP_Entity.State);
-			// ÓµÈû¿ØÖÆ¸üĞÂ´°¿Ú´óĞ¡
-			Update(TCP_Entity.Window);
-
-			// Í³¼Æ¸÷±¨ÎÄÊÇ·ñack
-			foreach (Msg_Entity in TCP_Entity.Msg_List)
-			{
-				Update(Msg_Entity.ACK_Cnt);
-				Update(Msg_Entity.State);
-				// ±ÈÈç3´Îackµ÷Õû´°¿Ú
-				Update(TCP_Entity.Window);
-			}
-		}
-
-		if (TCP_Link_Destroyed)
-		{
-			// ´ÓÁ´±íÖĞ°şÀë
-		}
-	}
-}*/
-
-
 LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊı¾İ·¢ËÍµ½Á´Â·²ã½Ó¿Ú
 {
 	///< ½«ÔËÊä²ãËÍÀ´µÄMsg½á¹¹ºÍIPµØÖ·²åÈëµ½IP_msg½á¹¹ÖĞ,
