@@ -3,6 +3,8 @@
 struct tcplist tcp_list;
 tcplist* head = NULL;
 
+extern struct tcp_message global_new_tcp_msg;
+
 int ACK_global;
 
 bool createNodeList()
@@ -19,9 +21,6 @@ bool createNodeList()
 		head->IP = 0;
 		head->Threshold = 65 * 1024;
 		head->count = 0;
-		head->tcp_msg[0].ACK = 0;
-		head->tcp_msg[0].seq = 0;
-		head->tcp_msg[0].time = 0;
 		head->next = NULL;
 		return true;
 	}
@@ -78,19 +77,17 @@ bool deletenode(tcplist* p)
 	}
 }
 
-tcplist* GetNode(tcplist* head_, unsigned int ip)
+tcplist* GetNode(unsigned int ip)
 {//在带头结点的单链表head中查找第i个结点，若找到（0≤i≤n），
 	//则返回该结点的存储位置，否则返回NULL。
-	int j;
 	tcplist *p;
-	p = head_;//从头结点开始扫描
-	while (p->next){//顺指针向后扫描，直到p->next为NULL为止
+	p = head;//从头结点开始扫描
+	while (p){//顺指针向后扫描，直到p->next为NULL为止
 		if (p->IP = ip)  //若找到目标IP，则返回p
 		{
 			return p;
 		}
 		p = p->next;
-		j++;
 	}
 	return NULL;
 }
@@ -112,34 +109,37 @@ void TCP_controller()
             //将要发送的报文序号no_，和ip
 	    unsigned int ip;
 		int no_;
-		tcplist* temp1;
-		temp1 = GetNode(head, ip);
-		if (temp1 == NULL)
-            {
-				    tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list)); 
-					head->MSG_num = 1;
-					head->cwnd = MSS;
-					head->IP = ip;
-					head->count = 0;
-					head->Threshold = 65 * 1024;
-					head->tcp_msg[0].ACK = 0;
-					head->tcp_msg[0].seq = no_;
-					head->tcp_msg[0].time = GetTickCount();
-					head->next = NULL;
-					addNode(node1);
-             }
-		  else
-		  {
-			  if (head->MSG_num - head->count <= head->cwnd / MSS)
-			  {
-				  temp1->MSG_num++;
-				  head->tcp_msg[temp1->MSG_num].ACK = 0;
-				  head->tcp_msg[temp1->MSG_num].seq = no_;
-				  head->tcp_msg[temp1->MSG_num].time = GetTickCount();
-			  }
-			  else //wait();
-				  ;
-		  }
+		if (true/*要求发送报文*/)
+		{
+			tcplist* temp1;
+			temp1 = GetNode(ip);  //请求报文的源ip(+端口号)
+			if (temp1 == NULL)
+			{
+				tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list));
+				head->MSG_num = 1;
+				head->cwnd = MSS;
+				head->IP = ip;
+				head->count = 0;
+				head->Threshold = 65 * 1024;
+				head->tcp_msg[head->MSG_num - 1].ACK = 0;
+				head->tcp_msg[head->MSG_num - 1].tcpmessage = global_new_tcp_msg;
+				head->tcp_msg[head->MSG_num - 1].time = GetTickCount();
+				head->next = NULL;
+				addNode(node1);
+			}
+			else
+			{
+				if (head->MSG_num - head->count <= head->cwnd / MSS)
+				{
+					temp1->MSG_num++;
+					head->tcp_msg[temp1->MSG_num-1].ACK = 0;
+					head->tcp_msg[temp1->MSG_num - 1].tcpmessage = global_new_tcp_msg;
+					head->tcp_msg[temp1->MSG_num-1].time = GetTickCount();
+				}
+				else //wait();
+					;
+			}
+		}
 //			Update(TCP_Entity.Window);
 //            
 //			// 统计各报文是否ack
@@ -153,12 +153,24 @@ void TCP_controller()
 //		        ACK_global = Msg_Entity.confirm_no;
 //			}
 //		}
+		tcplist* temp3 = head;
+		while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
+		{
+			if (GetTickCount() - temp3->tcp_msg[temp3->count].time > RTT)
+			{
+				temp3->Threshold = temp3->cwnd / 2;
+				temp3->cwnd = MSS;
+				temp3->tcp_msg[temp3->count].time = GetTickCount();
+			}
+			temp3 = temp3->next;
+		}
 		if (ACK_global != 0)
 		{
-			//得到相应报文ip
+			//得到响应报文的目标ip(+端口号)
 			tcplist* temp2;
-			temp2 = GetNode(head, ip);
-			if (temp2->tcp_msg[temp2->count].seq <= ACK_global)   //冗余ACK记数
+			temp2 = GetNode(ip);
+			temp2->tcp_msg[temp2->count].time = GetTickCount();
+			if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number <= ACK_global)   //冗余ACK记数
 			{
 				temp2->tcp_msg[temp2->count].ACK++;
 			}
@@ -172,12 +184,7 @@ void TCP_controller()
 			}
 			else
 			{
-				if (GetTickCount() - temp2->tcp_msg[temp2->count].time > RTT)  //超时，重设为慢启动
-				{
-					temp2->Threshold = temp2->cwnd / 2;
-					temp2->cwnd = MSS;
-				}
-				else if (temp2->tcp_msg[temp2->count].ACK >= 3)    //收到3个冗余ACK，设置为拥塞避免
+				if (temp2->tcp_msg[temp2->count].ACK >= 3)    //收到3个冗余ACK，设置为拥塞避免
 				{
 					temp2->Threshold = temp2->cwnd / 2;
 					temp2->cwnd = temp2->Threshold;
@@ -195,7 +202,7 @@ void TCP_controller()
 		{
 //			// 从链表中剥离
 		    //给出所要剥离的TCP的ip
-		    deletenode( GetNode(head, ip) );
+		    deletenode( GetNode(ip) );
 		}
 	}
 }

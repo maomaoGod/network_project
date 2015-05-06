@@ -11,8 +11,8 @@ using namespace std;
 struct tcpmsg
 {
 	int ACK;
-	int seq;
 	int time;
+	struct tcp_message tcpmessage;   //序号tcpmessage->tcp_seq_number
 };
 
 struct tcplist
@@ -23,5 +23,5 @@ struct tcplist
 	unsigned int IP;  //IP
 	int Threshold;   //阈值
 	int count;      //当前已经有多少报文得到正确ACK
-	struct tcpmsg tcp_msg[100];
+	struct tcpmsg tcp_msg[1024];  //当前TCP下发送的报文
 };
