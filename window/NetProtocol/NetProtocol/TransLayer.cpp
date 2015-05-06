@@ -94,19 +94,9 @@ tcplist* GetNode(unsigned int ip)
 
 void TCP_controller()
 {
-//	// 单线程总控的流程
+	// 单线程总控的流程
 	for (;;)
 	{
-//		if (New_TCP_Link_Created)
-//		{
-//			// 窗口初始化
-//            createNodeList();
-//		}
-//		foreach (TCP_Entity in TCP_Active_List)
-//		{
-//			Update(TCP_Entity.State);
-//			// 拥塞控制更新窗口大小
-            //将要发送的报文序号no_，和ip
 	    unsigned int ip;
 		int no_;
 		if (true/*要求发送报文*/)
@@ -116,43 +106,28 @@ void TCP_controller()
 			if (temp1 == NULL)
 			{
 				tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list));
-				head->MSG_num = 1;
-				head->cwnd = MSS;
-				head->IP = ip;
-				head->count = 0;
-				head->Threshold = 65 * 1024;
-				head->tcp_msg[head->MSG_num - 1].ACK = 0;
-				head->tcp_msg[head->MSG_num - 1].tcpmessage = global_new_tcp_msg;
-				head->tcp_msg[head->MSG_num - 1].time = GetTickCount();
-				head->next = NULL;
+				node1->MSG_num = 1;
+				node1->cwnd = MSS;
+				node1->IP = ip;
+				node1->count = 0;
+				node1->Threshold = 65 * 1024;
+				node1->tcp_msg[node1->MSG_num - 1].ACK = 0;
+				node1->tcp_msg[node1->MSG_num - 1].tcpmessage = global_new_tcp_msg;
+				node1->tcp_msg[node1->MSG_num - 1].time = GetTickCount();
+				node1->next = NULL;
 				addNode(node1);
 			}
 			else
 			{
-				if (head->MSG_num - head->count <= head->cwnd / MSS)
+				if (temp1->MSG_num - temp1->count <= temp1->cwnd / MSS)
 				{
 					temp1->MSG_num++;
-					head->tcp_msg[temp1->MSG_num-1].ACK = 0;
-					head->tcp_msg[temp1->MSG_num - 1].tcpmessage = global_new_tcp_msg;
-					head->tcp_msg[temp1->MSG_num-1].time = GetTickCount();
+					temp1->tcp_msg[temp1->MSG_num-1].ACK = 0;
+					temp1->tcp_msg[temp1->MSG_num - 1].tcpmessage = global_new_tcp_msg;
+					temp1->tcp_msg[temp1->MSG_num-1].time = GetTickCount();
 				}
-				else //wait();
-					;
 			}
 		}
-//			Update(TCP_Entity.Window);
-//            
-//			// 统计各报文是否ack
-//			foreach (Msg_Entity in TCP_Entity.Msg_List)
-//			{
-//				Update(Msg_Entity.ACK_Cnt);
-//				Update(Msg_Entity.State);
-//				// 比如3次ack调整窗口
-//				Update(TCP_Entity.Window);
-		//每隔一定时间没收到新来的报文，重发ACK
-//		        ACK_global = Msg_Entity.confirm_no;
-//			}
-//		}
 		tcplist* temp3 = head;
 		while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
 		{
@@ -170,7 +145,7 @@ void TCP_controller()
 			tcplist* temp2;
 			temp2 = GetNode(ip);
 			temp2->tcp_msg[temp2->count].time = GetTickCount();
-			if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number <= ACK_global)   //冗余ACK记数
+			if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number >= ACK_global)   //冗余ACK记数
 			{
 				temp2->tcp_msg[temp2->count].ACK++;
 			}
@@ -200,9 +175,7 @@ void TCP_controller()
 
 		if (true/* TCP_Link_Destroyed */)
 		{
-//			// 从链表中剥离
-		    //给出所要剥离的TCP的ip
-		    deletenode( GetNode(ip) );
+		    deletenode(GetNode(ip));
 		}
 	}
 }
