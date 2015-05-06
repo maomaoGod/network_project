@@ -3,6 +3,7 @@
 //
 #include "HttpServeSocket.h"
 #include "FTPServeSocket.h"
+#include "Cmysocket.h"
 #pragma once
 
 class CServeView : public CEditView
@@ -17,7 +18,7 @@ public:
 
 // 操作
 public:
-
+	Cmysocket mysock;
 protected :
 	HttpServeSocket  HttpManagerSocket;
 	FTPServeSocket FtpManagerSocket;
@@ -50,6 +51,7 @@ protected:
 	void OnPrint(CString e);
 public:
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
+	virtual void OnInitialUpdate();
 };
 
 #ifndef _DEBUG  // ServeView.cpp 中的调试版本

@@ -101,6 +101,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cmysocket.h" />
     <ClInclude Include="FTPClientSocket.h" />
     <ClInclude Include="FTPServeSocket.h" />
     <ClInclude Include="HttpClientSocket.h" />
@@ -116,6 +117,7 @@
     <ClInclude Include="Tools.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Cmysocket.cpp" />
     <ClCompile Include="FTPClientSocket.cpp" />
     <ClCompile Include="FTPServeSocket.cpp" />
     <ClCompile Include="HttpClientSocket.cpp" />

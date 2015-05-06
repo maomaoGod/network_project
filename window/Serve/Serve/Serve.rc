@@ -257,7 +257,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "Serve\n服务器\nServe\n\n\nServe.Document\nServe.Document"
+    IDR_MAINFRAME           "网络实验服务器\n\nServe\n\n\nServe.Document\nServe.Document"
 END
 
 STRINGTABLE

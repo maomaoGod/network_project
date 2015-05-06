@@ -26,8 +26,16 @@
 #define GETCOMMAND      WM_USER+1009
 #define GETCMDSTATE      WM_USER+1010
 #define GETLINESTATE      WM_USER+1011
-#define SENDOUT              WM_USER+1012
+#define SENDTONPC         WM_USER+1012
 #define REGISTER             WM_USER+1013
+
+#define  SOCKCONNECT            200
+#define  SOCKBIND                    201
+#define  SOCKLISTEN                 202
+#define  SOCKSEND                   203
+#define  SOCKSENDTO             204
+#define  SOCKRECEIVE              205
+
 
 /**
 *@brief 用户自定义消息的参数传递结构
@@ -39,11 +47,11 @@ struct  CMD{
 };
 
 struct sockstruct {
-	unsigned short  dstport;
-	unsigned short  bindport;
-	int    datalength;
-	char dstip[20];
-	char data[2048];
+	unsigned short  dstport;    //目的端口号
+	unsigned short  bindport;  //绑定端口号
+	int    datalength;              //有效数据长度
+	char dstip[20];                 //目的IP
+	char data[2048];              //有效数据
 };
 
 /**

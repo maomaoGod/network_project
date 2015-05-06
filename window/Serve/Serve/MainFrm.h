@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "Cmysocket.h"
 
 class CMainFrame : public CFrameWnd
 {
@@ -32,8 +33,7 @@ public:
 
 protected:  // 控件条嵌入成员
 	CToolBar          m_wndToolBar;
-	CStatusBar        m_wndStatusBar;
-
+	CStatusBar      m_wndStatusBar;
 // 生成的消息映射函数
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -42,7 +42,7 @@ protected:
 
 public:
 	afx_msg BOOL OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct);
-	afx_msg LRESULT SendOut(WPARAM wparam, LPARAM lparam);
+	afx_msg LRESULT SendToNPC(WPARAM wparam, LPARAM lparam);
 };
 
 

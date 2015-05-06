@@ -38,7 +38,7 @@ protected:  // 控件条嵌入成员
 	CToolBar            m_wndToolBar;
 	CStatusBar        m_wndStatusBar;
 	map <CWnd *, int>  pwnd2port;
-	map <int, HWND>  port2hwnd;
+	map <int, HWND>   port2hwnd;
 	int  numprocess;
 	// 生成的消息映射函数
 protected:

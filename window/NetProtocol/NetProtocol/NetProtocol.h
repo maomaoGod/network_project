@@ -9,7 +9,7 @@
 
 #include "resource.h"       // Ö÷·ûºÅ
 
-#define PRINT		(WM_USER+1000)
+#define PRINT		         WM_USER+1000
 #define CHECKHWND	 WM_USER+1001
 
 // CNetProtocolApp:
@@ -17,13 +17,29 @@
 //
 
 #define  TRANSTOIP      WM_USER+1000
-#define  IPTOLINK       WM_USER+1001
-#define  LINKSEND       WM_USER+1002
-#define  TRANSTOAPP		WM_USER+1003
-#define  IPTOTRANS      WM_USER+1004
-#define  LINKTOIP       WM_USER+1005
+#define  IPTOLINK          WM_USER+1001
+#define  LINKSEND        WM_USER+1002
+#define  TRANSTOAPP	WM_USER+1003
+#define  APPTOTRANS	WM_USER+1004
+#define  IPTOTRANS      WM_USER+1005
+#define  LINKTOIP          WM_USER+1006
 
+#define  SOCKCONNECT            200
+#define  SOCKBIND                    201
+#define  SOCKLISTEN                 202
+#define  SOCKSEND                   203
+#define  SOCKSENDOUT             204
+#define  SOCKRECEIVE              205
 
+struct sockstruct {
+	unsigned short  dstport;
+	unsigned short  bindport;
+	int    datalength;
+	char dstip[20];
+	char data[2048];
+};
+
+ 
 typedef unsigned char Byte;
 typedef unsigned short Ushort;
 typedef int Bool;

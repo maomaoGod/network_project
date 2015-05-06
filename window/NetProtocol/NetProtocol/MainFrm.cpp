@@ -26,6 +26,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_COPYDATA()
 	ON_MESSAGE(CHECKHWND, OnCheck)
 	ON_MESSAGE(TRANSTOAPP, OnTrans2App)
+	ON_MESSAGE(APPTOTRANS, OnApp2Trans)
 	ON_MESSAGE(IPTOTRANS, OnIP2Trans)
 	ON_MESSAGE(LINKTOIP, OnLink2IP)
 	ON_MESSAGE(TRANSTOIP, OnTrans2IP)
@@ -109,7 +110,7 @@ BOOL CALLBACK lpEnumHwnd(HWND hwnd, LPARAM lParam)//±éÀúËùÓĞ´°¿Ú£¬Ñ°ÕÒ¿Í»§¶ËºÍ·ş
 {
 	CString Client, Serve;
 	Client = _T("»ªÖĞ¿Æ¼¼´óÑ§ÍøÂçÊµÑéÆ½Ì¨");
-	Serve = _T("NetServe");
+	Serve = _T("ÍøÂçÊµÑé·şÎñÆ÷");
 	TCHAR str[100];
 	::GetWindowText(hwnd, str, 100);
 	if (Client.Compare(str) == 0 || Serve.Compare(str) == 0)
@@ -125,22 +126,14 @@ BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
 		return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
 	}
 	if (pCopyDataStruct != NULL){//½ÓÊÜÀ´×ÔÓ¦ÓÃ³ÌĞòµÄÏûÏ¢
-		LPCTSTR pszText = (LPCTSTR)(pCopyDataStruct->lpData);
-		DWORD   dwLength = (DWORD)(pCopyDataStruct->cbData);
-		CString mystr;
-		memcpy(mystr.GetBuffer(dwLength / sizeof(TCHAR)), pszText, dwLength);
-		mystr.ReleaseBuffer();
-		PrintView(mystr);
-		HWND swnd = ::FindWindow(NULL, _T("»ªÖĞ¿Æ¼¼´óÑ§ÍøÂçÊµÑéÆ½Ì¨"));
-		::SendMessage(port2hwnd[pwnd2port[pWnd]], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
+		SendMessage(APPTOTRANS, (WPARAM)pCopyDataStruct, (LPARAM)pWnd);
 	}
-	return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
+  	 return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
 }
 
 LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
 {
 	HWND mywnd = *((HWND *)wparam);
-	PPwnd = ::FindWindow(NULL, _T("»ªÖĞ¿Æ¼¼´óÑ§ÍøÂçÊµÑéÆ½Ì¨"));
 	int index;
 	TCHAR str[100];
 	::GetWindowText(mywnd, str, 100);
@@ -155,8 +148,34 @@ LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
 	return 0;
 }
 
+LRESULT CMainFrame::OnApp2Trans(WPARAM wparam, LPARAM lparam)
+{
+	sockstruct *mysock = (sockstruct *)(((COPYDATASTRUCT *)wparam)->lpData);
+	int FuncID = ((COPYDATASTRUCT *)wparam)->dwData;
+	CWnd *pWnd = (CWnd *)lparam;
+	HWND temp = port2hwnd[pwnd2port[pWnd]];
+	switch (FuncID)
+	{
+	case SOCKBIND:   //ÔİÊ±²»¿¼ÂÇ¶Ë¿Ú³åÍ»
+		port2hwnd.erase(pwnd2port[pWnd]);
+		pwnd2port.erase(pWnd);
+		pwnd2port[pWnd] = mysock->bindport;
+		port2hwnd[mysock->bindport] = temp;
+		PrintView(_T("°ó¶¨¶Ë¿Úµ½6500!"));
+		break;
+	case SOCKLISTEN:
+		break;
+	case SOCKSEND:
+		break;
+	case SOCKSENDOUT:
+		break;
+	default:
+		break;
+	}
+	return 0;
+}
 LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı¾İµ½Ó¦ÓÃ²ãµÄ½Ó¿Ú
-{ //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
+{  //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
 
@@ -285,7 +304,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 
 
 // TCP_controller
-{
+/*{
 	// µ¥Ïß³Ì×Ü¿ØµÄÁ÷³Ì
 	for (;;)
 	{
@@ -315,7 +334,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 			// ´ÓÁ´±íÖĞ°şÀë
 		}
 	}
-}
+}*/
 
 
 LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊı¾İ·¢ËÍµ½Á´Â·²ã½Ó¿Ú
@@ -331,10 +350,10 @@ LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊı¾İ·¢ËÍ
 
 LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊı¾İ·¢ËÍ³öÈ¥½Ó¿Ú
 {
-	if(send((struct IP_Msg *)wparam,(unsigned short)lparam)!=0)
+	/*if(send((struct IP_Msg *)wparam,(unsigned short)lparam)!=0)
 	{
 		printf("error sending datagram!\n");
-	}
+	}*/
 	return 0;
 }
 

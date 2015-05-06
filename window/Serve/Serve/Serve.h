@@ -9,9 +9,25 @@
 
 #include "resource.h"       // 主符号
 
-#define PRINT          WM_USER +1000
-#define REGISTER   WM_USER +1001
-#define SENDOUT    WM_USER +1002
+#define PRINT              WM_USER + 1000
+#define REGISTER       WM_USER + 1001
+#define SENDTONPC   WM_USER + 1002
+
+#define  SOCKCONNECT            200
+#define  SOCKBIND                    201
+#define  SOCKLISTEN                 202
+#define  SOCKSEND                   203
+#define  SOCKSENDOUT             204
+#define  SOCKRECEIVE              205
+
+struct sockstruct {
+	unsigned short  dstport;
+	unsigned short  bindport;
+	int    datalength;
+	char dstip[20];
+	char data[2048];
+};
+
 
 // CServeApp:
 // 有关此类的实现，请参阅 Serve.cpp

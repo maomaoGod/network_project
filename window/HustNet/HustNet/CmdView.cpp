@@ -157,6 +157,7 @@ void CmdView::Initialcmd()
 	my_map.insert(pair<CString, CMDPROC>(_T("gethtml"), &UserCmd::GetHtml));
 	my_map.insert(pair<CString, CMDPROC>(_T("visit"), &UserCmd::Visit));
 	my_map.insert(pair<CString, CMDPROC>(_T("sendout"), &UserCmd::sendout));
+	my_map.insert(pair<CString, CMDPROC>(_T("mytest"), &UserCmd::mytest));
 	//my_map[_T("Mail")] = &UserCmd::Mail;//equal to before
 	my_map[_T("Http")] = &UserCmd::Http;//equal to before
 	my_map[_T("Chat")] = &UserCmd::Chat;

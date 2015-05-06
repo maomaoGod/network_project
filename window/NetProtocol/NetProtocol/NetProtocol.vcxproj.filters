@@ -42,6 +42,9 @@
     <ClInclude Include="MainFrmTransTools.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CMyIP.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetProtocol.cpp">
@@ -60,6 +63,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MainFrmTransTools.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CMyIP.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

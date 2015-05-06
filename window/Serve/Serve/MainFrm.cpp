@@ -20,7 +20,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_COPYDATA()
 	ON_MESSAGE(REGISTER, Register)
-	ON_MESSAGE(SENDOUT, SendOut)
+	ON_MESSAGE(SENDTONPC, SendToNPC)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -65,8 +65,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);
-
-
 	return 0;
 }
 
@@ -76,7 +74,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 		return FALSE;
 	// TODO:  在此处通过修改
 	//  CREATESTRUCT cs 来修改窗口类或样式
-
+	cs.style &= ~FWS_ADDTOTITLE;
 	return TRUE;
 }
 
@@ -101,13 +99,13 @@ LRESULT CMainFrame::Register(WPARAM wparam, LPARAM lparam)
 	protocolwnd = ::FindWindow(NULL, _T("NetProtocol"));
 	if (protocolwnd == NULL){
 		AfxMessageBox(_T("网络协议未开启"));
-		DestroyWindow();
+	//	DestroyWindow();
 		return 0;
 	}
+	mycp.cbData = NULL;
 	mycp.dwData = NULL;
-	mycp.cbData =  NULL;
-	mycp.lpData =   NULL;
-	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
+	mycp.lpData = NULL;
+	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd),(LPARAM)&mycp);
 	return 0;
 }
 
@@ -117,31 +115,28 @@ BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	if (pCopyDataStruct != NULL)
 	{
-		LPCTSTR pszText = (LPCTSTR)(pCopyDataStruct->lpData);
-		DWORD   dwLength = (DWORD)(pCopyDataStruct->cbData);
+		LPCTSTR pszText    = (LPCTSTR)(pCopyDataStruct->lpData);
+		DWORD   dwLength =  (DWORD)(pCopyDataStruct->cbData);
 		CString mystr;
 		memcpy(mystr.GetBuffer(dwLength / sizeof(TCHAR)), pszText, dwLength);
 		mystr.ReleaseBuffer();
 		PrintView(mystr);
-		SendMessage(SENDOUT, (WPARAM)&mystr);
 	}
 	return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
 }
 
-LRESULT CMainFrame::SendOut(WPARAM wparam, LPARAM lparam)
+LRESULT CMainFrame::SendToNPC(WPARAM wparam, LPARAM lparam)
 {
 	if (protocolwnd == NULL)//目前默认网络服务是启动的
 		Register(NULL, NULL);
 	if (protocolwnd == NULL)
 		return 0;
-	CString *sendtext = (CString *)wparam;
 	COPYDATASTRUCT mycp;
-	mycp.dwData = _getpid();
-	mycp.cbData = (*sendtext).GetLength()*sizeof(TCHAR);
-	mycp.lpData = (void*)(*sendtext).GetBuffer(0);
+	mycp.dwData = wparam;
+	mycp.cbData = sizeof(struct sockstruct);
+	mycp.lpData = (void *)lparam;
 	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
 	return 0;
 }
-
 
 

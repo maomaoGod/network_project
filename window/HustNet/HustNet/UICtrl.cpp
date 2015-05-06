@@ -163,6 +163,6 @@ void EndInput()
 
 void SendOut(CString e)
 {
-	pframe->SendMessage(SENDOUT, (WPARAM)&e);
+	pframe->SendMessage(SENDTONPC, (WPARAM)&e);
 }
 

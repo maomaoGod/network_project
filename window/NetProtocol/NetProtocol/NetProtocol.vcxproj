@@ -101,6 +101,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CMyIP.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MainFrmTransTools.h" />
     <ClInclude Include="NetProtocol.h" />
@@ -111,6 +112,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CMyIP.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MainFrmTransTools.cpp" />
     <ClCompile Include="NetProtocol.cpp" />

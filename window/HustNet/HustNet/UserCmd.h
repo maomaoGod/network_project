@@ -28,5 +28,6 @@ public:
 	void UserCmd::GetHtml(CString url);
 	void UserCmd::Visit(CString url);
 	void UserCmd::sendout(CString e);
+	void UserCmd::mytest(CString e);
 };
 

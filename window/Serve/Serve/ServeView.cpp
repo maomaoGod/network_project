@@ -133,3 +133,12 @@ void CServeView::OnSetFocus(CWnd* pOldWnd)
 
 	// TODO:  在此处添加消息处理程序代码
 }
+
+
+void CServeView::OnInitialUpdate()
+{
+	CEditView::OnInitialUpdate();
+	// TODO:  在此添加专用代码和/或调用基类
+	AfxGetApp()->GetMainWnd()->SendMessage(REGISTER, NULL, NULL);
+	mysock.Bind(6500);
+}
