@@ -6,12 +6,7 @@
  *
  */
 
-#include "stdafx.h"
-#include "NetProtocol.h"
-#include "MainFrmTransTools.h"
-#include <string>
-
-using namespace std;
+#include "TransLayerTools.h"
 
 /** @udpmakesum
  * @brief make the sum of udp datagram

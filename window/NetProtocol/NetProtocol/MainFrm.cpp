@@ -5,7 +5,6 @@
 #include "MainFrm.h"
 #include "CMyIP.h"
 #include "string.h"
-#include "Tools.h"
 
 struct _iphdr IP_HEADER;
 struct Msg IP_data;
@@ -156,7 +155,8 @@ LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
 }
 
 LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı¾İµ½Ó¦ÓÃ²ãµÄ½Ó¿Ú
-{ //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
+{ 
+	//Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
 
@@ -206,25 +206,9 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 	return 0;
 }
 
-LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´«Êä²ãµÄ½Ó¿Ú
-{ //
-	///< ¸ù¾İÁ´Â·²ã·¢ËÍµÄÊı¾İ½øĞĞ°şÀëµÃµ½±¨ÎÄ³¤¶ÈÒÔ¼°Æ«ÒÆ, ±È½ÏÆ«ÒÆÁ¿ÊÇ·ñµÈÓÚ±¨ÎÄ³¤¶È
-	///< Èô·¢ÏÖ·ÖÆ¬È±Ê§»òÕß¼ìÑéºÍ³ö´íÔò return FALSE;
-	///< ÈôÊÇÔòÊı¾İ³É¹¦½ÓÊÕ ½øĞĞÉÙÁ¿µÄ¼ìÑéºÍ¼ì²é, ÈôÃ»ÓĞ´íÎó
-	///< Ôò½«IP_msg½á¹¹°şÀë³öMsg½á¹¹
-
-	if (!ip.IP2Trans(wparam, lparam))
-		return true;
-	return false;
-}
-
-LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊı¾İÍøÂç²ãµÄ½Ó¿Ú
-{//
-	return 0;
-}
-
 LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢ËÍµ½ÍøÂç²ãµÄ½Ó¿Ú
-{ //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
+{ 
+	//Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
 	CString mystr = *((CString *)wparam);
@@ -255,7 +239,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 		new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)src_port, (u16)dst_port, data_len%2, (u16 *)&temp_data);
 
 		// UDPÎŞÓµÈû¿ØÖÆ
-		OnIP2Link((WPARAM)&new_udp_msg, lparam);
+		CMainFrame::OnIP2Link((WPARAM)&new_udp_msg, lparam);
 	}
 	// TCP
 	else
@@ -283,227 +267,21 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 	return 0;
 }
 
-#define MSS 1024
-#define RTT 200
+LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´«Êä²ãµÄ½Ó¿Ú
+{ //
+	///< ¸ù¾İÁ´Â·²ã·¢ËÍµÄÊı¾İ½øĞĞ°şÀëµÃµ½±¨ÎÄ³¤¶ÈÒÔ¼°Æ«ÒÆ, ±È½ÏÆ«ÒÆÁ¿ÊÇ·ñµÈÓÚ±¨ÎÄ³¤¶È
+	///< Èô·¢ÏÖ·ÖÆ¬È±Ê§»òÕß¼ìÑéºÍ³ö´íÔò return FALSE;
+	///< ÈôÊÇÔòÊı¾İ³É¹¦½ÓÊÕ ½øĞĞÉÙÁ¿µÄ¼ìÑéºÍ¼ì²é, ÈôÃ»ÓĞ´íÎó
+	///< Ôò½«IP_msg½á¹¹°şÀë³öMsg½á¹¹
 
-struct tcpmsg
-{
-	int ACK;
-	int seq;
-	int time;
-};
-
-struct tcplist
-{
-	tcplist* next;
-	int MSG_num;    //ÒÑ¾­·¢ËÍµÄ±¨ÎÄÊı
-	int cwnd;       //´°¿Ú´óĞ¡
-	unsigned int IP;  //IP
-	int Threshold;   //ãĞÖµ
-	int count;      //µ±Ç°ÒÑ¾­ÓĞ¶àÉÙ±¨ÎÄµÃµ½ÕıÈ·ACK
-	struct tcpmsg tcp_msg[100];
-}tcp_list;
-
-tcplist* head = NULL;
-
-bool createNodeList()
-{
-	head = (tcplist*)malloc(sizeof(tcp_list));
-	if (NULL == head)
-	{
-		return false;
-	}
-	else
-	{
-		head->MSG_num = 0;
-		head->cwnd = MSS;
-		head->IP = 0;
-		head->Threshold = 65 * 1024;
-		head->count = 0;
-		head->tcp_msg[0].ACK = 0;
-		head->tcp_msg[0].seq = 0;
-		head->tcp_msg[0].time = 0;
-		head->next = NULL;
+	if (!ip.IP2Trans(wparam, lparam))
 		return true;
-	}
+	return false;
 }
 
-bool addNode(tcplist* tcp_list)
-{
-	if (NULL == head)
-	{
-		return false;
-	}
-	tcplist* p = head->next;
-	tcplist* q = head;
-	while (NULL != p)
-	{
-		q = p;
-		p = p->next;
-	}
-	q->next = tcp_list;
-	tcp_list->next = NULL;
-	return true;
-}
-
-bool deletenode(tcplist* p)
-{
-	tcplist* s1;
-	tcplist* s2;
-	s1 = head;
-	while (s1 != p && s1 != NULL)
-	{
-		s2 = s1;
-		s1 = s1->next;
-	}
-	if (s1 == NULL)
-	{
-		printf("the node you want to delete doesn't exist£¡");
-		return false;
-	}
-	else
-	{
-		if (s1 == head)
-		{
-			head = s1->next;
-		}
-		else if (s1->next == NULL)
-		{
-			s2->next = NULL;
-		}
-		else
-		{
-			s2->next = s1->next;
-		}
-		return true;
-	}
-}
-
-tcplist* GetNode(tcplist* head_, unsigned int ip)
-{//ÔÚ´øÍ·½áµãµÄµ¥Á´±íheadÖĞ²éÕÒµÚi¸ö½áµã£¬ÈôÕÒµ½£¨0¡Üi¡Ün£©£¬
-	//Ôò·µ»Ø¸Ã½áµãµÄ´æ´¢Î»ÖÃ£¬·ñÔò·µ»ØNULL¡£
-	int j;
-	tcplist *p;
-	p = head_;//´ÓÍ·½áµã¿ªÊ¼É¨Ãè
-	while (p->next){//Ë³Ö¸ÕëÏòºóÉ¨Ãè£¬Ö±µ½p->nextÎªNULLÎªÖ¹
-		if (p->IP = ip)  //ÈôÕÒµ½Ä¿±êIP£¬Ôò·µ»Øp
-		{
-			return p;
-		}
-		p = p->next;
-		j++;
-	}
-	return NULL;
-}
-
-int ACK_global;
-
-
-
-
-void TCP_controller()
-{
-//	// µ¥Ïß³Ì×Ü¿ØµÄÁ÷³Ì
-//	for (;;)
-//	{
-//		if (New_TCP_Link_Created)
-//		{
-//			// ´°¿Ú³õÊ¼»¯
-//            createNodeList();
-//		}
-//		foreach (TCP_Entity in TCP_Active_List)
-//		{
-//			Update(TCP_Entity.State);
-//			// ÓµÈû¿ØÖÆ¸üĞÂ´°¿Ú´óĞ¡
-            //½«Òª·¢ËÍµÄ±¨ÎÄĞòºÅno_£¬ºÍip
-	    unsigned int ip;
-		int no_;
-		tcplist* temp1;
-		temp1 = GetNode(head, ip);
-		if (temp1 == NULL)
-            {
-				    tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list)); 
-					head->MSG_num = 1;
-					head->cwnd = MSS;
-					head->IP = ip;
-					head->count = 0;
-					head->Threshold = 65 * 1024;
-					head->tcp_msg[0].ACK = 0;
-					head->tcp_msg[0].seq = no_;
-					head->tcp_msg[0].time = GetTickCount();
-					head->next = NULL;
-					addNode(node1);
-             }
-		  else
-		  {
-			  if (head->MSG_num - head->count <= head->cwnd / MSS)
-			  {
-				  temp1->MSG_num++;
-				  head->tcp_msg[temp1->MSG_num].ACK = 0;
-				  head->tcp_msg[temp1->MSG_num].seq = no_;
-				  head->tcp_msg[temp1->MSG_num].time = GetTickCount();
-			  }
-			  else //wait();
-				  ;
-		  }
-//			Update(TCP_Entity.Window);
-//            
-//			// Í³¼Æ¸÷±¨ÎÄÊÇ·ñack
-//			foreach (Msg_Entity in TCP_Entity.Msg_List)
-//			{
-//				Update(Msg_Entity.ACK_Cnt);
-//				Update(Msg_Entity.State);
-//				// ±ÈÈç3´Îackµ÷Õû´°¿Ú
-//				Update(TCP_Entity.Window);
-		//Ã¿¸ôÒ»¶¨Ê±¼äÃ»ÊÕµ½ĞÂÀ´µÄ±¨ÎÄ£¬ÖØ·¢ACK
-//		        ACK_global = Msg_Entity.confirm_no;
-//			}
-//		}
-		if (ACK_global != 0)
-		{
-			//µÃµ½ÏàÓ¦±¨ÎÄip
-			tcplist* temp2;
-			temp2 = GetNode(head, ip);
-			if (temp2->tcp_msg[temp2->count].seq <= ACK_global)   //ÈßÓàACK¼ÇÊı
-			{
-				temp2->tcp_msg[temp2->count].ACK++;
-			}
-			else
-			{
-				temp2->count++;
-			}
-			if (temp2->cwnd <= temp2->Threshold) //ÂıÆô¶¯
-			{
-				temp2->cwnd += MSS;
-			}
-			else
-			{
-				if (GetTickCount() - temp2->tcp_msg[temp2->count].time > RTT)  //³¬Ê±£¬ÖØÉèÎªÂıÆô¶¯
-				{
-					temp2->Threshold = temp2->cwnd / 2;
-					temp2->cwnd = MSS;
-				}
-				else if (temp2->tcp_msg[temp2->count].ACK >= 3)    //ÊÕµ½3¸öÈßÓàACK£¬ÉèÖÃÎªÓµÈû±ÜÃâ
-				{
-					temp2->Threshold = temp2->cwnd / 2;
-					temp2->cwnd = temp2->Threshold;
-				}
-				else      //ÊÕµ½Ç°ÃæÎ´È·ÈÏÊı¾İµÄACK
-				{
-					temp2->cwnd = temp2->cwnd + MSS*(MSS / temp2->cwnd);
-				}
-			}
-			ACK_global = 0;
-		}
-
-
-//		if (TCP_Link_Destroyed)
-//		{
-//			// ´ÓÁ´±íÖĞ°şÀë
-		    //¸ø³öËùÒª°şÀëµÄTCPµÄip
-		    deletenode( GetNode(head, ip) );
-//		}
-//	}
+LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊı¾İÍøÂç²ãµÄ½Ó¿Ú
+{//
+	return 0;
 }
 
 
