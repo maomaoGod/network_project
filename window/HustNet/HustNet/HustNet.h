@@ -38,6 +38,14 @@ struct  CMD{
 	void *para2;
 };
 
+struct sockstruct {
+	unsigned short  dstport;
+	unsigned short  bindport;
+	int    datalength;
+	char dstip[20];
+	char data[2048];
+};
+
 /**
 *CHustNetApp:\n
 *有关此类的实现，请参阅 HustNet.cpp

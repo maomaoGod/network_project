@@ -335,7 +335,7 @@ LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊý¾Ý·¢Ë
 	{
 		printf("error sending datagram!\n");
 	}
-	return;
+	return 0;
 }
 
 DWORD WINAPI CMainFrame::packcap(LPVOID lParam)

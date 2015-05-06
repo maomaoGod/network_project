@@ -8,7 +8,7 @@
 
 #include "stdafx.h"
 #include "winsock2.h"
-#include "string.h"
+#include <string>
 #pragma comment(lib,"ws2_32.lib")
 
 using namespace std;

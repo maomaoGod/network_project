@@ -291,7 +291,7 @@ LRESULT CMainFrame::Register(WPARAM wparam, LPARAM lparam)
 	protocolwnd = ::FindWindow(NULL, _T("NetProtocol"));
 	if (protocolwnd == NULL){
 		AfxMessageBox(_T("ÍøÂçÐ­ÒéÎ´¿ªÆô"));
-		DestroyWindow();
+		//DestroyWindow();
 		return 0;
 	}
 	mycp.dwData = CLIENT;
