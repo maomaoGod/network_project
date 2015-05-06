@@ -95,6 +95,7 @@ tcplist* GetNode(unsigned int ip)
 void TCP_controller()
 {
 	// 单线程总控的流程
+	createNodeList();
 	for (;;)
 	{
 	    unsigned int ip;
@@ -103,7 +104,7 @@ void TCP_controller()
 		{
 			tcplist* temp1;
 			temp1 = GetNode(ip);  //请求报文的源ip(+端口号)
-			if (temp1 == NULL)
+			if (temp1 == NULL)   //如果请求报文的源ip对应的TCP当前未建立连接，则新建一个TCP，加入链表尾部
 			{
 				tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list));
 				node1->MSG_num = 1;
@@ -117,7 +118,7 @@ void TCP_controller()
 				node1->next = NULL;
 				addNode(node1);
 			}
-			else
+			else     //如果请求报文的源IP对应的TCP端口已建立连接，则根据报文内容，填写当前TCP端口的tcp_msg结构（记录报文相关）
 			{
 				if (temp1->MSG_num - temp1->count <= temp1->cwnd / MSS)
 				{
@@ -145,7 +146,7 @@ void TCP_controller()
 			tcplist* temp2;
 			temp2 = GetNode(ip);
 			temp2->tcp_msg[temp2->count].time = GetTickCount();
-			if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number >= ACK_global)   //冗余ACK记数
+			if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number >= ACK_global)   //冗余ACK计数
 			{
 				temp2->tcp_msg[temp2->count].ACK++;
 			}
