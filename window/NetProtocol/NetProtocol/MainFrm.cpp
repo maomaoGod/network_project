@@ -223,7 +223,7 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包�
 	// TCP
 	else
 	{
-		// 获取UDP报文段
+		// 获取TCP报文段
 		struct tcp_message new_tcp_msg;
 		memcpy(&new_tcp_msg, new_ip_msg.data, strlen(new_ip_msg.data)+1); // +1 for \0
 
