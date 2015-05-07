@@ -152,3 +152,11 @@ void CNetProtocolDoc::Dump(CDumpContext& dc) const
 
 
 // CNetProtocolDoc 命令
+
+
+void CNetProtocolDoc::SetTitle(LPCTSTR lpszTitle)
+{
+	// TODO:  在此添加专用代码和/或调用基类
+
+	CDocument::SetTitle(lpszTitle);
+}

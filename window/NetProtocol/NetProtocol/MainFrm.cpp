@@ -169,7 +169,8 @@ LRESULT CMainFrame::OnApp2Trans(WPARAM wparam, LPARAM lparam)
 		mycp.dwData = SOCKSEND;
 		mycp.lpData = (void *)&mysock;
 		mycp.cbData = sizeof(sockstruct);
-		::SendMessage(port2hwnd[mysock.dstport], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
+		//::SendMessage(port2hwnd[mysock.dstport], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
+		SendMessage(TRANSTOIP, (WPARAM)&mysock, (LPARAM)FuncID);
 		break;
 	case SOCKSENDTO:
 		break;

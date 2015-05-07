@@ -8,7 +8,6 @@
 */
 #include "stdafx.h"
 #include "CMyIP.h"
-
 /**
 * @author ACM2012
 * @param
@@ -47,34 +46,36 @@ BOOL CMyIP::IP2Link(WPARAM wparam, LPARAM lparam)
 	///< 如果信息超过容量就进行分片处理, 
 	///< 调用链路层的发送函数如果发送失败 return FALSE;
 	///< 否则 return TRUE;
+	MyIP = new IP_Msg;
 	int offset = 0, ident = 0;
 	ident++;
 	IP_data = (struct Msg*)wparam;
 	while (strlen(IP_data->data) - 8 * offset > MAXSIZE)
 	{
-		MyIP->iphdr->ih_protl = 0;
-		MyIP->iphdr->ih_saddr = IP_data->sip;
-		MyIP->iphdr->ih_daddr = IP_data->dip;
-		MyIP->iphdr->ih_flags = 1;
-		MyIP->iphdr->ih_ident = ident;
-		MyIP->iphdr->ih_offset = offset;
-		MyIP->iphdr->ih_len = strlen(IP_data->data) + 20;
+		IP_HEADER.ih_protl = 0;
+		IP_HEADER.ih_saddr = IP_data->sip;
+		IP_HEADER.ih_daddr = IP_data->dip;
+		IP_HEADER.ih_flags = 1;
+		IP_HEADER.ih_ident = ident;
+		IP_HEADER.ih_offset = offset;
+		IP_HEADER.ih_len = strlen(IP_data->data);
 		offset = offset + MAXSIZE / 8;
-		MyIP->iphdr->ih_version = 4;
-		strncpy_s(MyIP->data, MAXSIZE, IP_data->data, MAXSIZE);
+		IP_HEADER.ih_version = 4;
+		MyIP->iphdr = &IP_HEADER;
+		strncpy_s(MyIP->data, strlen(IP_data->data) - offset * 8, IP_data->data, strlen(IP_data->data) - offset * 8);
 		(AfxGetApp()->m_pMainWnd)->SendMessage(LINKSEND, (WPARAM)MyIP, lparam);
 	}
-	MyIP->iphdr->ih_protl = 0;
-	MyIP->iphdr->ih_saddr = IP_data->sip;
-	MyIP->iphdr->ih_daddr = IP_data->dip;
-	MyIP->iphdr->ih_flags = 0;
-	MyIP->iphdr->ih_ident = ident;
-	MyIP->iphdr->ih_offset = offset;
-	MyIP->iphdr->ih_len = strlen(IP_data->data) + 20;
-	MyIP->iphdr->ih_version = 4;
-	strncpy_s(MyIP->data, strlen(IP_data->data) - offset * 8, IP_data->data, strlen(IP_data->data) - offset * 8);
+	IP_HEADER.ih_protl = 0;
+	IP_HEADER.ih_saddr = IP_data->sip;
+	IP_HEADER.ih_daddr = IP_data->dip;
+	IP_HEADER.ih_flags = 0;
+	IP_HEADER.ih_ident = ident;
+	IP_HEADER.ih_offset = offset;
+	IP_HEADER.ih_len = strlen(IP_data->data);
+	IP_HEADER.ih_version = 4;
+	MyIP->iphdr =& IP_HEADER;
+	memcpy(MyIP->data, IP_data->data, strlen(IP_data->data) - offset * 8);
 	(AfxGetApp()->m_pMainWnd)->SendMessage(LINKSEND, (WPARAM)MyIP, lparam);
-
 	return 0;
 }
 
