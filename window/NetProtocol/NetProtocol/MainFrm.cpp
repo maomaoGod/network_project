@@ -60,21 +60,18 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
-
 	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
 		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
 	{
 		TRACE0("未能创建工具栏\n");
 		return -1;      // 未能创建
 	}
-
 	if (!m_wndStatusBar.Create(this))
 	{
 		TRACE0("未能创建状态栏\n");
 		return -1;      // 未能创建
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
-
 	// TODO:  如果不需要可停靠工具栏，则删除这三行
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
@@ -150,24 +147,31 @@ LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
 
 LRESULT CMainFrame::OnApp2Trans(WPARAM wparam, LPARAM lparam)
 {
-	sockstruct *mysock = (sockstruct *)(((COPYDATASTRUCT *)wparam)->lpData);
+	sockstruct mysock = *(sockstruct *)(((COPYDATASTRUCT *)wparam)->lpData);
 	int FuncID = ((COPYDATASTRUCT *)wparam)->dwData;
 	CWnd *pWnd = (CWnd *)lparam;
 	HWND temp = port2hwnd[pwnd2port[pWnd]];
+	COPYDATASTRUCT  mycp;
 	switch (FuncID)
 	{
 	case SOCKBIND:   //暂时不考虑端口冲突
 		port2hwnd.erase(pwnd2port[pWnd]);
 		pwnd2port.erase(pWnd);
-		pwnd2port[pWnd] = mysock->bindport;
-		port2hwnd[mysock->bindport] = temp;
+		pwnd2port[pWnd] = mysock.bindport;
+		port2hwnd[mysock.bindport] = temp;
 		PrintView(_T("绑定端口到6500!"));
 		break;
 	case SOCKLISTEN:
 		break;
 	case SOCKSEND:
+		mycp.dwData = SOCKSEND;
+		mycp.lpData = (void *)&mysock;
+		mycp.cbData = sizeof(sockstruct);
+		::SendMessage(port2hwnd[mysock.dstport], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
 		break;
 	case SOCKSENDOUT:
+		break;
+	case SOCKCONNECT:
 		break;
 	default:
 		break;

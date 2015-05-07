@@ -29,11 +29,11 @@
 #define SENDTONPC         WM_USER+1012
 #define REGISTER             WM_USER+1013
 
-#define  SOCKCONNECT            200
-#define  SOCKBIND                    201
+#define  SOCKCONNECT             200
+#define  SOCKBIND                     201
 #define  SOCKLISTEN                 202
 #define  SOCKSEND                   203
-#define  SOCKSENDTO             204
+#define  SOCKSENDTO               204
 #define  SOCKRECEIVE              205
 
 
@@ -80,5 +80,4 @@ public:
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
 };
-
 extern CHustNetApp theApp;

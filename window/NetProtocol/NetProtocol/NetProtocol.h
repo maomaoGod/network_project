@@ -24,12 +24,14 @@
 #define  IPTOTRANS      WM_USER+1005
 #define  LINKTOIP          WM_USER+1006
 
-#define  SOCKCONNECT            200
-#define  SOCKBIND                    201
+#define  SOCKCONNECT             200
+#define  SOCKBIND                     201
 #define  SOCKLISTEN                 202
 #define  SOCKSEND                   203
-#define  SOCKSENDOUT             204
+#define  SOCKSENDTO               204
 #define  SOCKRECEIVE              205
+#define  SOCKRECEIVEFROM    206
+#define  SOCKCLOSE                 207
 
 struct sockstruct {
 	unsigned short  dstport;   //Ŀ�Ķ˿ں�

@@ -104,7 +104,7 @@ LRESULT CMainFrame::Register(WPARAM wparam, LPARAM lparam)
 	}
 	mycp.cbData = NULL;
 	mycp.dwData = NULL;
-	mycp.lpData = NULL;
+	mycp.lpData =  NULL;
 	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd),(LPARAM)&mycp);
 	return 0;
 }
@@ -115,12 +115,17 @@ BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	if (pCopyDataStruct != NULL)
 	{
-		LPCTSTR pszText    = (LPCTSTR)(pCopyDataStruct->lpData);
-		DWORD   dwLength =  (DWORD)(pCopyDataStruct->cbData);
-		CString mystr;
-		memcpy(mystr.GetBuffer(dwLength / sizeof(TCHAR)), pszText, dwLength);
-		mystr.ReleaseBuffer();
-		PrintView(mystr);
+		sockstruct mysock = *((sockstruct *)pCopyDataStruct->lpData);
+		TCHAR buf[1000];
+		int FuncID = pCopyDataStruct->dwData;
+		switch (FuncID)
+		{
+		case SOCKSEND:
+			PrintView((TCHAR *)mysock.data);
+			break;
+		default:
+			break;
+		}
 	}
 	return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
 }

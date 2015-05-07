@@ -139,6 +139,6 @@ void CServeView::OnInitialUpdate()
 {
 	CEditView::OnInitialUpdate();
 	// TODO:  在此添加专用代码和/或调用基类
-	AfxGetApp()->GetMainWnd()->SendMessage(REGISTER, NULL, NULL);
+	AfxGetMainWnd()->SendMessage(REGISTER, NULL, NULL);
 	mysock.Bind(6500);
 }
