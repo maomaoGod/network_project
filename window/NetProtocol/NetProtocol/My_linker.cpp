@@ -1,69 +1,131 @@
-#include <pcap.h>
-#include <stdio.h>
-#include <my_linker.h>
-#include <string.h>
+#pragma once
+#include "stdafx.h"
+#include "my_linker.h"
+#include "NetProtocol.h"
 
-int my_linker::send(struct IP_Msg *data_grame, unsigned short i){
-  pcap_if_t * allAdapters;//é€‚é…å™¨åˆ—è¡¨
+typedef _iphdr IP_HEADER;
+
+pcap_t * my_linker::get_adapter()
+{
+	pcap_if_t * allAdapters;//ÊÊÅäÆ÷ÁĞ±í
+
 	pcap_if_t * adapter;
-	pcap_t  * adapterHandle;//é€‚é…å™¨å¥æŸ„
 
-	char errorBuffer[PCAP_ERRBUF_SIZE];//é”™è¯¯ä¿¡æ¯ç¼“å†²åŒº
-		
-	//æ£€ç´¢æœºå™¨è¿æ¥çš„æ‰€æœ‰ç½‘ç»œé€‚é…å™¨
+	pcap_t           * adapterHandle;//ÊÊÅäÆ÷¾ä±ú
+
+	char errorBuffer[PCAP_ERRBUF_SIZE];//´íÎóĞÅÏ¢»º³åÇø
+
 	if (pcap_findalldevs_ex(PCAP_SRC_IF_STRING, NULL,
-		&allAdapters, errorBuffer) == -1)
-	{
-		fprintf(stderr, "Error in pcap_findalldevs_ex function: %s\n", errorBuffer);
-		return -1;
+
+	&allAdapters, errorBuffer) == -1)
+
+	{//¼ìË÷»úÆ÷Á¬½ÓµÄËùÓĞÍøÂçÊÊÅäÆ÷
+
+	fprintf(stderr, "Error in pcap_findalldevs_ex function: %s\n", errorBuffer);
+
+	return NULL;
+
 	}
+
 	if (allAdapters == NULL)
-	{
-		printf("\nNo adapters found! Make sure WinPcap is installed.\n");
-		return 0;
-	}
-	
-	int crtAdapter = 0;
-	int adapterNumber;
-	adapterNumber = 3;
-	adapter = allAdapters;
-	for (crtAdapter = 0; crtAdapter < adapterNumber - 1; crtAdapter++)
-		adapter = adapter->next;
-	
-	// æ‰“å¼€æŒ‡å®šé€‚é…å™¨
-	adapterHandle = pcap_open(adapter->name, // name of the adapter
-		65536,         // portion of the packet to capture
-		// 65536 guarantees that the whole 
-		// packet will be captured
-		PCAP_OPENFLAG_PROMISCUOUS, // promiscuous mode
-		1000,             // read timeout - 1 millisecond
-		NULL,          // authentication on the remote machine
-		errorBuffer    // error buffer
-		);
-	if (adapterHandle == NULL)
-	{
-		fprintf(stderr, "\nUnable to open the adapter\n", adapter->name);
-		pcap_freealldevs(allAdapters);
-		return -1;
-	}
-	pcap_freealldevs(allAdapters);
-	//å‘é€æ•°æ®æŠ¥
-	if ((send_by_frame(data_gram, adapterHandle, i)) != 0)
-	{
-		printf("error sending frames!\n");
-		return -1;
-	}
+
+	{//²»´æÔÚÈÎºÎÊÊÅäÆ÷
+
+	printf("\nNo adapters found! Make sure WinPcap is installed.\n");
+
 	return 0;
+
+	}
+
+	int crtAdapter = 0;
+	/*
+	for (adapter = allAdapters; adapter != NULL; adapter = adapter->next)
+
+	{//±éÀúÊäÈëÊÊÅäÆ÷ĞÅÏ¢(Ãû³ÆºÍÃèÊöĞÅÏ¢)
+
+	printf("\n%d.%s ", ++crtAdapter, adapter->name);
+
+	printf("-- %s\n", adapter->description);
+
+	}
+
+	printf("\n");
+	*/
+	//Ñ¡ÔñÒª²¶»ñÊı¾İ°üµÄÊÊÅäÆ÷
+
+	int adapterNumber = 3;
+	/*
+	printf("Enter the adapter number between 1 and %d:", crtAdapter);
+
+	scanf_s("%d", &adapterNumber);
+	
+	if (adapterNumber < 1 || adapterNumber > crtAdapter)
+
+	{
+
+		printf("\nAdapter number out of range.\n");
+
+		// ÊÍ·ÅÊÊÅäÆ÷ÁĞ±í
+
+		pcap_freealldevs(allAdapters);
+
+		return NULL;
+
+	}
+	*/
+	adapter = allAdapters;
+
+	for (crtAdapter = 0; crtAdapter < adapterNumber - 1; crtAdapter++)
+
+		adapter = adapter->next;
+
+	// ´ò¿ªÖ¸¶¨ÊÊÅäÆ÷
+
+	adapterHandle = pcap_open(adapter->name, // name of the adapter
+
+		65536,         // portion of the packet to capture
+
+		// 65536 guarantees that the whole 
+
+		// packet will be captured
+
+		PCAP_OPENFLAG_PROMISCUOUS, // promiscuous mode
+
+		1000,             // read timeout - 1 millisecond
+
+		NULL,          // authentication on the remote machine
+
+		errorBuffer    // error buffer
+
+		);
+
+	if (adapterHandle == NULL)
+
+	{//Ö¸¶¨ÊÊÅäÆ÷´ò¿ªÊ§°Ü
+
+		fprintf(stderr, "\nUnable to open the adapter\n", adapter->name);
+
+		// ÊÍ·ÅÊÊÅäÆ÷ÁĞ±í
+
+		pcap_freealldevs(allAdapters);
+
+		return NULL;
+
+	}
+	pcap_freealldevs(allAdapters);//ÊÍ·ÅÊÊÅäÆ÷ÁĞ±í
+
+	return adapterHandle;
+
 }
 
-int send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle, unsigned short i)
+int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle, unsigned short i)
 {
 	unsigned short seq = 0;
-	unsigned short total_seq = ((*data_gram).iphdr->ih_len+FRAMESIZE-1) / FRAMESIZE;
+	unsigned short total_seq = ((*data_gram).iphdr->ih_len + FRAMESIZE - 1) / FRAMESIZE;
 	unsigned short copy_size;
 	unsigned short left_size = (*data_gram).iphdr->ih_len;
-	Byte *temp=(Byte *)&((*data_gram).data);
-	u_char *packet; //å¾…å‘é€çš„æ•°æ®å°åŒ…
+	Byte *temp = (Byte *)&((*data_gram).data);
+	u_char *packet; //´ı·¢ËÍµÄÊı¾İ·â°ü
 	while (left_size > 0)
 	{
 		struct Frame frame;
@@ -86,7 +148,7 @@ int send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle, unsigned sho
 		}
 		left_size -= copy_size;
 		packet = (u_char *)(&frame);
-		//å‘é€å¸§
+		//·¢ËÍÖ¡
 		if (pcap_sendpacket(adapterHandle, // the adapter handle
 			packet, // the packet
 			sizeof(frame) // the length of the packet
@@ -97,9 +159,77 @@ int send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle, unsigned sho
 		}
 		else
 		{
-			printf("send frame %d successfully!: size %d bytes\n", seq,sizeof(frame));
+			printf("send frame %d successfully!: size %d bytes\n", seq, sizeof(frame));
 			seq += 1;
 		}
 	}
 	return 0;
+}
+
+int my_linker::combine(const u_char * packetData)
+{
+	Frame &Receive = *((Frame *)packetData);
+
+	Frame_data *fdp;
+
+	Frame_data frame_data;
+
+	if (Receive.MAC_des[0] != 0xec24 || Receive.MAC_des[1] != 0x1a99 || Receive.MAC_des[2] != 0x8c07) return NULL;
+	if (Receive.MAC_src[0] != 0x5d68 || Receive.MAC_src[1] != 0xe643 || Receive.MAC_src[2] != 0xfdac) return NULL;
+
+	//puts("fuck");
+
+	frame_data = Receive.frame_data;
+
+	int id = Receive.datagram_num;
+	int tot = Receive.total_seq_num;
+	int len = Receive.length;
+	int seq = Receive.seq;
+
+	if (data_pointer[Receive.datagram_num] == NULL)					//µÚÒ»´ÎÊÕµ½¸ÃĞòºÅµÄÊı¾İ±¨
+	{
+
+		data_pointer[id] = new int[tot];
+		for (int i = 0; i < tot; ++i) data_pointer[id][i] = -1;
+
+		left[id] = tot;
+
+		ip_msg[id].iphdr = new IP_HEADER;
+		*(ip_msg[id].iphdr) = frame_data.IP;
+
+		{
+			IP_HEADER out = *(ip_msg[id].iphdr);
+		}
+
+		buffer[bp].length = len;
+		for (int i = 0; i < len; ++i)
+			buffer[bp].data[i] = frame_data.data[i];
+
+		data_pointer[id][seq] = bp++;
+
+		--left[id];
+	}
+	else if (data_pointer[id][seq] == -1)					//Î´ÊÕµ½¹ıÕâÒ»¸öÖ¡
+	{
+		buffer[bp].length = len;
+		for (int i = 0; i < len; ++i)
+			buffer[bp].data[i] = frame_data.data[i];
+
+		data_pointer[id][seq] = bp++;
+
+		if (--left[id] == 0)									//Êı¾İ±¨½ÓÊÕÍê³É
+		{
+			puts("Finish!");
+			int data_len = 0;
+			for (int i = 0; i < tot; ++i)
+			{
+				int ptr = data_pointer[id][i];
+				for (int j = 0; j < buffer[ptr].length; ++j)
+					ip_msg[id].data[data_len++] = (char)buffer[ptr].data[j];
+			}
+			ip_msg[id].data[data_len] = 0;
+			return ip_msg+id;
+		}
+	}
+	return NULL;
 }
