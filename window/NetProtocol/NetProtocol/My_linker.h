@@ -57,6 +57,6 @@ public:
 		left = new int[maxlength];
 	}
 	pcap_t * get_adapter();
-	int combine(const u_char *);
+	IP_Msg * combine(const u_char *);
 	int send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle, unsigned short i);
 };

@@ -5,6 +5,7 @@
 #include <map>
 #include "CMyIP.h"
 #include "TransLayer.h"
+#include "my_linker.h"
 using namespace std;
 
 class CMainFrame : public CFrameWnd
@@ -22,6 +23,7 @@ public:
 
 public:
 	CMyIP ip;
+	my_linker linker;
 	// ÖØÐ´
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);

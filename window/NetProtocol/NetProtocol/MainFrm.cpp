@@ -6,6 +6,7 @@
 #include "CMyIP.h"
 #include "string.h"
 #include "Tools.h"
+#include "pcap.h"
 
 struct _iphdr IP_HEADER;
 struct Msg IP_data;
@@ -243,7 +244,13 @@ LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´
 
 LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊý¾ÝÍøÂç²ãµÄ½Ó¿Ú
 {//
+	my_linker &receiver = (my_linker)(*(my_linker *)lparam);
+	const u_char * packetData = (const u_char *)wparam;
+	IP_Msg * ip_msg;
+	ip_msg = receiver.combine(packetData);
+	if (ip_msg != NULL) AfxGetMainWnd()->SendMessage(IPTOTRANS, (WPARAM)ip_msg);
 	return 0;
+
 }
 
 struct tcp_message global_new_tcp_msg;
@@ -323,15 +330,32 @@ LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊý¾Ý·¢ËÍ
 
 LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊý¾Ý·¢ËÍ³öÈ¥½Ó¿Ú
 {
-	/*if(send((struct IP_Msg *)wparam,(unsigned short)lparam)!=0)
-	{
-		printf("error sending datagram!\n");
-	}*/
+	static int seq = 0;
+	while ((linker.send_by_frame((struct IP_Msg *)wparam, linker.get_adapter(), seq)) != 0)
+		seq += 1;
 	return 0;
 }
 
 DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
 {
-	return 0;
+	my_linker *receiver = new my_linker();
+	pcap_t * adapterHandle = receiver->get_adapter();
+	struct pcap_pkthdr * packetHeader;
+	const u_char       * packetData;
+	int retValue;
+	receiver->initialize();
 
+	while ((retValue = pcap_next_ex(adapterHandle,
+
+		&packetHeader,
+
+		&packetData)) >= 0)
+
+	{
+		if (retValue == 0) continue;
+		if (packetHeader->len != 168) continue;
+		AfxGetMainWnd()->SendMessage(LINKTOIP, (WPARAM)packetData, (LPARAM)receiver);
+	}
+	return 0;
 }
+

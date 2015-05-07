@@ -174,8 +174,8 @@ int my_linker::combine(const u_char * packetData)
 
 	Frame_data frame_data;
 
-	if (Receive.MAC_des[0] != 0xec24 || Receive.MAC_des[1] != 0x1a99 || Receive.MAC_des[2] != 0x8c07) return -1;
-	if (Receive.MAC_src[0] != 0x5d68 || Receive.MAC_src[1] != 0xe643 || Receive.MAC_src[2] != 0xfdac) return -1;
+	if (Receive.MAC_des[0] != 0xec24 || Receive.MAC_des[1] != 0x1a99 || Receive.MAC_des[2] != 0x8c07) return NULL;
+	if (Receive.MAC_src[0] != 0x5d68 || Receive.MAC_src[1] != 0xe643 || Receive.MAC_src[2] != 0xfdac) return NULL;
 
 	//puts("fuck");
 
@@ -228,8 +228,8 @@ int my_linker::combine(const u_char * packetData)
 					ip_msg[id].data[data_len++] = (char)buffer[ptr].data[j];
 			}
 			ip_msg[id].data[data_len] = 0;
-			return id;
+			return ip_msg+id;
 		}
 	}
-	return -1;
+	return NULL;
 }
