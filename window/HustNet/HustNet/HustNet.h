@@ -35,6 +35,8 @@
 #define  SOCKSEND                   203
 #define  SOCKSENDTO               204
 #define  SOCKRECEIVE              205
+#define  SOCKRECEIVEFROM    206
+#define  SOCKCLOSE                 207
 
 
 /**

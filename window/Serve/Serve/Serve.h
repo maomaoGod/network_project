@@ -13,12 +13,14 @@
 #define REGISTER       WM_USER + 1001
 #define SENDTONPC   WM_USER + 1002
 
-#define  SOCKCONNECT            200
-#define  SOCKBIND                    201
+#define  SOCKCONNECT             200
+#define  SOCKBIND                     201
 #define  SOCKLISTEN                 202
 #define  SOCKSEND                   203
 #define  SOCKSENDTO               204
 #define  SOCKRECEIVE              205
+#define  SOCKRECEIVEFROM    206
+#define  SOCKCLOSE                 207
 
 struct sockstruct {
 	unsigned short  dstport;   //Ŀ�Ķ˿ں�
