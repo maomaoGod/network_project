@@ -182,11 +182,16 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 {  //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
+	struct Msg new_ip_msg = *((struct Msg *)wparam);
+
+	// ¸ù¾İÁ¬½ÓÅĞ¶ÏÊÇUDP»¹ÊÇTCP
 
 	// UDP
 	if (true/* edited later */)
 	{
-		struct udp_message new_udp_msg = *((struct udp_message *)wparam);
+		// »ñÈ¡UDP±¨ÎÄ¶Î
+		struct udp_message new_udp_msg;
+		memcpy(&new_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data)+1); // +1 for \0
 
 		// ¼ìÑéºÍ
 		if (!udpcheck(new_udp_msg.udp_msg_length-8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length%2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
@@ -195,11 +200,21 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 			return -1;
 		}
 
+		// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖĞ
+		struct sockstruct new_sockstruct;
+		new_sockstruct.dstport = new_udp_msg.udp_dst_port;
+		new_sockstruct.srcport = new_udp_msg.udp_src_port;
+		new_sockstruct.bindport = 0;
+		new_sockstruct.datalength = new_udp_msg.udp_msg_length-8;
+		IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
+		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
+		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength+1); // +1 for \0
+
 		COPYDATASTRUCT CopyDataStruct;
 		// ×Ö½ÚÊı
-		CopyDataStruct.cbData = new_udp_msg.udp_msg_length-8;
+		CopyDataStruct.cbData = sizeof(new_sockstruct);
 		// ·¢ËÍÄÚÈİ
-		CopyDataStruct.lpData = &(new_udp_msg.udp_app_data);
+		CopyDataStruct.lpData = &new_sockstruct;
 		// ½ø³Ì¼äÍ¨ĞÅ
 		::SendMessage(port2hwnd[new_udp_msg.udp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
 	}
@@ -256,7 +271,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 	unsigned int dst_ip = IP_chars2uint(data_from_applayer.dstip);
 	unsigned short dst_port = data_from_applayer.dstport;
 	unsigned short src_port = data_from_applayer.srcport;
-	unsigned int src_ip = IP_chars2uint(data_from_applayer.srcip);
+	unsigned int src_ip = getIP();
 	unsigned int data_len = data_from_applayer.datalength;
 
 	//// ÏÈ×ª»¯Îª¶à×Ö½Ú£¬ÔÙ¼ÆËã³¤¶È£¬ÒÔÃâ¼ÆËãÉÙÁË×Ö½ÚÊı

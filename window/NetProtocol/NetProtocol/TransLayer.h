@@ -35,4 +35,14 @@ bool deletenode(tcplist* p);
 
 tcplist *getNode(unsigned int ip);
 
+void TCP_new();
+
+void TCP_send();
+
+void TCP_receive();
+
+void TCP_resend();
+
+void TCP_destroy();
+
 void TCP_controller();

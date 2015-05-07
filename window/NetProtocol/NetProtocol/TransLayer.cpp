@@ -50,15 +50,26 @@ bool deletenode(tcplist* p)
 {
 	tcplist* s1;
 	tcplist* s2;
-	s1 = head;
-	while (s1 != p && s1 != NULL)
+	s2 = s1 = head;
+
+	if (s1 != p && s1 != NULL)
 	{
-		s2 = s1;
-		s1 = s1->next;
+		while (s1 != p && s1 != NULL)
+		{
+			s2 = s1;
+			s1 = s1->next;
+		}
 	}
+	else
+	{
+		printf("something wrong!");
+		return false;
+	}
+
+	
 	if (s1 == NULL)
 	{
-		printf("the node you want to delete doesn't exist！");
+		printf("the node you want to delete doesn't exist!");
 		return false;
 	}
 	else
@@ -125,6 +136,9 @@ void TCP_destroy()
 	global_TCP_destroy_flag = true;
 }
 
+unsigned int global_ip;
+int global_no_;
+
 void TCP_controller()
 {
 	// 单线程总控的流程
@@ -157,8 +171,6 @@ void TCP_controller()
 			// 拆除TCP连接
 		}
 
-	    unsigned int global_ip;
-		int global_no_;
 		if (true/*要求发送报文*/)
 		{
 			tcplist *temp1;

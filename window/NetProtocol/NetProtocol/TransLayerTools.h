@@ -90,6 +90,8 @@ unsigned int getIP();
 
 unsigned int IP_chars2uint(char ip[]);
 
+void IP_uint2chars(char ip[], unsigned int ip_int);
+
 unsigned int IP_string2uint(string ip);
 
 unsigned int port_string2uint(string port);

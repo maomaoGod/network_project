@@ -178,6 +178,40 @@ unsigned int IP_chars2uint(char ip[])
 	return ip_number;
 }
 
+void IP_uint2chars(char ip[], unsigned int ip_int)
+{
+	int ptr = 0;
+	unsigned int segment;
+	char temp[20];	// ipv4
+	for (int i = 0; i < 4; ++i)	// ipv4
+	{
+		segment = ip_int%256;
+		if (segment)
+		{
+			while (segment)
+			{
+				temp[ptr++] = segment%10-48;
+				segment /= 10;
+			}
+		}
+		else
+		{
+			temp[ptr++] = '0';
+		}
+
+		if (i != 3)
+		{
+			temp[ptr++] = '.';
+		}
+	}
+
+	for (int i = 0; i < ptr; ++i)
+	{
+		ip[i] = temp[ptr-i-1];
+	}
+	ip[ptr] = '\0';
+}
+
 unsigned int IP_string2uint(string ip)
 {
 	// 将ip从字符串转为unsigned int
