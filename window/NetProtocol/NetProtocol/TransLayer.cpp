@@ -91,12 +91,13 @@ bool deletenode(tcplist* p)
 	}
 }
 
-tcplist *getNode(unsigned int ip,unsigned short port)
+struct tcplist *getNode(unsigned int ip, unsigned short port)
 {//在带头结点的单链表head中查找第i个结点，若找到（0≤i≤n），
 	//则返回该结点的存储位置，否则返回NULL。
 	tcplist *p;
 	p = head;//从头结点开始扫描
-	while (p){//顺指针向后扫描，直到p->next为NULL为止
+	while (p)
+	{//顺指针向后扫描，直到p->next为NULL为止
 		if (p->IP == ip && p->PORT == port)  //若找到目标IP，则返回p
 		{
 			return p;

@@ -27,7 +27,7 @@ u16 udpmakesum(u16 len_udp, u16 src_port,u16 dest_port, bool padding, u16 *buff)
         buff[len_udp]=0;
     }
     ///<initialize sum to zero
-    sum=0;
+    sum = 0;
     ///< make 16 bit words out of every two adjacent 8 bit words and
     ///< calculate the sum of all 16 bit words
     for (i=0; i<len_udp+padd; i=i+2){
@@ -69,7 +69,7 @@ u16 tcpmakesum(u16 len_tcp, u16 src_port,u16 dest_port, bool padding, u16 *buff)
         buff[len_tcp]=0;
     }
     ///<initialize sum to zero
-    sum=0;
+    sum = 0;
     ///< make 16 bit words out of every two adjacent 8 bit words and
     ///< calculate the sum of all 16 vit words
     for (i=0;i<len_tcp+padd;i=i+2){
@@ -101,7 +101,7 @@ bool udpcheck(u16 len_udp, u16 src_port,u16 dest_port, bool padding, u16 *buff, 
  {
     u16 sum;///<sum of data and checksum
     sum = udpmakesum(len_udp, src_port, dest_port, padding, buff)+checksum;
-    if (sum = 0xffff)
+    if (sum == 0xffff)
         return 1;
     else
         return 0;
@@ -115,7 +115,7 @@ bool tcpcheck(u16 len_tcp, u16 src_port,u16 dest_port, bool padding, u16 *buff, 
  {
     u16 sum;///<sum of data and checksum
     sum = tcpmakesum(len_tcp, src_port, dest_port, padding, buff)+checksum;
-    if (sum = 0xffff)
+    if (sum == 0xffff)
         return 1;
     else
         return 0;

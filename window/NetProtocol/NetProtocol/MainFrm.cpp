@@ -189,9 +189,10 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包�
 	// 由于UDP和TCP的开头都是源端口，直接假s定其为UDP来获取源端口号
 	struct udp_message assume_udp_msg;
 	memcpy(&assume_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data)+1); // +1 for \0
+	struct tcplist *found_TCP = getNode(new_ip_msg.sip, assume_udp_msg.udp_src_port);
 
 	// UDP
-	if (true/* edited later */)
+	if (found_TCP == NULL)
 	{
 		// 获取UDP报文段
 		struct udp_message new_udp_msg;

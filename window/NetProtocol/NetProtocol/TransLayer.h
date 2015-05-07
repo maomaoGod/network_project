@@ -34,7 +34,7 @@ bool addNode(tcplist* tcp_list);
 
 bool deletenode(tcplist* p);
 
-tcplist *getNode(unsigned int ip);
+struct tcplist *getNode(unsigned int ip, unsigned short port);
 
 void TCP_new();
 
