@@ -1,3 +1,5 @@
+#pragma once
+#include "stdafx.h"
 #include "TransLayer.h"
 
 struct tcplist tcp_list;

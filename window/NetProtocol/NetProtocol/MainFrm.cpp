@@ -169,7 +169,7 @@ LRESULT CMainFrame::OnApp2Trans(WPARAM wparam, LPARAM lparam)
 		mycp.cbData = sizeof(sockstruct);
 		::SendMessage(port2hwnd[mysock.dstport], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
 		break;
-	case SOCKSENDOUT:
+	case SOCKSENDTO:
 		break;
 	case SOCKCONNECT:
 		break;
@@ -273,7 +273,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 		new_udp_msg.udp_dst_port = dst_port;
 		new_udp_msg.udp_msg_length = 8+data_len;
 		memcpy(new_udp_msg.udp_app_data, data_from_applayer.data, data_len+1); // +1 for \0
-		new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)src_port, (u16)dst_port, data_len%2, (u16 *)&temp_data);
+		//new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)src_port, (u16)dst_port, data_len%2, (u16 *)&temp_data);
 
 		// UDPÎÞÓµÈû¿ØÖÆ
 		struct Msg new_ip_msg;
@@ -306,7 +306,6 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 			// ÈôÎ´½¨Á¢Á¬½ÓÔò±¨´í
 		}
 	}
-
 	return 0;
 }
 

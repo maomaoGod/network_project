@@ -5,7 +5,7 @@
  * @version 0.1
  *
  */
-
+#pragma once
 #include "stdafx.h"
 #include "winsock2.h"
 #include <string>
