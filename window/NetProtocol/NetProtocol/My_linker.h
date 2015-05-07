@@ -1,32 +1,62 @@
-//å®šä¹‰äº†é“¾è·¯å±‚ç±»ï¼Œè¯¥ç±»å†…åŒ…å«å¸§ç»“æ„çš„å®šä¹‰ä»¥åŠæ”¶å‘å‡½æ•°çš„å®šä¹‰ç­‰ç­‰
+#pragma once
+#include "pcap.h"
+#include "NetProtocol.h"
+#define FRAMESIZE 128
+#define IP_SIZE sizeof(struct _iphdr)
+#define MAC_ADDR_SIZE 3
+typedef unsigned char Byte;
+
 class my_linker
 {
-  private:
-	  struct Frame_data{
-		struct _iphdr IP;                  // ç½‘ç»œå±‚ä¼ æ¥çš„IP
-		Byte data[512];                    // ç½‘ç»œå±‚æ•°æ®
-  };
+private:
+	struct Frame_data{
+		struct _iphdr IP;                  // ÍøÂç²ã´«À´µÄIP
+		Byte data[FRAMESIZE];                    // ÍøÂç²ãÊı¾İ
+	};
 
-  //å¸§ç»“æ„çš„å®šä¹‰
-  struct Frame{
-		unsigned short MAC_des[3];           // MAC_dst MACç›®æ ‡åœ°å€
-		unsigned short MAC_src[3];           // MAC_src MACæºåœ°å€
-		unsigned short total_seq_num;        // å¸§çš„æ€»ä¸ªæ•°
-		unsigned short datagram_num;         // æ•°æ®æŠ¥åºå·
-		unsigned short seq;                  // å¸§åºå·
-		unsigned short length;               // å½“å‰å¸§æ•°æ®çš„é•¿åº¦
-		struct Frame_data frame_data;        // å¸§æ•°æ®ç»“æ„
+	struct Frame{
+		unsigned short MAC_des[MAC_ADDR_SIZE];           // MAC_dst MACÄ¿±êµØÖ·
+		unsigned short MAC_src[MAC_ADDR_SIZE];           // MAC_src MACÔ´µØÖ·
+		unsigned short total_seq_num;        // Ö¡µÄ×Ü¸öÊı
+		unsigned short datagram_num;         // Êı¾İ±¨ĞòºÅ
+		unsigned short seq;                  // Ö¡ĞòºÅ
+		unsigned short length;               // µ±Ç°Ö¡Êı¾İµÄ³¤¶È
+		struct Frame_data frame_data;        // Ö¡Êı¾İ½á¹¹
 	};
 
 	struct Data_Segment
 	{
-		Byte data[512];
+		Byte data[128];
 		unsigned short length;
 	};
 
-  public:
-  int send(struct IP_Msg *data_gram, unsigned short i);
-	my_linker();
-	~my_linker();
-};
+	static const int maxlength = 100000;
+	IP_Msg *ip_msg;
+	Data_Segment *buffer;
+	int bp;
+	int **data_pointer;
+	int *left;					 //Ã¿¸öÊı¾İ±¨»¹Ê£¶àÉÙÖ¡
 
+public:
+	my_linker(){}
+	~my_linker()
+	{
+		delete[] ip_msg;
+		delete[] buffer;
+		for (int i = 0; i < maxlength; ++i)
+			delete[] data_pointer[i];
+		delete[] data_pointer;
+		delete[] left;
+	}
+	inline void initialize()
+	{
+		ip_msg = new IP_Msg[maxlength];
+		buffer = new Data_Segment[maxlength];
+		bp = 0;
+		data_pointer = new int*[maxlength];
+		left = new int[maxlength];
+	}
+	pcap_t * get_adapter();
+	int combine(const u_char *);
+	int send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle, unsigned short i);
+};
