@@ -194,3 +194,6 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+window/NetProtocol/NetProtocol/NetProtocol.vcxproj
+window/NetProtocol/NetProtocol/NetProtocol.vcxproj
+*.vcxproj
