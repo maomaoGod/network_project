@@ -297,13 +297,11 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //传输层打包�
 	unsigned int src_ip = getIP();
 	unsigned int data_len = data_from_applayer.datalength;
 
-	//// 先转化为多字节，再计算长度，以免计算少了字节数
-	//// 这里可能需要日后更改为应用层自己转码，这样理论上可以减少传输的字节数
-	//CString temp_data = mystr.Mid(split_ip);
-	//unsigned int data_len = CStringA(temp_data).GetLength();
+	// 判断是UDP还是TCP
+	struct tcplist *found_TCP = getNode(dst_ip, dst_port);
 
 	// UDP
-	if (true/* edited later */)
+	if (found_TCP == NULL)
 	{
 		struct udp_message new_udp_msg;
 		// 填入UDP报文段结构
@@ -311,7 +309,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //传输层打包�
 		new_udp_msg.udp_dst_port = dst_port;
 		new_udp_msg.udp_msg_length = 8+data_len;
 		memcpy(new_udp_msg.udp_app_data, data_from_applayer.data, data_len+1); // +1 for \0
-		//new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)src_port, (u16)dst_port, data_len%2, (u16 *)&temp_data);
+		new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)src_port, (u16)dst_port, data_len%2, (u16 *)&(new_udp_msg.udp_app_data));
 
 		// UDP无拥塞控制
 		struct Msg new_ip_msg;
