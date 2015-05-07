@@ -1,4 +1,11 @@
 # network_project
+
+ATTENTION!任何人同步的时候，请git add *.h并且git add *.cpp，请不要用git add *！！！
+原因在于，你们的Winpcap库文件可能不在同一个目录，因此vcxproj这个工程集文件对大家是不应该一样的
+
+
+
+
 这是我们ACM班计算机网络课程设计程序
 
 分的四个组，DLL大概要实现的是协议的类，然后调用获得html（js目前管不了），然后显示出来

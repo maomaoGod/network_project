@@ -21,6 +21,7 @@ bool createNodeList()
 		head->MSG_num = 0;
 		head->cwnd = MSS;
 		head->IP = 0;
+		head->PORT = 0;
 		head->Threshold = 65 * 1024;
 		head->count = 0;
 		head->next = NULL;
@@ -90,13 +91,13 @@ bool deletenode(tcplist* p)
 	}
 }
 
-tcplist *getNode(unsigned int ip)
+tcplist *getNode(unsigned int ip,unsigned short port)
 {//在带头结点的单链表head中查找第i个结点，若找到（0≤i≤n），
 	//则返回该结点的存储位置，否则返回NULL。
 	tcplist *p;
 	p = head;//从头结点开始扫描
 	while (p){//顺指针向后扫描，直到p->next为NULL为止
-		if (p->IP = ip)  //若找到目标IP，则返回p
+		if (p->IP == ip && p->PORT == port)  //若找到目标IP，则返回p
 		{
 			return p;
 		}
@@ -137,6 +138,7 @@ void TCP_destroy()
 }
 
 unsigned int global_ip;
+unsigned short global_port;
 int global_no_;
 
 void TCP_controller()
@@ -174,13 +176,14 @@ void TCP_controller()
 		if (true/*要求发送报文*/)
 		{
 			tcplist *temp1;
-			temp1 = getNode(global_ip);  //请求报文的源ip(+端口号)
+			temp1 = getNode(global_ip,global_port);  //请求报文的源ip(+端口号)
 			if (temp1 == NULL)   //如果请求报文的源ip对应的TCP当前未建立连接，则新建一个TCP，加入链表尾部
 			{
 				tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list));
 				node1->MSG_num = 1;
 				node1->cwnd = MSS;
 				node1->IP = global_ip;
+				node1->PORT = global_port;
 				node1->count = 0;
 				node1->Threshold = 65 * 1024;
 				node1->tcp_msg[node1->MSG_num - 1].ACK = 0;
@@ -215,7 +218,7 @@ void TCP_controller()
 		{
 			//得到响应报文的目标ip(+端口号)
 			tcplist* temp2;
-			temp2 = getNode(global_ip);
+			temp2 = getNode(global_ip, global_port);
 			temp2->tcp_msg[temp2->count].time = GetTickCount();
 			if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number >= ACK_global)   //冗余ACK计数
 			{
@@ -247,7 +250,7 @@ void TCP_controller()
 
 		if (true/* TCP_Link_Destroyed */)
 		{
-		    deletenode(getNode(global_ip));
+		    deletenode(getNode(global_ip,global_port));
 		}
 	}
 }
