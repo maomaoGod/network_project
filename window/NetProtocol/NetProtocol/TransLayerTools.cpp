@@ -235,7 +235,7 @@ unsigned int IP_string2uint(string ip)
 unsigned int port_string2uint(string port)
 {
 	unsigned int port_number = 0;
-	for (int i = 0; i < port.length(); ++i)
+	for (unsigned int i = 0; i < port.length(); ++i)
 	{
 		port_number = port_number*10+port[i]-48;
 	}

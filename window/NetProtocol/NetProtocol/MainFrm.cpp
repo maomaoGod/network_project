@@ -186,7 +186,9 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包�
 	//应用层发往传输层的数据在OnCopyData中获取
 	struct Msg new_ip_msg = *((struct Msg *)wparam);
 
-	// 根据连接判断是UDP还是TCP
+	// 由于UDP和TCP的开头都是源端口，直接假s定其为UDP来获取源端口号
+	struct udp_message assume_udp_msg;
+	memcpy(&assume_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data)+1); // +1 for \0
 
 	// UDP
 	if (true/* edited later */)
@@ -211,7 +213,7 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包�
 		IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
 		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
 		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength+1); // +1 for \0
-
+		
 		COPYDATASTRUCT CopyDataStruct;
 		// 字节数
 		CopyDataStruct.cbData = sizeof(new_sockstruct);
@@ -279,7 +281,6 @@ LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //链路层解包传
 	ip_msg = receiver.combine(packetData);
 	if (ip_msg != NULL) AfxGetMainWnd()->SendMessage(IPTOTRANS, (WPARAM)ip_msg);
 	return 0;
-
 }
 
 struct tcp_message global_new_tcp_msg;
