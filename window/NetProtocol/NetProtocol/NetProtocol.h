@@ -72,6 +72,7 @@ struct _iphdr //定义IP首部
 struct Msg{                     ///<数据
 	unsigned int sip;
 	unsigned int dip;
+	int datelen;
 	char data[2048];
 };
 

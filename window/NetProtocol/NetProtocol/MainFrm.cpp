@@ -220,6 +220,8 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包�
 		CopyDataStruct.cbData = sizeof(new_sockstruct);
 		// 发送内容
 		CopyDataStruct.lpData = &new_sockstruct;
+		// 设置为Send，应用层套接字Receive响应
+		CopyDataStruct.dwData = SOCKSEND;
 		// 进程间通信
 		::SendMessage(port2hwnd[new_udp_msg.udp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
 	}
@@ -257,6 +259,8 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包�
 		CopyDataStruct.cbData = sizeof(new_sockstruct);
 		// 发送内容，暂时不分开opts和data
 		CopyDataStruct.lpData = &new_sockstruct;
+		// 设置为Send，应用层套接字Receive响应
+		CopyDataStruct.dwData = SOCKSEND;
 		// 进程间通信
 		::SendMessage(port2hwnd[new_tcp_msg.tcp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
 	}
@@ -317,6 +321,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //传输层打包�
 		struct Msg new_ip_msg;
 		new_ip_msg.sip = src_ip;
 		new_ip_msg.dip = dst_ip;
+		new_ip_msg.datelen = new_udp_msg.udp_msg_length;
 		memcpy(new_ip_msg.data, &new_udp_msg, new_udp_msg.udp_msg_length+1); // +1 for \0
 		OnIP2Link((WPARAM)&new_ip_msg, lparam);
 	}
