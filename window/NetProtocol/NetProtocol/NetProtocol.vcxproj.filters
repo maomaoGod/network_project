@@ -48,6 +48,9 @@
     <ClInclude Include="TransLayer.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="My_linker.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetProtocol.cpp">
@@ -72,6 +75,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="TransLayer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="My_linker.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

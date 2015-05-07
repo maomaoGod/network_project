@@ -165,6 +165,7 @@ LRESULT CMainFrame::OnApp2Trans(WPARAM wparam, LPARAM lparam)
 	case SOCKLISTEN:
 		break;
 	case SOCKSEND:
+		mysock.srcport = pwnd2port[pWnd];
 		mycp.dwData = SOCKSEND;
 		mycp.lpData = (void *)&mysock;
 		mycp.cbData = sizeof(sockstruct);

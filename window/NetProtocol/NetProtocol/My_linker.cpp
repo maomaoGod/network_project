@@ -166,7 +166,7 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle, u
 	return 0;
 }
 
-int my_linker::combine(const u_char * packetData)
+IP_Msg * my_linker::combine(const u_char * packetData)
 {
 	Frame &Receive = *((Frame *)packetData);
 
