@@ -64,6 +64,7 @@ struct _iphdr //定义IP首部
 	unsigned short ih_ident;	///< 数据报的16位标识
 	unsigned short ih_flags;    ///< 数据报的标志
 	unsigned short ih_offset;	///< 数据报的片偏移
+	unsigned short ih_protl;	///< 数据报的协议, 定义0代表传输层数据, 定义1代表节点相接的信息
 	unsigned int ih_saddr;		///< 32位源IP
 	unsigned int ih_daddr;		///< 32位目的IP
 };

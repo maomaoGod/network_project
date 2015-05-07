@@ -22,6 +22,7 @@ public:
 	_iphdr *IP_HEADER; ///< 定义IP报文头部
 	Msg *IP_data;      ///< 定义IP报文数据
 	IP_Msg *MyIP;      ///< 定义IP报文
+	int _offset;
 
 public:
 	/** @brief CMyIP类的构造函数 */

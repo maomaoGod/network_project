@@ -20,6 +20,7 @@
 */
 CMyIP::CMyIP()
 {
+	_offset = 0;
 }
 
 /**
@@ -36,7 +37,7 @@ CMyIP::~CMyIP()
 
 /**
 * @author ACM2012
-* @param [in] 无
+* @param [in] wparam表示传输层传过来的数据包结构指针, lparam表示传输层传过来的参数.
 * @return 返回FALSE说明发送到链路层的消息失败，返回TRUE说明发送成功
 * @note 函数功能主要是将Msg结构和IP地址等信息分片组装成IP_msg发送给链路层
 */
@@ -51,6 +52,7 @@ BOOL CMyIP::IP2Link(WPARAM wparam, LPARAM lparam)
 	IP_data = (struct Msg*)wparam;
 	while (strlen(IP_data->data) - 8 * offset > MAXSIZE)
 	{
+		MyIP->iphdr->ih_protl = 0;
 		MyIP->iphdr->ih_saddr = IP_data->sip;
 		MyIP->iphdr->ih_daddr = IP_data->dip;
 		MyIP->iphdr->ih_flags = 1;
@@ -62,6 +64,7 @@ BOOL CMyIP::IP2Link(WPARAM wparam, LPARAM lparam)
 		strncpy_s(MyIP->data, MAXSIZE, IP_data->data, MAXSIZE);
 		(AfxGetApp()->m_pMainWnd)->SendMessage(LINKSEND, (WPARAM)MyIP, lparam);
 	}
+	MyIP->iphdr->ih_protl = 0;
 	MyIP->iphdr->ih_saddr = IP_data->sip;
 	MyIP->iphdr->ih_daddr = IP_data->dip;
 	MyIP->iphdr->ih_flags = 0;
@@ -77,7 +80,7 @@ BOOL CMyIP::IP2Link(WPARAM wparam, LPARAM lparam)
 
 /**
 * @author ACM2012
-* @param [in] 无
+* @param [in] wparam表示传输层传过来的数据包结构指针, lparam表示传输层传过来的参数.
 * @return 返回FALSE说明没有发送成功，返回TRUE说明发送成功
 * @note 函数功能主要是链路层发送过来的信息分解成Msg结构, 发送给运输层
 */
@@ -87,33 +90,28 @@ Bool CMyIP::IP2Trans(WPARAM wparam, LPARAM lparam)
 	///< 若发现分片缺失或者检验和出错则 return FALSE;
 	///< 若是则数据成功接收 进行少量的检验和检查, 若没有错误
 	///< 则将IP_msg结构剥离出Msg结构
-	int offset = 0, ident = 0;
-	ident++;
+	int ident = 1;
 	MyIP = (struct IP_Msg*)wparam;
-	while (MyIP->iphdr->ih_len - offset > 0)
+
+	if (MyIP->iphdr->ih_ident == ident)
 	{
-		if (MyIP->iphdr->ih_ident == ident)
+		if (MyIP->iphdr->ih_offset * 8 == _offset)
 		{
-			if (MyIP->iphdr->ih_offset * 8 == offset)
-			{
-				if (MyIP->iphdr->ih_flags){
-					strncpy_s(IP_data->data + offset, MAXSIZE, MyIP->data, MAXSIZE);
-					offset = offset + MAXSIZE;
-					IP_data->sip = MyIP->iphdr->ih_saddr;
-					IP_data->dip = MyIP->iphdr->ih_daddr;
-					(AfxGetApp()->m_pMainWnd)->SendMessage(TRANSTOAPP, (WPARAM)IP_data, lparam);
-				}
-				else{
-					strncpy_s(IP_data->data + offset, MAXSIZE, MyIP->data, MyIP->iphdr->ih_len - offset);
-					offset = MyIP->iphdr->ih_len;
-					IP_data->sip = MyIP->iphdr->ih_saddr;
-					IP_data->dip = MyIP->iphdr->ih_daddr;
-					(AfxGetApp()->m_pMainWnd)->SendMessage(TRANSTOAPP, (WPARAM)IP_data, lparam);
-				}
+			if (MyIP->iphdr->ih_flags){
+				strncpy_s(IP_data->data + _offset, MAXSIZE, MyIP->data, MAXSIZE);
+				_offset = _offset + MAXSIZE;
+				IP_data->sip = MyIP->iphdr->ih_saddr;
+				IP_data->dip = MyIP->iphdr->ih_daddr;
+			}
+			else{
+				strncpy_s(IP_data->data + _offset, MAXSIZE, MyIP->data, MyIP->iphdr->ih_len - _offset);
+				_offset = 0;
+				IP_data->sip = MyIP->iphdr->ih_saddr;
+				IP_data->dip = MyIP->iphdr->ih_daddr;
+				(AfxGetApp()->m_pMainWnd)->SendMessage(TRANSTOAPP, (WPARAM)IP_data, lparam);
 			}
 		}
 	}
 
 	return 0;
 }
-
