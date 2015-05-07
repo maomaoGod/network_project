@@ -240,6 +240,8 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包�
 			return -1;
 		}
 
+		TCP_receive();
+
 		// 填入送往应用层的结构中
 		struct sockstruct new_sockstruct;
 		new_sockstruct.dstport = new_tcp_msg.tcp_dst_port;
@@ -330,16 +332,42 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //传输层打包�
 		new_tcp_msg.tcp_src_port = src_port;
 		new_tcp_msg.tcp_dst_port = dst_port;
 
+		// 获取Function ID
+		int funID = (int)lparam;
+
 		// 方法判断
-		if (true/* method == SK_CONNECT */)
+		if (funID == SOCKCONNECT)
 		{
-			// 调用MainFrmTransTools中实现的三次握手
-			//ShakeHands();
+			// 三次握手
+			TCP_new();
+			TCP_send();
+			for (;;)
+			{
+				// wait for ack
+			}
+			TCP_send();
 		}
-		else if (true/* method == SK_SEND */)
+		else if (funID == SOCKSEND)
 		{
-			// 对维护的TCP状态链表进行查询，是否已建立连接
-			// 若未建立连接则报错
+			TCP_send();
+		}
+		else if (funID == SOCKCLOSE)
+		{
+			TCP_send();
+			for (;;)
+			{
+				// wait for ack
+			}
+			for (;;)
+			{
+				// wait for FIN
+			}
+			TCP_send();
+			TCP_destroy;
+		}
+		else
+		{
+			printf("OnTrans2IP: What is this?\n");
 		}
 	}
 	return 0;
