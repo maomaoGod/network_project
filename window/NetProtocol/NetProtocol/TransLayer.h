@@ -22,6 +22,7 @@ struct tcplist
 	int MSG_num;    //已经发送的报文数
 	int cwnd;       //窗口大小
 	unsigned int IP;  //IP
+	unsigned short PORT; //端口号
 	int Threshold;   //阈值
 	int count;      //当前已经有多少报文得到正确ACK
 	struct tcpmsg tcp_msg[1024];  //当前TCP下发送的报文
