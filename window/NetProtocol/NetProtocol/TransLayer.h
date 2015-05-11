@@ -3,6 +3,7 @@
 #include "Tools.h"
 #include "MainFrm.h"
 #include "TransLayerTools.h"
+#include "string.h"
 
 using namespace std;
 
@@ -47,3 +48,5 @@ void TCP_resend();
 void TCP_destroy();
 
 void TCP_controller();
+
+void mescopy(struct tcp_message tcp_msg_a, struct tcp_message tcp_msg_b);
