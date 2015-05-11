@@ -8,9 +8,6 @@
 #include "Tools.h"
 #include "pcap.h"
 
-struct _iphdr IP_HEADER;
-struct Msg IP_data;
-struct IP_Msg MyIP;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
