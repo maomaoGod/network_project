@@ -95,13 +95,13 @@ bool deletenode(tcplist* p)
 }
 
 struct tcplist *getNode(unsigned int ip, unsigned short port)
-{//�ڴ�ͷ���ĵ�����head�в��ҵ�i����㣬���ҵ���0��i��n����
-	//�򷵻ظý��Ĵ洢λ�ã����򷵻�NULL��
+{//ÔÚ´øÍ·½áµãµÄµ¥Á´±íheadÖÐ²éÕÒµÚi¸ö½áµã£¬ÈôÕÒµ½£¨0¡Üi¡Ün£©£¬
+	//Ôò·µ»Ø¸Ã½áµãµÄ´æ´¢Î»ÖÃ£¬·ñÔò·µ»ØNULL¡£
 	tcplist *p;
-	p = head;//��ͷ��㿪ʼɨ��
+	p = head;//´ÓÍ·½áµã¿ªÊ¼É¨Ãè
 	while (p)
-	{//˳ָ�����ɨ�裬ֱ��p->nextΪNULLΪֹ
-		if (p->IP == ip && p->PORT == port)  //���ҵ�Ŀ��IP���򷵻�p
+	{//Ë³Ö¸ÕëÏòºóÉ¨Ãè£¬Ö±µ½p->nextÎªNULLÎªÖ¹
+		if (p->IP == ip && p->PORT == port)  //ÈôÕÒµ½Ä¿±êIP£¬Ôò·µ»Øp
 		{
 			return p;
 		}
@@ -155,7 +155,7 @@ void TCP_destroy(unsigned int ip_temp, unsigned short port_temp)
 
 void TCP_controller()
 {
-	// ���߳��ܿص�����
+	// µ¥Ïß³Ì×Ü¿ØµÄÁ÷³Ì
 	createNodeList();
 	global_TCP_new_flag = global_TCP_send_flag = global_TCP_resend_flag = global_TCP_receive_flag = global_TCP_destroy_flag = false;
 	for (;;)
@@ -179,7 +179,7 @@ void TCP_controller()
 
 		if (global_TCP_send_flag)
 		{
-			// �½���ӦTCP���ӵ�Msg
+			// ÐÂ½¨¶ÔÓ¦TCPÁ¬½ÓµÄMsg
 
 			tcplist *temp1;
 			temp1 = getNode(global_ip, global_port);
@@ -192,11 +192,11 @@ void TCP_controller()
 
 		if (global_TCP_receive_flag)
 		{
-			// ���¶�ӦTCP��Msg��window��ack
+			// ¸üÐÂ¶ÔÓ¦TCPºÍMsgµÄwindowºÍack
 			tcplist* temp2;
 			temp2 = getNode(global_ip, global_port);
 			temp2->tcp_msg[temp2->count].time = GetTickCount();
-			if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number >= ACK_global)   //����ACK����
+			if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number >= ACK_global)   //ÈßÓàACK¼ÆÊý
 			{
 				temp2->tcp_msg[temp2->count].ACK++;
 			}
@@ -204,18 +204,18 @@ void TCP_controller()
 			{
 				temp2->count++;
 			}
-			if (temp2->cwnd <= temp2->Threshold) //������
+			if (temp2->cwnd <= temp2->Threshold) //ÂýÆô¶¯
 			{
 				temp2->cwnd += MSS;
 			}
 			else
 			{
-				if (temp2->tcp_msg[temp2->count].ACK >= 3)    //�յ�3������ACK������Ϊӵ������
+				if (temp2->tcp_msg[temp2->count].ACK >= 3)    //ÊÕµ½3¸öÈßÓàACK£¬ÉèÖÃÎªÓµÈû±ÜÃâ
 				{
 					temp2->Threshold = temp2->cwnd / 2;
 					temp2->cwnd = temp2->Threshold;
 				}
-				else      //�յ�ǰ��δȷ�����ݵ�ACK
+				else      //ÊÕµ½Ç°ÃæÎ´È·ÈÏÊý¾ÝµÄACK
 				{
 					temp2->cwnd = temp2->cwnd + MSS*(MSS / temp2->cwnd);
 				}
@@ -226,22 +226,22 @@ void TCP_controller()
 
 		if (global_TCP_resend_flag)
 		{
-			// �����ش���֪ͨTrans2IP
+			// ¿ìËÙÖØ´«£¬Í¨ÖªTrans2IP
 
 		}
 
 		if (global_TCP_destroy_flag)
 		{
-			// ���TCP����
+			// ²ð³ýTCPÁ¬½Ó
 			deletenode(getNode(global_ip, global_port));
 			global_TCP_destroy_flag = false;
 		}
 
-		//if (true/*Ҫ���ͱ���*/)
+		//if (true/*ÒªÇó·¢ËÍ±¨ÎÄ*/)
 		//{
 		//	tcplist *temp1;
-		//	temp1 = getNode(global_ip,global_port);  //�����ĵ�Դip(+�˿ں�)
-		//	if (temp1 == NULL)   //��������ĵ�Դip��Ӧ��TCP��ǰδ�������ӣ����½�һ��TCP����������β��
+		//	temp1 = getNode(global_ip,global_port);  //ÇëÇó±¨ÎÄµÄÔ´ip(+¶Ë¿ÚºÅ)
+		//	if (temp1 == NULL)   //Èç¹ûÇëÇó±¨ÎÄµÄÔ´ip¶ÔÓ¦µÄTCPµ±Ç°Î´½¨Á¢Á¬½Ó£¬ÔòÐÂ½¨Ò»¸öTCP£¬¼ÓÈëÁ´±íÎ²²¿
 		//	{
 		//		tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list));
 		//		node1->MSG_num = 1;
@@ -256,7 +256,7 @@ void TCP_controller()
 		//		node1->next = NULL;
 		//		addNode(node1);
 		//	}
-		//	else     //��������ĵ�ԴIP��Ӧ��TCP�˿��ѽ������ӣ�����ݱ������ݣ���д��ǰTCP�˿ڵ�tcp_msg�ṹ����¼������أ�
+		//	else     //Èç¹ûÇëÇó±¨ÎÄµÄÔ´IP¶ÔÓ¦µÄTCP¶Ë¿ÚÒÑ½¨Á¢Á¬½Ó£¬Ôò¸ù¾Ý±¨ÎÄÄÚÈÝ£¬ÌîÐ´µ±Ç°TCP¶Ë¿ÚµÄtcp_msg½á¹¹£¨¼ÇÂ¼±¨ÎÄÏà¹Ø£©
 		//	{
 		//		if (temp1->MSG_num - temp1->count <= temp1->cwnd / MSS)
 		//		{
@@ -269,7 +269,7 @@ void TCP_controller()
 		//}
 
 		tcplist* temp3 = head;
-		while (temp3)         //ʵʱ���ÿ��TCP�µ�ǰ������Ӧ�ı����Ƿ�ʱδ��Ӧ
+		while (temp3)         //ÊµÊ±¼ì²éÃ¿¸öTCPÏÂµ±Ç°Õý´ýÏìÓ¦µÄ±¨ÎÄÊÇ·ñ³¬Ê±Î´ÏìÓ¦
 		{
 			if (GetTickCount() - temp3->tcp_msg[temp3->count].time > RTT)
 			{
@@ -281,11 +281,11 @@ void TCP_controller()
 		}
 		//if (ACK_global != 0)
 		//{
-		//	//�õ���Ӧ���ĵ�Ŀ��ip(+�˿ں�)
+		//	//µÃµ½ÏìÓ¦±¨ÎÄµÄÄ¿±êip(+¶Ë¿ÚºÅ)
 		//	tcplist* temp2;
 		//	temp2 = getNode(global_ip, global_port);
 		//	temp2->tcp_msg[temp2->count].time = GetTickCount();
-		//	if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number >= ACK_global)   //����ACK����
+		//	if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number >= ACK_global)   //ÈßÓàACK¼ÆÊý
 		//	{
 		//		temp2->tcp_msg[temp2->count].ACK++;
 		//	}
@@ -293,18 +293,18 @@ void TCP_controller()
 		//	{
 		//		temp2->count++;
 		//	}
-		//	if (temp2->cwnd <= temp2->Threshold) //������
+		//	if (temp2->cwnd <= temp2->Threshold) //ÂýÆô¶¯
 		//	{
 		//		temp2->cwnd += MSS;
 		//	}
 		//	else
 		//	{
-		//		if (temp2->tcp_msg[temp2->count].ACK >= 3)    //�յ�3������ACK������Ϊӵ������
+		//		if (temp2->tcp_msg[temp2->count].ACK >= 3)    //ÊÕµ½3¸öÈßÓàACK£¬ÉèÖÃÎªÓµÈû±ÜÃâ
 		//		{
 		//			temp2->Threshold = temp2->cwnd / 2;
 		//			temp2->cwnd = temp2->Threshold;
 		//		}
-		//		else      //�յ�ǰ��δȷ�����ݵ�ACK
+		//		else      //ÊÕµ½Ç°ÃæÎ´È·ÈÏÊý¾ÝµÄACK
 		//		{
 		//			temp2->cwnd = temp2->cwnd + MSS*(MSS / temp2->cwnd);
 		//		}
@@ -334,4 +334,50 @@ void mescopy(struct tcp_message tcp_msg_a, struct tcp_message tcp_msg_b)
 	tcp_msg_b.tcp_checksum = tcp_msg_b.tcp_checksum;
 	tcp_msg_b.tcp_urg_ptr = tcp_msg_b.tcp_urg_ptr;
 	memcpy(tcp_msg_b.tcp_opts_and_app_data, tcp_msg_a.tcp_opts_and_app_data, sizeof(tcp_msg_a.tcp_opts_and_app_data));
+}
+
+extern ACK_ID; //当前ACK ID；
+extern Count_ACK;//冗余ACK计数器；
+extern Rcv_Window; //receiver window //将rwnd加入报文
+extern RcvBuffer//可以接受的大小
+void Fastretransmit(Receive_ACK_ID)
+{
+	int count;
+	if(Receive_ACK_New!= ACK_ID) //New ID
+	{
+		Count = 0;
+		ACK_ID = Receive_ACK_ID;
+		return ;
+	}
+	else
+	{
+		{
+			Count +1 = Count;
+			if(count == 3)
+			{
+				//开始冗余ACK
+			}
+		}
+	}
+	return ;
+}
+
+int Getrwnd(int RcvBuffer) //rwdnSize为bufferSize?
+{
+	int Rcv_Window;
+	Rcv_Window = RcvBuffer;
+}
+
+void FlowControl(Rcv_Window,Last_Rcv_ACK) //滑动窗口流量控制
+{	
+
+	if(Last_Rcv_ACK+Rcv_Window>RcvBuffer)
+	{
+		//告诉对方已经发满
+	}
+	elseif(Last_Rcv_ACK+Rcv_Window==RcvBuffer)
+	{
+		//糊涂窗口综合征
+	}
+
 }
