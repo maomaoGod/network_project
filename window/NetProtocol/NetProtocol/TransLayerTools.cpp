@@ -242,9 +242,7 @@ unsigned int port_string2uint(string port)
 	return port_number;
 }
 
-
-
-// 选择重传
+// 超时重发
 //void post()
 //{
 //    if(get_data == 1/*从上层收到数据*/)
