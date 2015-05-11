@@ -3,6 +3,7 @@
 #include "Tools.h"
 #include "MainFrm.h"
 #include "TransLayerTools.h"
+#include "string.h"
 
 using namespace std;
 
@@ -28,6 +29,7 @@ struct tcplist
 	struct tcpmsg tcp_msg[1024];  //当前TCP下发送的报文
 };
 
+
 bool createNodeList();
 
 bool addNode(tcplist* tcp_list);
@@ -47,3 +49,5 @@ void TCP_resend();
 void TCP_destroy();
 
 void TCP_controller();
+
+void mescopy(struct tcp_message tcp_msg_a, struct tcp_message tcp_msg_b);

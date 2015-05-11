@@ -5,9 +5,12 @@
 struct tcplist tcp_list;
 tcplist* head = NULL;
 
-extern struct tcp_message global_new_tcp_msg;
+struct tcp_message global_new_tcp_msg;
 
 int ACK_global;
+
+unsigned int global_ip;
+unsigned short global_port;
 
 bool createNodeList()
 {
@@ -113,19 +116,27 @@ bool global_TCP_receive_flag;
 bool global_TCP_resend_flag;
 bool global_TCP_destroy_flag;
 
-void TCP_new()
+void TCP_new(unsigned int ip_temp, unsigned short port_temp)
 {
 	global_TCP_new_flag = true;
+	global_ip = ip_temp;
+	global_port = port_temp;
 }
 
-void TCP_send()
+void TCP_send(unsigned int ip_temp, unsigned short port_temp, struct tcp_message tcp_msg_temp)
 {
 	global_TCP_send_flag = true;
+	global_ip = ip_temp;
+	global_port = port_temp;
+	global_new_tcp_msg = tcp_msg_temp;
 }
 
-void TCP_receive()
+void TCP_receive(unsigned int ip_temp, unsigned short port_temp, int ACK_temp)
 {
 	global_TCP_receive_flag = true;
+	global_ip = ip_temp;
+	global_port = port_temp;
+	ACK_global = ACK_temp;
 }
 
 void TCP_resend()
@@ -133,14 +144,14 @@ void TCP_resend()
 	global_TCP_resend_flag = true;
 }
 
-void TCP_destroy()
+void TCP_destroy(unsigned int ip_temp, unsigned short port_temp)
 {
 	global_TCP_destroy_flag = true;
+	global_ip = ip_temp;
+	global_port = port_temp;
 }
 
-unsigned int global_ip;
-unsigned short global_port;
-int global_no_;
+
 
 void TCP_controller()
 {
@@ -151,73 +162,37 @@ void TCP_controller()
 	{
 		if (global_TCP_new_flag)
 		{
-			// 新建TCP连接
+			tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list));
+			node1->MSG_num = 1;
+			node1->cwnd = MSS;
+			node1->IP = global_ip;
+			node1->PORT = global_port;
+			node1->count = 0;
+			node1->Threshold = 65 * 1024;
+			node1->tcp_msg[node1->MSG_num - 1].ACK = 0;
+			mescopy(node1->tcp_msg[node1->MSG_num - 1].tcpmessage, global_new_tcp_msg);
+			node1->tcp_msg[node1->MSG_num - 1].time = GetTickCount();
+			node1->next = NULL;
+			addNode(node1);
+			global_TCP_new_flag = false;
 		}
 		
 		if (global_TCP_send_flag)
 		{
 			// 新建对应TCP连接的Msg
+
+			tcplist *temp1;
+			temp1 = getNode(global_ip, global_port);
+			temp1->MSG_num++;
+			temp1->tcp_msg[temp1->MSG_num - 1].ACK = 0;
+			mescopy(temp1->tcp_msg[temp1->MSG_num - 1].tcpmessage, global_new_tcp_msg);
+			temp1->tcp_msg[temp1->MSG_num - 1].time = GetTickCount();
+			global_TCP_send_flag = false;
 		}
 
 		if (global_TCP_receive_flag)
 		{
 			// 更新对应TCP和Msg的window和ack
-		}
-
-		if (global_TCP_resend_flag)
-		{
-			// 快速重传，通知Trans2IP
-		}
-
-		if (global_TCP_destroy_flag)
-		{
-			// 拆除TCP连接
-		}
-
-		if (true/*要求发送报文*/)
-		{
-			tcplist *temp1;
-			temp1 = getNode(global_ip,global_port);  //请求报文的源ip(+端口号)
-			if (temp1 == NULL)   //如果请求报文的源ip对应的TCP当前未建立连接，则新建一个TCP，加入链表尾部
-			{
-				tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list));
-				node1->MSG_num = 1;
-				node1->cwnd = MSS;
-				node1->IP = global_ip;
-				node1->PORT = global_port;
-				node1->count = 0;
-				node1->Threshold = 65 * 1024;
-				node1->tcp_msg[node1->MSG_num - 1].ACK = 0;
-				node1->tcp_msg[node1->MSG_num - 1].tcpmessage = global_new_tcp_msg;
-				node1->tcp_msg[node1->MSG_num - 1].time = GetTickCount();
-				node1->next = NULL;
-				addNode(node1);
-			}
-			else     //如果请求报文的源IP对应的TCP端口已建立连接，则根据报文内容，填写当前TCP端口的tcp_msg结构（记录报文相关）
-			{
-				if (temp1->MSG_num - temp1->count <= temp1->cwnd / MSS)
-				{
-					temp1->MSG_num++;
-					temp1->tcp_msg[temp1->MSG_num-1].ACK = 0;
-					temp1->tcp_msg[temp1->MSG_num - 1].tcpmessage = global_new_tcp_msg;
-					temp1->tcp_msg[temp1->MSG_num-1].time = GetTickCount();
-				}
-			}
-		}
-		tcplist* temp3 = head;
-		while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
-		{
-			if (GetTickCount() - temp3->tcp_msg[temp3->count].time > RTT)
-			{
-				temp3->Threshold = temp3->cwnd / 2;
-				temp3->cwnd = MSS;
-				temp3->tcp_msg[temp3->count].time = GetTickCount();
-			}
-			temp3 = temp3->next;
-		}
-		if (ACK_global != 0)
-		{
-			//得到响应报文的目标ip(+端口号)
 			tcplist* temp2;
 			temp2 = getNode(global_ip, global_port);
 			temp2->tcp_msg[temp2->count].time = GetTickCount();
@@ -246,12 +221,117 @@ void TCP_controller()
 				}
 			}
 			ACK_global = 0;
+			global_TCP_receive_flag = false;
 		}
 
-
-		if (true/* TCP_Link_Destroyed */)
+		if (global_TCP_resend_flag)
 		{
-		    deletenode(getNode(global_ip,global_port));
+			// 快速重传，通知Trans2IP
+
 		}
+
+		if (global_TCP_destroy_flag)
+		{
+			// 拆除TCP连接
+			deletenode(getNode(global_ip, global_port));
+			global_TCP_destroy_flag = false;
+		}
+
+		//if (true/*要求发送报文*/)
+		//{
+		//	tcplist *temp1;
+		//	temp1 = getNode(global_ip,global_port);  //请求报文的源ip(+端口号)
+		//	if (temp1 == NULL)   //如果请求报文的源ip对应的TCP当前未建立连接，则新建一个TCP，加入链表尾部
+		//	{
+		//		tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list));
+		//		node1->MSG_num = 1;
+		//		node1->cwnd = MSS;
+		//		node1->IP = global_ip;
+		//		node1->PORT = global_port;
+		//		node1->count = 0;
+		//		node1->Threshold = 65 * 1024;
+		//		node1->tcp_msg[node1->MSG_num - 1].ACK = 0;
+		//		node1->tcp_msg[node1->MSG_num - 1].tcpmessage = global_new_tcp_msg;
+		//		node1->tcp_msg[node1->MSG_num - 1].time = GetTickCount();
+		//		node1->next = NULL;
+		//		addNode(node1);
+		//	}
+		//	else     //如果请求报文的源IP对应的TCP端口已建立连接，则根据报文内容，填写当前TCP端口的tcp_msg结构（记录报文相关）
+		//	{
+		//		if (temp1->MSG_num - temp1->count <= temp1->cwnd / MSS)
+		//		{
+		//			temp1->MSG_num++;
+		//			temp1->tcp_msg[temp1->MSG_num-1].ACK = 0;
+		//			temp1->tcp_msg[temp1->MSG_num - 1].tcpmessage = global_new_tcp_msg;
+		//			temp1->tcp_msg[temp1->MSG_num-1].time = GetTickCount();
+		//		}
+		//	}
+		//}
+
+		tcplist* temp3 = head;
+		while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
+		{
+			if (GetTickCount() - temp3->tcp_msg[temp3->count].time > RTT)
+			{
+				temp3->Threshold = temp3->cwnd / 2;
+				temp3->cwnd = MSS;
+				temp3->tcp_msg[temp3->count].time = GetTickCount();
+			}
+			temp3 = temp3->next;
+		}
+		//if (ACK_global != 0)
+		//{
+		//	//得到响应报文的目标ip(+端口号)
+		//	tcplist* temp2;
+		//	temp2 = getNode(global_ip, global_port);
+		//	temp2->tcp_msg[temp2->count].time = GetTickCount();
+		//	if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number >= ACK_global)   //冗余ACK计数
+		//	{
+		//		temp2->tcp_msg[temp2->count].ACK++;
+		//	}
+		//	else
+		//	{
+		//		temp2->count++;
+		//	}
+		//	if (temp2->cwnd <= temp2->Threshold) //慢启动
+		//	{
+		//		temp2->cwnd += MSS;
+		//	}
+		//	else
+		//	{
+		//		if (temp2->tcp_msg[temp2->count].ACK >= 3)    //收到3个冗余ACK，设置为拥塞避免
+		//		{
+		//			temp2->Threshold = temp2->cwnd / 2;
+		//			temp2->cwnd = temp2->Threshold;
+		//		}
+		//		else      //收到前面未确认数据的ACK
+		//		{
+		//			temp2->cwnd = temp2->cwnd + MSS*(MSS / temp2->cwnd);
+		//		}
+		//	}
+		//	ACK_global = 0;
+		//}
+
+
 	}
+}
+
+void mescopy(struct tcp_message tcp_msg_a, struct tcp_message tcp_msg_b)
+{
+	tcp_msg_b.tcp_src_port = tcp_msg_b.tcp_src_port;
+	tcp_msg_b.tcp_dst_port = tcp_msg_b.tcp_dst_port;
+	tcp_msg_b.tcp_seq_number = tcp_msg_b.tcp_seq_number;
+	tcp_msg_b.tcp_ack_number = tcp_msg_b.tcp_ack_number;
+	tcp_msg_b.tcp_hdr_length = tcp_msg_b.tcp_hdr_length;
+	tcp_msg_b.tcp_reserved = tcp_msg_b.tcp_reserved;
+	tcp_msg_b.tcp_urg = tcp_msg_b.tcp_urg;
+	tcp_msg_b.tcp_ack = tcp_msg_b.tcp_ack;
+	tcp_msg_b.tcp_psh = tcp_msg_b.tcp_psh;
+	tcp_msg_b.tcp_rst = tcp_msg_b.tcp_rst;
+	tcp_msg_b.tcp_syn = tcp_msg_b.tcp_syn;
+	tcp_msg_b.tcp_fin = tcp_msg_b.tcp_fin;
+	tcp_msg_b.tcp_rcv_window = tcp_msg_b.tcp_rcv_window;
+	tcp_msg_b.tcp_checksum = tcp_msg_b.tcp_checksum;
+	tcp_msg_b.tcp_urg_ptr = tcp_msg_b.tcp_urg_ptr;
+	memcpy(tcp_msg_b.tcp_opts_and_app_data, tcp_msg_a.tcp_opts_and_app_data, sizeof(tcp_msg_a.tcp_opts_and_app_data));
 }
