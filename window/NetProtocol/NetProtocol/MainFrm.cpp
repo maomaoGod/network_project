@@ -177,6 +177,7 @@ LRESULT CMainFrame::OnApp2Trans(WPARAM wparam, LPARAM lparam)
 	}
 	return 0;
 }
+
 LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包传输数据到应用层的接口
 {  //使用sendmessage向应用程序发送消息
 	//example 向端口号为0的应用程序发送pCopyDataStruct数据  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
@@ -300,6 +301,9 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //传输层打包�
 	unsigned int src_ip = getIP();
 	unsigned int data_len = data_from_applayer.datalength;
 
+	// 获取Function ID
+	int funID = (int)lparam;
+
 	// 判断是UDP还是TCP
 	struct tcplist *found_TCP = getNode(dst_ip, dst_port);
 
@@ -320,11 +324,14 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //传输层打包�
 		new_ip_msg.dip = dst_ip;
 		new_ip_msg.datelen = new_udp_msg.udp_msg_length;
 		memcpy(new_ip_msg.data, &new_udp_msg, new_udp_msg.udp_msg_length+1); // +1 for \0
+		new_ip_msg.protocol = 17;	// 17 for UDP
 		OnIP2Link((WPARAM)&new_ip_msg, lparam);
 	}
 	// TCP
 	else
 	{
+		// 下面可能需要放在别的地方
+		// 填入TCP报文段结构
 		struct tcp_message new_tcp_msg;
 		// 目前的TCP实现结构有问题，感觉面对每一个连接，需要有一个线程跑TCP负责应答ACK，调整窗口
 		// 当TCP连接断开时线程消逝
@@ -333,9 +340,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //传输层打包�
 		// 可以考虑进程间发消息，也可以考虑直接用全局变量做标志位
 		new_tcp_msg.tcp_src_port = src_port;
 		new_tcp_msg.tcp_dst_port = dst_port;
-
-		// 获取Function ID
-		int funID = (int)lparam;
+		//new_tcp_msg.tcp_seq_number
 
 		// 方法判断
 		if (funID == SOCKCONNECT)
