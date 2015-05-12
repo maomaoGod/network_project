@@ -66,7 +66,10 @@
     <ClInclude Include="UICtrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Cmysocket.h">
+    <ClInclude Include="CmyAsyncSocket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CmySocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -107,7 +110,10 @@
     <ClCompile Include="UICtrl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Cmysocket.cpp">
+    <ClCompile Include="CmyAsyncSocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CmySocket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

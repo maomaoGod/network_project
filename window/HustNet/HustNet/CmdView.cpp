@@ -152,8 +152,8 @@ void CmdView::Initialcmd()
 	my_map.insert(pair<CString, CMDPROC>(_T("cleanrp"), &UserCmd::cleanrp));
 	my_map.insert(pair<CString, CMDPROC>(_T("cleanlog"), &UserCmd::cleanlog));
 	my_map.insert(pair<CString, CMDPROC>(_T("compute"), &UserCmd::Compute));
-	my_map.insert(pair<CString, CMDPROC>(_T("conn"), &UserCmd::Connect));
-	my_map.insert(pair<CString, CMDPROC>(_T("setdll"), &UserCmd::SetDll));
+	my_map.insert(pair<CString, CMDPROC>(_T("conn"),    &UserCmd::Connect));
+	my_map.insert(pair<CString, CMDPROC>(_T("setdll"),    &UserCmd::SetDll));
 	my_map.insert(pair<CString, CMDPROC>(_T("gethtml"), &UserCmd::GetHtml));
 	my_map.insert(pair<CString, CMDPROC>(_T("visit"), &UserCmd::Visit));
 	my_map.insert(pair<CString, CMDPROC>(_T("sendout"), &UserCmd::sendout));
@@ -272,7 +272,7 @@ void CmdView::OnInitialUpdate()
 	*/
 
 	SetHint(_T("Command:"));
-	AfxGetMainWnd()->SendMessage(REGISTER, NULL, NULL);
+//  AfxGetMainWnd()->SendMessage(REGISTER, NULL, NULL);
 	myedit->ReplaceSel(Hint);
 	HintLine = 0;
 }

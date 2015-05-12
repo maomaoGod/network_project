@@ -12,6 +12,8 @@ struct _iphdr IP_HEADER;
 struct Msg IP_data;
 struct IP_Msg MyIP;
 
+int sockcount = 0;
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -24,8 +26,9 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
-	ON_WM_COPYDATA()
-	ON_MESSAGE(CHECKHWND, OnCheck)
+//    ON_WM_COPYDATA()
+//ON_MESSAGE(CHECKHWND, OnCheck)
+    ON_MESSAGE(APPSEND, OnAppSend)
 	ON_MESSAGE(TRANSTOAPP, OnTrans2App)
 	ON_MESSAGE(APPTOTRANS, OnApp2Trans)
 	ON_MESSAGE(IPTOTRANS, OnIP2Trans)
@@ -33,6 +36,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(TRANSTOIP, OnTrans2IP)
 	ON_MESSAGE(IPTOLINK, OnIP2Link)
 	ON_MESSAGE(LINKSEND, OnLinkSend)
+//	ON_COMMAND(ID_32783, &CMainFrame::OnSENDHUST)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -48,9 +52,11 @@ static UINT indicators[] =
 CMainFrame::CMainFrame()
 {
 	// TODO:  ÔÚ´ËÌí¼Ó³ÉÔ±³õÊ¼»¯´úÂë
+	psock = NULL;
 	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
 		AfxMessageBox(_T("´´½¨×¥°üÏß³ÌÊ§°Ü£¡"));
-	numprocess = 0;
+	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)connect, (LPVOID) this, NULL, NULL))
+		AfxMessageBox(_T("´´½¨Á¬½ÓÏß³ÌÊ§°Ü£¡"));
 }
 
 CMainFrame::~CMainFrame()
@@ -116,20 +122,21 @@ BOOL CALLBACK lpEnumHwnd(HWND hwnd, LPARAM lParam)//±éÀúËùÓÐ´°¿Ú£¬Ñ°ÕÒ¿Í»§¶ËºÍ·þ
 	return 1;
 }
 
-BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
-{
-	// TODO:  ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-	if (pwnd2port.find(pWnd) == pwnd2port.end()){  //Ó¦ÓÃ³ÌÐò×¢²á
-		EnumWindows(lpEnumHwnd, (LPARAM)pWnd);
-		return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
-	}
-	if (pCopyDataStruct != NULL){//½ÓÊÜÀ´×ÔÓ¦ÓÃ³ÌÐòµÄÏûÏ¢
-		SendMessage(APPTOTRANS, (WPARAM)pCopyDataStruct, (LPARAM)pWnd);
-	}
-  	 return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
-}
+//BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
+//{
+//	// TODO:  ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+//	MyWnd = pWnd;
+//	if (pwnd2port.find(pWnd) == pwnd2port.end()){  //Ó¦ÓÃ³ÌÐò×¢²á
+//		EnumWindows(lpEnumHwnd, (LPARAM)pWnd);
+//		return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
+//	}
+//	if (pCopyDataStruct != NULL){//½ÓÊÜÀ´×ÔÓ¦ÓÃ³ÌÐòµÄÏûÏ¢
+//		//SendMessage(APPTOTRANS, (WPARAM)pCopyDataStruct, (LPARAM)pWnd);
+//	}
+//  	 return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
+//}
 
-LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
+/*LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
 {
 	HWND mywnd = *((HWND *)wparam);
 	int index;
@@ -144,43 +151,47 @@ LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
 		numprocess = numprocess + 1;
 	}
 	return 0;
-}
+}*/
 
-LRESULT CMainFrame::OnApp2Trans(WPARAM wparam, LPARAM lparam)
-{
-	sockstruct mysock = *(sockstruct *)(((COPYDATASTRUCT *)wparam)->lpData);
-	int FuncID = ((COPYDATASTRUCT *)wparam)->dwData;
-	CWnd *pWnd = (CWnd *)lparam;
-	HWND temp = port2hwnd[pwnd2port[pWnd]];
-	COPYDATASTRUCT  mycp;
+LRESULT CMainFrame::OnApp2Trans(WPARAM wparam,LPARAM lparam)
+{	
+	int nPort = wparam;
+	int BindPort = Port2Sock[nPort]->Rpro->mysock.bindport;
+	UINT FuncID = port2Rstruct[nPort]->FuncID;
+	portsrc tempsrc;
 	switch (FuncID)
 	{
-	case SOCKBIND:   //ÔÝÊ±²»¿¼ÂÇ¶Ë¿Ú³åÍ»
-		port2hwnd.erase(pwnd2port[pWnd]);
-		pwnd2port.erase(pWnd);
-		pwnd2port[pWnd] = mysock.bindport;
-		port2hwnd[mysock.bindport] = temp;
-		PrintView(_T("°ó¶¨¶Ë¿Úµ½6500!"));
+	case SOCKBIND:
+		SockMark2Port[Port2Sock[nPort]->Rpro->SockMark] = BindPort;
+		Sock2Port[Port2Sock[nPort]] = BindPort;
+		if (BindPort != nPort){
+			port2Rstruct[BindPort] = port2Rstruct[nPort]; //ÓÃ°ó¶¨µÄ¶Ë¿ÚºÅÀ´½ÓÊÕÔ­À´µÄ»·¾³
+			Port2Sock[BindPort] = Port2Sock[nPort];   
+			port2Wstruct[BindPort] = port2Wstruct[nPort];
+			port2Rstruct.erase(nPort); //²Á³öÔ­À´µÄ»·¾³
+			Port2Sock.erase(nPort);
+			port2Wstruct.erase(nPort);
+		}
 		break;
 	case SOCKLISTEN:
 		break;
 	case SOCKSEND:
-		mysock.srcport = pwnd2port[pWnd];
-		mycp.dwData = SOCKSEND;
-		mycp.lpData = (void *)&mysock;
-		mycp.cbData = sizeof(sockstruct);
-		//::SendMessage(port2hwnd[mysock.dstport], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
-		SendMessage(TRANSTOIP, (WPARAM)&mysock, (LPARAM)FuncID);
-		break;
 	case SOCKSENDTO:
+		SendMessage(TRANSTOIP, (WPARAM)&port2Rstruct[nPort]->mysock, (LPARAM)nPort);
+		//SendMessage(APPSEND, (WPARAM)&port2Rstruct[nPort]->mysock, (LPARAM)nPort);
 		break;
-	case SOCKCONNECT:
+	case SOCKACCEPT:
+		memcpy(tempsrc.srcip, port2Rstruct[nPort]->mysock.dstip, 20);
+		tempsrc.srcport = port2Rstruct[nPort]->mysock.dstport;
+		tempsrc.dstport = port2Rstruct[nPort]->mysock.srcport;
+		src2port[tempsrc] = SockMark2Port[port2Rstruct[nPort]->AcceptSockMark];
 		break;
 	default:
 		break;
 	}
 	return 0;
 }
+
 LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊý¾Ýµ½Ó¦ÓÃ²ãµÄ½Ó¿Ú
 {  //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌÐò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌÐò·¢ËÍpCopyDataStructÊý¾Ý  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
@@ -188,7 +199,6 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊý
 	struct Msg new_ip_msg = *((struct Msg *)wparam);
 
 	// ¸ù¾ÝÁ¬½ÓÅÐ¶ÏÊÇUDP»¹ÊÇTCP
-
 	// UDP
 	if (true/* edited later */)
 	{
@@ -219,7 +229,7 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊý
 		// ·¢ËÍÄÚÈÝ
 		CopyDataStruct.lpData = &new_sockstruct;
 		// ½ø³Ì¼äÍ¨ÐÅ
-		::SendMessage(port2hwnd[new_udp_msg.udp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
+	//::SendMessage(port2hwnd[new_udp_msg.udp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
 	}
 	// TCP
 	else
@@ -241,7 +251,7 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊý
 		// ·¢ËÍÄÚÈÝ£¬ÔÝÊ±²»·Ö¿ªoptsºÍdata
 		CopyDataStruct.lpData = &(new_tcp_msg.tcp_opts_and_app_data);
 		// ½ø³Ì¼äÍ¨ÐÅ
-		::SendMessage(port2hwnd[new_tcp_msg.tcp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
+	//::SendMessage(port2hwnd[new_tcp_msg.tcp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
 	}
 
 	return 0;
@@ -333,7 +343,6 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 	return 0;
 }
 
-
 LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊý¾Ý·¢ËÍµ½Á´Â·²ã½Ó¿Ú
 {
 	///< ½«ÔËÊä²ãËÍÀ´µÄMsg½á¹¹ºÍIPµØÖ·²åÈëµ½IP_msg½á¹¹ÖÐ,
@@ -376,3 +385,98 @@ DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
 	return 0;
 }
 
+DWORD WINAPI CMainFrame::connect(LPVOID lParam)
+{
+	CMainFrame *pthis = (CMainFrame *)lParam;
+	HANDLE Psemaphore = CreateSemaphore(NULL,0,100, _T("NetProtocolPsemaphore"));//´´½¨ÐÅºÅÁ¿P
+	HANDLE Csemaphore = CreateSemaphore(NULL,1,100, _T("NetProtocolCsemaphore"));//´´½¨ÐÅºÅÁ¿C
+	HANDLE Ssemaphore = CreateSemaphore(NULL,0, 100, _T("NetProtocolCreateSuccess"));//´´½¨ÐÅºÅÁ¿S
+	HANDLE MFile = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(regstruct), _T("NetProtocolListen"));//ÇëÇóÁ¬½Ó¹²ÏíÄÚ´æ
+	pthis->preg = (regstruct *)MapViewOfFile(MFile, FILE_MAP_WRITE, 0, 0, sizeof(regstruct));//Ó³Éä¹²ÏíÄÚ´æ
+	while (true){
+		WaitForSingleObject(Psemaphore, INFINITE);//µÈ´ýÓ¦ÓÃ³ÌÐòÇëÇóÁ¬½Ó
+		parastruct *mypara =   new parastruct();
+		ObjEvent   *myevent = new ObjEvent();
+		pthis->Sock2Port[myevent] = sockcount; //·ÖÅä¶Ë¿ÚºÅ
+		pthis->Port2Sock[sockcount] = myevent; //¸ù¾Ý¶Ë¿ÚºÅÕÒµ½¶ÔÓ¦Ì×½Ó×Ö
+		pthis->port2Rstruct[sockcount]  = new prostruct();  //·ÖÅä±¾µØ»º´æ
+		pthis->port2Wstruct[sockcount] = new prostruct();  //±¾µØ»º´æ
+		pthis->SockMark2Port[pthis->preg->SockMark] = sockcount;
+		sockcount++;   //´´½¨¹²ÏíÎÄ¼þºÍÍ¬²½ÐÅºÅÁ¿
+		myevent->RFile  = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(prostruct), pthis->preg->readfilename);
+		myevent->WFile = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(prostruct), pthis->preg->writefilename);
+		if (myevent->WFile == NULL || myevent->RFile == NULL){
+			AfxMessageBox(_T("´´½¨¹²ÏíÎÄ¼þÊ§°Ü"));
+			continue;
+		}
+		myevent->Rpro  =  (prostruct *)MapViewOfFile(myevent->RFile, FILE_MAP_WRITE, 0, 0, sizeof(prostruct)); //´´½¨Í¨ÐÅ»·¾³
+		myevent->Wpro =  (prostruct *)MapViewOfFile(myevent->WFile, FILE_MAP_WRITE, 0,0,sizeof(prostruct));
+		myevent->PSsock =  CreateSemaphore(NULL, 1, 100, pthis->preg->PSname);
+		myevent->PRsock=   CreateSemaphore(NULL, 0, 100, pthis->preg->PRname);
+		myevent->PWsock = CreateSemaphore(NULL, 0, 100, pthis->preg->PWname);
+		myevent->CSsock =  CreateSemaphore(NULL, 1, 100, pthis->preg->CSname);
+		myevent->CRsock=   CreateSemaphore(NULL, 0, 100, pthis->preg->CRname);
+		myevent->CWsock = CreateSemaphore(NULL, 0, 100, pthis->preg->CWname);
+		if (!(myevent->PRsock || myevent->PSsock || myevent->PWsock || myevent->CSsock || myevent->CRsock || myevent->CWsock)){
+			AfxMessageBox(_T("´´½¨ÐÅºÅÁ¿Ê§°Ü"));
+			continue;
+		}
+		mypara->pEvent = myevent;
+		mypara->pClass = pthis;
+    	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ReadFromApp, (LPVOID)mypara, NULL, NULL);
+		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)WriteToApp, (LPVOID)mypara, NULL, NULL);
+		ReleaseSemaphore(Ssemaphore, 1, NULL);
+		ReleaseSemaphore(Csemaphore,1,NULL); //´´½¨Íê³É
+	}
+	return 0;
+}
+
+DWORD WINAPI CMainFrame::ReadFromApp(LPVOID lParam)//´ÓÓ¦ÓÃ³ÌÐò¶ÁÈ¡Êý¾Ý
+{
+	parastruct     *mypara = (parastruct *)lParam;
+	CMainFrame *pthis =    (CMainFrame *)mypara->pClass;
+	ObjEvent      *myevent = mypara->pEvent;
+	while (true)
+	{
+		WaitForSingleObject(myevent->PRsock, INFINITE);   //µÈ´ýÓ¦ÓÃ³ÌÐòÐ´Íê³É
+		memcpy(pthis->port2Rstruct[pthis->Sock2Port[myevent]],myevent->Wpro,sizeof(prostruct));//¿½±´µ½±¾µØ»º´æ
+		AfxGetApp()->m_pMainWnd->SendMessage(APPTOTRANS, (WPARAM)pthis->Sock2Port[myevent]);//·¢ËÍ±¾µØ±êºÅ
+		ReleaseSemaphore(myevent->CSsock, 1, NULL);     //¶ÁÊý¾ÝÍê³ÉÓ¦ÓÃ³ÌÐò¿ÉÔÙÐ´
+	}
+}
+
+//·¢ËÍÊý¾Ýµ½Ó¦ÓÃ²ã
+DWORD WINAPI CMainFrame::WriteToApp(LPVOID lParam)
+{
+	parastruct     *mypara  = (parastruct *)lParam;
+	CMainFrame *pthis = (CMainFrame *)mypara->pClass;
+	ObjEvent      *myevent = mypara->pEvent;
+	while (true)
+	{
+		WaitForSingleObject(myevent->PWsock, INFINITE);  //µÈ´ýÐ´½á¹¹
+		memcpy(myevent->Rpro,pthis->port2Wstruct[pthis->Sock2Port[myevent]], sizeof(prostruct)); //¿½±´½á¹¹
+		ReleaseSemaphore(myevent->CRsock, 1, NULL);//Ó¦ÓÃ³ÌÐòÐ´
+	}
+}
+
+//½«Êý¾Ý¿½±´×¼±¸·¢ËÍÊý¾Ýµ½Ó¦ÓÃ²ã
+LRESULT CMainFrame::OnAppSend(WPARAM wparam, LPARAM lparam)
+{
+	sockstruct  *pmysock= (sockstruct *)wparam;
+	UINT           FuncID = lparam;
+	portsrc       tempsrc;
+	unsigned short nPort;
+	memcpy(tempsrc.srcip, pmysock->srcip, 20); //¸ù¾ÝÔ´¶Ë¿ÚÔ´µØÖ·Ä¿µÄ¶Ë¿ÚÕÒµ½Í¨ÐÅ¶Ë¿Ú
+	tempsrc.srcport = pmysock->srcport;
+	tempsrc.dstport = pmysock->dstport;
+	nPort = (src2port.find(tempsrc) == src2port.end()) ? pmysock->dstport : src2port[tempsrc];   //ÕÒµ½Ä¿±ê¶Ë¿Ú
+	WaitForSingleObject(Port2Sock[nPort]->PSsock, INFINITE); //µÈ´ý
+	if (Port2Sock.find(nPort) == Port2Sock.end()){     //ÈôÎ´ÕÒµ½Ö¸¶¨¶Ë¿Ú£¬¶ª°ü
+		ReleaseSemaphore(Port2Sock[nPort]->PSsock, 1, NULL);
+		return 0;
+	}
+	memcpy(&port2Wstruct[nPort]->mysock, pmysock, sizeof(sockstruct));  //¿½±´Êý¾Ý
+	port2Wstruct[nPort]->FuncID = FuncID; //¿½±´Ä¿µÄÊý¾Ý
+	ReleaseSemaphore(Port2Sock[nPort]->PWsock, 1, NULL);
+	return 0;
+}

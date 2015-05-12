@@ -56,11 +56,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>HAVE_REMOTE;WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\WpdPack\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>wpcap.lib Packet.lib</AdditionalDependencies>
+      <AdditionalDependencies>wpcap.lib;Packet.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\WpdPack\Lib</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

@@ -37,6 +37,7 @@
 #define  SOCKRECEIVE              205
 #define  SOCKRECEIVEFROM    206
 #define  SOCKCLOSE                 207
+#define  SOCKACCEPT               208
 
 
 /**
@@ -48,6 +49,33 @@ struct  CMD{
 	void *para2;
 };
 
+struct portsrc    //得到目的端口的数据结构
+{
+	char srcip[20];
+	unsigned short srcport;
+	unsigned short dstport;
+	bool operator <(const portsrc & other) const
+	{
+		if (strcmp(srcip, other.srcip) < 0)
+			return true;
+		else if (strcmp(srcip, other.srcip) >0)
+			return false;
+		else {
+			if (srcport < other.srcport)
+				return true;
+			else if (srcport>other.srcport)
+				return false;
+			else {
+				if (dstport < other.dstport)
+					return true;
+				else if (dstport>other.dstport)
+					return false;
+				return false;
+			}
+		}
+	}
+};
+
 struct sockstruct {
 	unsigned short  dstport;   //目的端口号
 	unsigned short  srcport;   //源端口号
@@ -56,6 +84,40 @@ struct sockstruct {
 	char srcip[20];                //原地址ip
 	char dstip[20];                //目标地址ip
 	char data[2048];             //数据
+};
+
+struct prostruct   //进程间通信结构体
+{
+	int FuncID;       //socket操作码        
+	int SockMark;  //socket编号
+	int AcceptSockMark; //转接的socket编号
+	sockstruct  mysock;
+};
+
+struct regstruct{
+	int SockMark;  //socket唯一标识码
+	TCHAR readfilename[20];  //socket读
+	TCHAR writefilename[20]; //socket写
+	TCHAR PSname[20];       //有数据准备发送到应用程序
+	TCHAR PRname[20];       //协议申请读 
+	TCHAR PWname[20];      //协议申请写
+	TCHAR CSname[20];       //应用程序有数据准备发送
+	TCHAR CRname[20];       //应用申请读
+	TCHAR CWname[20];      //应用申请写
+};
+
+struct ObjEvent
+{
+	HANDLE    RFile;       //应用程序读文件句柄
+	HANDLE    WFile;      //应用程序写文件句柄 
+	prostruct    *Rpro;       //映射到本地读文件指针
+	prostruct    *Wpro;      //映射到本地写文件指针
+	HANDLE    PSsock;   //协议程序准备写信号量
+	HANDLE    PRsock;   //协议程序读信号量
+	HANDLE    PWsock;  //协议程序写信号量
+	HANDLE    CSsock;   //应用程序准备写信号量
+	HANDLE    CRsock;   //应用程序读信号量 
+	HANDLE    CWsock;  //应用程序写信号量
 };
 
 /**

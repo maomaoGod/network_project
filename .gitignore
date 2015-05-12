@@ -197,3 +197,6 @@ FakesAssemblies/
 window/NetProtocol/NetProtocol/NetProtocol.vcxproj
 window/NetProtocol/NetProtocol/NetProtocol.vcxproj
 *.vcxproj
+window/NetProtocol/NetProtocol/NetProtocol.vcxproj
+window/HustNet/HustNet/HustNet.vcxproj
+window/HustNet/HustNet/HustNet.vcxproj.filters

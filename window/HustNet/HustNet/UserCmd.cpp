@@ -4,7 +4,7 @@
 #include "UICtrl.h"
 #include "NetHtml.h"
 #include "NetWork.h"
-#include "Cmysocket.h"
+#include "CmySocket.h"
 
 using namespace Tools;
 using namespace NetWork;
@@ -170,9 +170,11 @@ void UserCmd::sendout(CString e){
 void UserCmd::mytest(CString e){
 	CString sed;
 	TakeOverCmd(_T("Test>"));
-	Cmysocket mysock;
+	TCHAR S[100];
+	CmySocket mysock;
 	mysock.Connect(_T("127.0.0.1"),6500);
 	while ((sed = GetLine()).Compare(_T("exit")) != 0){
 		mysock.Send(sed,sed.GetLength()*sizeof(TCHAR));
+		mysock.Receive(S,100);
 	}
 }

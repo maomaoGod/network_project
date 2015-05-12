@@ -9,6 +9,9 @@
 #include "CmdView.h"
 #include "LogView.h"
 #include "RespondView.h"
+#include <map>
+
+using namespace std;
 /**
 *MainFrm是程序的框架类，主要负责整个界面的支撑和控制。MainFrm主要完成界面控制，窗口分割，消息中转等功能。在初始
 *化MainFrm时，将客户区分成三块分别显示CmdView，LogView和RespondView,并动态加载这三个视图。为减少消息传递，框架
@@ -33,7 +36,7 @@ public:
 	*操作
 	*/
 public:
-
+	map <portsrc, int> src2port;
 	/**
 	*重写
 	*/
@@ -60,7 +63,7 @@ protected:
 	CmdView         *pcmd;
 	RespondView   *prespond;
 	BOOL               flag;
-	HWND             protocolwnd;
+	HWND              protocolwnd;
 	
 public:
 	CSplitterWnd    m_splitter, s_splitter;
@@ -87,9 +90,9 @@ public:
 	*@note 函数在接收到DISPATCH消息时函数被触发。
 	*/
 	afx_msg LRESULT Dispatch(WPARAM wparam, LPARAM lparam);
-	afx_msg LRESULT SendToNPC(WPARAM wparam, LPARAM lparam);
-	afx_msg LRESULT Register(WPARAM  wparam, LPARAM lparam);
+	//afx_msg LRESULT SendToNPC(WPARAM wparam, LPARAM lparam);
+	//afx_msg LRESULT Register(WPARAM  wparam, LPARAM lparam);
 	afx_msg void OnClose();
 	afx_msg void OnNETSET();
-	afx_msg BOOL OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct);
+ //   afx_msg BOOL OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct);
 };
