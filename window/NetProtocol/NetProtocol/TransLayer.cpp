@@ -95,13 +95,13 @@ bool deletenode(tcplist* p)
 }
 
 struct tcplist *getNode(unsigned int ip, unsigned short port)
-{//脭脷麓酶脥路陆谩碌茫碌脛碌楼脕麓卤铆head脰脨虏茅脮脪碌脷i赂枚陆谩碌茫拢卢脠么脮脪碌陆拢篓0隆脺i隆脺n拢漏拢卢
-	//脭貌路碌禄脴赂脙陆谩碌茫碌脛麓忙麓垄脦禄脰脙拢卢路帽脭貌路碌禄脴NULL隆拢
+{//在带头结点的单链表head中查找第i个结点，若找到（0≤i≤n），
+	//则返回该结点的存储位置，否则返回NULL。
 	tcplist *p;
-	p = head;//麓脫脥路陆谩碌茫驴陋脢录脡篓脙猫
+	p = head;//从头结点开始扫描
 	while (p)
-	{//脣鲁脰赂脮毛脧貌潞贸脡篓脙猫拢卢脰卤碌陆p->next脦陋NULL脦陋脰鹿
-		if (p->IP == ip && p->PORT == port)  //脠么脮脪碌陆脛驴卤锚IP拢卢脭貌路碌禄脴p
+	{//顺指针向后扫描，直到p->next为NULL为止
+		if (p->IP == ip && p->PORT == port)  //若找到目标IP，则返回p
 		{
 			return p;
 		}
@@ -155,7 +155,7 @@ void TCP_destroy(unsigned int ip_temp, unsigned short port_temp)
 
 void TCP_controller()
 {
-	// 碌楼脧脽鲁脤脳脺驴脴碌脛脕梅鲁脤
+	// 单线程总控的流程
 	createNodeList();
 	global_TCP_new_flag = global_TCP_send_flag = global_TCP_resend_flag = global_TCP_receive_flag = global_TCP_destroy_flag = false;
 	for (;;)
@@ -185,12 +185,7 @@ void TCP_controller()
 
 		if (global_TCP_send_flag)
 		{
-<<<<<<< HEAD
 			// 新建对应TCP连接的Msg
-=======
-			// 脨脗陆篓露脭脫娄TCP脕卢陆脫碌脛Msg
-
->>>>>>> origin/master
 			tcplist *temp1;
 			temp1 = getNode(global_ip, global_port);
 			if (temp1->MSG_sum > 1024)
@@ -201,89 +196,64 @@ void TCP_controller()
 			{
 				temp1->MSG_sum++;
 			}
-				temp1->tcp_msg_send[temp1->MSG_sum - 1].ACK = 0;
-				mescopy(temp1->tcp_msg_send[temp1->MSG_sum - 1].tcpmessage, global_new_tcp_msg);
-				temp1->tcp_msg_send[temp1->MSG_sum - 1].time = GetTickCount();
+			temp1->tcp_msg_send[temp1->MSG_sum - 1].ACK = 0;
+			mescopy(temp1->tcp_msg_send[temp1->MSG_sum - 1].tcpmessage, global_new_tcp_msg);
+			temp1->tcp_msg_send[temp1->MSG_sum - 1].time = GetTickCount();
 			//报文段长度	temp1->send_size += strlen(global_new_tcp_msg.tcp_opts_and_app_data);
-				global_TCP_send_flag = false;
+			global_TCP_send_flag = false;
 		}
 
 		if (global_TCP_receive_flag)
 		{
-<<<<<<< HEAD
 			// 更新对应TCP和Msg的window和ack
 			tcplist *temp1;
 			temp1 = getNode(global_ip, global_port);
 			if (temp1->LastByteRcvd > 1024)
-=======
-			// 赂眉脨脗露脭脫娄TCP潞脥Msg碌脛window潞脥ack
-			tcplist* temp2;
-			temp2 = getNode(global_ip, global_port);
-			temp2->tcp_msg[temp2->count].time = GetTickCount();
-			if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number >= ACK_global)   //脠脽脫脿ACK录脝脢媒
->>>>>>> origin/master
 			{
 				temp1->LastByteRcvd = 1;
 			}
 			else
 			{
-<<<<<<< HEAD
 				temp1->LastByteRcvd++;
 			}
 
-				mescopy(temp1->tcp_msg_rec[temp1->LastByteRcvd - 1], global_new_tcp_msg);
-		//报文段长度	temp1->RcvWindow -= sizeof(global_new_tcp_msg.tcp_opts_and_app_data);
+			mescopy(temp1->tcp_msg_rec[temp1->LastByteRcvd - 1], global_new_tcp_msg);
+			//报文段长度	temp1->RcvWindow -= sizeof(global_new_tcp_msg.tcp_opts_and_app_data);
 
-				ACK_global = global_new_tcp_msg.tcp_ack_number;
+			ACK_global = global_new_tcp_msg.tcp_ack_number;
 
-				if (ACK_global != 0)   
-=======
-				temp2->count++;
-			}
-			if (temp2->cwnd <= temp2->Threshold) //脗媒脝么露炉
+			if (ACK_global != 0)
 			{
-				temp2->cwnd += MSS;
-			}
-			else
-			{
-				if (temp2->tcp_msg[temp2->count].ACK >= 3)    //脢脮碌陆3赂枚脠脽脫脿ACK拢卢脡猫脰脙脦陋脫碌脠没卤脺脙芒
-				{
-					temp2->Threshold = temp2->cwnd / 2;
-					temp2->cwnd = temp2->Threshold;
-				}
-				else      //脢脮碌陆脟掳脙忙脦麓脠路脠脧脢媒戮脻碌脛ACK
->>>>>>> origin/master
-				{
-					tcplist* temp2;
-					temp2 = getNode(global_ip, global_port);
+				tcplist* temp2;
+				temp2 = getNode(global_ip, global_port);
 
-					temp2->tcp_msg_send[temp2->MSG_ACK].time = GetTickCount();
-					if (temp2->tcp_msg_send[temp2->MSG_ACK].tcpmessage.tcp_seq_number >= ACK_global)   //冗余ACK计数
-					{
-						temp2->tcp_msg_send[temp2->MSG_ACK].ACK++;
-					}
-					else
-					{
-						temp2->MSG_ACK++;
-					}
-					if (temp2->cwnd <= temp2->Threshold) //慢启动
-					{
-						temp2->cwnd += MSS;
-					}
-					else
-					{
-						if (temp2->tcp_msg_send[temp2->MSG_ACK].ACK >= 3)    //收到3个冗余ACK，设置为拥塞避免
-						{
-							temp2->Threshold = temp2->cwnd / 2;
-							temp2->cwnd = temp2->Threshold;
-						}
-						else      //收到前面未确认数据的ACK
-						{
-							temp2->cwnd = temp2->cwnd + MSS*(MSS / temp2->cwnd);
-						}
-					}
-					ACK_global = 0;
+				temp2->tcp_msg_send[temp2->MSG_ACK].time = GetTickCount();
+				if (temp2->tcp_msg_send[temp2->MSG_ACK].tcpmessage.tcp_seq_number >= ACK_global)   //冗余ACK计数
+				{
+					temp2->tcp_msg_send[temp2->MSG_ACK].ACK++;
 				}
+				else
+				{
+					temp2->MSG_ACK++;
+				}
+				if (temp2->cwnd <= temp2->Threshold) //慢启动
+				{
+					temp2->cwnd += MSS;
+				}
+				else
+				{
+					if (temp2->tcp_msg_send[temp2->MSG_ACK].ACK >= 3)    //收到3个冗余ACK，设置为拥塞避免
+					{
+						temp2->Threshold = temp2->cwnd / 2;
+						temp2->cwnd = temp2->Threshold;
+					}
+					else      //收到前面未确认数据的ACK
+					{
+						temp2->cwnd = temp2->cwnd + MSS*(MSS / temp2->cwnd);
+					}
+				}
+				ACK_global = 0;
+			}
 
 			global_TCP_send_flag = false;
 
@@ -291,22 +261,22 @@ void TCP_controller()
 
 		if (global_TCP_resend_flag)
 		{
-			// 驴矛脣脵脰脴麓芦拢卢脥篓脰陋Trans2IP
+			// 快速重传，通知Trans2IP
 
 		}
 
 		if (global_TCP_destroy_flag)
 		{
-			// 虏冒鲁媒TCP脕卢陆脫
+			// 拆除TCP连接
 			deletenode(getNode(global_ip, global_port));
 			global_TCP_destroy_flag = false;
 		}
 
-		//if (true/*脪陋脟贸路垄脣脥卤篓脦脛*/)
+		//if (true/*要求发送报文*/)
 		//{
 		//	tcplist *temp1;
-		//	temp1 = getNode(global_ip,global_port);  //脟毛脟贸卤篓脦脛碌脛脭麓ip(+露脣驴脷潞脜)
-		//	if (temp1 == NULL)   //脠莽鹿没脟毛脟贸卤篓脦脛碌脛脭麓ip露脭脫娄碌脛TCP碌卤脟掳脦麓陆篓脕垄脕卢陆脫拢卢脭貌脨脗陆篓脪禄赂枚TCP拢卢录脫脠毛脕麓卤铆脦虏虏驴
+		//	temp1 = getNode(global_ip,global_port);  //请求报文的源ip(+端口号)
+		//	if (temp1 == NULL)   //如果请求报文的源ip对应的TCP当前未建立连接，则新建一个TCP，加入链表尾部
 		//	{
 		//		tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list));
 		//		node1->MSG_num = 1;
@@ -321,7 +291,7 @@ void TCP_controller()
 		//		node1->next = NULL;
 		//		addNode(node1);
 		//	}
-		//	else     //脠莽鹿没脟毛脟贸卤篓脦脛碌脛脭麓IP露脭脫娄碌脛TCP露脣驴脷脪脩陆篓脕垄脕卢陆脫拢卢脭貌赂霉戮脻卤篓脦脛脛脷脠脻拢卢脤卯脨麓碌卤脟掳TCP露脣驴脷碌脛tcp_msg陆谩鹿鹿拢篓录脟脗录卤篓脦脛脧脿鹿脴拢漏
+		//	else     //如果请求报文的源IP对应的TCP端口已建立连接，则根据报文内容，填写当前TCP端口的tcp_msg结构（记录报文相关）
 		//	{
 		//		if (temp1->MSG_num - temp1->MSG_ACK <= temp1->cwnd / MSS)
 		//		{
@@ -337,7 +307,7 @@ void TCP_controller()
 
 
 		tcplist* temp3 = head;
-		while (temp3)         //脢碌脢卤录矛虏茅脙驴赂枚TCP脧脗碌卤脟掳脮媒麓媒脧矛脫娄碌脛卤篓脦脛脢脟路帽鲁卢脢卤脦麓脧矛脫娄
+		while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
 		{
 			if (GetTickCount() - temp3->tcp_msg_send[temp3->MSG_ACK].time > RTT)
 			{
@@ -347,44 +317,9 @@ void TCP_controller()
 			}
 			temp3 = temp3->next;
 		}
-<<<<<<< HEAD
 
-        //
+		//
 
-=======
-		//if (ACK_global != 0)
-		//{
-		//	//碌脙碌陆脧矛脫娄卤篓脦脛碌脛脛驴卤锚ip(+露脣驴脷潞脜)
-		//	tcplist* temp2;
-		//	temp2 = getNode(global_ip, global_port);
-		//	temp2->tcp_msg[temp2->count].time = GetTickCount();
-		//	if (temp2->tcp_msg[temp2->count].tcpmessage.tcp_seq_number >= ACK_global)   //脠脽脫脿ACK录脝脢媒
-		//	{
-		//		temp2->tcp_msg[temp2->count].ACK++;
-		//	}
-		//	else
-		//	{
-		//		temp2->count++;
-		//	}
-		//	if (temp2->cwnd <= temp2->Threshold) //脗媒脝么露炉
-		//	{
-		//		temp2->cwnd += MSS;
-		//	}
-		//	else
-		//	{
-		//		if (temp2->tcp_msg[temp2->count].ACK >= 3)    //脢脮碌陆3赂枚脠脽脫脿ACK拢卢脡猫脰脙脦陋脫碌脠没卤脺脙芒
-		//		{
-		//			temp2->Threshold = temp2->cwnd / 2;
-		//			temp2->cwnd = temp2->Threshold;
-		//		}
-		//		else      //脢脮碌陆脟掳脙忙脦麓脠路脠脧脢媒戮脻碌脛ACK
-		//		{
-		//			temp2->cwnd = temp2->cwnd + MSS*(MSS / temp2->cwnd);
-		//		}
-		//	}
-		//	ACK_global = 0;
-		//}
->>>>>>> origin/master
 
 
 	}
@@ -408,50 +343,4 @@ void mescopy(struct tcp_message tcp_msg_a, struct tcp_message tcp_msg_b)
 	tcp_msg_b.tcp_checksum = tcp_msg_b.tcp_checksum;
 	tcp_msg_b.tcp_urg_ptr = tcp_msg_b.tcp_urg_ptr;
 	memcpy(tcp_msg_b.tcp_opts_and_app_data, tcp_msg_a.tcp_opts_and_app_data, sizeof(tcp_msg_a.tcp_opts_and_app_data));
-}
-
-extern ACK_ID; //褰撳墠ACK ID锛?
-extern Count_ACK;//鍐椾綑ACK璁℃暟鍣紱
-extern Rcv_Window; //receiver window //灏唕wnd鍔犲叆鎶ユ枃
-extern RcvBuffer//鍙互鎺ュ彈鐨勫ぇ灏?
-void Fastretransmit(Receive_ACK_ID)
-{
-	int count;
-	if(Receive_ACK_New!= ACK_ID) //New ID
-	{
-		Count = 0;
-		ACK_ID = Receive_ACK_ID;
-		return ;
-	}
-	else
-	{
-		{
-			Count +1 = Count;
-			if(count == 3)
-			{
-				//寮�濮嬪啑浣橝CK
-			}
-		}
-	}
-	return ;
-}
-
-int Getrwnd(int RcvBuffer) //rwdnSize涓篵ufferSize?
-{
-	int Rcv_Window;
-	Rcv_Window = RcvBuffer;
-}
-
-void FlowControl(Rcv_Window,Last_Rcv_ACK) //婊戝姩绐楀彛娴侀噺鎺у埗
-{	
-
-	if(Last_Rcv_ACK+Rcv_Window>RcvBuffer)
-	{
-		//鍛婅瘔瀵规柟宸茬粡鍙戞弧
-	}
-	elseif(Last_Rcv_ACK+Rcv_Window==RcvBuffer)
-	{
-		//绯婃秱绐楀彛缁煎悎寰?
-	}
-
 }

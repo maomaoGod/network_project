@@ -16,7 +16,7 @@ struct tcpmsg_send
 {
 	int ACK;
 	int time;
-	struct tcp_message tcpmessage;   //脨貌潞脜tcpmessage->tcp_seq_number
+	struct tcp_message tcpmessage;   //序号tcpmessage->tcp_seq_number
 };
 
 
@@ -24,7 +24,6 @@ struct tcpmsg_send
 struct tcplist
 {
 	tcplist* next;
-<<<<<<< HEAD
 	int cwnd;       //窗口大小
 	unsigned int IP;  //IP
 	unsigned short PORT; //端口号
@@ -39,15 +38,6 @@ struct tcplist
 	int LastByteRead;    //已经有多少收到的报文得到确认
 	int rec_size;   //已经收到但未确认的数据大小
 	int RcvWindow;   //接受窗口的大小
-=======
-	int MSG_num;    //脪脩戮颅路垄脣脥碌脛卤篓脦脛脢媒
-	int cwnd;       //麓掳驴脷麓贸脨隆
-	unsigned int IP;  //IP
-	unsigned short PORT; //露脣驴脷潞脜
-	int Threshold;   //茫脨脰碌
-	int count;      //碌卤脟掳脪脩戮颅脫脨露脿脡脵卤篓脦脛碌脙碌陆脮媒脠路ACK
-	struct tcpmsg tcp_msg[1024];  //碌卤脟掳TCP脧脗路垄脣脥碌脛卤篓脦脛
->>>>>>> origin/master
 };
 
 bool createNodeList();
@@ -71,9 +61,3 @@ void TCP_destroy();
 void TCP_controller();
 
 void mescopy(struct tcp_message tcp_msg_a, struct tcp_message tcp_msg_b);
-
-void Fastretransmit(Receive_ACK_ID);
-
-int Getrwnd(int RcvBuffer);
-
-void FlowControl(Rcv_Window,Last_Rcv_ACK);//婊戝姩绐楀彛娴侀噺鎺у埗
