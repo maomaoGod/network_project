@@ -9,24 +9,35 @@ using namespace std;
 
 #define MSS 1024
 #define RTT 200
+#define Rcvbuffer 1024*1024
 
-struct tcpmsg
+
+struct tcpmsg_send
 {
 	int ACK;
 	int time;
 	struct tcp_message tcpmessage;   //序号tcpmessage->tcp_seq_number
 };
 
+
+
 struct tcplist
 {
 	tcplist* next;
-	int MSG_num;    //已经发送的报文数
 	int cwnd;       //窗口大小
 	unsigned int IP;  //IP
 	unsigned short PORT; //端口号
 	int Threshold;   //阈值
-	int count;      //当前已经有多少报文得到正确ACK
-	struct tcpmsg tcp_msg[1024];  //当前TCP下发送的报文
+	int MSG_ACK;      //当前已经有多少报文得到正确ACK
+	int MSG_num;    //已经发送的报文数
+	int MSG_sum;    //一共要发送的报文数
+	int send_size;   //待发送的数据大小
+	struct tcpmsg_send tcp_msg_send[1024];  //当前TCP下发送存放区
+	struct tcp_message tcp_msg_rec[1024];   //当前TCP下接受缓冲区
+	int LastByteRcvd;    //收到的最后报文的编号
+	int LastByteRead;    //已经有多少收到的报文得到确认
+	int rec_size;   //已经收到但未确认的数据大小
+	int RcvWindow;   //接受窗口的大小
 };
 
 bool createNodeList();
