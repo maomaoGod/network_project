@@ -8,7 +8,6 @@
 using namespace std;
 
 #define MSS 1024
-#define RTT 200
 #define Rcvbuffer 1024*1024
 
 

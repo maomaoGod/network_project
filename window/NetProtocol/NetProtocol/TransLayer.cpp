@@ -8,6 +8,7 @@ tcplist* head = NULL;
 struct tcp_message global_new_tcp_msg;
 
 int ACK_global;
+int RTT;
 
 static float EstimatedRTT;
 static float DevRTT;
@@ -179,7 +180,7 @@ void TCP_controller()
 			mescopy(node1->tcp_msg_send[node1->MSG_sum - 1].tcpmessage, global_new_tcp_msg);
 			node1->tcp_msg_send[node1->MSG_sum - 1].time = GetTickCount();
 			node1->LastByteRcvd = 0;
-			node1->LastByteRead = 0;
+			node1->LastByteRead = 0;  
 			node1->rec_size = 0;
 			node1->RcvWindow = Rcvbuffer;
 			node1->next = NULL;
@@ -202,8 +203,7 @@ void TCP_controller()
 			}
 			temp1->tcp_msg_send[temp1->MSG_sum - 1].ACK = 0;
 			mescopy(temp1->tcp_msg_send[temp1->MSG_sum - 1].tcpmessage, global_new_tcp_msg);
-		//	temp1->tcp_msg_send[temp1->MSG_sum - 1].time = GetTickCount();
-			//报文段长度	temp1->send_size += strlen(global_new_tcp_msg.tcp_opts_and_app_data);
+			//报文段长度	temp1->send_size += wzl_length
 			global_TCP_send_flag = false;
 		}
 
@@ -222,9 +222,11 @@ void TCP_controller()
 			}
 
 			mescopy(temp1->tcp_msg_rec[temp1->LastByteRcvd - 1], global_new_tcp_msg);
-			//报文段长度	temp1->RcvWindow -= sizeof(global_new_tcp_msg.tcp_opts_and_app_data);
+			//报文段长度	temp1->RcvWindow -= wzl_length
 
+	        
 
+			RTT = (int)getSampleRTT(GetTickCount(), temp1->tcp_msg_send[temp1->MSG_ACK].time);
 
 			if (global_new_tcp_msg.tcp_ack != 0)			//是否有ACK
 			{
@@ -234,11 +236,11 @@ void TCP_controller()
 
 				if (temp2->tcp_msg_send[temp2->MSG_ACK].tcpmessage.tcp_seq_number >= ACK_global)   //冗余ACK计数
 				{
-					temp2->tcp_msg_send[temp2->MSG_ACK].ACK++;
+					temp2->tcp_msg_send[temp2->MSG_ACK].ACK++;  
 				}
 				else
 				{
-					temp2->MSG_ACK++;
+					temp2->MSG_ACK++;      //当前待确认的报文得到确认了，下标自增，指向下一个正待确认的已经发送的报文
 				}
 				if (temp2->cwnd <= temp2->Threshold) //慢启动
 				{
@@ -250,6 +252,7 @@ void TCP_controller()
 					{
 						temp2->Threshold = temp2->cwnd / 2;
 						temp2->cwnd = temp2->Threshold;
+						//sendtoip(temp3->tcp_msg_send[temp2->MSG_ACK].tcpmessage, temp2->IP, 第一个参数这个报文的长度);
 					}
 					else      //收到前面未确认数据的ACK
 					{
@@ -257,6 +260,8 @@ void TCP_controller()
 					}
 				}
 				ACK_global = 0;
+
+
 			}
 
 			global_TCP_send_flag = false;
@@ -265,9 +270,6 @@ void TCP_controller()
 
 		if (global_TCP_resend_flag)
 		{
-			// 快速重传，通知Trans2IP
-		Fastretransmit(ACK_global);
-	//	SEND2IP();//
 		}
 
 		if (global_TCP_destroy_flag)
@@ -277,37 +279,7 @@ void TCP_controller()
 			global_TCP_destroy_flag = false;
 		}
 
-		//if (true/*要求发送报文*/)
-		//{
-		//	tcplist *temp1;
-		//	temp1 = getNode(global_ip,global_port);  //请求报文的源ip(+端口号)
-		//	if (temp1 == NULL)   //如果请求报文的源ip对应的TCP当前未建立连接，则新建一个TCP，加入链表尾部
-		//	{
-		//		tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list));
-		//		node1->MSG_num = 1;
-		//		node1->cwnd = MSS;
-		//		node1->IP = global_ip;
-		//		node1->PORT = global_port;
-		//		node1->MSG_ACK = 0;
-		//		node1->Threshold = 65 * 1024;
-		//		node1->tcp_msg[node1->MSG_num - 1].ACK = 0;
-		//		node1->tcp_msg[node1->MSG_num - 1].tcpmessage = global_new_tcp_msg;
-		//		node1->tcp_msg[node1->MSG_num - 1].time = GetTickCount();
-		//		node1->next = NULL;
-		//		addNode(node1);
-		//	}
-		//	else     //如果请求报文的源IP对应的TCP端口已建立连接，则根据报文内容，填写当前TCP端口的tcp_msg结构（记录报文相关）
-		//	{
-		//		if (temp1->MSG_num - temp1->MSG_ACK <= temp1->cwnd / MSS)
-		//		{
-		//			temp1->MSG_num++;
-		//			temp1->tcp_msg[temp1->MSG_num-1].ACK = 0;
-		//			temp1->tcp_msg[temp1->MSG_num - 1].tcpmessage = global_new_tcp_msg;
-		//			temp1->tcp_msg[temp1->MSG_num-1].time = GetTickCount();
-		//		}
-		//	}
-		//}
-
+ 
 
 
 
@@ -319,6 +291,7 @@ void TCP_controller()
 				temp3->Threshold = temp3->cwnd / 2;
 				temp3->cwnd = MSS;
 				temp3->tcp_msg_send[temp3->MSG_ACK].time = GetTickCount();
+				//sendtoip(temp3->tcp_msg_send[temp3->MSG_ACK].tcpmessage, temp3->IP, 第一个参数这个报文的长度);
 			}
 			temp3 = temp3->next;
 		}
