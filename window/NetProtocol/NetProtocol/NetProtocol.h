@@ -78,6 +78,7 @@ struct Msg{                     ///<数据
 	unsigned int dip;			///< 32位目的IP
 	int datelen;
 	char data[2048];
+	unsigned int protocol;		///< 上层协议类型
 };
 
 struct IP_Msg{
