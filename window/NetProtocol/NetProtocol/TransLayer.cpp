@@ -198,7 +198,7 @@ void TCP_controller()
 			}
 			temp1->tcp_msg_send[temp1->MSG_sum - 1].ACK = 0;
 			mescopy(temp1->tcp_msg_send[temp1->MSG_sum - 1].tcpmessage, global_new_tcp_msg);
-			temp1->tcp_msg_send[temp1->MSG_sum - 1].time = GetTickCount();
+		//	temp1->tcp_msg_send[temp1->MSG_sum - 1].time = GetTickCount();
 			//报文段长度	temp1->send_size += strlen(global_new_tcp_msg.tcp_opts_and_app_data);
 			global_TCP_send_flag = false;
 		}
@@ -220,10 +220,10 @@ void TCP_controller()
 			mescopy(temp1->tcp_msg_rec[temp1->LastByteRcvd - 1], global_new_tcp_msg);
 			//报文段长度	temp1->RcvWindow -= sizeof(global_new_tcp_msg.tcp_opts_and_app_data);
 
-			ACK_global = global_new_tcp_msg.tcp_ack_number;
 
-			if (ACK_global != 0)
+			if (global_new_tcp_msg.tcp_ack != 0)
 			{
+				ACK_global = global_new_tcp_msg.tcp_ack_number;
 				tcplist* temp2;
 				temp2 = getNode(global_ip, global_port);
 
