@@ -61,3 +61,15 @@ void TCP_destroy();
 void TCP_controller();
 
 void mescopy(struct tcp_message tcp_msg_a, struct tcp_message tcp_msg_b);
+
+
+int Wrongretrasnsmit(int ACK_global, u16 len_tcp, u16 src_port, u16 dest_port, bool padding, u16 *buff, u16 checksum);//返回需要重发的ACK序号
+
+int Fastretransmit(int ACK_global);   //快速重传
+
+int Count_ACK(int ACK_global);   //冗余ACK计数器
+
+void initialRTT();			//初始化RTT
+
+float getSampleRTT(int sendtime, int gettime); //动态计算超时间隔
+
