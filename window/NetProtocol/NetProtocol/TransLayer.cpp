@@ -9,6 +9,10 @@ struct tcp_message global_new_tcp_msg;
 
 int ACK_global;
 
+static float EstimatedRTT;
+static float DevRTT;
+static int CountACK = 0;//冗余ACK计数器；
+static int ACK_Now = -1;
 unsigned int global_ip;
 unsigned short global_port;
 
@@ -221,13 +225,13 @@ void TCP_controller()
 			//报文段长度	temp1->RcvWindow -= sizeof(global_new_tcp_msg.tcp_opts_and_app_data);
 
 
-			if (global_new_tcp_msg.tcp_ack != 0)
+
+			if (global_new_tcp_msg.tcp_ack != 0)			//是否有ACK
 			{
-				ACK_global = global_new_tcp_msg.tcp_ack_number;
-				tcplist* temp2;
+				ACK_global = global_new_tcp_msg.tcp_ack_number;  //赋予ACK，当前ACK值
+				tcplist* temp2; 
 				temp2 = getNode(global_ip, global_port);
 
-				temp2->tcp_msg_send[temp2->MSG_ACK].time = GetTickCount();
 				if (temp2->tcp_msg_send[temp2->MSG_ACK].tcpmessage.tcp_seq_number >= ACK_global)   //冗余ACK计数
 				{
 					temp2->tcp_msg_send[temp2->MSG_ACK].ACK++;
@@ -262,7 +266,8 @@ void TCP_controller()
 		if (global_TCP_resend_flag)
 		{
 			// 快速重传，通知Trans2IP
-
+		Fastretransmit(ACK_global);
+	//	SEND2IP();//
 		}
 
 		if (global_TCP_destroy_flag)
@@ -317,7 +322,6 @@ void TCP_controller()
 			}
 			temp3 = temp3->next;
 		}
-
 		//
 
 
@@ -344,3 +348,73 @@ void mescopy(struct tcp_message tcp_msg_a, struct tcp_message tcp_msg_b)
 	tcp_msg_b.tcp_urg_ptr = tcp_msg_b.tcp_urg_ptr;
 	memcpy(tcp_msg_b.tcp_opts_and_app_data, tcp_msg_a.tcp_opts_and_app_data, sizeof(tcp_msg_a.tcp_opts_and_app_data));
 }
+
+int Count_ACK(int ACK_global)         //收到3次冗余ACK返回global_TCP_resend_flag的值
+{
+	if (ACK_Now != ACK_global) //New ID
+	{
+		CountACK = 1;
+		ACK_Now = ACK_global;
+		return 0;
+	}
+	else
+	{
+		if (CountACK == 2)
+			return 1;
+		else
+		{
+			CountACK += 1;
+			return 0;
+		}
+	}
+}
+
+int Fastretransmit(int ACK_global)    //返回需要重发的ACK序号
+{
+	int retransmitACKID;
+	retransmitACKID = ACK_global;
+	return retransmitACKID;
+}
+
+int Wrongretrasnsmit(int ACK_global, u16 len_tcp, u16 src_port, u16 dest_port, bool padding, u16 *buff, u16 checksum) //返回需要重发的ACK序号,-1表示不需要重传
+{
+	int sum;
+	sum = tcpmakesum(len_tcp, src_port, dest_port, padding, buff) + checksum;
+	if (sum != 0xffff)                                                                                    //发生错误
+	{
+		return ACK_global;
+	}
+	else
+	{
+		return -1;
+	}
+}
+
+
+void initialRTT()                   //初始化RTT需要的变量
+{
+	EstimatedRTT = 0;
+	DevRTT = 0;
+}
+
+float getSampleRTT(int sendtime, int gettime)		//往返时延的估计与超时，返回超时时间
+{
+	float alpha = 0.125;
+	float beta = 0.25;
+	float TimeoutInterval;
+	int sampleRTT;
+	sampleRTT = gettime - sendtime;
+	EstimatedRTT = (1 - alpha)*EstimatedRTT + alpha*sampleRTT;
+	DevRTT = (1 - beta)*DevRTT + beta*abs(sampleRTT - EstimatedRTT);
+	TimeoutInterval = EstimatedRTT + 4 * DevRTT;
+	return TimeoutInterval;
+	//printf("sampleRTT = %d \n", sampleRTT);
+	//printf("test = %f\n", 0.125*sampleRTT);
+	//printf("test2 = %f \n", (1 - alpha)*EstimatedRTT);
+	//printf("EstimatedRTT = %f \n", EstimatedRTT);
+	//printf("DevRTT = %f \n", DevRTT);
+}
+
+
+
+
