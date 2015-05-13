@@ -5,8 +5,6 @@
 struct tcplist tcp_list;
 tcplist* head = NULL;
 
-struct tcp_message global_new_tcp_msg;
-
 int ACK_global;
 int RTT;
 
@@ -14,8 +12,6 @@ static float EstimatedRTT;
 static float DevRTT;
 static int CountACK = 0;//ÈßÓàACK¼ÆÊıÆ÷£»
 static int ACK_Now = -1;
-unsigned int global_ip;
-unsigned short global_port;
 
 bool createNodeList()
 {
@@ -121,8 +117,14 @@ bool global_TCP_receive_flag;
 bool global_TCP_resend_flag;
 bool global_TCP_destroy_flag;
 
+struct tcp_message global_new_tcp_msg;
+unsigned int global_ip;
+unsigned short global_port;
+
 void TCP_new(unsigned int ip_temp, unsigned short port_temp)
 {
+	// ÂÖÑ¯£¬ÒòÎªÍøËÙ¿ìÓÚ´¦ÀíËÙ¶È£¬ÂÖÑ¯Ğ§ÂÊ·´¶ø¸ß
+	while (global_TCP_new_flag);
 	global_TCP_new_flag = true;
 	global_ip = ip_temp;
 	global_port = port_temp;
@@ -130,6 +132,8 @@ void TCP_new(unsigned int ip_temp, unsigned short port_temp)
 
 void TCP_send(unsigned int ip_temp, unsigned short port_temp, struct tcp_message tcp_msg_temp)
 {
+	// ÂÖÑ¯£¬ÒòÎªÍøËÙ¿ìÓÚ´¦ÀíËÙ¶È£¬ÂÖÑ¯Ğ§ÂÊ·´¶ø¸ß
+	while (global_TCP_send_flag);
 	global_TCP_send_flag = true;
 	global_ip = ip_temp;
 	global_port = port_temp;
@@ -138,6 +142,8 @@ void TCP_send(unsigned int ip_temp, unsigned short port_temp, struct tcp_message
 
 void TCP_receive(unsigned int ip_temp, unsigned short port_temp, struct tcp_message tcp_msg_temp)
 {
+	// ÂÖÑ¯£¬ÒòÎªÍøËÙ¿ìÓÚ´¦ÀíËÙ¶È£¬ÂÖÑ¯Ğ§ÂÊ·´¶ø¸ß
+	while (global_TCP_receive_flag);
 	global_TCP_receive_flag = true;
 	global_ip = ip_temp;
 	global_port = port_temp;
@@ -146,11 +152,15 @@ void TCP_receive(unsigned int ip_temp, unsigned short port_temp, struct tcp_mess
 
 void TCP_resend()
 {
+	// ÂÖÑ¯£¬ÒòÎªÍøËÙ¿ìÓÚ´¦ÀíËÙ¶È£¬ÂÖÑ¯Ğ§ÂÊ·´¶ø¸ß
+	while (global_TCP_resend_flag);
 	global_TCP_resend_flag = true;
 }
 
 void TCP_destroy(unsigned int ip_temp, unsigned short port_temp)
 {
+	// ÂÖÑ¯£¬ÒòÎªÍøËÙ¿ìÓÚ´¦ÀíËÙ¶È£¬ÂÖÑ¯Ğ§ÂÊ·´¶ø¸ß
+	while (global_TCP_destroy_flag);
 	global_TCP_destroy_flag = true;
 	global_ip = ip_temp;
 	global_port = port_temp;
@@ -161,21 +171,29 @@ void TCP_destroy(unsigned int ip_temp, unsigned short port_temp)
 void TCP_controller()
 {
 	// µ¥Ïß³Ì×Ü¿ØµÄÁ÷³Ì
+	// ³õÊ¼»¯Ëæ»úÆ÷
+	srand(time(0));
+	// ³õÊ¼»¯TCPÁ¬½ÓÁ´±í
 	createNodeList();
+	// ³õÊ¼»¯TCP²Ù×÷±êÖ¾
 	global_TCP_new_flag = global_TCP_send_flag = global_TCP_resend_flag = global_TCP_receive_flag = global_TCP_destroy_flag = false;
+	
+	// ¿ØÖÆÁ÷
 	for (;;)
 	{
+		// ÊÇ·ñĞèÒªĞÂ½¨Ò»¸öTCPÁ¬½Ó
 		if (global_TCP_new_flag)
 		{
-			tcplist* node1 = (tcplist*)malloc(sizeof(tcp_list));
+			tcplist *node1 = (tcplist *)malloc(sizeof(tcp_list));
+			node1->next = NULL;
 			node1->cwnd = MSS;
 			node1->IP = global_ip;
 			node1->PORT = global_port;
 			node1->MSG_ACK = 0;
-			node1->MSG_sum = 1;
+			node1->MSG_sum = 0;
 			node1->MSG_num = 0;
 			node1->send_size = 0;
-			node1->Threshold = 65 * 1024;
+			node1->Threshold = INITIAL_THRESHOLD;
 			node1->tcp_msg_send[node1->MSG_sum - 1].ACK = 0;
 			mescopy(node1->tcp_msg_send[node1->MSG_sum - 1].tcpmessage, global_new_tcp_msg);
 			node1->tcp_msg_send[node1->MSG_sum - 1].time = GetTickCount();
@@ -183,30 +201,29 @@ void TCP_controller()
 			node1->LastByteRead = 0;  
 			node1->rec_size = 0;
 			node1->RcvWindow = Rcvbuffer;
-			node1->next = NULL;
+			node1->seq_number = rand()%RANDOM_SEQ_NUMBER_MODULE;
 			addNode(node1);
 			global_TCP_new_flag = false;
 		}
 
+		// ÊÇ·ñĞèÒª·¢ËÍÒ»¸öTCP±¨ÎÄ£¬ÕâÀï²¢²»ÊÇÕæÕıµÄ·¢ËÍ£¬¶øÊÇ¼ÓÈë´ı·¢ËÍ±¨ÎÄ¶ÓÁĞ
+		// µÈ´ıºÏÊÊÊ±»úÏòÏÂµİ½»
 		if (global_TCP_send_flag)
 		{
 			// ĞÂ½¨¶ÔÓ¦TCPÁ¬½ÓµÄMsg
-			tcplist *temp1;
-			temp1 = getNode(global_ip, global_port);
-			if (temp1->MSG_sum > 1024)
+			tcplist *temp1 = getNode(global_ip, global_port);
+			temp1->tcp_msg_send[temp1->MSG_sum].tcpmessage = global_new_tcp_msg;
+			++(temp1->MSG_sum);
+			if (temp1->MSG_sum >= SEND_BUFFER_SIZE)
 			{
-				temp1->MSG_sum = 1;
+				temp1->MSG_sum = 0;
 			}
-			else
-			{
-				temp1->MSG_sum++;
-			}
-			temp1->tcp_msg_send[temp1->MSG_sum - 1].ACK = 0;
-			mescopy(temp1->tcp_msg_send[temp1->MSG_sum - 1].tcpmessage, global_new_tcp_msg);
 			//±¨ÎÄ¶Î³¤¶È	temp1->send_size += wzl_length
 			global_TCP_send_flag = false;
 		}
 
+		// ÊÇ·ñĞèÒª½ÓÊÕÒ»¸öTCP±¨ÎÄ£¬½«ÍøÂç²ã½»¸¶µÄ±¨ÎÄÌîÈë½ÓÊÕ»º´æ£¬µÈ´ıºÏÊÊ
+		// Ê±»úÏòÉÏ½»¸¶
 		if (global_TCP_receive_flag)
 		{
 			// ¸üĞÂ¶ÔÓ¦TCPºÍMsgµÄwindowºÍack
@@ -268,10 +285,12 @@ void TCP_controller()
 
 		}
 
+		// ÖØ´«..ÓĞµãÎÊÌâ£¿
 		if (global_TCP_resend_flag)
 		{
 		}
 
+		// ÊÇ·ñĞèÒª²ğ³ıÒ»¸öTCPÁ¬½Ó
 		if (global_TCP_destroy_flag)
 		{
 			// ²ğ³ıTCPÁ¬½Ó
@@ -388,7 +407,7 @@ float getSampleRTT(int sendtime, int gettime)		//Íù·µÊ±ÑÓµÄ¹À¼ÆÓë³¬Ê±£¬·µ»Ø³¬Ê±Ê
 	//printf("DevRTT = %f \n", DevRTT);
 }
 
-void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int dst_ip, unsigned int data_len, int funID)
+void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int dst_ip, unsigned int data_len)
 {
 	struct Msg new_ip_msg;
 	new_ip_msg.sip = getIP();
@@ -397,8 +416,8 @@ void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int dst_ip, unsig
 	new_ip_msg.ih_dport = send_tcp_message.tcp_dst_port;
 	new_ip_msg.datelen = data_len+send_tcp_message.tcp_hdr_length;
 	memcpy(new_ip_msg.data, &send_tcp_message, new_ip_msg.datelen);
-	new_ip_msg.protocol = 6;	// 6 for TCP
+	new_ip_msg.protocol = PROTOCOL_TCP;	// 6 for TCP
 
 	// ·¢ÍùÍøÂç²ã
-	AfxGetApp()->m_pMainWnd->SendMessage(IPTOLINK, (WPARAM)&new_ip_msg, (LPARAM)funID);
+	AfxGetApp()->m_pMainWnd->SendMessage(IPTOLINK, (WPARAM)&new_ip_msg, (LPARAM)0);	// µÚÈı¸ö²ÎÊıÍêÈ«²»ĞèÒª
 }

@@ -162,7 +162,7 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 	struct tcplist *found_TCP = getNode(new_ip_msg.sip, assume_udp_msg.udp_src_port);
 
 	// UDP
-	if (found_TCP == NULL)
+	if (new_ip_msg.protocol == PROTOCOL_UDP)
 	{
 		// »ñÈ¡UDP±¨ÎÄ¶Î
 		struct udp_message new_udp_msg;
@@ -189,7 +189,7 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 		SendMessage(APPSEND, (WPARAM)&new_sockstruct, (LPARAM)SOCKSEND);
 	}
 	// TCP
-	else
+	else if (new_ip_msg.protocol == PROTOCOL_TCP)
 	{
 		// »ñÈ¡TCP±¨ÎÄ¶Î
 		struct tcp_message new_tcp_msg;
@@ -217,15 +217,12 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
 		memcpy(new_sockstruct.data, new_tcp_msg.tcp_opts_and_app_data, new_sockstruct.datalength + 1); // +1 for \0
 
-		COPYDATASTRUCT CopyDataStruct;
-		// ×Ö½ÚÊı
-		CopyDataStruct.cbData = sizeof(new_sockstruct);
-		// ·¢ËÍÄÚÈİ£¬ÔİÊ±²»·Ö¿ªoptsºÍdata
-		CopyDataStruct.lpData = &new_sockstruct;
-		// ÉèÖÃÎªSend£¬Ó¦ÓÃ²ãÌ×½Ó×ÖReceiveÏìÓ¦
-		CopyDataStruct.dwData = SOCKSEND;
-		// ½ø³Ì¼äÍ¨ĞÅ
-		//::SendMessage(port2hwnd[new_tcp_msg.tcp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
+		// ËÍÍùÓ¦ÓÃ²ã
+		SendMessage(APPSEND, (WPARAM)&new_sockstruct, (LPARAM)SOCKSEND);
+	}
+	else
+	{
+		printf("What is this in OnTrans2App?!\n");
 	}
 
 	return 0;
@@ -292,7 +289,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 		new_ip_msg.ih_dport = dst_port;
 		new_ip_msg.datelen = new_udp_msg.udp_msg_length;
 		memcpy(new_ip_msg.data, &new_udp_msg, new_ip_msg.datelen);
-		new_ip_msg.protocol = 17;	// 17 for UDP
+		new_ip_msg.protocol = PROTOCOL_UDP;	// 17 for UDP
 
 		// ·¢ÍùÍøÂç²ã
 		SendMessage(IPTOLINK, (WPARAM)&new_ip_msg, lparam);
@@ -300,23 +297,19 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 	// TCP
 	else
 	{
-		// ÏÂÃæ¿ÉÄÜĞèÒª·ÅÔÚ±ğµÄµØ·½
-		// ÌîÈëTCP±¨ÎÄ¶Î½á¹¹
-		struct tcp_message new_tcp_msg;
-		// Ä¿Ç°µÄTCPÊµÏÖ½á¹¹ÓĞÎÊÌâ£¬¸Ğ¾õÃæ¶ÔÃ¿Ò»¸öÁ¬½Ó£¬ĞèÒªÓĞÒ»¸öÏß³ÌÅÜTCP¸ºÔğÓ¦´ğACK£¬µ÷Õû´°¿Ú
-		// µ±TCPÁ¬½Ó¶Ï¿ªÊ±Ïß³ÌÏûÊÅ
-		// »òÕßÖ»¿ªÒ»¸öÏß³Ì£¬ÓÃÓÚTCP×Ü¿Ø£¬¸ºÔğÎ¬»¤TCP×´Ì¬Á´±í£¬²¢Ó¦´ğACKµÈ
-		// È»ºóÁ¬½ÓÊ±´´½¨TCPÁ¬½Óµ½TCPÁ´±í£¬¶Ï¿ªÊ±´ÓÁ´±í°şÀë
-		// ¿ÉÒÔ¿¼ÂÇ½ø³Ì¼ä·¢ÏûÏ¢£¬Ò²¿ÉÒÔ¿¼ÂÇÖ±½ÓÓÃÈ«¾Ö±äÁ¿×ö±êÖ¾Î»
-		new_tcp_msg.tcp_src_port = src_port;
-		new_tcp_msg.tcp_dst_port = dst_port;
-
 		// ·½·¨ÅĞ¶Ï
 		if (funID == SOCKCONNECT)
 		{
 			// Èı´ÎÎÕÊÖ
-			//TCP_new();
+
+			// ĞÂ½¨TCPÁ¬½Ó£¬³õÊ¼»¯TCPÁ¬½ÓÁ´±í
+			TCP_new(dst_ip, dst_port);
+
+			// µÚÒ»´ÎÎÕÊÖ£¬·¢ËÍSYN
+			// ¹¹ÔìSYN±¨ÎÄ¶Î
+			struct tcp_message syn_tcp_message;
 			//TCP_send();
+
 			for (;;)
 			{
 				// wait for ack
@@ -325,6 +318,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 		}
 		else if (funID == SOCKSEND)
 		{
+			// ²ğ·ÖÀ´×ÔÓ¦ÓÃ²ãµÄ¹ı´óÊı¾İ¶Î
 		//	TCP_send();
 		}
 		else if (funID == SOCKCLOSE)
