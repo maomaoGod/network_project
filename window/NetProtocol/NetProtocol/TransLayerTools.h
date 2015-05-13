@@ -47,7 +47,7 @@ struct tcp_message
 	unsigned tcp_urg : 1;	///< 紧急标志（并未使用）
 	unsigned tcp_ack : 1;	///< 确认标志
 	unsigned tcp_psh : 1;	///< 立即上交标志（并未使用）
-	unsigned tcp_rst : 1;	///< 用于连接建立与拆除
+	unsigned tcp_rst : 1;	///< 用于连接建立与拆除（并未使用）
 	unsigned tcp_syn : 1;	///< 用于连接建立与拆除
 	unsigned tcp_fin : 1;	///< 用于连接建立与拆除
 	unsigned tcp_rcv_window : 16;	///< 接收窗口

@@ -112,7 +112,9 @@ struct tcplist *getNode(unsigned int ip, unsigned short port)
 }
 
 bool global_TCP_new_flag;
+
 bool global_TCP_send_flag;
+
 bool global_TCP_receive_flag;
 bool global_TCP_resend_flag;
 bool global_TCP_destroy_flag;
@@ -232,10 +234,10 @@ void TCP_controller()
 		{
 			// 更新对应TCP和Msg的window和ack
 			tcplist *temp1 = getNode(global_ip, global_port);
-			temp1->tcp_msg_rec[temp1->LastByteRcvd].tcpmessage = global_new_tcp_msg;
-			temp1->tcp_msg_rec[temp1->LastByteRcvd].datalen = global_datalen;
+			temp1->tcp_msg_rcvd[temp1->LastByteRcvd].tcpmessage = global_new_tcp_msg;
+			temp1->tcp_msg_rcvd[temp1->LastByteRcvd].datalen = global_datalen;
 			++(temp1->LastByteRcvd);
-			if (temp1->LastByteRcvd >= RECEIVE_BUFFER_SIZE)
+			if (temp1->LastByteRcvd >= RCVD_BUFFER_SIZE)
 			{
 				temp1->LastByteRcvd = 0;
 			}

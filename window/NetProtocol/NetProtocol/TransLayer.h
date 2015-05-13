@@ -12,8 +12,10 @@ using namespace std;
 
 #define MSS 1024
 #define Rcvbuffer 1024*1024
-#define SEND_BUFFER_SIZE 1024
-#define RECEIVE_BUFFER_SIZE 1024
+#define SEND_STRUCT_SIZE 1024
+#define RCVD_STRUCT_SIZE 1024
+#define SEND_BUFFER_SIZE 1024*1024
+#define RCVD_BUFFER_SIZE 1024*1024
 #define INITIAL_THRESHOLD 65*1024 // 65KB
 #define RANDOM_SEQ_NUMBER_MODULE 321
 
@@ -22,18 +24,32 @@ struct tcpmsg_send
 {
 	int time;
 	int datalen;
-	struct tcp_message tcpmessage;   //序号tcpmessage->tcp_seq_number
+	//struct tcp_message tcpmessage;   //序号tcpmessage->tcp_seq_number
+	int seq_number;
 };
 
 struct tcpmsg_rcvd
 {
 	int datalen;
-	struct tcp_message tcpmessage;
+	int seq_number;
+	//struct tcp_message tcpmessage;
 };
 
 struct tcplist
 {
 	tcplist *next;
+
+	unsigned tcp_src_ip : 32;
+	unsigned tcp_dst_ip : 32;
+	unsigned tcp_src_port : 16;
+	unsigned tcp_dst_port : 16;
+	int cong_wind;	// 拥塞窗口
+	int threshold;	// 阀值
+	int wait_for_ack;	// 当前正在等待ack的报文序号，也就是字符流编号
+	int wait_for_send;	// 等待发送的报文序号
+	int wait_for_fill;	// 等待填充的字节流序号
+
+
 	int cwnd;       //窗口大小
 	unsigned int IP;  //IP
 	unsigned short PORT; //端口号
@@ -42,8 +58,8 @@ struct tcplist
 	int MSG_num;    //已经发送的报文数
 	int MSG_sum;    //一共要发送的报文数
 	int send_size;   //待发送的数据大小
-	struct tcpmsg_send tcp_msg_send[SEND_BUFFER_SIZE];  //当前TCP下发送存放区
-	struct tcpmsg_rcvd tcp_msg_rec[RECEIVE_BUFFER_SIZE];   //当前TCP下接收缓冲区
+	struct tcpmsg_send tcp_msg_send[SEND_STRUCT_SIZE];  //当前TCP下发送存放区
+	struct tcpmsg_rcvd tcp_msg_rcvd[RCVD_STRUCT_SIZE];   //当前TCP下接收缓冲区
 	int LastByteRcvd;    //收到的最后报文的编号
 	int LastByteRead;    //已经有多少收到的报文得到确认
 	int rec_size;   //已经收到但未确认的数据大小
