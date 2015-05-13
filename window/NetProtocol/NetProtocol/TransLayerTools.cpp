@@ -174,7 +174,7 @@ unsigned int IP_chars2uint(char ip[])
 			ip_seg_number = ip_seg_number*10+ip[i]-48;
 		}
 	}
-	ip_number += ip_seg_number;
+	ip_number = ip_number*256+ip_seg_number;
 	return ip_number;
 }
 
