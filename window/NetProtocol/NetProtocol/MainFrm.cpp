@@ -319,7 +319,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 		}
 		else if (funID == SOCKSEND)
 		{
-			// ²ğ·ÖÀ´×ÔÓ¦ÓÃ²ãµÄ¹ı´óÊı¾İ¶Î
+			// ²»Ğè²ğ·ÖÀ´×ÔÓ¦ÓÃ²ãµÄ¹ı´óÊı¾İ¶Î
 		//	TCP_send();
 		}
 		else if (funID == SOCKCLOSE)
