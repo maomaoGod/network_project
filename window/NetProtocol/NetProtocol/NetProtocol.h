@@ -105,6 +105,7 @@ struct ObjEvent
 	HANDLE    CRsock;   //应用程序读信号量 
 	HANDLE    CWsock;  //应用程序写信号量
 };
+
 struct parastruct
 {
 	ObjEvent *pEvent;
@@ -133,12 +134,18 @@ struct _iphdr //定义IP首部
 	unsigned short ih_protl;	///< 数据报的协议, 定义0代表传输层数据, 定义1代表节点相接的信息
 	unsigned int ih_saddr;		///< 32位源IP
 	unsigned int ih_daddr;		///< 32位目的IP
+	unsigned int ih_sport;		///< 32位源端口号
+	unsigned int ih_dport;		///< 32位目的端口号
 };
 
 struct Msg{                     ///<数据
-	unsigned int sip;
-	unsigned int dip;
+	unsigned int ih_sport;		///< 32位源端口号
+	unsigned int ih_dport;		///< 32位目的端口号
+	unsigned int sip;			///< 32位源IP
+	unsigned int dip;			///< 32位目的IP
+	int datelen;
 	char data[2048];
+	unsigned int protocol;		///< 上层协议类型
 };
 
 struct IP_Msg{

@@ -196,7 +196,15 @@ FakesAssemblies/
 *.opt
 window/NetProtocol/NetProtocol/NetProtocol.vcxproj
 window/NetProtocol/NetProtocol/NetProtocol.vcxproj
+<<<<<<< HEAD
 *.vcxproj
 window/NetProtocol/NetProtocol/NetProtocol.vcxproj
 window/HustNet/HustNet/HustNet.vcxproj
 window/HustNet/HustNet/HustNet.vcxproj.filters
+=======
+*.filters
+window/NetProtocol/NetProtocol/NetProtocol.vcxproj
+window/NetProtocol/NetProtocol/NetProtocol.vcxproj.filters
+>>>>>>> origin/master
+window/NetProtocol/NetProtocol/NetProtocol.vcxproj
+window/NetProtocol/NetProtocol/NetProtocol.vcxproj

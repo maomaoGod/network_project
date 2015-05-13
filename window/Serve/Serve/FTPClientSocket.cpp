@@ -45,8 +45,9 @@ void FTPClientSocket::OnReceive(int nErrorCode)
 		PrintView(back);
 		//back.Format(_T("成功接收消息:%s"), Buffer);
 		Send(back, back.GetLength()*sizeof(TCHAR));
+		Send(NULL, 0);
 		//Exit the Socket
-		if (app.GetCode() == -1)  this->Close();
+		if (app.GetCode() == QUIT_EXIT)  this->Close();
 	}
 	CAsyncSocket::OnReceive(nErrorCode);
 }
@@ -55,7 +56,7 @@ void FTPClientSocket::OnSend(int nErrorCode)
 {
 	// TODO:  在此添加专用代码和/或调用基类
 	CString back;
-	back.Format(_T("已通过匿名连接，请等待网页数据"), myclient[this] + 1);
+	back.Format(_T("已通过匿名连接服务器"), myclient[this] + 1);
 	Send(back, back.GetLength()*sizeof(TCHAR));
 	CAsyncSocket::OnSend(nErrorCode);
 }

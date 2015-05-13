@@ -8,9 +8,6 @@
 #include "Tools.h"
 #include "pcap.h"
 
-struct _iphdr IP_HEADER;
-struct Msg IP_data;
-struct IP_Msg MyIP;
 
 int sockcount = 0;
 
@@ -57,6 +54,10 @@ CMainFrame::CMainFrame()
 		AfxMessageBox(_T("´´½¨×¥°üÏß³ÌÊ§°Ü£¡"));
 	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)connect, (LPVOID) this, NULL, NULL))
 		AfxMessageBox(_T("´´½¨Á¬½ÓÏß³ÌÊ§°Ü£¡"));
+	// TODO:  ÔÚ´ËÌí¼Ó³ÉÔ±³õÊ¼»¯´úÂë
+	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
+		AfxMessageBox(_T("×¥°üÏß³Ì´´½¨Ê§°Ü"));
+	numprocess = 0;
 }
 
 CMainFrame::~CMainFrame()
@@ -110,48 +111,6 @@ void CMainFrame::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
-BOOL CALLBACK lpEnumHwnd(HWND hwnd, LPARAM lParam)//±éÀúËùÓĞ´°¿Ú£¬Ñ°ÕÒ¿Í»§¶ËºÍ·şÎñÆ÷³ÌĞò
-{
-	CString Client, Serve;
-	Client = _T("»ªÖĞ¿Æ¼¼´óÑ§ÍøÂçÊµÑéÆ½Ì¨");
-	Serve = _T("ÍøÂçÊµÑé·şÎñÆ÷");
-	TCHAR str[100];
-	::GetWindowText(hwnd, str, 100);
-	if (Client.Compare(str) == 0 || Serve.Compare(str) == 0)
-		(AfxGetApp()->m_pMainWnd)->SendMessage(CHECKHWND, (WPARAM)&hwnd, lParam);
-	return 1;
-}
-
-//BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
-//{
-//	// TODO:  ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-//	MyWnd = pWnd;
-//	if (pwnd2port.find(pWnd) == pwnd2port.end()){  //Ó¦ÓÃ³ÌĞò×¢²á
-//		EnumWindows(lpEnumHwnd, (LPARAM)pWnd);
-//		return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
-//	}
-//	if (pCopyDataStruct != NULL){//½ÓÊÜÀ´×ÔÓ¦ÓÃ³ÌĞòµÄÏûÏ¢
-//		//SendMessage(APPTOTRANS, (WPARAM)pCopyDataStruct, (LPARAM)pWnd);
-//	}
-//  	 return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
-//}
-
-/*LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
-{
-	HWND mywnd = *((HWND *)wparam);
-	int index;
-	TCHAR str[100];
-	::GetWindowText(mywnd, str, 100);
-	for (index = 0; index < numprocess; index++)
-	if (port2hwnd[index] == mywnd)
-		break;
-	if (index == numprocess&&pwnd2port.find((CWnd *)lparam) == pwnd2port.end()){ //Ò»¸ö´°¿ÚÖ»ÄÜ×¢²áÒ»´Î
-		pwnd2port[(CWnd *)lparam] = numprocess;
-		port2hwnd[numprocess] = mywnd;
-		numprocess = numprocess + 1;
-	}
-	return 0;
-}*/
 
 LRESULT CMainFrame::OnApp2Trans(WPARAM wparam,LPARAM lparam)
 {	
@@ -191,23 +150,26 @@ LRESULT CMainFrame::OnApp2Trans(WPARAM wparam,LPARAM lparam)
 	}
 	return 0;
 }
-
 LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı¾İµ½Ó¦ÓÃ²ãµÄ½Ó¿Ú
 {  //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
 	struct Msg new_ip_msg = *((struct Msg *)wparam);
 
-	// ¸ù¾İÁ¬½ÓÅĞ¶ÏÊÇUDP»¹ÊÇTCP
+	// ÓÉÓÚUDPºÍTCPµÄ¿ªÍ·¶¼ÊÇÔ´¶Ë¿Ú£¬Ö±½Ó¼Ùs¶¨ÆäÎªUDPÀ´»ñÈ¡Ô´¶Ë¿ÚºÅ
+	struct udp_message assume_udp_msg;
+	memcpy(&assume_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
+	struct tcplist *found_TCP = getNode(new_ip_msg.sip, assume_udp_msg.udp_src_port);
+
 	// UDP
-	if (true/* edited later */)
+	if (found_TCP == NULL)
 	{
 		// »ñÈ¡UDP±¨ÎÄ¶Î
 		struct udp_message new_udp_msg;
-		memcpy(&new_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data)+1); // +1 for \0
+		memcpy(&new_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
 
 		// ¼ìÑéºÍ
-		if (!udpcheck(new_udp_msg.udp_msg_length-8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length%2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
+		if (!udpcheck(new_udp_msg.udp_msg_length - 8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length % 2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
 		{
 			// ÉáÆú±¨ÎÄ
 			return -1;
@@ -218,44 +180,64 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 		new_sockstruct.dstport = new_udp_msg.udp_dst_port;
 		new_sockstruct.srcport = new_udp_msg.udp_src_port;
 		new_sockstruct.bindport = 0;
-		new_sockstruct.datalength = new_udp_msg.udp_msg_length-8;
+		new_sockstruct.datalength = new_udp_msg.udp_msg_length - 8;
 		IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
 		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
-		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength+1); // +1 for \0
+		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength + 1); // +1 for \0
 
 		COPYDATASTRUCT CopyDataStruct;
 		// ×Ö½ÚÊı
 		CopyDataStruct.cbData = sizeof(new_sockstruct);
 		// ·¢ËÍÄÚÈİ
 		CopyDataStruct.lpData = &new_sockstruct;
+		// ÉèÖÃÎªSend£¬Ó¦ÓÃ²ãÌ×½Ó×ÖReceiveÏìÓ¦
+		CopyDataStruct.dwData = SOCKSEND;
 		// ½ø³Ì¼äÍ¨ĞÅ
-	//::SendMessage(port2hwnd[new_udp_msg.udp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
+		//::SendMessage(port2hwnd[new_udp_msg.udp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
 	}
 	// TCP
 	else
 	{
-		struct tcp_message new_tcp_msg = *((struct tcp_message *)wparam);
+		// »ñÈ¡TCP±¨ÎÄ¶Î
+		struct tcp_message new_tcp_msg;
+		memcpy(&new_tcp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
+
 		// optsºÍdataÒ»Í¬½øĞĞ¼ìÑé
-		unsigned data_len = CStringA(new_tcp_msg.tcp_opts_and_app_data).GetLength();
+		unsigned data_len = strlen(new_tcp_msg.tcp_opts_and_app_data) + 1; // +1 for \0
 
 		// ¼ìÑéºÍ
-		if (!udpcheck(data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, data_len%2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
+		if (!udpcheck(data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
 		{
 			// ÉáÆú±¨ÎÄ
 			return -1;
 		}
 
+		TCP_receive();
+
+		// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖĞ
+		struct sockstruct new_sockstruct;
+		new_sockstruct.dstport = new_tcp_msg.tcp_dst_port;
+		new_sockstruct.srcport = new_tcp_msg.tcp_src_port;
+		new_sockstruct.bindport = 0;
+		new_sockstruct.datalength = data_len;
+		IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
+		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
+		memcpy(new_sockstruct.data, new_tcp_msg.tcp_opts_and_app_data, new_sockstruct.datalength + 1); // +1 for \0
+
 		COPYDATASTRUCT CopyDataStruct;
 		// ×Ö½ÚÊı
-		CopyDataStruct.cbData = data_len;
+		CopyDataStruct.cbData = sizeof(new_sockstruct);
 		// ·¢ËÍÄÚÈİ£¬ÔİÊ±²»·Ö¿ªoptsºÍdata
-		CopyDataStruct.lpData = &(new_tcp_msg.tcp_opts_and_app_data);
+		CopyDataStruct.lpData = &new_sockstruct;
+		// ÉèÖÃÎªSend£¬Ó¦ÓÃ²ãÌ×½Ó×ÖReceiveÏìÓ¦
+		CopyDataStruct.dwData = SOCKSEND;
 		// ½ø³Ì¼äÍ¨ĞÅ
-	//::SendMessage(port2hwnd[new_tcp_msg.tcp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
+		//::SendMessage(port2hwnd[new_tcp_msg.tcp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
 	}
 
 	return 0;
 }
+
 
 LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´«Êä²ãµÄ½Ó¿Ú
 { //
@@ -277,7 +259,6 @@ LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊı¾İ
 	ip_msg = receiver.combine(packetData);
 	if (ip_msg != NULL) AfxGetMainWnd()->SendMessage(IPTOTRANS, (WPARAM)ip_msg);
 	return 0;
-
 }
 
 struct tcp_message global_new_tcp_msg;
@@ -293,32 +274,37 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 	unsigned int src_ip = getIP();
 	unsigned int data_len = data_from_applayer.datalength;
 
-	//// ÏÈ×ª»¯Îª¶à×Ö½Ú£¬ÔÙ¼ÆËã³¤¶È£¬ÒÔÃâ¼ÆËãÉÙÁË×Ö½ÚÊı
-	//// ÕâÀï¿ÉÄÜĞèÒªÈÕºó¸ü¸ÄÎªÓ¦ÓÃ²ã×Ô¼º×ªÂë£¬ÕâÑùÀíÂÛÉÏ¿ÉÒÔ¼õÉÙ´«ÊäµÄ×Ö½ÚÊı
-	//CString temp_data = mystr.Mid(split_ip);
-	//unsigned int data_len = CStringA(temp_data).GetLength();
+	// »ñÈ¡Function ID
+	int funID = (int)lparam;
+
+	// ÅĞ¶ÏÊÇUDP»¹ÊÇTCP
+	struct tcplist *found_TCP = getNode(dst_ip, dst_port);
 
 	// UDP
-	if (true/* edited later */)
+	if (found_TCP == NULL)
 	{
 		struct udp_message new_udp_msg;
 		// ÌîÈëUDP±¨ÎÄ¶Î½á¹¹
 		new_udp_msg.udp_src_port = src_port;
 		new_udp_msg.udp_dst_port = dst_port;
-		new_udp_msg.udp_msg_length = 8+data_len;
-		memcpy(new_udp_msg.udp_app_data, data_from_applayer.data, data_len+1); // +1 for \0
-		//new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)src_port, (u16)dst_port, data_len%2, (u16 *)&temp_data);
+		new_udp_msg.udp_msg_length = 8 + data_len;
+		memcpy(new_udp_msg.udp_app_data, data_from_applayer.data, data_len + 1); // +1 for \0
+		new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)src_port, (u16)dst_port, data_len % 2, (u16 *)&(new_udp_msg.udp_app_data));
 
 		// UDPÎŞÓµÈû¿ØÖÆ
 		struct Msg new_ip_msg;
 		new_ip_msg.sip = src_ip;
 		new_ip_msg.dip = dst_ip;
-		memcpy(new_ip_msg.data, &new_udp_msg, new_udp_msg.udp_msg_length+1); // +1 for \0
+		new_ip_msg.datelen = new_udp_msg.udp_msg_length;
+		memcpy(new_ip_msg.data, &new_udp_msg, new_udp_msg.udp_msg_length + 1); // +1 for \0
+		new_ip_msg.protocol = 17;	// 17 for UDP
 		OnIP2Link((WPARAM)&new_ip_msg, lparam);
 	}
 	// TCP
 	else
 	{
+		// ÏÂÃæ¿ÉÄÜĞèÒª·ÅÔÚ±ğµÄµØ·½
+		// ÌîÈëTCP±¨ÎÄ¶Î½á¹¹
 		struct tcp_message new_tcp_msg;
 		// Ä¿Ç°µÄTCPÊµÏÖ½á¹¹ÓĞÎÊÌâ£¬¸Ğ¾õÃæ¶ÔÃ¿Ò»¸öÁ¬½Ó£¬ĞèÒªÓĞÒ»¸öÏß³ÌÅÜTCP¸ºÔğÓ¦´ğACK£¬µ÷Õû´°¿Ú
 		// µ±TCPÁ¬½Ó¶Ï¿ªÊ±Ïß³ÌÏûÊÅ
@@ -327,17 +313,41 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 		// ¿ÉÒÔ¿¼ÂÇ½ø³Ì¼ä·¢ÏûÏ¢£¬Ò²¿ÉÒÔ¿¼ÂÇÖ±½ÓÓÃÈ«¾Ö±äÁ¿×ö±êÖ¾Î»
 		new_tcp_msg.tcp_src_port = src_port;
 		new_tcp_msg.tcp_dst_port = dst_port;
+		//new_tcp_msg.tcp_seq_number
 
 		// ·½·¨ÅĞ¶Ï
-		if (true/* method == SK_CONNECT */)
+		if (funID == SOCKCONNECT)
 		{
-			// µ÷ÓÃMainFrmTransToolsÖĞÊµÏÖµÄÈı´ÎÎÕÊÖ
-			//ShakeHands();
+			// Èı´ÎÎÕÊÖ
+			TCP_new();
+			TCP_send();
+			for (;;)
+			{
+				// wait for ack
+			}
+			TCP_send();
 		}
-		else if (true/* method == SK_SEND */)
+		else if (funID == SOCKSEND)
 		{
-			// ¶ÔÎ¬»¤µÄTCP×´Ì¬Á´±í½øĞĞ²éÑ¯£¬ÊÇ·ñÒÑ½¨Á¢Á¬½Ó
-			// ÈôÎ´½¨Á¢Á¬½ÓÔò±¨´í
+			TCP_send();
+		}
+		else if (funID == SOCKCLOSE)
+		{
+			TCP_send();
+			for (;;)
+			{
+				// wait for ack
+			}
+			for (;;)
+			{
+				// wait for FIN
+			}
+			TCP_send();
+			TCP_destroy;
+		}
+		else
+		{
+			printf("OnTrans2IP: What is this?\n");
 		}
 	}
 	return 0;
@@ -353,6 +363,7 @@ LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊı¾İ·¢ËÍ
 		return true;
 	return false;
 }
+
 
 LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊı¾İ·¢ËÍ³öÈ¥½Ó¿Ú
 {

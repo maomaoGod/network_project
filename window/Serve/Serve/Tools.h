@@ -90,4 +90,25 @@ namespace Tools{
 		}
 
 	};
+	
+	class MYFILE{
+	public:
+		static void myDeleteDirectory(CString directory_path)   //删除一个文件夹下的所有内容  
+		{
+			CFileFind finder;
+			CString path;
+			path.Format(_T("%s/*.*"), directory_path);
+			BOOL bWorking = finder.FindFile(path);
+			while (bWorking){
+				bWorking = finder.FindNextFile();
+				if (finder.IsDirectory() && !finder.IsDots()){//处理文件夹  
+					myDeleteDirectory(finder.GetFilePath()); //递归删除文件夹  
+					RemoveDirectory(finder.GetFilePath());
+				}
+				else{//处理文件  
+					DeleteFile(finder.GetFilePath());
+				}
+			}
+		}
+	};
 }

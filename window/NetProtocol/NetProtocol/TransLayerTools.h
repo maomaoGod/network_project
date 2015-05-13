@@ -57,19 +57,6 @@ struct tcp_message
 };
 
 /**
-*@class TCP报文发送状态结构体
-*@brief 存放TCP报文段的发送状态的结构体
-*@author ACM1201
-*@note
-*TCP报文段发送状态基本结构
-*/
-struct tcp_state
-{
-	unsigned int tcp_ack_counter;	///< TCP报文段发送后ack报文的计数
-	unsigned int tcp_rcv_window;	///< TCP报文段的接受窗口
-};
-
-/**
 *u16 buff[] is an array containing all the octets in the UDP header and data
 *u16 len_udp is the length (number of octets) of the UDP header and data
 *padding is 1 if data has an even number of octets and 0 for an odd number

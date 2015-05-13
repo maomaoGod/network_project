@@ -1,6 +1,5 @@
 // MainFrm.h : CMainFrame 类的接口
 //
-
 #pragma once
 #include <map>
 #include "CMyIP.h"
