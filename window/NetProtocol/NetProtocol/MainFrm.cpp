@@ -136,8 +136,8 @@ LRESULT CMainFrame::OnApp2Trans(WPARAM wparam,LPARAM lparam)
 		break;
 	case SOCKSEND:
 	case SOCKSENDTO:
-		SendMessage(TRANSTOIP, (WPARAM)&port2Rstruct[nPort]->mysock, (LPARAM)nPort);
-		//SendMessage(APPSEND, (WPARAM)&port2Rstruct[nPort]->mysock, (LPARAM)nPort);
+		port2Rstruct[nPort]->mysock.srcport = nPort;
+		SendMessage(TRANSTOIP, (WPARAM)&port2Rstruct[nPort]->mysock, (LPARAM)SOCKSEND);
 		break;
 	case SOCKACCEPT:
 		memcpy(tempsrc.srcip, port2Rstruct[nPort]->mysock.dstip, 20);

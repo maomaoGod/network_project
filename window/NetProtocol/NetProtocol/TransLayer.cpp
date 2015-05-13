@@ -400,5 +400,5 @@ void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int dst_ip, unsig
 	new_ip_msg.protocol = 6;	// 6 for TCP
 
 	// ·¢ÍùÍøÂç²ã
-	AfxGetMainWnd()->SendMessage(IPTOLINK, (WPARAM)&new_ip_msg, (LPARAM)funID);
+	AfxGetApp()->m_pMainWnd->SendMessage(IPTOLINK, (WPARAM)&new_ip_msg, (LPARAM)funID);
 }

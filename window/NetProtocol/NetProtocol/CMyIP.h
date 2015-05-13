@@ -30,8 +30,8 @@ public:
 	/** @brief CMyIP类的析构函数 */
 	~CMyIP();
 	/** @brief 从网络层传送数据到传输层的函数 */
-	Bool IP2Trans(WPARAM wparam, LPARAM lparam);
+	Bool   IP2Trans(WPARAM wparam, LPARAM lparam);
 	/** @brief 从网络层传送数据到链路层的函数 */
-	static BOOL IP2Link(WPARAM wparam, LPARAM lparam);
+	BOOL IP2Link(WPARAM wparam, LPARAM lparam);
 };
 
