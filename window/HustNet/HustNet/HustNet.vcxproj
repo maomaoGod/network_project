@@ -106,7 +106,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CmdView.h" />
-    <ClInclude Include="Cmysocket.h" />
+    <ClInclude Include="CmyAsyncSocket.h" />
+    <ClInclude Include="CmySocket.h" />
     <ClInclude Include="HustNet.h" />
     <ClInclude Include="HustNetDoc.h" />
     <ClInclude Include="LogView.h" />
@@ -125,7 +126,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CmdView.cpp" />
-    <ClCompile Include="Cmysocket.cpp" />
+    <ClCompile Include="CmyAsyncSocket.cpp" />
+    <ClCompile Include="CmySocket.cpp" />
     <ClCompile Include="HustNet.cpp" />
     <ClCompile Include="HustNetDoc.cpp" />
     <ClCompile Include="LogView.cpp" />

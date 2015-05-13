@@ -19,10 +19,11 @@
 #define  TRANSTOIP      WM_USER+1000
 #define  IPTOLINK          WM_USER+1001
 #define  LINKSEND        WM_USER+1002
-#define  TRANSTOAPP	WM_USER+1003
+#define  TRANSTOAPP  WM_USER+1003
 #define  APPTOTRANS	WM_USER+1004
 #define  IPTOTRANS      WM_USER+1005
 #define  LINKTOIP          WM_USER+1006
+#define  APPSEND         WM_USER+1007
 
 #define  SOCKCONNECT             200
 #define  SOCKBIND                     201
@@ -32,6 +33,7 @@
 #define  SOCKRECEIVE              205
 #define  SOCKRECEIVEFROM    206
 #define  SOCKCLOSE                 207
+#define  SOCKACCEPT               208
 
 struct sockstruct {
 	unsigned short  dstport;   //目的端口号
@@ -43,7 +45,72 @@ struct sockstruct {
 	char data[2048];             //数据
 };
 
+struct prostruct   //进程间通信结构体
+{
+	int FuncID;       //socket操作码        
+	int SockMark;  //socket编号
+	int AcceptSockMark; //转接的socket编号
+	sockstruct  mysock;
+};
 
+struct portsrc    //得到目的端口的数据结构
+{
+	char srcip[20];
+	unsigned short srcport;
+	unsigned short dstport;
+	bool operator <(const portsrc & other) const
+	  {
+		if (strcmp(srcip, other.srcip) < 0)
+			return true;
+		else if (strcmp(srcip, other.srcip) >0)
+			return false;
+		else {
+			if (srcport < other.srcport)
+				return true;
+			else if (srcport>other.srcport)
+				return false;
+			else {
+				if (dstport < other.dstport)
+					return true;
+				else if (dstport>other.dstport)
+					return false;
+				return false;
+			}
+		}     
+	  }
+};
+
+struct regstruct{
+	int SockMark;  //socket唯一标识码
+	TCHAR readfilename[20];  //socket读
+	TCHAR writefilename[20]; //socket写
+	TCHAR PSname[20];       //有数据准备发送到应用程序
+	TCHAR PRname[20];       //协议申请读 
+	TCHAR PWname[20];      //协议申请写
+	TCHAR CSname[20];       //应用程序有数据准备发送
+	TCHAR CRname[20];       //应用申请读
+	TCHAR CWname[20];      //应用申请写
+};
+
+struct ObjEvent
+{
+	HANDLE    RFile;       //应用程序读文件句柄
+	HANDLE    WFile;      //应用程序写文件句柄 
+	prostruct    *Rpro;       //映射到本地读文件指针
+	prostruct    *Wpro;      //映射到本地写文件指针
+	HANDLE    PSsock;   //协议程序准备写信号量
+	HANDLE    PRsock;   //协议程序读信号量
+	HANDLE    PWsock;  //协议程序写信号量
+	HANDLE    CSsock;   //应用程序准备写信号量
+	HANDLE    CRsock;   //应用程序读信号量 
+	HANDLE    CWsock;  //应用程序写信号量
+};
+
+struct parastruct
+{
+	ObjEvent *pEvent;
+	void *pClass;
+};
  
 typedef unsigned char Byte;
 typedef unsigned short Ushort;

@@ -24,8 +24,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_MESSAGE(DISPATCH,Dispatch)
-	ON_MESSAGE(SENDTONPC,SendToNPC)
-	ON_MESSAGE(REGISTER,Register)
+//	ON_MESSAGE(SENDTONPC,SendToNPC)
+//	ON_MESSAGE(REGISTER,Register)
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_NETSET, &CMainFrame::OnNETSET)
 	ON_WM_COPYDATA()
@@ -52,7 +52,6 @@ CMainFrame::CMainFrame()
 	*TODO:  在此添加成员初始化代码
 	*/
 	flag = false;
-	protocolwnd = NULL;
 }
 
 CMainFrame::~CMainFrame()
@@ -285,7 +284,8 @@ void CMainFrame::OnNETSET()
 	*/
 	SetDlg.DoModal();
 }
-LRESULT CMainFrame::Register(WPARAM wparam, LPARAM lparam)
+
+/*LRESULT CMainFrame::Register(WPARAM wparam, LPARAM lparam)
 {
 	COPYDATASTRUCT mycp;
 	protocolwnd = ::FindWindow(NULL, _T("NetProtocol"));
@@ -299,9 +299,9 @@ LRESULT CMainFrame::Register(WPARAM wparam, LPARAM lparam)
 	mycp.lpData =  NULL;
 	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
 	return 0;
-}
+}*/
 
-LRESULT CMainFrame::SendToNPC(WPARAM wparam, LPARAM lparam)
+/*LRESULT CMainFrame::SendToNPC(WPARAM wparam, LPARAM lparam)
 {
 	if (protocolwnd == NULL)//目前默认网络服务是启动的
 		Register(NULL,NULL);
@@ -313,9 +313,9 @@ LRESULT CMainFrame::SendToNPC(WPARAM wparam, LPARAM lparam)
 	mycp.lpData = (void *)lparam;
 	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
 	return 0;
-}
+}*/
 
-BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
+/*BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	if (pCopyDataStruct != NULL)
@@ -323,4 +323,4 @@ BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
 		sockstruct mysock = *((sockstruct *)(pCopyDataStruct->lpData));
 	}
 	return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
-}
+}*/

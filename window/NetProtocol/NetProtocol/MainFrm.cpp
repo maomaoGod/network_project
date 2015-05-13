@@ -1,4 +1,4 @@
-// MainFrm.cpp : CMainFrame ç±»çš„å®ç° , å®ç°ä¼ è¾“å±‚,ç½‘ç»œå±‚,é“¾è·¯å±‚çš„å…±ç”¨ã€‚
+// MainFrm.cpp : CMainFrame ÀàµÄÊµÏÖ , ÊµÏÖ´«Êä²ã,ÍøÂç²ã,Á´Â·²ãµÄ¹²ÓÃ¡£
 //
 #include "stdafx.h"
 #include "NetProtocol.h"
@@ -8,6 +8,8 @@
 #include "Tools.h"
 #include "pcap.h"
 
+
+int sockcount = 0;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -21,8 +23,9 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
-	ON_WM_COPYDATA()
-	ON_MESSAGE(CHECKHWND, OnCheck)
+//    ON_WM_COPYDATA()
+//ON_MESSAGE(CHECKHWND, OnCheck)
+    ON_MESSAGE(APPSEND, OnAppSend)
 	ON_MESSAGE(TRANSTOAPP, OnTrans2App)
 	ON_MESSAGE(APPTOTRANS, OnApp2Trans)
 	ON_MESSAGE(IPTOTRANS, OnIP2Trans)
@@ -30,23 +33,30 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(TRANSTOIP, OnTrans2IP)
 	ON_MESSAGE(IPTOLINK, OnIP2Link)
 	ON_MESSAGE(LINKSEND, OnLinkSend)
+//	ON_COMMAND(ID_32783, &CMainFrame::OnSENDHUST)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
 {
-	ID_SEPARATOR,           // çŠ¶æ€è¡ŒæŒ‡ç¤ºå™¨
+	ID_SEPARATOR,           // ×´Ì¬ĞĞÖ¸Ê¾Æ÷
 	ID_INDICATOR_CAPS,
 	ID_INDICATOR_NUM,
 	ID_INDICATOR_SCRL,
 };
 
-// CMainFrame æ„é€ /ææ„
+// CMainFrame ¹¹Ôì/Îö¹¹
 
 CMainFrame::CMainFrame()
 {
-	// TODO:  åœ¨æ­¤æ·»åŠ æˆå‘˜åˆå§‹åŒ–ä»£ç 
+	// TODO:  ÔÚ´ËÌí¼Ó³ÉÔ±³õÊ¼»¯´úÂë
+	psock = NULL;
 	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
-		AfxMessageBox(_T("åˆ›å»ºæŠ“åŒ…çº¿ç¨‹å¤±è´¥ï¼"));
+		AfxMessageBox(_T("´´½¨×¥°üÏß³ÌÊ§°Ü£¡"));
+	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)connect, (LPVOID) this, NULL, NULL))
+		AfxMessageBox(_T("´´½¨Á¬½ÓÏß³ÌÊ§°Ü£¡"));
+	// TODO:  ÔÚ´ËÌí¼Ó³ÉÔ±³õÊ¼»¯´úÂë
+	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
+		AfxMessageBox(_T("×¥°üÏß³Ì´´½¨Ê§°Ü"));
 	numprocess = 0;
 }
 
@@ -61,16 +71,16 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
 		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
 	{
-		TRACE0("æœªèƒ½åˆ›å»ºå·¥å…·æ \n");
-		return -1;      // æœªèƒ½åˆ›å»º
+		TRACE0("Î´ÄÜ´´½¨¹¤¾ßÀ¸\n");
+		return -1;      // Î´ÄÜ´´½¨
 	}
 	if (!m_wndStatusBar.Create(this))
 	{
-		TRACE0("æœªèƒ½åˆ›å»ºçŠ¶æ€æ \n");
-		return -1;      // æœªèƒ½åˆ›å»º
+		TRACE0("Î´ÄÜ´´½¨×´Ì¬À¸\n");
+		return -1;      // Î´ÄÜ´´½¨
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
-	// TODO:  å¦‚æœä¸éœ€è¦å¯åœé å·¥å…·æ ï¼Œåˆ™åˆ é™¤è¿™ä¸‰è¡Œ
+	// TODO:  Èç¹û²»ĞèÒª¿ÉÍ£¿¿¹¤¾ßÀ¸£¬ÔòÉ¾³ıÕâÈıĞĞ
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);
@@ -81,13 +91,13 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	if (!CFrameWnd::PreCreateWindow(cs))
 		return FALSE;
-	// TODO:  åœ¨æ­¤å¤„é€šè¿‡ä¿®æ”¹
-	//  CREATESTRUCT cs æ¥ä¿®æ”¹çª—å£ç±»æˆ–æ ·å¼
+	// TODO:  ÔÚ´Ë´¦Í¨¹ıĞŞ¸Ä
+	//  CREATESTRUCT cs À´ĞŞ¸Ä´°¿ÚÀà»òÑùÊ½
 	cs.style &= ~FWS_ADDTOTITLE;
 	return TRUE;
 }
 
-// CMainFrame è¯Šæ–­
+// CMainFrame Õï¶Ï
 
 #ifdef _DEBUG
 void CMainFrame::AssertValid() const
@@ -101,148 +111,110 @@ void CMainFrame::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
-BOOL CALLBACK lpEnumHwnd(HWND hwnd, LPARAM lParam)//éå†æ‰€æœ‰çª—å£ï¼Œå¯»æ‰¾å®¢æˆ·ç«¯å’ŒæœåŠ¡å™¨ç¨‹åº
-{
-	CString Client, Serve;
-	Client = _T("åä¸­ç§‘æŠ€å¤§å­¦ç½‘ç»œå®éªŒå¹³å°");
-	Serve = _T("ç½‘ç»œå®éªŒæœåŠ¡å™¨");
-	TCHAR str[100];
-	::GetWindowText(hwnd, str, 100);
-	if (Client.Compare(str) == 0 || Serve.Compare(str) == 0)
-		(AfxGetApp()->m_pMainWnd)->SendMessage(CHECKHWND, (WPARAM)&hwnd, lParam);
-	return 1;
-}
 
-BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
-{
-	// TODO:  åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
-	if (pwnd2port.find(pWnd) == pwnd2port.end()){  //åº”ç”¨ç¨‹åºæ³¨å†Œ
-		EnumWindows(lpEnumHwnd, (LPARAM)pWnd);
-		return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
-	}
-	if (pCopyDataStruct != NULL){//æ¥å—æ¥è‡ªåº”ç”¨ç¨‹åºçš„æ¶ˆæ¯
-		SendMessage(APPTOTRANS, (WPARAM)pCopyDataStruct, (LPARAM)pWnd);
-	}
-  	 return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
-}
-
-LRESULT CMainFrame::OnCheck(WPARAM wparam, LPARAM lparam)
-{
-	HWND mywnd = *((HWND *)wparam);
-	int index;
-	TCHAR str[100];
-	::GetWindowText(mywnd, str, 100);
-	for (index = 0; index < numprocess; index++)
-	if (port2hwnd[index] == mywnd)
-		break;
-	if (index == numprocess&&pwnd2port.find((CWnd *)lparam) == pwnd2port.end()){ //ä¸€ä¸ªçª—å£åªèƒ½æ³¨å†Œä¸€æ¬¡
-		pwnd2port[(CWnd *)lparam] = numprocess;
-		port2hwnd[numprocess] = mywnd;
-		numprocess = numprocess + 1;
-	}
-	return 0;
-}
-
-LRESULT CMainFrame::OnApp2Trans(WPARAM wparam, LPARAM lparam)
-{
-	sockstruct mysock = *(sockstruct *)(((COPYDATASTRUCT *)wparam)->lpData);
-	int FuncID = ((COPYDATASTRUCT *)wparam)->dwData;
-	CWnd *pWnd = (CWnd *)lparam;
-	HWND temp = port2hwnd[pwnd2port[pWnd]];
-	COPYDATASTRUCT  mycp;
+LRESULT CMainFrame::OnApp2Trans(WPARAM wparam,LPARAM lparam)
+{	
+	int nPort = wparam;
+	int BindPort = Port2Sock[nPort]->Rpro->mysock.bindport;
+	UINT FuncID = port2Rstruct[nPort]->FuncID;
+	portsrc tempsrc;
 	switch (FuncID)
 	{
-	case SOCKBIND:   //æš‚æ—¶ä¸è€ƒè™‘ç«¯å£å†²çª
-		port2hwnd.erase(pwnd2port[pWnd]);
-		pwnd2port.erase(pWnd);
-		pwnd2port[pWnd] = mysock.bindport;
-		port2hwnd[mysock.bindport] = temp;
-		PrintView(_T("ç»‘å®šç«¯å£åˆ°6500!"));
+	case SOCKBIND:
+		SockMark2Port[Port2Sock[nPort]->Rpro->SockMark] = BindPort;
+		Sock2Port[Port2Sock[nPort]] = BindPort;
+		if (BindPort != nPort){
+			port2Rstruct[BindPort] = port2Rstruct[nPort]; //ÓÃ°ó¶¨µÄ¶Ë¿ÚºÅÀ´½ÓÊÕÔ­À´µÄ»·¾³
+			Port2Sock[BindPort] = Port2Sock[nPort];   
+			port2Wstruct[BindPort] = port2Wstruct[nPort];
+			port2Rstruct.erase(nPort); //²Á³öÔ­À´µÄ»·¾³
+			Port2Sock.erase(nPort);
+			port2Wstruct.erase(nPort);
+		}
 		break;
 	case SOCKLISTEN:
 		break;
 	case SOCKSEND:
-		mysock.srcport = pwnd2port[pWnd];
-		mycp.dwData = SOCKSEND;
-		mycp.lpData = (void *)&mysock;
-		mycp.cbData = sizeof(sockstruct);
-		::SendMessage(port2hwnd[mysock.dstport], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
-		break;
 	case SOCKSENDTO:
+		SendMessage(TRANSTOIP, (WPARAM)&port2Rstruct[nPort]->mysock, (LPARAM)nPort);
+		//SendMessage(APPSEND, (WPARAM)&port2Rstruct[nPort]->mysock, (LPARAM)nPort);
 		break;
-	case SOCKCONNECT:
+	case SOCKACCEPT:
+		memcpy(tempsrc.srcip, port2Rstruct[nPort]->mysock.dstip, 20);
+		tempsrc.srcport = port2Rstruct[nPort]->mysock.dstport;
+		tempsrc.dstport = port2Rstruct[nPort]->mysock.srcport;
+		src2port[tempsrc] = SockMark2Port[port2Rstruct[nPort]->AcceptSockMark];
 		break;
 	default:
 		break;
 	}
 	return 0;
 }
-
-LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //ä¼ è¾“å±‚è§£åŒ…ä¼ è¾“æ•°æ®åˆ°åº”ç”¨å±‚çš„æ¥å£
-{  //ä½¿ç”¨sendmessageå‘åº”ç”¨ç¨‹åºå‘é€æ¶ˆæ¯
-	//example å‘ç«¯å£å·ä¸º0çš„åº”ç”¨ç¨‹åºå‘é€pCopyDataStructæ•°æ®  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
-	//åº”ç”¨å±‚å‘å¾€ä¼ è¾“å±‚çš„æ•°æ®åœ¨OnCopyDataä¸­è·å–
+LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı¾İµ½Ó¦ÓÃ²ãµÄ½Ó¿Ú
+{  //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
+	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
+	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
 	struct Msg new_ip_msg = *((struct Msg *)wparam);
 
-	// ç”±äºUDPå’ŒTCPçš„å¼€å¤´éƒ½æ˜¯æºç«¯å£ï¼Œç›´æ¥å‡så®šå…¶ä¸ºUDPæ¥è·å–æºç«¯å£å·
+	// ÓÉÓÚUDPºÍTCPµÄ¿ªÍ·¶¼ÊÇÔ´¶Ë¿Ú£¬Ö±½Ó¼Ùs¶¨ÆäÎªUDPÀ´»ñÈ¡Ô´¶Ë¿ÚºÅ
 	struct udp_message assume_udp_msg;
-	memcpy(&assume_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data)+1); // +1 for \0
+	memcpy(&assume_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
 	struct tcplist *found_TCP = getNode(new_ip_msg.sip, assume_udp_msg.udp_src_port);
 
 	// UDP
 	if (found_TCP == NULL)
 	{
-		// è·å–UDPæŠ¥æ–‡æ®µ
+		// »ñÈ¡UDP±¨ÎÄ¶Î
 		struct udp_message new_udp_msg;
-		memcpy(&new_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data)+1); // +1 for \0
+		memcpy(&new_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
 
-		// æ£€éªŒå’Œ
-		if (!udpcheck(new_udp_msg.udp_msg_length-8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length%2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
+		// ¼ìÑéºÍ
+		if (!udpcheck(new_udp_msg.udp_msg_length - 8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length % 2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
 		{
-			// èˆå¼ƒæŠ¥æ–‡
+			// ÉáÆú±¨ÎÄ
 			return -1;
 		}
 
-		// å¡«å…¥é€å¾€åº”ç”¨å±‚çš„ç»“æ„ä¸­
+		// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖĞ
 		struct sockstruct new_sockstruct;
 		new_sockstruct.dstport = new_udp_msg.udp_dst_port;
 		new_sockstruct.srcport = new_udp_msg.udp_src_port;
 		new_sockstruct.bindport = 0;
-		new_sockstruct.datalength = new_udp_msg.udp_msg_length-8;
+		new_sockstruct.datalength = new_udp_msg.udp_msg_length - 8;
 		IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
 		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
-		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength+1); // +1 for \0
-		
+		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength + 1); // +1 for \0
+
 		COPYDATASTRUCT CopyDataStruct;
-		// å­—èŠ‚æ•°
+		// ×Ö½ÚÊı
 		CopyDataStruct.cbData = sizeof(new_sockstruct);
-		// å‘é€å†…å®¹
+		// ·¢ËÍÄÚÈİ
 		CopyDataStruct.lpData = &new_sockstruct;
-		// è®¾ç½®ä¸ºSendï¼Œåº”ç”¨å±‚å¥—æ¥å­—Receiveå“åº”
+		// ÉèÖÃÎªSend£¬Ó¦ÓÃ²ãÌ×½Ó×ÖReceiveÏìÓ¦
 		CopyDataStruct.dwData = SOCKSEND;
-		// è¿›ç¨‹é—´é€šä¿¡
-		::SendMessage(port2hwnd[new_udp_msg.udp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
+		// ½ø³Ì¼äÍ¨ĞÅ
+		//::SendMessage(port2hwnd[new_udp_msg.udp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
 	}
 	// TCP
 	else
 	{
-		// è·å–TCPæŠ¥æ–‡æ®µ
+		// »ñÈ¡TCP±¨ÎÄ¶Î
 		struct tcp_message new_tcp_msg;
-		memcpy(&new_tcp_msg, new_ip_msg.data, strlen(new_ip_msg.data)+1); // +1 for \0
+		memcpy(&new_tcp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
 
-		// optså’Œdataä¸€åŒè¿›è¡Œæ£€éªŒ
-		unsigned data_len = strlen(new_tcp_msg.tcp_opts_and_app_data)+1; // +1 for \0
+		// optsºÍdataÒ»Í¬½øĞĞ¼ìÑé
+		unsigned data_len = strlen(new_tcp_msg.tcp_opts_and_app_data) + 1; // +1 for \0
 
-		// æ£€éªŒå’Œ
-		if (!udpcheck(data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, data_len%2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
+		// ¼ìÑéºÍ
+		if (!udpcheck(data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
 		{
-			// èˆå¼ƒæŠ¥æ–‡
+			// ÉáÆú±¨ÎÄ
 			return -1;
 		}
 
 		TCP_receive();
 
-		// å¡«å…¥é€å¾€åº”ç”¨å±‚çš„ç»“æ„ä¸­
+		// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖĞ
 		struct sockstruct new_sockstruct;
 		new_sockstruct.dstport = new_tcp_msg.tcp_dst_port;
 		new_sockstruct.srcport = new_tcp_msg.tcp_src_port;
@@ -250,35 +222,36 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //ä¼ è¾“å±‚è§£åŒ…ä
 		new_sockstruct.datalength = data_len;
 		IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
 		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
-		memcpy(new_sockstruct.data, new_tcp_msg.tcp_opts_and_app_data, new_sockstruct.datalength+1); // +1 for \0
+		memcpy(new_sockstruct.data, new_tcp_msg.tcp_opts_and_app_data, new_sockstruct.datalength + 1); // +1 for \0
 
 		COPYDATASTRUCT CopyDataStruct;
-		// å­—èŠ‚æ•°
+		// ×Ö½ÚÊı
 		CopyDataStruct.cbData = sizeof(new_sockstruct);
-		// å‘é€å†…å®¹ï¼Œæš‚æ—¶ä¸åˆ†å¼€optså’Œdata
+		// ·¢ËÍÄÚÈİ£¬ÔİÊ±²»·Ö¿ªoptsºÍdata
 		CopyDataStruct.lpData = &new_sockstruct;
-		// è®¾ç½®ä¸ºSendï¼Œåº”ç”¨å±‚å¥—æ¥å­—Receiveå“åº”
+		// ÉèÖÃÎªSend£¬Ó¦ÓÃ²ãÌ×½Ó×ÖReceiveÏìÓ¦
 		CopyDataStruct.dwData = SOCKSEND;
-		// è¿›ç¨‹é—´é€šä¿¡
-		::SendMessage(port2hwnd[new_tcp_msg.tcp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
+		// ½ø³Ì¼äÍ¨ĞÅ
+		//::SendMessage(port2hwnd[new_tcp_msg.tcp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
 	}
 
 	return 0;
 }
 
-LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ç½‘ç»œå±‚è§£åŒ…ä¼ è¾“åˆ°ä¼ è¾“å±‚çš„æ¥å£
+
+LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´«Êä²ãµÄ½Ó¿Ú
 { //
-	///< æ ¹æ®é“¾è·¯å±‚å‘é€çš„æ•°æ®è¿›è¡Œå‰¥ç¦»å¾—åˆ°æŠ¥æ–‡é•¿åº¦ä»¥åŠåç§», æ¯”è¾ƒåç§»é‡æ˜¯å¦ç­‰äºæŠ¥æ–‡é•¿åº¦
-	///< è‹¥å‘ç°åˆ†ç‰‡ç¼ºå¤±æˆ–è€…æ£€éªŒå’Œå‡ºé”™åˆ™ return FALSE;
-	///< è‹¥æ˜¯åˆ™æ•°æ®æˆåŠŸæ¥æ”¶ è¿›è¡Œå°‘é‡çš„æ£€éªŒå’Œæ£€æŸ¥, è‹¥æ²¡æœ‰é”™è¯¯
-	///< åˆ™å°†IP_msgç»“æ„å‰¥ç¦»å‡ºMsgç»“æ„
+	///< ¸ù¾İÁ´Â·²ã·¢ËÍµÄÊı¾İ½øĞĞ°şÀëµÃµ½±¨ÎÄ³¤¶ÈÒÔ¼°Æ«ÒÆ, ±È½ÏÆ«ÒÆÁ¿ÊÇ·ñµÈÓÚ±¨ÎÄ³¤¶È
+	///< Èô·¢ÏÖ·ÖÆ¬È±Ê§»òÕß¼ìÑéºÍ³ö´íÔò return FALSE;
+	///< ÈôÊÇÔòÊı¾İ³É¹¦½ÓÊÕ ½øĞĞÉÙÁ¿µÄ¼ìÑéºÍ¼ì²é, ÈôÃ»ÓĞ´íÎó
+	///< Ôò½«IP_msg½á¹¹°şÀë³öMsg½á¹¹
 
 	if (!ip.IP2Trans(wparam, lparam))
 		return true;
 	return false;
 }
 
-LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //é“¾è·¯å±‚è§£åŒ…ä¼ è¾“æ•°æ®ç½‘ç»œå±‚çš„æ¥å£
+LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊı¾İÍøÂç²ãµÄ½Ó¿Ú
 {//
 	my_linker &receiver = (my_linker)(*(my_linker *)lparam);
 	const u_char * packetData = (const u_char *)wparam;
@@ -290,10 +263,10 @@ LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //é“¾è·¯å±‚è§£åŒ…ä¼ 
 
 struct tcp_message global_new_tcp_msg;
 
-LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //ä¼ è¾“å±‚æ‰“åŒ…æ•°æ®å‘é€åˆ°ç½‘ç»œå±‚çš„æ¥å£
-{ //ä½¿ç”¨sendmessageå‘åº”ç”¨ç¨‹åºå‘é€æ¶ˆæ¯
-	//example å‘ç«¯å£å·ä¸º0çš„åº”ç”¨ç¨‹åºå‘é€pCopyDataStructæ•°æ®  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
-	//åº”ç”¨å±‚å‘å¾€ä¼ è¾“å±‚çš„æ•°æ®åœ¨OnCopyDataä¸­è·å–
+LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢ËÍµ½ÍøÂç²ãµÄ½Ó¿Ú
+{ //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
+	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌĞò·¢ËÍpCopyDataStructÊı¾İ  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
+	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
 	struct sockstruct data_from_applayer = *((struct sockstruct *)wparam);
 	unsigned int dst_ip = IP_chars2uint(data_from_applayer.dstip);
 	unsigned short dst_port = data_from_applayer.dstport;
@@ -301,50 +274,50 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //ä¼ è¾“å±‚æ‰“åŒ…æ•
 	unsigned int src_ip = getIP();
 	unsigned int data_len = data_from_applayer.datalength;
 
-	// è·å–Function ID
+	// »ñÈ¡Function ID
 	int funID = (int)lparam;
 
-	// åˆ¤æ–­æ˜¯UDPè¿˜æ˜¯TCP
+	// ÅĞ¶ÏÊÇUDP»¹ÊÇTCP
 	struct tcplist *found_TCP = getNode(dst_ip, dst_port);
 
 	// UDP
 	if (found_TCP == NULL)
 	{
 		struct udp_message new_udp_msg;
-		// å¡«å…¥UDPæŠ¥æ–‡æ®µç»“æ„
+		// ÌîÈëUDP±¨ÎÄ¶Î½á¹¹
 		new_udp_msg.udp_src_port = src_port;
 		new_udp_msg.udp_dst_port = dst_port;
-		new_udp_msg.udp_msg_length = 8+data_len;
-		memcpy(new_udp_msg.udp_app_data, data_from_applayer.data, data_len+1); // +1 for \0
-		new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)src_port, (u16)dst_port, data_len%2, (u16 *)&(new_udp_msg.udp_app_data));
+		new_udp_msg.udp_msg_length = 8 + data_len;
+		memcpy(new_udp_msg.udp_app_data, data_from_applayer.data, data_len + 1); // +1 for \0
+		new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)src_port, (u16)dst_port, data_len % 2, (u16 *)&(new_udp_msg.udp_app_data));
 
-		// UDPæ— æ‹¥å¡æ§åˆ¶
+		// UDPÎŞÓµÈû¿ØÖÆ
 		struct Msg new_ip_msg;
 		new_ip_msg.sip = src_ip;
 		new_ip_msg.dip = dst_ip;
 		new_ip_msg.datelen = new_udp_msg.udp_msg_length;
-		memcpy(new_ip_msg.data, &new_udp_msg, new_ip_msg.datelen); // +1 for \0
+		memcpy(new_ip_msg.data, &new_udp_msg, new_ip_msg.datelen);
 		new_ip_msg.protocol = 17;	// 17 for UDP
 		OnIP2Link((WPARAM)&new_ip_msg, lparam);
 	}
 	// TCP
 	else
 	{
-		// ä¸‹é¢å¯èƒ½éœ€è¦æ”¾åœ¨åˆ«çš„åœ°æ–¹
-		// å¡«å…¥TCPæŠ¥æ–‡æ®µç»“æ„
+		// ÏÂÃæ¿ÉÄÜĞèÒª·ÅÔÚ±ğµÄµØ·½
+		// ÌîÈëTCP±¨ÎÄ¶Î½á¹¹
 		struct tcp_message new_tcp_msg;
-		// ç›®å‰çš„TCPå®ç°ç»“æ„æœ‰é—®é¢˜ï¼Œæ„Ÿè§‰é¢å¯¹æ¯ä¸€ä¸ªè¿æ¥ï¼Œéœ€è¦æœ‰ä¸€ä¸ªçº¿ç¨‹è·‘TCPè´Ÿè´£åº”ç­”ACKï¼Œè°ƒæ•´çª—å£
-		// å½“TCPè¿æ¥æ–­å¼€æ—¶çº¿ç¨‹æ¶ˆé€
-		// æˆ–è€…åªå¼€ä¸€ä¸ªçº¿ç¨‹ï¼Œç”¨äºTCPæ€»æ§ï¼Œè´Ÿè´£ç»´æŠ¤TCPçŠ¶æ€é“¾è¡¨ï¼Œå¹¶åº”ç­”ACKç­‰
-		// ç„¶åè¿æ¥æ—¶åˆ›å»ºTCPè¿æ¥åˆ°TCPé“¾è¡¨ï¼Œæ–­å¼€æ—¶ä»é“¾è¡¨å‰¥ç¦»
-		// å¯ä»¥è€ƒè™‘è¿›ç¨‹é—´å‘æ¶ˆæ¯ï¼Œä¹Ÿå¯ä»¥è€ƒè™‘ç›´æ¥ç”¨å…¨å±€å˜é‡åšæ ‡å¿—ä½
+		// Ä¿Ç°µÄTCPÊµÏÖ½á¹¹ÓĞÎÊÌâ£¬¸Ğ¾õÃæ¶ÔÃ¿Ò»¸öÁ¬½Ó£¬ĞèÒªÓĞÒ»¸öÏß³ÌÅÜTCP¸ºÔğÓ¦´ğACK£¬µ÷Õû´°¿Ú
+		// µ±TCPÁ¬½Ó¶Ï¿ªÊ±Ïß³ÌÏûÊÅ
+		// »òÕßÖ»¿ªÒ»¸öÏß³Ì£¬ÓÃÓÚTCP×Ü¿Ø£¬¸ºÔğÎ¬»¤TCP×´Ì¬Á´±í£¬²¢Ó¦´ğACKµÈ
+		// È»ºóÁ¬½ÓÊ±´´½¨TCPÁ¬½Óµ½TCPÁ´±í£¬¶Ï¿ªÊ±´ÓÁ´±í°şÀë
+		// ¿ÉÒÔ¿¼ÂÇ½ø³Ì¼ä·¢ÏûÏ¢£¬Ò²¿ÉÒÔ¿¼ÂÇÖ±½ÓÓÃÈ«¾Ö±äÁ¿×ö±êÖ¾Î»
 		new_tcp_msg.tcp_src_port = src_port;
 		new_tcp_msg.tcp_dst_port = dst_port;
 
-		// æ–¹æ³•åˆ¤æ–­
+		// ·½·¨ÅĞ¶Ï
 		if (funID == SOCKCONNECT)
 		{
-			// ä¸‰æ¬¡æ¡æ‰‹
+			// Èı´ÎÎÕÊÖ
 			TCP_new();
 			TCP_send();
 			for (;;)
@@ -379,18 +352,19 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //ä¼ è¾“å±‚æ‰“åŒ…æ•
 	return 0;
 }
 
-LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ç½‘ç»œå±‚æ‰“åŒ…æ•°æ®å‘é€åˆ°é“¾è·¯å±‚æ¥å£
+LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊı¾İ·¢ËÍµ½Á´Â·²ã½Ó¿Ú
 {
-	///< å°†è¿è¾“å±‚é€æ¥çš„Msgç»“æ„å’ŒIPåœ°å€æ’å…¥åˆ°IP_msgç»“æ„ä¸­,
-	///< å¦‚æœä¿¡æ¯è¶…è¿‡å®¹é‡å°±è¿›è¡Œåˆ†ç‰‡å¤„ç†, 
-	///< è°ƒç”¨é“¾è·¯å±‚çš„å‘é€å‡½æ•°å¦‚æœå‘é€å¤±è´¥ return FALSE;
-	///< å¦åˆ™ return TRUE;
+	///< ½«ÔËÊä²ãËÍÀ´µÄMsg½á¹¹ºÍIPµØÖ·²åÈëµ½IP_msg½á¹¹ÖĞ,
+	///< Èç¹ûĞÅÏ¢³¬¹ıÈİÁ¿¾Í½øĞĞ·ÖÆ¬´¦Àí, 
+	///< µ÷ÓÃÁ´Â·²ãµÄ·¢ËÍº¯ÊıÈç¹û·¢ËÍÊ§°Ü return FALSE;
+	///< ·ñÔò return TRUE;
 	if (!ip.IP2Link(wparam, lparam))
 		return true;
 	return false;
 }
 
-LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //é“¾è·¯å±‚æ‰“åŒ…æ•°æ®å‘é€å‡ºå»æ¥å£
+
+LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊı¾İ·¢ËÍ³öÈ¥½Ó¿Ú
 {
 	static int seq = 0;
 	while ((linker.send_by_frame((struct IP_Msg *)wparam, linker.get_adapter(), seq)) != 0)
@@ -421,3 +395,98 @@ DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
 	return 0;
 }
 
+DWORD WINAPI CMainFrame::connect(LPVOID lParam)
+{
+	CMainFrame *pthis = (CMainFrame *)lParam;
+	HANDLE Psemaphore = CreateSemaphore(NULL,0,100, _T("NetProtocolPsemaphore"));//´´½¨ĞÅºÅÁ¿P
+	HANDLE Csemaphore = CreateSemaphore(NULL,1,100, _T("NetProtocolCsemaphore"));//´´½¨ĞÅºÅÁ¿C
+	HANDLE Ssemaphore = CreateSemaphore(NULL,0, 100, _T("NetProtocolCreateSuccess"));//´´½¨ĞÅºÅÁ¿S
+	HANDLE MFile = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(regstruct), _T("NetProtocolListen"));//ÇëÇóÁ¬½Ó¹²ÏíÄÚ´æ
+	pthis->preg = (regstruct *)MapViewOfFile(MFile, FILE_MAP_WRITE, 0, 0, sizeof(regstruct));//Ó³Éä¹²ÏíÄÚ´æ
+	while (true){
+		WaitForSingleObject(Psemaphore, INFINITE);//µÈ´ıÓ¦ÓÃ³ÌĞòÇëÇóÁ¬½Ó
+		parastruct *mypara =   new parastruct();
+		ObjEvent   *myevent = new ObjEvent();
+		pthis->Sock2Port[myevent] = sockcount; //·ÖÅä¶Ë¿ÚºÅ
+		pthis->Port2Sock[sockcount] = myevent; //¸ù¾İ¶Ë¿ÚºÅÕÒµ½¶ÔÓ¦Ì×½Ó×Ö
+		pthis->port2Rstruct[sockcount]  = new prostruct();  //·ÖÅä±¾µØ»º´æ
+		pthis->port2Wstruct[sockcount] = new prostruct();  //±¾µØ»º´æ
+		pthis->SockMark2Port[pthis->preg->SockMark] = sockcount;
+		sockcount++;   //´´½¨¹²ÏíÎÄ¼şºÍÍ¬²½ĞÅºÅÁ¿
+		myevent->RFile  = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(prostruct), pthis->preg->readfilename);
+		myevent->WFile = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(prostruct), pthis->preg->writefilename);
+		if (myevent->WFile == NULL || myevent->RFile == NULL){
+			AfxMessageBox(_T("´´½¨¹²ÏíÎÄ¼şÊ§°Ü"));
+			continue;
+		}
+		myevent->Rpro  =  (prostruct *)MapViewOfFile(myevent->RFile, FILE_MAP_WRITE, 0, 0, sizeof(prostruct)); //´´½¨Í¨ĞÅ»·¾³
+		myevent->Wpro =  (prostruct *)MapViewOfFile(myevent->WFile, FILE_MAP_WRITE, 0,0,sizeof(prostruct));
+		myevent->PSsock =  CreateSemaphore(NULL, 1, 100, pthis->preg->PSname);
+		myevent->PRsock=   CreateSemaphore(NULL, 0, 100, pthis->preg->PRname);
+		myevent->PWsock = CreateSemaphore(NULL, 0, 100, pthis->preg->PWname);
+		myevent->CSsock =  CreateSemaphore(NULL, 1, 100, pthis->preg->CSname);
+		myevent->CRsock=   CreateSemaphore(NULL, 0, 100, pthis->preg->CRname);
+		myevent->CWsock = CreateSemaphore(NULL, 0, 100, pthis->preg->CWname);
+		if (!(myevent->PRsock || myevent->PSsock || myevent->PWsock || myevent->CSsock || myevent->CRsock || myevent->CWsock)){
+			AfxMessageBox(_T("´´½¨ĞÅºÅÁ¿Ê§°Ü"));
+			continue;
+		}
+		mypara->pEvent = myevent;
+		mypara->pClass = pthis;
+    	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ReadFromApp, (LPVOID)mypara, NULL, NULL);
+		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)WriteToApp, (LPVOID)mypara, NULL, NULL);
+		ReleaseSemaphore(Ssemaphore, 1, NULL);
+		ReleaseSemaphore(Csemaphore,1,NULL); //´´½¨Íê³É
+	}
+	return 0;
+}
+
+DWORD WINAPI CMainFrame::ReadFromApp(LPVOID lParam)//´ÓÓ¦ÓÃ³ÌĞò¶ÁÈ¡Êı¾İ
+{
+	parastruct     *mypara = (parastruct *)lParam;
+	CMainFrame *pthis =    (CMainFrame *)mypara->pClass;
+	ObjEvent      *myevent = mypara->pEvent;
+	while (true)
+	{
+		WaitForSingleObject(myevent->PRsock, INFINITE);   //µÈ´ıÓ¦ÓÃ³ÌĞòĞ´Íê³É
+		memcpy(pthis->port2Rstruct[pthis->Sock2Port[myevent]],myevent->Wpro,sizeof(prostruct));//¿½±´µ½±¾µØ»º´æ
+		AfxGetApp()->m_pMainWnd->SendMessage(APPTOTRANS, (WPARAM)pthis->Sock2Port[myevent]);//·¢ËÍ±¾µØ±êºÅ
+		ReleaseSemaphore(myevent->CSsock, 1, NULL);     //¶ÁÊı¾İÍê³ÉÓ¦ÓÃ³ÌĞò¿ÉÔÙĞ´
+	}
+}
+
+//·¢ËÍÊı¾İµ½Ó¦ÓÃ²ã
+DWORD WINAPI CMainFrame::WriteToApp(LPVOID lParam)
+{
+	parastruct     *mypara  = (parastruct *)lParam;
+	CMainFrame *pthis = (CMainFrame *)mypara->pClass;
+	ObjEvent      *myevent = mypara->pEvent;
+	while (true)
+	{
+		WaitForSingleObject(myevent->PWsock, INFINITE);  //µÈ´ıĞ´½á¹¹
+		memcpy(myevent->Rpro,pthis->port2Wstruct[pthis->Sock2Port[myevent]], sizeof(prostruct)); //¿½±´½á¹¹
+		ReleaseSemaphore(myevent->CRsock, 1, NULL);//Ó¦ÓÃ³ÌĞòĞ´
+	}
+}
+
+//½«Êı¾İ¿½±´×¼±¸·¢ËÍÊı¾İµ½Ó¦ÓÃ²ã
+LRESULT CMainFrame::OnAppSend(WPARAM wparam, LPARAM lparam)
+{
+	sockstruct  *pmysock= (sockstruct *)wparam;
+	UINT           FuncID = lparam;
+	portsrc       tempsrc;
+	unsigned short nPort;
+	memcpy(tempsrc.srcip, pmysock->srcip, 20); //¸ù¾İÔ´¶Ë¿ÚÔ´µØÖ·Ä¿µÄ¶Ë¿ÚÕÒµ½Í¨ĞÅ¶Ë¿Ú
+	tempsrc.srcport = pmysock->srcport;
+	tempsrc.dstport = pmysock->dstport;
+	nPort = (src2port.find(tempsrc) == src2port.end()) ? pmysock->dstport : src2port[tempsrc];   //ÕÒµ½Ä¿±ê¶Ë¿Ú
+	WaitForSingleObject(Port2Sock[nPort]->PSsock, INFINITE); //µÈ´ı
+	if (Port2Sock.find(nPort) == Port2Sock.end()){     //ÈôÎ´ÕÒµ½Ö¸¶¨¶Ë¿Ú£¬¶ª°ü
+		ReleaseSemaphore(Port2Sock[nPort]->PSsock, 1, NULL);
+		return 0;
+	}
+	memcpy(&port2Wstruct[nPort]->mysock, pmysock, sizeof(sockstruct));  //¿½±´Êı¾İ
+	port2Wstruct[nPort]->FuncID = FuncID; //¿½±´Ä¿µÄÊı¾İ
+	ReleaseSemaphore(Port2Sock[nPort]->PWsock, 1, NULL);
+	return 0;
+}

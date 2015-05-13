@@ -388,6 +388,15 @@ float getSampleRTT(int sendtime, int gettime)		//Íù·µÊ±ÑÓµÄ¹À¼ÆÓë³¬Ê±£¬·µ»Ø³¬Ê±Ê
 	//printf("DevRTT = %f \n", DevRTT);
 }
 
-
-
-
+void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int dst_ip, unsigned int data_len, int FunID)
+{
+	struct Msg new_ip_msg;
+	new_ip_msg.sip = getIP();
+	new_ip_msg.dip = dst_ip;
+	new_ip_msg.datelen = data_len+send_tcp_message.tcp_hdr_length;
+	memcpy(new_ip_msg.data, &send_tcp_message, new_ip_msg.datelen);
+	new_ip_msg.protocol = 17;	// 17 for UDP
+	AfxGetMainWnd()->SendMessage(LINKTOIP, (WPARAM)packetData, (LPARAM)receiver);
+	CMainFrame tempMainFrame;
+	CMainFrame::OnIP2Link((WPARAM)&new_ip_msg, FunID);
+}

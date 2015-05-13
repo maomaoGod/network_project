@@ -72,3 +72,4 @@ void initialRTT();			//初始化RTT
 
 float getSampleRTT(int sendtime, int gettime); //动态计算超时间隔
 
+void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int dst_ip, unsigned int data_len);

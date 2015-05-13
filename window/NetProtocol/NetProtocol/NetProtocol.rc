@@ -121,6 +121,7 @@ BEGIN
     BEGIN
         MENUITEM "¹ØÓÚ NetProtocol(&A)...",       ID_APP_ABOUT
     END
+    MENUITEM "·¢ËÍ",                          ID_32783
 END
 
 
