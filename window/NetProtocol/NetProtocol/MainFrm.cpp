@@ -185,15 +185,8 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊý
 		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
 		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength + 1); // +1 for \0
 
-		COPYDATASTRUCT CopyDataStruct;
-		// ×Ö½ÚÊý
-		CopyDataStruct.cbData = sizeof(new_sockstruct);
-		// ·¢ËÍÄÚÈÝ
-		CopyDataStruct.lpData = &new_sockstruct;
-		// ÉèÖÃÎªSend£¬Ó¦ÓÃ²ãÌ×½Ó×ÖReceiveÏìÓ¦
-		CopyDataStruct.dwData = SOCKSEND;
-		// ½ø³Ì¼äÍ¨ÐÅ
-		//::SendMessage(port2hwnd[new_udp_msg.udp_dst_port], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&CopyDataStruct);
+		// ËÍÍùÓ¦ÓÃ²ã
+		SendMessage(APPSEND, (WPARAM)&new_sockstruct, (LPARAM)SOCKSEND);
 	}
 	// TCP
 	else
@@ -295,10 +288,14 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 		struct Msg new_ip_msg;
 		new_ip_msg.sip = src_ip;
 		new_ip_msg.dip = dst_ip;
+		new_ip_msg.ih_sport = src_port;
+		new_ip_msg.ih_dport = dst_port;
 		new_ip_msg.datelen = new_udp_msg.udp_msg_length;
 		memcpy(new_ip_msg.data, &new_udp_msg, new_ip_msg.datelen);
 		new_ip_msg.protocol = 17;	// 17 for UDP
-		OnIP2Link((WPARAM)&new_ip_msg, lparam);
+
+		// ·¢ÍùÍøÂç²ã
+		SendMessage(IPTOLINK, (WPARAM)&new_ip_msg, lparam);
 	}
 	// TCP
 	else
