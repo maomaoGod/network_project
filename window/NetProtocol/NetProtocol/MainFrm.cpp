@@ -323,7 +323,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //传输层打包�
 		new_ip_msg.sip = src_ip;
 		new_ip_msg.dip = dst_ip;
 		new_ip_msg.datelen = new_udp_msg.udp_msg_length;
-		memcpy(new_ip_msg.data, &new_udp_msg, new_udp_msg.udp_msg_length+1); // +1 for \0
+		memcpy(new_ip_msg.data, &new_udp_msg, new_ip_msg.datelen); // +1 for \0
 		new_ip_msg.protocol = 17;	// 17 for UDP
 		OnIP2Link((WPARAM)&new_ip_msg, lparam);
 	}
@@ -340,7 +340,6 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //传输层打包�
 		// 可以考虑进程间发消息，也可以考虑直接用全局变量做标志位
 		new_tcp_msg.tcp_src_port = src_port;
 		new_tcp_msg.tcp_dst_port = dst_port;
-		//new_tcp_msg.tcp_seq_number
 
 		// 方法判断
 		if (funID == SOCKCONNECT)
@@ -379,7 +378,6 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //传输层打包�
 	}
 	return 0;
 }
-
 
 LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //网络层打包数据发送到链路层接口
 {
