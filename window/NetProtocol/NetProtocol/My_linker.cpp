@@ -53,7 +53,7 @@ pcap_t * my_linker::get_adapter()
 	*/
 	//选择要捕获数据包的适配器
 
-	int adapterNumber = 3;
+	int adapterNumber = 6;
 	/*
 	printf("Enter the adapter number between 1 and %d:", crtAdapter);
 
@@ -129,12 +129,18 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle, u
 	while (left_size > 0)
 	{
 		struct Frame frame;
-		frame.MAC_des[0] = 0xEC24;
-		frame.MAC_des[1] = 0x1A99;
-		frame.MAC_des[2] = 0x8C07;
-		frame.MAC_src[0] = 0x5D68;
-		frame.MAC_src[1] = 0xE643;
-		frame.MAC_src[2] = 0xFDAC;
+	  /*frame.MAC_des[0] = 0x34C4;
+		frame.MAC_des[1] = 0x016B;
+		frame.MAC_des[2] = 0x58D1;
+		frame.MAC_src[0] =  0x34C4;
+		frame.MAC_src[1] =  0x016B;
+		frame.MAC_src[2] =  0x58D1;*/
+		frame.MAC_des[0] = 0x34C4;
+		frame.MAC_des[1] = 0x016B;
+		frame.MAC_des[2] = 0x58D1;
+		frame.MAC_src[0] = 0x34C4;
+		frame.MAC_src[1] = 0x016B;
+		frame.MAC_src[2] = 0x58D1;
 		frame.total_seq_num = total_seq;
 		frame.seq = seq;
 		memcpy(&(frame.frame_data.IP), (*data_gram).iphdr, IP_SIZE);
@@ -173,9 +179,12 @@ IP_Msg * my_linker::combine(const u_char * packetData)
 	Frame_data *fdp;
 
 	Frame_data frame_data;
-
-	if (Receive.MAC_des[0] != 0xec24 || Receive.MAC_des[1] != 0x1a99 || Receive.MAC_des[2] != 0x8c07) return NULL;
-	if (Receive.MAC_src[0] != 0x5d68 || Receive.MAC_src[1] != 0xe643 || Receive.MAC_src[2] != 0xfdac) return NULL;
+	/*
+	if (Receive.MAC_des[0] != 0x34C4 || Receive.MAC_des[1] != 0x016B || Receive.MAC_des[2] != 0x58D1) return NULL;
+	if (Receive.MAC_src[0] != 0x34C4 || Receive.MAC_src[1] != 0x016B || Receive.MAC_src[2] != 0x58D1) return NULL;
+	*/
+	if (Receive.MAC_des[0] != 0x34C4 || Receive.MAC_des[1] != 0x016B || Receive.MAC_des[2] != 0x58D1) return NULL;
+	if (Receive.MAC_src[0] != 0x34C4 || Receive.MAC_src[1] != 0x016B || Receive.MAC_src[2] != 0x58D1) return NULL;
 
 	//puts("fuck");
 
@@ -194,12 +203,9 @@ IP_Msg * my_linker::combine(const u_char * packetData)
 
 		left[id] = tot;
 
+		//delete ip_msg[id].iphdr;
 		ip_msg[id].iphdr = new IP_HEADER;
 		*(ip_msg[id].iphdr) = frame_data.IP;
-
-		{
-			IP_HEADER out = *(ip_msg[id].iphdr);
-		}
 
 		buffer[bp].length = len;
 		for (int i = 0; i < len; ++i)
@@ -207,7 +213,21 @@ IP_Msg * my_linker::combine(const u_char * packetData)
 
 		data_pointer[id][seq] = bp++;
 
-		--left[id];
+		if (--left[id] == 0)									//数据报接收完成
+		{
+			puts("Finish!");
+			int data_len = 0;
+			for (int i = 0; i < tot; ++i)
+			{
+				int ptr = data_pointer[id][i];
+				for (int j = 0; j < buffer[ptr].length; ++j)
+					ip_msg[id].data[data_len++] = (char)buffer[ptr].data[j];
+			}
+			delete[] data_pointer[id];
+			data_pointer[id] = NULL;
+			ip_msg[id].data[data_len] = 0;
+			return ip_msg + id;
+		}
 	}
 	else if (data_pointer[id][seq] == -1)					//未收到过这一个帧
 	{
@@ -227,6 +247,8 @@ IP_Msg * my_linker::combine(const u_char * packetData)
 				for (int j = 0; j < buffer[ptr].length; ++j)
 					ip_msg[id].data[data_len++] = (char)buffer[ptr].data[j];
 			}
+			delete[] data_pointer[id];
+			data_pointer[id] = NULL;
 			ip_msg[id].data[data_len] = 0;
 			return ip_msg+id;
 		}

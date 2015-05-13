@@ -45,7 +45,19 @@ private:
 	int *left;					 //每个数据报还剩多少帧
 
 public:
-	my_linker(){}
+	my_linker()
+	{
+		ip_msg = new IP_Msg[maxlength];
+		buffer = new Data_Segment[maxlength];
+		bp = 0;
+		data_pointer = new int*[maxlength];
+		for (int i = 0; i < maxlength; ++i)
+		{
+			data_pointer[i] = NULL;
+			ip_msg->iphdr = NULL;
+		}
+		left = new int[maxlength];
+	}
 	~my_linker()
 	{
 		delete[] ip_msg;
@@ -61,6 +73,11 @@ public:
 		buffer = new Data_Segment[maxlength];
 		bp = 0;
 		data_pointer = new int*[maxlength];
+		for (int i = 0; i < maxlength; ++i)
+		{
+			data_pointer[i] = NULL;
+			ip_msg->iphdr = NULL;
+		}
 		left = new int[maxlength];
 	}
 	pcap_t * get_adapter();
