@@ -212,7 +212,7 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 			return -1;
 		}
 
-		TCP_receive();
+		//TCP_receive();
 
 		// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖĞ
 		struct sockstruct new_sockstruct;
@@ -261,7 +261,7 @@ LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊı¾İ
 	return 0;
 }
 
-struct tcp_message global_new_tcp_msg;
+//struct tcp_message global_new_tcp_msg;
 
 LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢ËÍµ½ÍøÂç²ãµÄ½Ó¿Ú
 { //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌĞò·¢ËÍÏûÏ¢
@@ -318,21 +318,21 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 		if (funID == SOCKCONNECT)
 		{
 			// Èı´ÎÎÕÊÖ
-			TCP_new();
-			TCP_send();
+			//TCP_new();
+			//TCP_send();
 			for (;;)
 			{
 				// wait for ack
 			}
-			TCP_send();
+			//TCP_send();
 		}
 		else if (funID == SOCKSEND)
 		{
-			TCP_send();
+		//	TCP_send();
 		}
 		else if (funID == SOCKCLOSE)
 		{
-			TCP_send();
+		//	TCP_send();
 			for (;;)
 			{
 				// wait for ack
@@ -341,7 +341,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 			{
 				// wait for FIN
 			}
-			TCP_send();
+		//	TCP_send();
 			TCP_destroy;
 		}
 		else
