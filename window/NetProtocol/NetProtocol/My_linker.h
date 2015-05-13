@@ -6,6 +6,13 @@
 #define MAC_ADDR_SIZE 3
 typedef unsigned char Byte;
 
+
+
+#define PPP_FRAME_FLAG  0x7e /* 标志字符 */
+#define PPP_FRAME_ESC   0x7d /* 转义字符 */
+#define PPP_FRAME_ENC   0x20 /* 编码字符 */
+#define BUF_LEN 1500
+
 class my_linker
 {
 private:
@@ -38,18 +45,7 @@ private:
 	int *left;					 //每个数据报还剩多少帧
 
 public:
-	my_linker()
-	{
-		ip_msg = new IP_Msg[maxlength];
-		buffer = new Data_Segment[maxlength];
-		bp = 0;
-		data_pointer = new int*[maxlength];
-		left = new int[maxlength];
-		for (int i = 0; i < maxlength; ++i)
-		{
-			data_pointer[i] = NULL;
-		}
-	}
+	my_linker(){}
 	~my_linker()
 	{
 		delete[] ip_msg;
@@ -66,12 +62,11 @@ public:
 		bp = 0;
 		data_pointer = new int*[maxlength];
 		left = new int[maxlength];
-		for (int i = 0; i < maxlength; ++i)
-		{
-			data_pointer[i] = NULL;
-		}
 	}
 	pcap_t * get_adapter();
 	IP_Msg * combine(const u_char *);
 	int send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle, unsigned short i);
+	int pppEncode(unsigned char * buf, int len);
+	int pppDecode(unsigned char * buf, int len);
+
 };
