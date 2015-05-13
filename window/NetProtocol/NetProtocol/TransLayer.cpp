@@ -375,7 +375,6 @@ int Wrongretrasnsmit(int ACK_global, u16 len_tcp, u16 src_port, u16 dest_port, b
 	}
 }
 
-
 void initialRTT()                   //初始化RTT需要的变量
 {
 	EstimatedRTT = 0;
