@@ -167,7 +167,7 @@ unsigned int IP_chars2uint(char ip[])
 	{
 		if (ip[i] == '.')
 		{
-			ip_number += ip_seg_number;
+			ip_number = ip_number*256+ip_seg_number;
 		}
 		else
 		{
@@ -221,14 +221,14 @@ unsigned int IP_string2uint(string ip)
 	{
 		if (ip[i] == '.')
 		{
-			ip_number += ip_seg_number;
+			ip_number = ip_number*256+ip_seg_number;
 		}
 		else
 		{
 			ip_seg_number = ip_seg_number*10+ip[i]-48;
 		}
 	}
-	ip_number += ip_seg_number;
+	ip_number = ip_number*256+ip_seg_number;
 	return ip_number;
 }
 
