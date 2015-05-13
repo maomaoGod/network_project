@@ -6,6 +6,13 @@
 #define MAC_ADDR_SIZE 3
 typedef unsigned char Byte;
 
+
+
+#define PPP_FRAME_FLAG  0x7e /* ±êÖ¾×Ö·û */
+#define PPP_FRAME_ESC   0x7d /* ×ªÒå×Ö·û */
+#define PPP_FRAME_ENC   0x20 /* ±àÂë×Ö·û */
+#define BUF_LEN 1500
+
 class my_linker
 {
 private:
@@ -59,4 +66,7 @@ public:
 	pcap_t * get_adapter();
 	IP_Msg * combine(const u_char *);
 	int send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle, unsigned short i);
+	int pppEncode(unsigned char * buf, int len);
+	int pppDecode(unsigned char * buf, int len);
+
 };

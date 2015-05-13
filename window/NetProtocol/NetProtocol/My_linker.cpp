@@ -233,3 +233,85 @@ IP_Msg * my_linker::combine(const u_char * packetData)
 	}
 	return NULL;
 }
+
+int my_linker::pppEncode(unsigned char * buf, int len)
+{
+	unsigned char * pi, *po;
+	int i, olen;
+	unsigned char obuf[BUF_LEN];
+
+	if (len > (BUF_LEN >> 1))
+	{
+		return -1;
+	}
+
+	memset(obuf, 0, BUF_LEN);
+	pi = buf;
+	po = obuf;
+	olen = len;
+
+	for (i = 0; i<len; i++)
+	{
+		if (*pi == PPP_FRAME_FLAG
+			|| *pi == PPP_FRAME_ESC
+			|| *pi < 0x20)
+		{
+			*po = PPP_FRAME_ESC;
+			po++;
+			olen++;
+			/* 异或第6位*/
+			*po = *pi ^ PPP_FRAME_ENC;
+		}
+		else
+		{
+			*po = *pi;
+		}
+		pi++;
+		po++;
+	}
+
+	memcpy(buf, obuf, olen);
+
+	return olen;
+}
+
+int my_linker::pppDecode(unsigned char * buf, int len)
+{
+	unsigned char * pi, *po;
+	int i, olen;
+	unsigned char obuf[BUF_LEN];
+
+	if (len > BUF_LEN)
+	{
+		return -1;
+	}
+
+	memset(obuf, 0, BUF_LEN);
+	pi = buf;
+	po = obuf;
+	olen = len;
+
+	for (i = 0; i<len; i++)
+	{
+		if (*pi == PPP_FRAME_ESC)
+		{
+
+			/* 跳过转义字节 */
+			pi++;
+			olen--;
+
+			/*异或第6位*/
+			*po = *pi ^ PPP_FRAME_ENC;
+		}
+		else
+		{
+			*po = *pi;
+		}
+		pi++;
+		po++;
+	}
+
+	memcpy(buf, obuf, olen);
+
+	return olen;
+}

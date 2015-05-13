@@ -74,7 +74,7 @@ BOOL CMyIP::IP2Link(WPARAM wparam, LPARAM lparam)
 	IP_HEADER.ih_flags = 0;
 	IP_HEADER.ih_ident = ident;
 	IP_HEADER.ih_offset = offset;
-	IP_HEADER.ih_len = strlen(IP_data->data);
+	IP_HEADER.ih_len = IP_data->datelen;
 	IP_HEADER.ih_version = 4;
 	IP_HEADER.ih_sport = IP_data->ih_sport;
 	IP_HEADER.ih_dport = IP_data->ih_dport;
@@ -90,6 +90,47 @@ BOOL CMyIP::IP2Link(WPARAM wparam, LPARAM lparam)
 * @return 返回FALSE说明没有发送成功，返回TRUE说明发送成功
 * @note 函数功能主要是链路层发送过来的信息分解成Msg结构, 发送给运输层
 */
+Bool CMyIP::IP2Trans(WPARAM wparam, LPARAM lparam)
+{
+	///< 根据链路层发送的数据进行剥离得到报文长度以及偏移, 比较偏移量是否等于报文长度
+	///< 若发现分片缺失或者检验和出错则 return FALSE;
+	///< 若是则数据成功接收 进行少量的检验和检查, 若没有错误
+	///< 则将IP_msg结构剥离出Msg结构
+	int ident = 1;
+	MyIP = (struct IP_Msg*)wparam;
+	struct Msg *local_IP_data= new Msg;
+	if (MyIP->iphdr->ih_ident == ident)
+	{
+		if (MyIP->iphdr->ih_offset * 8 == _offset)
+		{
+			if (MyIP->iphdr->ih_flags){
+				memcpy(local_IP_data->data + _offset, MyIP->data, MAXSIZE);
+				_offset = _offset + MAXSIZE;
+			}
+			else{
+				memcpy(local_IP_data->data + _offset, MyIP->data, MyIP->iphdr->ih_len - _offset);
+				_offset = 0;
+				local_IP_data->sip = MyIP->iphdr->ih_saddr;
+				local_IP_data->dip = MyIP->iphdr->ih_daddr;
+				local_IP_data->ih_sport = MyIP->iphdr->ih_sport;
+				local_IP_data->ih_dport = MyIP->iphdr->ih_dport;
+				local_IP_data->protocol = MyIP->iphdr->ih_protl;
+				local_IP_data->datelen = MyIP->iphdr->ih_len;
+				(AfxGetApp()->m_pMainWnd)->SendMessage(TRANSTOAPP, (WPARAM)local_IP_data, lparam);
+			}
+		}
+	}
+	return 0;
+}
+
+/*
+/**
+* @author ACM2012
+* @param [in] wparam表示传输层传过来的数据包结构指针, lparam表示传输层传过来的参数.
+* @return 返回FALSE说明没有发送成功，返回TRUE说明发送成功
+* @note 函数功能主要是链路层发送过来的信息分解成Msg结构, 发送给运输层
+*/
+/*
 Bool CMyIP::IP2Trans(WPARAM wparam, LPARAM lparam)
 {
 	///< 根据链路层发送的数据进行剥离得到报文长度以及偏移, 比较偏移量是否等于报文长度
@@ -123,3 +164,4 @@ Bool CMyIP::IP2Trans(WPARAM wparam, LPARAM lparam)
 
 	return 0;
 }
+*/

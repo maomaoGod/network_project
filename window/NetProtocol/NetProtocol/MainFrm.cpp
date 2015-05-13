@@ -55,9 +55,9 @@ CMainFrame::CMainFrame()
 	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)connect, (LPVOID) this, NULL, NULL))
 		AfxMessageBox(_T("´´½¨Á¬½ÓÏß³ÌÊ§°Ü£¡"));
 	// TODO:  ÔÚ´ËÌí¼Ó³ÉÔ±³õÊ¼»¯´úÂë
-	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
+	/*(if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
 		AfxMessageBox(_T("×¥°üÏß³Ì´´½¨Ê§°Ü"));
-	numprocess = 0;
+	numprocess = 0;*/
 }
 
 CMainFrame::~CMainFrame()
@@ -166,14 +166,14 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊý
 	{
 		// »ñÈ¡UDP±¨ÎÄ¶Î
 		struct udp_message new_udp_msg;
-		memcpy(&new_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
+		memcpy(&new_udp_msg, new_ip_msg.data, new_ip_msg.datelen); // +1 for \0
 
 		// ¼ìÑéºÍ
-		if (!udpcheck(new_udp_msg.udp_msg_length - 8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length % 2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
+		/*if (!udpcheck(new_udp_msg.udp_msg_length - 8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length % 2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
 		{
 			// ÉáÆú±¨ÎÄ
-			return -1;
-		}
+			//return -1;
+		}*/
 
 		// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖÐ
 		struct sockstruct new_sockstruct;
@@ -183,7 +183,7 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊý
 		new_sockstruct.datalength = new_udp_msg.udp_msg_length - 8;
 		IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
 		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
-		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength + 1); // +1 for \0
+		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength); // +1 for \0
 
 		// ËÍÍùÓ¦ÓÃ²ã
 		SendMessage(APPSEND, (WPARAM)&new_sockstruct, (LPARAM)SOCKSEND);
@@ -242,10 +242,10 @@ LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´
 }
 
 LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊý¾ÝÍøÂç²ãµÄ½Ó¿Ú
-{//
-	my_linker &receiver = (my_linker)(*(my_linker *)lparam);
+{
+	my_linker receiver = (*(my_linker *)lparam);
 	const u_char * packetData = (const u_char *)wparam;
-	IP_Msg * ip_msg;
+	IP_Msg * ip_msg=new IP_Msg;
 	ip_msg = receiver.combine(packetData);
 	if (ip_msg != NULL) AfxGetMainWnd()->SendMessage(IPTOTRANS, (WPARAM)ip_msg);
 	return 0;
@@ -380,8 +380,8 @@ DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
 
 	{
 		if (retValue == 0) continue;
-		if (packetHeader->len != 168) continue;
-		AfxGetMainWnd()->SendMessage(LINKTOIP, (WPARAM)packetData, (LPARAM)receiver);
+		if (packetHeader->len != 176) continue;
+		AfxGetApp()->m_pMainWnd->SendMessage(LINKTOIP, (WPARAM)packetData, (LPARAM)receiver);
 	}
 	return 0;
 }
@@ -465,12 +465,13 @@ LRESULT CMainFrame::OnAppSend(WPARAM wparam, LPARAM lparam)
 {
 	sockstruct  *pmysock= (sockstruct *)wparam;
 	UINT           FuncID = lparam;
-	portsrc       tempsrc;
+	portsrc        tempsrc;
 	unsigned short nPort;
 	memcpy(tempsrc.srcip, pmysock->srcip, 20); //¸ù¾ÝÔ´¶Ë¿ÚÔ´µØÖ·Ä¿µÄ¶Ë¿ÚÕÒµ½Í¨ÐÅ¶Ë¿Ú
 	tempsrc.srcport = pmysock->srcport;
 	tempsrc.dstport = pmysock->dstport;
 	nPort = (src2port.find(tempsrc) == src2port.end()) ? pmysock->dstport : src2port[tempsrc];   //ÕÒµ½Ä¿±ê¶Ë¿Ú
+	nPort = 0;
 	WaitForSingleObject(Port2Sock[nPort]->PSsock, INFINITE); //µÈ´ý
 	if (Port2Sock.find(nPort) == Port2Sock.end()){     //ÈôÎ´ÕÒµ½Ö¸¶¨¶Ë¿Ú£¬¶ª°ü
 		ReleaseSemaphore(Port2Sock[nPort]->PSsock, 1, NULL);

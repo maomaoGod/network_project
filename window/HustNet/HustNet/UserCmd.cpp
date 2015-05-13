@@ -176,5 +176,6 @@ void UserCmd::mytest(CString e){
 	while ((sed = GetLine()).Compare(_T("exit")) != 0){
 		mysock.Send(sed,sed.GetLength()*sizeof(TCHAR));
 		mysock.Receive(S,100);
+		PrintRp(S);
 	}
 }
