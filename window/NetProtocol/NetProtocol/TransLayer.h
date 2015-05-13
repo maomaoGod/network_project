@@ -11,7 +11,7 @@ using namespace std;
 #define PROTOCOL_UDP 17
 
 #define MSS 1024
-#define Rcvbuffer 1024*1024
+#define INITIAL_RCVD_WIND 1024*1024
 #define SEND_STRUCT_SIZE 1024
 #define RCVD_STRUCT_SIZE 1024
 #define SEND_BUFFER_SIZE 1024*1024
@@ -45,10 +45,19 @@ struct tcplist
 	unsigned tcp_dst_port : 16;
 	int cong_wind;	// 拥塞窗口
 	int threshold;	// 阀值
+	int seq_number;	// 当前发送所应在序号，初始化时在0~320随机
 	int wait_for_ack;	// 当前正在等待ack的报文序号，也就是字符流编号
 	int wait_for_send;	// 等待发送的报文序号
 	int wait_for_fill;	// 等待填充的字节流序号
-
+	int last_rcvd;	// 收到的报文最后一个字节流的编号
+	int last_read;	// 收到的报文已经交付的最后一个字节流编号
+	int rcvd_wind;	// 接收窗口
+	struct tcpmsg_send tcp_msg_send[SEND_STRUCT_SIZE];	// 当前TCP下发送报文管理
+	struct tcpmsg_rcvd tcp_msg_rcvd[RCVD_STRUCT_SIZE];	// 当前TCP下接收报文管理
+	char tcp_buf_send[SEND_BUFFER_SIZE];	// 当前TCP下发送报文缓冲区
+	char tcp_buf_rcvd[RCVD_BUFFER_SIZE];	// 当前TCP下接收报文缓冲区
+	int ack_count;	// 冗余ack计数
+	int last_rcvd_ack;	// 上一个ack的值
 
 	int cwnd;       //窗口大小
 	unsigned int IP;  //IP
@@ -58,24 +67,18 @@ struct tcplist
 	int MSG_num;    //已经发送的报文数
 	int MSG_sum;    //一共要发送的报文数
 	int send_size;   //待发送的数据大小
-	struct tcpmsg_send tcp_msg_send[SEND_STRUCT_SIZE];  //当前TCP下发送存放区
-	struct tcpmsg_rcvd tcp_msg_rcvd[RCVD_STRUCT_SIZE];   //当前TCP下接收缓冲区
-	int LastByteRcvd;    //收到的最后报文的编号
-	int LastByteRead;    //已经有多少收到的报文得到确认
 	int rec_size;   //已经收到但未确认的数据大小
 	int RcvWindow;   // 接收窗口的大小
-	int seq_number;	// 当前发送所应在序号，初始化时在0~320随机
-	int ACK_count;	// 冗余ack计数
-	int last_ACK;	// 上一个ack的值
+	
 };
 
 bool createNodeList();
 
 bool addNode(tcplist* tcp_list);
 
-bool deletenode(tcplist* p);
+bool deleteNode(tcplist* p);
 
-struct tcplist *getNode(unsigned int ip, unsigned short port);
+struct tcplist *getNode(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port);
 
 void TCP_new(unsigned int ip_temp, unsigned short port_temp);
 
