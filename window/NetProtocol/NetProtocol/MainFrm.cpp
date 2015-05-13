@@ -243,11 +243,12 @@ LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´
 
 LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊı¾İÍøÂç²ãµÄ½Ó¿Ú
 {
-	my_linker receiver = (*(my_linker *)lparam);
+	my_linker &receiver = (*(my_linker *)lparam);
 	const u_char * packetData = (const u_char *)wparam;
-	IP_Msg * ip_msg=new IP_Msg;
+	IP_Msg * ip_msg;
 	ip_msg = receiver.combine(packetData);
 	if (ip_msg != NULL) AfxGetMainWnd()->SendMessage(IPTOTRANS, (WPARAM)ip_msg);
+	delete ip_msg->iphdr;
 	return 0;
 }
 
@@ -358,8 +359,11 @@ LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊı¾İ·¢ËÍ
 LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊı¾İ·¢ËÍ³öÈ¥½Ó¿Ú
 {
 	static int seq = 0;
-	while ((linker.send_by_frame((struct IP_Msg *)wparam, linker.get_adapter(), seq)) != 0)
+	if ((linker.send_by_frame((struct IP_Msg *)wparam, linker.get_adapter(), seq)) == 0)
+	{
 		seq += 1;
+		seq = seq % 100;
+	}
 	return 0;
 }
 
