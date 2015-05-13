@@ -396,7 +396,7 @@ void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int dst_ip, unsig
 	new_ip_msg.datelen = data_len+send_tcp_message.tcp_hdr_length;
 	memcpy(new_ip_msg.data, &send_tcp_message, new_ip_msg.datelen);
 	new_ip_msg.protocol = 17;	// 17 for UDP
-	AfxGetMainWnd()->SendMessage(LINKTOIP, (WPARAM)packetData, (LPARAM)receiver);
-	CMainFrame tempMainFrame;
-	CMainFrame::OnIP2Link((WPARAM)&new_ip_msg, FunID);
+    // AfxGetMainWnd()->SendMessage(LINKTOIP, (WPARAM)packetData, (LPARAM)receiver);
+	//CMainFrame tempMainFrame;
+   //CMainFrame::OnIP2Link((WPARAM)&new_ip_msg, FunID);
 }

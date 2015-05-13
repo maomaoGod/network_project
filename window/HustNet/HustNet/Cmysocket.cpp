@@ -87,6 +87,7 @@ int CmySocket::Send(const void* lpBuf, int nBufLen) //·¢ËÍÊý¾Ý
 	myEvent.Wpro->FuncID = SOCKSEND;
 	memset(myEvent.Wpro->mysock.data, 0, 2048);
 	memcpy(myEvent.Wpro->mysock.data,lpBuf, nBufLen);
+	myEvent.Wpro->mysock.datalength = nBufLen;
 	ReleaseSemaphore(myEvent.PRsock, 1, NULL);
 	return nBufLen;
 }
@@ -101,6 +102,7 @@ int CmySocket::SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTSTR lp
 	myEvent.Wpro->FuncID = SOCKSENDTO;
 	memset(myEvent.Wpro->mysock.data, 0, 2048);
 	memcpy(myEvent.Wpro->mysock.data, lpBuf, nBufLen);
+	myEvent.Wpro->mysock.datalength = nBufLen;
 	Tchar2char(lpszHostAddress, myEvent.Wpro->mysock.dstip);
 	myEvent.Wpro->mysock.dstport = nHostPort;
 	ReleaseSemaphore(myEvent.PRsock, 1, NULL);

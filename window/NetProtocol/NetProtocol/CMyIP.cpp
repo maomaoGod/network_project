@@ -6,6 +6,7 @@
 *@note
 *定义CMyIP类的文件
 */
+#pragma once
 #include "stdafx.h"
 #include "CMyIP.h"
 /**
