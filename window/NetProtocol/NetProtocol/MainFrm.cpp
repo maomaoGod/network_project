@@ -242,10 +242,10 @@ LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´
 }
 
 LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊý¾ÝÍøÂç²ãµÄ½Ó¿Ú
-{//
-	my_linker &receiver = (my_linker)(*(my_linker *)lparam);
+{
+	my_linker receiver = (*(my_linker *)lparam);
 	const u_char * packetData = (const u_char *)wparam;
-	IP_Msg * ip_msg;
+	IP_Msg * ip_msg=new IP_Msg;
 	ip_msg = receiver.combine(packetData);
 	if (ip_msg != NULL) AfxGetMainWnd()->SendMessage(IPTOTRANS, (WPARAM)ip_msg);
 	return 0;
@@ -370,6 +370,7 @@ DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
 	struct pcap_pkthdr * packetHeader;
 	const u_char       * packetData;
 	int retValue;
+	int i;
 	receiver->initialize();
 
 	while ((retValue = pcap_next_ex(adapterHandle,
@@ -380,8 +381,11 @@ DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
 
 	{
 		if (retValue == 0) continue;
-		if (packetHeader->len != 168) continue;
-		AfxGetMainWnd()->SendMessage(LINKTOIP, (WPARAM)packetData, (LPARAM)receiver);
+		if (packetHeader->len != 176) continue;
+		i = 1;
+		i = 2;
+		i = 3;
+		AfxGetApp()->m_pMainWnd->SendMessage(LINKTOIP, (WPARAM)packetData, (LPARAM)receiver);
 	}
 	return 0;
 }
