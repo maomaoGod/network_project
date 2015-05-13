@@ -20,7 +20,6 @@ using namespace std;
 
 struct tcpmsg_send
 {
-	int ACK;
 	int time;
 	struct tcp_message tcpmessage;   //ĞòºÅtcpmessage->tcp_seq_number
 };
