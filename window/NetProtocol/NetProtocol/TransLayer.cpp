@@ -120,6 +120,7 @@ bool global_TCP_destroy_flag;
 struct tcp_message global_new_tcp_msg;
 unsigned int global_ip;
 unsigned short global_port;
+int global_datalen;
 
 void TCP_new(unsigned int ip_temp, unsigned short port_temp)
 {
@@ -130,7 +131,7 @@ void TCP_new(unsigned int ip_temp, unsigned short port_temp)
 	global_port = port_temp;
 }
 
-void TCP_send(unsigned int ip_temp, unsigned short port_temp, struct tcp_message tcp_msg_temp)
+void TCP_send(unsigned int ip_temp, unsigned short port_temp, struct tcp_message tcp_msg_temp, int datalen_temp)
 {
 	// 轮询，因为网速快于处理速度，轮询效率反而高
 	while (global_TCP_send_flag);
@@ -138,9 +139,10 @@ void TCP_send(unsigned int ip_temp, unsigned short port_temp, struct tcp_message
 	global_ip = ip_temp;
 	global_port = port_temp;
 	global_new_tcp_msg = tcp_msg_temp;
+	global_datalen = datalen_temp;
 }
 
-void TCP_receive(unsigned int ip_temp, unsigned short port_temp, struct tcp_message tcp_msg_temp)
+void TCP_receive(unsigned int ip_temp, unsigned short port_temp, struct tcp_message tcp_msg_temp, int datalen_temp)
 {
 	// 轮询，因为网速快于处理速度，轮询效率反而高
 	while (global_TCP_receive_flag);
@@ -148,6 +150,7 @@ void TCP_receive(unsigned int ip_temp, unsigned short port_temp, struct tcp_mess
 	global_ip = ip_temp;
 	global_port = port_temp;
 	global_new_tcp_msg = tcp_msg_temp;
+	global_datalen = datalen_temp;
 }
 
 void TCP_resend()
@@ -177,7 +180,7 @@ void TCP_controller()
 	createNodeList();
 	// 初始化TCP操作标志
 	global_TCP_new_flag = global_TCP_send_flag = global_TCP_resend_flag = global_TCP_receive_flag = global_TCP_destroy_flag = false;
-	
+
 	// 控制流
 	for (;;)
 	{
@@ -194,14 +197,13 @@ void TCP_controller()
 			node1->MSG_num = 0;
 			node1->send_size = 0;
 			node1->Threshold = INITIAL_THRESHOLD;
-			node1->tcp_msg_send[node1->MSG_sum - 1].ACK = 0;
-			mescopy(node1->tcp_msg_send[node1->MSG_sum - 1].tcpmessage, global_new_tcp_msg);
-			node1->tcp_msg_send[node1->MSG_sum - 1].time = GetTickCount();
 			node1->LastByteRcvd = 0;
 			node1->LastByteRead = 0;  
 			node1->rec_size = 0;
 			node1->RcvWindow = Rcvbuffer;
 			node1->seq_number = rand()%RANDOM_SEQ_NUMBER_MODULE;
+			node1->ACK_count = 0;
+			node1->last_ACK = 0;
 			addNode(node1);
 			global_TCP_new_flag = false;
 		}
@@ -213,12 +215,14 @@ void TCP_controller()
 			// 新建对应TCP连接的Msg
 			tcplist *temp1 = getNode(global_ip, global_port);
 			temp1->tcp_msg_send[temp1->MSG_sum].tcpmessage = global_new_tcp_msg;
+			temp1->tcp_msg_send[temp1->MSG_sum].datalen = global_datalen;
 			++(temp1->MSG_sum);
 			if (temp1->MSG_sum >= SEND_BUFFER_SIZE)
 			{
 				temp1->MSG_sum = 0;
 			}
-			//报文段长度	temp1->send_size += wzl_length
+			// 待发送大小更新
+			temp1->send_size += global_datalen;
 			global_TCP_send_flag = false;
 		}
 
@@ -227,54 +231,63 @@ void TCP_controller()
 		if (global_TCP_receive_flag)
 		{
 			// 更新对应TCP和Msg的window和ack
-			tcplist *temp1;
-			temp1 = getNode(global_ip, global_port);
-			if (temp1->LastByteRcvd > 1024)
+			tcplist *temp1 = getNode(global_ip, global_port);
+			temp1->tcp_msg_rec[temp1->LastByteRcvd].tcpmessage = global_new_tcp_msg;
+			temp1->tcp_msg_rec[temp1->LastByteRcvd].datalen = global_datalen;
+			++(temp1->LastByteRcvd);
+			if (temp1->LastByteRcvd >= RECEIVE_BUFFER_SIZE)
 			{
-				temp1->LastByteRcvd = 1;
+				temp1->LastByteRcvd = 0;
 			}
-			else
-			{
-				temp1->LastByteRcvd++;
-			}
+			// 接收窗口更新
+			temp1->RcvWindow -= global_datalen;
 
-			mescopy(temp1->tcp_msg_rec[temp1->LastByteRcvd - 1], global_new_tcp_msg);
-			//报文段长度	temp1->RcvWindow -= wzl_length
-
-	        
-
+			// 计算RTT
 			RTT = (int)getSampleRTT(GetTickCount(), temp1->tcp_msg_send[temp1->MSG_ACK].time);
 
-			if (global_new_tcp_msg.tcp_ack != 0)			//是否有ACK
+			//是否有ACK
+			if (global_new_tcp_msg.tcp_ack != 0)
 			{
 				ACK_global = global_new_tcp_msg.tcp_ack_number;  //赋予ACK，当前ACK值
-				tcplist* temp2; 
+				tcplist *temp2; 
 				temp2 = getNode(global_ip, global_port);
 
-				if (temp2->tcp_msg_send[temp2->MSG_ACK].tcpmessage.tcp_seq_number >= ACK_global)   //冗余ACK计数
+				// 冗余ack，计数
+				if (temp1->last_ACK == global_new_tcp_msg.tcp_ack_number)
 				{
-					temp2->tcp_msg_send[temp2->MSG_ACK].ACK++;  
+					++(temp1->ACK_count);
 				}
+				// 非冗余ack，确认
 				else
 				{
-					temp2->MSG_ACK++;      //当前待确认的报文得到确认了，下标自增，指向下一个正待确认的已经发送的报文
+					temp1->last_ACK = global_new_tcp_msg.tcp_ack_number;
 				}
+
+				//if (temp2->tcp_msg_send[temp2->MSG_ACK].tcpmessage.tcp_seq_number >= ACK_global)   //冗余ACK计数
+				//{
+				//	temp2->tcp_msg_send[temp2->MSG_ACK].ACK++;  
+				//}
+				//else
+				//{
+				//	temp2->MSG_ACK++;      //当前待确认的报文得到确认了，下标自增，指向下一个正待确认的已经发送的报文
+				//}
+
 				if (temp2->cwnd <= temp2->Threshold) //慢启动
 				{
 					temp2->cwnd += MSS;
 				}
 				else
 				{
-					if (temp2->tcp_msg_send[temp2->MSG_ACK].ACK >= 3)    //收到3个冗余ACK，设置为拥塞避免
-					{
-						temp2->Threshold = temp2->cwnd / 2;
-						temp2->cwnd = temp2->Threshold;
-						//sendtoip(temp3->tcp_msg_send[temp2->MSG_ACK].tcpmessage, temp2->IP, 第一个参数这个报文的长度);
-					}
-					else      //收到前面未确认数据的ACK
-					{
-						temp2->cwnd = temp2->cwnd + MSS*(MSS / temp2->cwnd);
-					}
+					//if (temp2->tcp_msg_send[temp2->MSG_ACK].ACK >= 3)    //收到3个冗余ACK，设置为拥塞避免
+					//{
+					//	temp2->Threshold = temp2->cwnd / 2;
+					//	temp2->cwnd = temp2->Threshold;
+					//	//sendtoip(temp3->tcp_msg_send[temp2->MSG_ACK].tcpmessage, temp2->IP, 第一个参数这个报文的长度);
+					//}
+					//else      //收到前面未确认数据的ACK
+					//{
+					//	temp2->cwnd = temp2->cwnd + MSS*(MSS / temp2->cwnd);
+					//}
 				}
 				ACK_global = 0;
 
@@ -319,26 +332,6 @@ void TCP_controller()
 
 
 	}
-}
-
-void mescopy(struct tcp_message tcp_msg_a, struct tcp_message tcp_msg_b)
-{
-	tcp_msg_b.tcp_src_port = tcp_msg_b.tcp_src_port;
-	tcp_msg_b.tcp_dst_port = tcp_msg_b.tcp_dst_port;
-	tcp_msg_b.tcp_seq_number = tcp_msg_b.tcp_seq_number;
-	tcp_msg_b.tcp_ack_number = tcp_msg_b.tcp_ack_number;
-	tcp_msg_b.tcp_hdr_length = tcp_msg_b.tcp_hdr_length;
-	tcp_msg_b.tcp_reserved = tcp_msg_b.tcp_reserved;
-	tcp_msg_b.tcp_urg = tcp_msg_b.tcp_urg;
-	tcp_msg_b.tcp_ack = tcp_msg_b.tcp_ack;
-	tcp_msg_b.tcp_psh = tcp_msg_b.tcp_psh;
-	tcp_msg_b.tcp_rst = tcp_msg_b.tcp_rst;
-	tcp_msg_b.tcp_syn = tcp_msg_b.tcp_syn;
-	tcp_msg_b.tcp_fin = tcp_msg_b.tcp_fin;
-	tcp_msg_b.tcp_rcv_window = tcp_msg_b.tcp_rcv_window;
-	tcp_msg_b.tcp_checksum = tcp_msg_b.tcp_checksum;
-	tcp_msg_b.tcp_urg_ptr = tcp_msg_b.tcp_urg_ptr;
-	memcpy(tcp_msg_b.tcp_opts_and_app_data, tcp_msg_a.tcp_opts_and_app_data, sizeof(tcp_msg_a.tcp_opts_and_app_data));
 }
 
 int Count_ACK(int ACK_global)         //收到3次冗余ACK返回global_TCP_resend_flag的值

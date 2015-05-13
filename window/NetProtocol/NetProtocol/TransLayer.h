@@ -21,10 +21,15 @@ using namespace std;
 struct tcpmsg_send
 {
 	int time;
+	int datalen;
 	struct tcp_message tcpmessage;   //序号tcpmessage->tcp_seq_number
 };
 
-
+struct tcpmsg_rcvd
+{
+	int datalen;
+	struct tcp_message tcpmessage;
+};
 
 struct tcplist
 {
@@ -33,17 +38,19 @@ struct tcplist
 	unsigned int IP;  //IP
 	unsigned short PORT; //端口号
 	int Threshold;   //阈值
-	int MSG_ACK;      //当前已经有多少报文得到正确ACK
+	int MSG_ACK;      // 当前正在等待ack的报文序号
 	int MSG_num;    //已经发送的报文数
 	int MSG_sum;    //一共要发送的报文数
 	int send_size;   //待发送的数据大小
 	struct tcpmsg_send tcp_msg_send[SEND_BUFFER_SIZE];  //当前TCP下发送存放区
-	struct tcp_message tcp_msg_rec[RECEIVE_BUFFER_SIZE];   //当前TCP下接收缓冲区
+	struct tcpmsg_rcvd tcp_msg_rec[RECEIVE_BUFFER_SIZE];   //当前TCP下接收缓冲区
 	int LastByteRcvd;    //收到的最后报文的编号
 	int LastByteRead;    //已经有多少收到的报文得到确认
 	int rec_size;   //已经收到但未确认的数据大小
-	int RcvWindow;   //接受窗口的大小
+	int RcvWindow;   // 接收窗口的大小
 	int seq_number;	// 当前发送所应在序号，初始化时在0~320随机
+	int ACK_count;	// 冗余ack计数
+	int last_ACK;	// 上一个ack的值
 };
 
 bool createNodeList();
@@ -65,8 +72,6 @@ void TCP_resend();
 void TCP_destroy(unsigned int ip_temp, unsigned short port_temp);
 
 void TCP_controller();
-
-void mescopy(struct tcp_message tcp_msg_a, struct tcp_message tcp_msg_b);
 
 int Wrongretrasnsmit(int ACK_global, u16 len_tcp, u16 src_port, u16 dest_port, bool padding, u16 *buff, u16 checksum);//返回需要重发的ACK序号
 
