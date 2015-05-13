@@ -147,14 +147,15 @@ unsigned int getIP()
 	{
 		if (ip[i] == '.')
 		{
-			ip_number += ip_seg_number;
+			ip_number = ip_number * 256 + ip_seg_number;
+			ip_seg_number = 0;
 		}
 		else
 		{
 			ip_seg_number = ip_seg_number*10+ip[i]-48;
 		}
 	}
-	ip_number += ip_seg_number;
+	ip_number = ip_number * 256 + ip_seg_number;
 	return ip_number;
 }
 
@@ -167,14 +168,15 @@ unsigned int IP_chars2uint(char ip[])
 	{
 		if (ip[i] == '.')
 		{
-			ip_number = ip_number*256+ip_seg_number;
+			ip_number = ip_number * 256 + ip_seg_number;
+			ip_seg_number = 0;
 		}
 		else
 		{
-			ip_seg_number = ip_seg_number*10+ip[i]-48;
+			ip_seg_number = ip_seg_number * 10 + ip[i] - 48;
 		}
 	}
-	ip_number = ip_number*256+ip_seg_number;
+	ip_number = ip_number * 256 + ip_seg_number;
 	return ip_number;
 }
 
@@ -186,11 +188,12 @@ void IP_uint2chars(char ip[], unsigned int ip_int)
 	for (int i = 0; i < 4; ++i)	// ipv4
 	{
 		segment = ip_int%256;
+		ip_int /= 256;
 		if (segment)
 		{
 			while (segment)
 			{
-				temp[ptr++] = segment%10-48;
+				temp[ptr++] = segment%10+48;
 				segment /= 10;
 			}
 		}

@@ -112,7 +112,8 @@ int CmySocket::SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTSTR lp
 int  CmySocket::Receive(void* lpBuf, int nBufLen)
 {
 	WaitForSingleObject(myEvent.CRsock, INFINITE);
-	memcpy(lpBuf,myEvent.Rpro->mysock.data, nBufLen);  //读取数据
+	memset(lpBuf, 0, nBufLen);
+	memcpy(lpBuf,myEvent.Rpro->mysock.data, myEvent.Rpro->mysock.datalength);  //读取数据
 	ReleaseSemaphore(myEvent.PSsock, 1, NULL);
 	return nBufLen;
 }

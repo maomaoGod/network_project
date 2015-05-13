@@ -55,9 +55,9 @@ CMainFrame::CMainFrame()
 	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)connect, (LPVOID) this, NULL, NULL))
 		AfxMessageBox(_T("创建连接线程失败！"));
 	// TODO:  在此添加成员初始化代码
-	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
+	/*(if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
 		AfxMessageBox(_T("抓包线程创建失败"));
-	numprocess = 0;
+	numprocess = 0;*/
 }
 
 CMainFrame::~CMainFrame()
@@ -166,14 +166,14 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包传输数
 	{
 		// 获取UDP报文段
 		struct udp_message new_udp_msg;
-		memcpy(&new_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
+		memcpy(&new_udp_msg, new_ip_msg.data, new_ip_msg.datelen); // +1 for \0
 
 		// 检验和
-		if (!udpcheck(new_udp_msg.udp_msg_length - 8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length % 2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
+		/*if (!udpcheck(new_udp_msg.udp_msg_length - 8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length % 2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
 		{
 			// 舍弃报文
-			return -1;
-		}
+			//return -1;
+		}*/
 
 		// 填入送往应用层的结构中
 		struct sockstruct new_sockstruct;
@@ -183,7 +183,7 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包传输数
 		new_sockstruct.datalength = new_udp_msg.udp_msg_length - 8;
 		IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
 		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
-		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength + 1); // +1 for \0
+		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength); // +1 for \0
 
 		// 送往应用层
 		SendMessage(APPSEND, (WPARAM)&new_sockstruct, (LPARAM)SOCKSEND);
@@ -370,7 +370,6 @@ DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
 	struct pcap_pkthdr * packetHeader;
 	const u_char       * packetData;
 	int retValue;
-	int i;
 	receiver->initialize();
 
 	while ((retValue = pcap_next_ex(adapterHandle,
@@ -382,9 +381,6 @@ DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
 	{
 		if (retValue == 0) continue;
 		if (packetHeader->len != 176) continue;
-		i = 1;
-		i = 2;
-		i = 3;
 		AfxGetApp()->m_pMainWnd->SendMessage(LINKTOIP, (WPARAM)packetData, (LPARAM)receiver);
 	}
 	return 0;
@@ -469,12 +465,13 @@ LRESULT CMainFrame::OnAppSend(WPARAM wparam, LPARAM lparam)
 {
 	sockstruct  *pmysock= (sockstruct *)wparam;
 	UINT           FuncID = lparam;
-	portsrc       tempsrc;
+	portsrc        tempsrc;
 	unsigned short nPort;
 	memcpy(tempsrc.srcip, pmysock->srcip, 20); //根据源端口源地址目的端口找到通信端口
 	tempsrc.srcport = pmysock->srcport;
 	tempsrc.dstport = pmysock->dstport;
 	nPort = (src2port.find(tempsrc) == src2port.end()) ? pmysock->dstport : src2port[tempsrc];   //找到目标端口
+	nPort = 0;
 	WaitForSingleObject(Port2Sock[nPort]->PSsock, INFINITE); //等待
 	if (Port2Sock.find(nPort) == Port2Sock.end()){     //若未找到指定端口，丢包
 		ReleaseSemaphore(Port2Sock[nPort]->PSsock, 1, NULL);
