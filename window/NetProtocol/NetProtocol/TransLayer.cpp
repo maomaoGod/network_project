@@ -461,19 +461,19 @@ ctrl_destroy:
 
 
 
-		tcplist* temp3 = head;
-		while (temp3)         //ÊµÊ±¼ì²éÃ¿¸öTCPÏÂµ±Ç°Õý´ýÏìÓ¦µÄ±¨ÎÄÊÇ·ñ³¬Ê±Î´ÏìÓ¦
-		{
-			if (GetTickCount() - temp3->tcp_msg_send[temp3->wait_for_ack_msg].time > RTT)
-			{
-				temp3->Threshold = temp3->cwnd / 2;
-				temp3->cwnd = MSS;
-				temp3->tcp_msg_send[temp3->wait_for_ack_msg].time = GetTickCount();
-				//sendtoip(temp3->tcp_msg_send[temp3->MSG_ACK].tcpmessage, temp3->IP, µÚÒ»¸ö²ÎÊýÕâ¸ö±¨ÎÄµÄ³¤¶È);
-			}
-			temp3 = temp3->next;
-		}
-		//
+		//tcplist* temp3 = head;
+		//while (temp3)         //ÊµÊ±¼ì²éÃ¿¸öTCPÏÂµ±Ç°Õý´ýÏìÓ¦µÄ±¨ÎÄÊÇ·ñ³¬Ê±Î´ÏìÓ¦
+		//{
+		//	if (GetTickCount() - temp3->tcp_msg_send[temp3->wait_for_ack_msg].time > RTT)
+		//	{
+		//		temp3->Threshold = temp3->cwnd / 2;
+		//		temp3->cwnd = MSS;
+		//		temp3->tcp_msg_send[temp3->wait_for_ack_msg].time = GetTickCount();
+		//		//sendtoip(temp3->tcp_msg_send[temp3->MSG_ACK].tcpmessage, temp3->IP, µÚÒ»¸ö²ÎÊýÕâ¸ö±¨ÎÄµÄ³¤¶È);
+		//	}
+		//	temp3 = temp3->next;
+		//}
+		////
 
 		tcplist* temp3 = head;
 		while (temp3)
@@ -492,7 +492,7 @@ ctrl_destroy:
 				temp4.tcp_dst_port = temp3->tcp_dst_port;
 				temp4.tcp_hdr_length = 20;
 				memcpy(temp4.tcp_opts_and_app_data, &temp3->tcp_buf_send[temp3->wait_for_send], temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen);
-				TCP_Send2IP(temp4, temp3->tcp_dst_ip, temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen);
+				TCP_Send2IP(temp4, temp3->tcp_src_ip, temp3->tcp_dst_ip, temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen);
 				temp3->wait_for_send = new_send;
 				temp3->wait_for_fill_msg++;
 			}
@@ -570,10 +570,10 @@ float getSampleRTT(int sendtime, int gettime)		//Íù·µÊ±ÑÓµÄ¹À¼ÆÓë³¬Ê±£¬·µ»Ø³¬Ê±Ê
 	//printf("DevRTT = %f \n", DevRTT);
 }
 
-void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int dst_ip, unsigned int data_len)
+void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int src_ip, unsigned int dst_ip, unsigned int data_len)
 {
 	struct Msg new_ip_msg;
-	new_ip_msg.sip = getIP();
+	new_ip_msg.sip = src_ip;
 	new_ip_msg.dip = dst_ip;
 	new_ip_msg.ih_sport = send_tcp_message.tcp_src_port;
 	new_ip_msg.ih_dport = send_tcp_message.tcp_dst_port;

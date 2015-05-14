@@ -42,7 +42,6 @@ struct tcpmsg_rcvd
 struct tcplist
 {
 	tcplist *next;
-
 	unsigned tcp_src_ip : 32;
 	unsigned tcp_dst_ip : 32;
 	unsigned tcp_src_port : 16;
@@ -69,18 +68,6 @@ struct tcplist
 	int last_rcvd_msg;	// 收到的报文最后一个报文编号
 	int last_read_msg;	// 收到的报文已经交付的最后一个报文编号
 	int status;	// 拥塞控制状态
-
-	int cwnd;       //窗口大小
-	unsigned int IP;  //IP
-	unsigned short PORT; //端口号
-	int Threshold;   //阈值
-	int MSG_ACK;      // 当前正在等待ack的报文序号
-	int MSG_num;    //已经发送的报文数
-	int MSG_sum;    //一共要发送的报文数
-	int send_size;   //待发送的数据大小
-	int rec_size;   //已经收到但未确认的数据大小
-	int RcvWindow;   // 接收窗口的大小
-	
 };
 
 bool createNodeList();
@@ -113,7 +100,7 @@ void initialRTT();			//初始化RTT
 
 float getSampleRTT(int sendtime, int gettime); //动态计算超时间隔
 
-void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int dst_ip, unsigned int data_len);
+void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int src_ip, unsigned int dst_ip, unsigned int data_len);
 
 bool rcvd_msg_existed(struct tcplist *tcp, unsigned int seg_number);
 
