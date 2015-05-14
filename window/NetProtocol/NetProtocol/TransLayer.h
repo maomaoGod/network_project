@@ -91,15 +91,15 @@ bool deleteNode(tcplist* p);
 
 struct tcplist *getNode(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port);
 
-void TCP_new(unsigned int ip_temp, unsigned short port_temp);
+void TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port);
 
-void TCP_send();
+void TCP_send(struct sockstruct data_from_applayer);
 
-void TCP_receive();
+void TCP_receive(struct Msg data_from_netlayer);
 
 void TCP_resend();
 
-void TCP_destroy(unsigned int ip_temp, unsigned short port_temp);
+void TCP_destroy(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port);
 
 void TCP_controller();
 

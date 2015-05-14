@@ -191,8 +191,6 @@ void TCP_destroy(unsigned int src_ip, unsigned short src_port, unsigned int dst_
 	global_destroy_dst_port = dst_port;
 }
 
-
-
 void TCP_controller()
 {
 	// 单线程总控的流程
@@ -263,7 +261,7 @@ ctrl_send:
 			int unack_size = tcp->wait_for_fill-tcp->wait_for_ack;
 			if (unack_size+global_send_sockstruct.datalength > SEND_BUFFER_SIZE)
 			{
-				printf("Out of send-buffer! Cannot send these data!\m");
+				printf("Out of send-buffer! Cannot send these data!\n");
 				goto ctrl_receive;
 			}
 
@@ -359,7 +357,7 @@ ctrl_receive:
 					int unhandin_size = tcp->last_rcvd-tcp->last_read;
 					if (unhandin_size+global_receive_ip_msg.datelen > RCVD_BUFFER_SIZE)
 					{
-						printf("Out of receive-buffer! Cannot store these data!\m");
+						printf("Out of receive-buffer! Cannot store these data!\n");
 						goto ctrl_destroy;
 					}
 
@@ -383,7 +381,7 @@ ctrl_receive:
 					int unhandin_size = new_tcp_msg.tcp_seq_number-1-tcp->last_read;
 					if (unhandin_size+global_receive_ip_msg.datelen > RCVD_BUFFER_SIZE)
 					{
-						printf("Out of receive-buffer! Cannot store these data!\m");
+						printf("Out of receive-buffer! Cannot store these data!\n");
 						goto ctrl_destroy;
 					}
 
@@ -439,7 +437,7 @@ ctrl_receive:
 
 			// 有什么用？
 			// 计算RTT
-			RTT = (int)getSampleRTT(GetTickCount(), tcp->tcp_msg_send[tcp->wait_for_ack_msg].time);
+			RTT = (int)getSampleRTT(tcp->tcp_msg_send[tcp->wait_for_ack_msg].time, GetTickCount());
 
 			global_TCP_send_flag = false;
 
