@@ -473,10 +473,6 @@ ctrl_destroy:
 			global_TCP_destroy_flag = false;
 		}
 
- 
-
-
-
 		//tcplist* temp3 = head;
 		//while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
 		//{
