@@ -156,10 +156,10 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊı¾İÔÚOnCopyDataÖĞ»ñÈ¡
 	struct Msg new_ip_msg = *((struct Msg *)wparam);
 
-	// ÓÉÓÚUDPºÍTCPµÄ¿ªÍ·¶¼ÊÇÔ´¶Ë¿Ú£¬Ö±½Ó¼Ùs¶¨ÆäÎªUDPÀ´»ñÈ¡Ô´¶Ë¿ÚºÅ
-	struct udp_message assume_udp_msg;
-	memcpy(&assume_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
-	struct tcplist *found_TCP = getNode(new_ip_msg.sip, assume_udp_msg.udp_src_port);
+	//// ÓÉÓÚUDPºÍTCPµÄ¿ªÍ·¶¼ÊÇÔ´¶Ë¿Ú£¬Ö±½Ó¼Ùs¶¨ÆäÎªUDPÀ´»ñÈ¡Ô´¶Ë¿ÚºÅ
+	//struct udp_message assume_udp_msg;
+	//memcpy(&assume_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
+	//struct tcplist *found_TCP = getNode(new_ip_msg.sip, assume_udp_msg.udp_src_port);
 
 	// UDP
 	if (new_ip_msg.protocol == PROTOCOL_UDP)
@@ -191,34 +191,35 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 	// TCP
 	else if (new_ip_msg.protocol == PROTOCOL_TCP)
 	{
-		// »ñÈ¡TCP±¨ÎÄ¶Î
-		struct tcp_message new_tcp_msg;
-		memcpy(&new_tcp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
+		//// »ñÈ¡TCP±¨ÎÄ¶Î
+		//struct tcp_message new_tcp_msg;
+		//memcpy(&new_tcp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
 
-		// optsºÍdataÒ»Í¬½øĞĞ¼ìÑé
-		unsigned data_len = strlen(new_tcp_msg.tcp_opts_and_app_data) + 1; // +1 for \0
+		//// optsºÍdataÒ»Í¬½øĞĞ¼ìÑé
+		//unsigned data_len = strlen(new_tcp_msg.tcp_opts_and_app_data) + 1; // +1 for \0
 
-		// ¼ìÑéºÍ
-		if (!udpcheck(data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
-		{
-			// ÉáÆú±¨ÎÄ
-			return -1;
-		}
+		//// ¼ìÑéºÍ
+		//if (!udpcheck(data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
+		//{
+		//	// ÉáÆú±¨ÎÄ
+		//	return -1;
+		//}
 
-		//TCP_receive();
+		// ´¥·¢½ÓÊÕÊÂ¼ş
+		TCP_receive(new_ip_msg);
 
-		// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖĞ
-		struct sockstruct new_sockstruct;
-		new_sockstruct.dstport = new_tcp_msg.tcp_dst_port;
-		new_sockstruct.srcport = new_tcp_msg.tcp_src_port;
-		new_sockstruct.bindport = 0;
-		new_sockstruct.datalength = data_len;
-		IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
-		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
-		memcpy(new_sockstruct.data, new_tcp_msg.tcp_opts_and_app_data, new_sockstruct.datalength + 1); // +1 for \0
+		//// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖĞ
+		//struct sockstruct new_sockstruct;
+		//new_sockstruct.dstport = new_tcp_msg.tcp_dst_port;
+		//new_sockstruct.srcport = new_tcp_msg.tcp_src_port;
+		//new_sockstruct.bindport = 0;
+		//new_sockstruct.datalength = data_len;
+		//IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
+		//IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
+		//memcpy(new_sockstruct.data, new_tcp_msg.tcp_opts_and_app_data, new_sockstruct.datalength + 1); // +1 for \0
 
-		// ËÍÍùÓ¦ÓÃ²ã
-		SendMessage(APPSEND, (WPARAM)&new_sockstruct, (LPARAM)SOCKSEND);
+		//// ËÍÍùÓ¦ÓÃ²ã
+		//SendMessage(APPSEND, (WPARAM)&new_sockstruct, (LPARAM)SOCKSEND);
 	}
 	else
 	{
@@ -267,7 +268,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 	int funID = (int)lparam;
 
 	// ÅĞ¶ÏÊÇUDP»¹ÊÇTCP
-	struct tcplist *found_TCP = getNode(dst_ip, dst_port);
+	struct tcplist *found_TCP = getNode(src_ip, src_port, dst_ip, dst_port);
 
 	// UDP
 	if (found_TCP == NULL)
@@ -326,13 +327,16 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 			new_tcp_msg.tcp_urg_ptr = NULL;
 			new_tcp_msg.tcp_opts_and_app_data[0] = 21;	// whatever
 			new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
-			//TCP_send();
+			
+			// ²»×ßTCP_send()£¬²»¼ÓÈëTCP±¨ÎÄ½á¹¹ºÍ±¨ÎÄ»º³å£¬ÒòÎªÆäÖĞÎ´¼ÇÂ¼SYN
+			TCP_Send2IP(new_tcp_msg, src_ip, dst_ip, 1);
 
-			for (;;)
-			{
-				// wait for ack
-			}
-			//TCP_send();
+			// µÈ´ıÀ´×Ô¶Ô·½µÄsynºÍack
+			int waited_seq = wait_for_handshaking_ack(tcp);
+
+			// ²»×ßTCP_send()£¬²»¼ÓÈëTCP±¨ÎÄ½á¹¹ºÍ±¨ÎÄ»º³å£¬ÒòÎªÆäÖĞÎ´¼ÇÂ¼SYN
+			new_tcp_msg.tcp_syn = 0;
+			TCP_Send2IP(new_tcp_msg, src_ip, dst_ip, 1);
 		}
 		else if (funID == SOCKSEND)
 		{

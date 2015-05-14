@@ -44,6 +44,7 @@ bool createNodeList()
 		head->last_rcvd_msg = 0;
 		head->last_read_msg = 0;
 		head->status = CONG_SS;
+		head->tcp_established_syn_seq = -1;
 		return true;
 	}
 }
@@ -239,6 +240,7 @@ void TCP_controller()
 			new_tcp->last_rcvd_msg = 0;
 			new_tcp->last_read_msg = 0;
 			new_tcp->status = CONG_SS;
+			new_tcp->tcp_established_syn_seq = -1;
 			addNode(new_tcp);
 			global_TCP_new_flag = false;
 		}
@@ -613,4 +615,16 @@ int next_ack_place(struct tcplist *tcp, unsigned int init_ack_place)
 		}
 	}
 	return next_ack;
+}
+
+int wait_for_handshaking_ack(struct tcplist *tcp)
+{
+	for (;;)
+	{
+		if (tcp->tcp_established_syn_seq != -1)
+		{
+			break;
+		}
+	}
+	return tcp->tcp_established_syn_seq+1;
 }
