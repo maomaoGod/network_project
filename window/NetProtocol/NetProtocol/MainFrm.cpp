@@ -252,8 +252,6 @@ LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊý¾Ý
 	return 0;
 }
 
-//struct tcp_message global_new_tcp_msg;
-
 LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢ËÍµ½ÍøÂç²ãµÄ½Ó¿Ú
 { //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌÐò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌÐò·¢ËÍpCopyDataStructÊý¾Ý  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
@@ -304,11 +302,30 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 			// Èý´ÎÎÕÊÖ
 
 			// ÐÂ½¨TCPÁ¬½Ó£¬³õÊ¼»¯TCPÁ¬½ÓÁ´±í
-			TCP_new(dst_ip, dst_port);
+			TCP_new(src_ip, src_port, dst_ip, dst_port);
+
+			// »ñÈ¡ÐÂ½¨µÄTCPÁ¬½ÓÖ¸Õë
+			struct tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);
 
 			// µÚÒ»´ÎÎÕÊÖ£¬·¢ËÍSYN
 			// ¹¹ÔìSYN±¨ÎÄ¶Î
-			struct tcp_message syn_tcp_message;
+			struct tcp_message new_tcp_msg;
+			new_tcp_msg.tcp_src_port = src_port;
+			new_tcp_msg.tcp_dst_port = dst_port;
+			new_tcp_msg.tcp_seq_number = tcp->seq_number;
+			new_tcp_msg.tcp_ack_number = 0;
+			new_tcp_msg.tcp_hdr_length = 20;
+			new_tcp_msg.tcp_reserved = 0;
+			new_tcp_msg.tcp_urg = 0;
+			new_tcp_msg.tcp_ack = 0;
+			new_tcp_msg.tcp_psh = 0;
+			new_tcp_msg.tcp_rst = 0;
+			new_tcp_msg.tcp_syn = 1;
+			new_tcp_msg.tcp_fin = 0;
+			new_tcp_msg.tcp_rcv_window = tcp->rcvd_wind;
+			new_tcp_msg.tcp_urg_ptr = NULL;
+			new_tcp_msg.tcp_opts_and_app_data[0] = 21;	// whatever
+			new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
 			//TCP_send();
 
 			for (;;)

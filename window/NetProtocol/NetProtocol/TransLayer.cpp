@@ -191,8 +191,6 @@ void TCP_destroy(unsigned int src_ip, unsigned short src_port, unsigned int dst_
 	global_destroy_dst_port = dst_port;
 }
 
-
-
 void TCP_controller()
 {
 	// µ¥Ïß³Ì×Ü¿ØµÄÁ÷³Ì
@@ -263,7 +261,7 @@ ctrl_send:
 			int unack_size = tcp->wait_for_fill-tcp->wait_for_ack;
 			if (unack_size+global_send_sockstruct.datalength > SEND_BUFFER_SIZE)
 			{
-				printf("Out of send-buffer! Cannot send these data!\m");
+				printf("Out of send-buffer! Cannot send these data!\n");
 				goto ctrl_receive;
 			}
 
@@ -359,7 +357,7 @@ ctrl_receive:
 					int unhandin_size = tcp->last_rcvd-tcp->last_read;
 					if (unhandin_size+global_receive_ip_msg.datelen > RCVD_BUFFER_SIZE)
 					{
-						printf("Out of receive-buffer! Cannot store these data!\m");
+						printf("Out of receive-buffer! Cannot store these data!\n");
 						goto ctrl_destroy;
 					}
 
@@ -383,7 +381,7 @@ ctrl_receive:
 					int unhandin_size = new_tcp_msg.tcp_seq_number-1-tcp->last_read;
 					if (unhandin_size+global_receive_ip_msg.datelen > RCVD_BUFFER_SIZE)
 					{
-						printf("Out of receive-buffer! Cannot store these data!\m");
+						printf("Out of receive-buffer! Cannot store these data!\n");
 						goto ctrl_destroy;
 					}
 
@@ -453,7 +451,7 @@ ctrl_receive:
 
 			// ÓÐÊ²Ã´ÓÃ£¿
 			// ¼ÆËãRTT
-			RTT = (int)getSampleRTT(GetTickCount(), tcp->tcp_msg_send[tcp->wait_for_ack_msg].time);
+			RTT = (int)getSampleRTT(tcp->tcp_msg_send[tcp->wait_for_ack_msg].time, GetTickCount());
 
 			global_TCP_send_flag = false;
 
@@ -477,6 +475,7 @@ ctrl_destroy:
 
 
 
+<<<<<<< HEAD
 		tcplist* temp3 = head;
 		while (temp3)         //ÊµÊ±¼ì²éÃ¿¸öTCPÏÂµ±Ç°Õý´ýÏìÓ¦µÄ±¨ÎÄÊÇ·ñ³¬Ê±Î´ÏìÓ¦
 		{
@@ -490,6 +489,21 @@ ctrl_destroy:
 			temp3 = temp3->next;
 		}
 		//
+=======
+		//tcplist* temp3 = head;
+		//while (temp3)         //ÊµÊ±¼ì²éÃ¿¸öTCPÏÂµ±Ç°Õý´ýÏìÓ¦µÄ±¨ÎÄÊÇ·ñ³¬Ê±Î´ÏìÓ¦
+		//{
+		//	if (GetTickCount() - temp3->tcp_msg_send[temp3->wait_for_ack_msg].time > RTT)
+		//	{
+		//		temp3->Threshold = temp3->cwnd / 2;
+		//		temp3->cwnd = MSS;
+		//		temp3->tcp_msg_send[temp3->wait_for_ack_msg].time = GetTickCount();
+		//		//sendtoip(temp3->tcp_msg_send[temp3->MSG_ACK].tcpmessage, temp3->IP, µÚÒ»¸ö²ÎÊýÕâ¸ö±¨ÎÄµÄ³¤¶È);
+		//	}
+		//	temp3 = temp3->next;
+		//}
+		////
+>>>>>>> origin/master
 
 		tcplist* temp3 = head;
 		while (temp3)
@@ -508,7 +522,7 @@ ctrl_destroy:
 				temp4.tcp_dst_port = temp3->tcp_dst_port;
 				temp4.tcp_hdr_length = 20;
 				memcpy(temp4.tcp_opts_and_app_data, &temp3->tcp_buf_send[temp3->wait_for_send], temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen);
-				TCP_Send2IP(temp4, temp3->tcp_dst_ip, temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen);
+				TCP_Send2IP(temp4, temp3->tcp_src_ip, temp3->tcp_dst_ip, temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen);
 				temp3->wait_for_send = new_send;
 				temp3->wait_for_fill_msg++;
 			}
@@ -586,10 +600,10 @@ float getSampleRTT(int sendtime, int gettime)		//Íù·µÊ±ÑÓµÄ¹À¼ÆÓë³¬Ê±£¬·µ»Ø³¬Ê±Ê
 	//printf("DevRTT = %f \n", DevRTT);
 }
 
-void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int dst_ip, unsigned int data_len)
+void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int src_ip, unsigned int dst_ip, unsigned int data_len)
 {
 	struct Msg new_ip_msg;
-	new_ip_msg.sip = getIP();
+	new_ip_msg.sip = src_ip;
 	new_ip_msg.dip = dst_ip;
 	new_ip_msg.ih_sport = send_tcp_message.tcp_src_port;
 	new_ip_msg.ih_dport = send_tcp_message.tcp_dst_port;
