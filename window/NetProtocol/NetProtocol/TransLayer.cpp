@@ -464,16 +464,41 @@ ctrl_destroy:
 		tcplist* temp3 = head;
 		while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
 		{
-			if (GetTickCount() - temp3->tcp_msg_send[temp3->MSG_ACK].time > RTT)
+			if (GetTickCount() - temp3->tcp_msg_send[temp3->wait_for_ack_msg].time > RTT)
 			{
 				temp3->Threshold = temp3->cwnd / 2;
 				temp3->cwnd = MSS;
-				temp3->tcp_msg_send[temp3->MSG_ACK].time = GetTickCount();
+				temp3->tcp_msg_send[temp3->wait_for_ack_msg].time = GetTickCount();
 				//sendtoip(temp3->tcp_msg_send[temp3->MSG_ACK].tcpmessage, temp3->IP, 第一个参数这个报文的长度);
 			}
 			temp3 = temp3->next;
 		}
 		//
+
+		tcplist* temp3 = head;
+		while (temp3)
+		{
+			//发送报文
+			while (min(temp3->wait_for_fill, temp3->wait_for_send + MSS) - temp3->wait_for_ack <= min(temp3->cwnd, temp3->RcvWindow))
+			{
+				int new_send;
+		//		new_send = min(temp3->wait_for_ack + min(temp3->cwnd, temp3->RcvWindow), min(temp3->wait_for_fill, temp3->wait_for_send + MSS));
+				new_send = min(temp3->wait_for_fill, temp3->wait_for_send + MSS);
+				temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen = new_send - temp3->wait_for_send;
+				temp3->tcp_msg_send[temp3->wait_for_fill_msg].time = GetTickCount();
+				temp3->tcp_msg_send[temp3->wait_for_fill_msg].seq_number = temp3->wait_for_send;
+				tcp_message temp4;
+				temp4.tcp_src_port = temp3->tcp_src_port;
+				temp4.tcp_dst_port = temp3->tcp_dst_port;
+				temp4.tcp_hdr_length = 20;
+				memcpy(temp4.tcp_opts_and_app_data, &temp3->tcp_buf_send[temp3->wait_for_send], temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen);
+				TCP_Send2IP(temp4, temp3->tcp_dst_ip, temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen);
+				temp3->wait_for_send = new_send;
+				temp3->wait_for_fill_msg++;
+			}
+			temp3 = temp3->next;
+		}
+		free(temp3);
 
 
 
