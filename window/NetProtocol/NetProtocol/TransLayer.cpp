@@ -477,21 +477,6 @@ ctrl_destroy:
 
 
 
-<<<<<<< HEAD
-		tcplist* temp3 = head;
-		while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
-		{
-			if (GetTickCount() - temp3->tcp_msg_send[temp3->wait_for_ack_msg].time > RTT)
-			{
-				temp3->threshold = temp3->cong_wind / 2;
-				temp3->cong_wind = MSS;
-				temp3->tcp_msg_send[temp3->wait_for_ack_msg].time = GetTickCount();
-				//sendtoip(temp3->tcp_msg_send[temp3->MSG_ACK].tcpmessage, temp3->IP, 第一个参数这个报文的长度);
-			}
-			temp3 = temp3->next;
-		}
-		//
-=======
 		//tcplist* temp3 = head;
 		//while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
 		//{
@@ -505,7 +490,6 @@ ctrl_destroy:
 		//	temp3 = temp3->next;
 		//}
 		////
->>>>>>> origin/master
 
 		tcplist* temp3 = head;
 		while (temp3)
