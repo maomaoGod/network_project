@@ -57,7 +57,13 @@
     <ClInclude Include="FTPClientSocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CmyAsyncSocket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="Cmysocket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CmyTestSocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -89,7 +95,13 @@
     <ClCompile Include="FTPClientSocket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Cmysocket.cpp">
+    <ClCompile Include="CmyAsyncSocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CmySocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CmyTestSocket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

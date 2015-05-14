@@ -49,32 +49,6 @@ struct  CMD{
 	void *para2;
 };
 
-struct portsrc    //得到目的端口的数据结构
-{
-	char srcip[20];
-	unsigned short srcport;
-	unsigned short dstport;
-	bool operator <(const portsrc & other) const
-	{
-		if (strcmp(srcip, other.srcip) < 0)
-			return true;
-		else if (strcmp(srcip, other.srcip) >0)
-			return false;
-		else {
-			if (srcport < other.srcport)
-				return true;
-			else if (srcport>other.srcport)
-				return false;
-			else {
-				if (dstport < other.dstport)
-					return true;
-				else if (dstport>other.dstport)
-					return false;
-				return false;
-			}
-		}
-	}
-};
 
 struct sockstruct {
 	unsigned short  dstport;   //目的端口号

@@ -169,11 +169,11 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包传输数
 		memcpy(&new_udp_msg, new_ip_msg.data, new_ip_msg.datelen); // +1 for \0
 
 		// 检验和
-		/*if (!udpcheck(new_udp_msg.udp_msg_length - 8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length % 2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
+		if (!udpcheck(new_udp_msg.udp_msg_length - 8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length % 2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
 		{
 			// 舍弃报文
 			//return -1;
-		}*/
+		}
 
 		// 填入送往应用层的结构中
 		struct sockstruct new_sockstruct;
@@ -408,8 +408,8 @@ DWORD WINAPI CMainFrame::connect(LPVOID lParam)
 		pthis->port2Wstruct[sockcount] = new prostruct();  //本地缓存
 		pthis->SockMark2Port[pthis->preg->SockMark] = sockcount;
 		sockcount++;   //创建共享文件和同步信号量
-		myevent->RFile  = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(prostruct), pthis->preg->readfilename);
-		myevent->WFile = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(prostruct), pthis->preg->writefilename);
+		myevent->RFile = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(prostruct), pthis->preg->writefilename);
+		myevent->WFile = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(prostruct), pthis->preg->readfilename);
 		if (myevent->WFile == NULL || myevent->RFile == NULL){
 			AfxMessageBox(_T("创建共享文件失败"));
 			continue;
@@ -444,7 +444,7 @@ DWORD WINAPI CMainFrame::ReadFromApp(LPVOID lParam)//从应用程序读取数据
 	while (true)
 	{
 		WaitForSingleObject(myevent->PRsock, INFINITE);   //等待应用程序写完成
-		memcpy(pthis->port2Rstruct[pthis->Sock2Port[myevent]],myevent->Wpro,sizeof(prostruct));//拷贝到本地缓存
+		memcpy(pthis->port2Rstruct[pthis->Sock2Port[myevent]],myevent->Rpro,sizeof(prostruct));//拷贝到本地缓存
 		AfxGetApp()->m_pMainWnd->SendMessage(APPTOTRANS, (WPARAM)pthis->Sock2Port[myevent]);//发送本地标号
 		ReleaseSemaphore(myevent->CSsock, 1, NULL);     //读数据完成应用程序可再写
 	}
@@ -459,7 +459,7 @@ DWORD WINAPI CMainFrame::WriteToApp(LPVOID lParam)
 	while (true)
 	{
 		WaitForSingleObject(myevent->PWsock, INFINITE);  //等待写结构
-		memcpy(myevent->Rpro,pthis->port2Wstruct[pthis->Sock2Port[myevent]], sizeof(prostruct)); //拷贝结构
+		memcpy(myevent->Wpro,pthis->port2Wstruct[pthis->Sock2Port[myevent]], sizeof(prostruct)); //拷贝结构
 		ReleaseSemaphore(myevent->CRsock, 1, NULL);//应用程序写
 	}
 }
@@ -475,12 +475,9 @@ LRESULT CMainFrame::OnAppSend(WPARAM wparam, LPARAM lparam)
 	tempsrc.srcport = pmysock->srcport;
 	tempsrc.dstport = pmysock->dstport;
 	nPort = (src2port.find(tempsrc) == src2port.end()) ? pmysock->dstport : src2port[tempsrc];   //找到目标端口
-	nPort = 0;
+	if (Port2Sock.find(nPort) == Port2Sock.end())
+		return 0;//若未找到指定端口，丢包
 	WaitForSingleObject(Port2Sock[nPort]->PSsock, INFINITE); //等待
-	if (Port2Sock.find(nPort) == Port2Sock.end()){     //若未找到指定端口，丢包
-		ReleaseSemaphore(Port2Sock[nPort]->PSsock, 1, NULL);
-		return 0;
-	}
 	memcpy(&port2Wstruct[nPort]->mysock, pmysock, sizeof(sockstruct));  //拷贝数据
 	port2Wstruct[nPort]->FuncID = FuncID; //拷贝目的数据
 	ReleaseSemaphore(Port2Sock[nPort]->PWsock, 1, NULL);

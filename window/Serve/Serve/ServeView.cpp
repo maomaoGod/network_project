@@ -1,7 +1,7 @@
 
 // ServeView.cpp : CServeView 类的实现
 //
-
+#pragma once
 #include "stdafx.h"
 // SHARED_HANDLERS 可以在实现预览、缩略图和搜索筛选器句柄的
 // ATL 项目中进行定义，并允许与该项目共享文档代码。
@@ -12,7 +12,7 @@
 #include "MainFrm.h"
 #include "ServeDoc.h"
 #include "ServeView.h"
-
+#include "CmyTestSocket.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -48,6 +48,7 @@ CServeView::CServeView()
 	HttpManagerSocket.Listen();
 	FtpManagerSocket.Create(7600);//7600
 	FtpManagerSocket.Listen();
+	mytestsock.Bind(6500);
 }
 
 CServeView::~CServeView()
@@ -139,6 +140,4 @@ void CServeView::OnInitialUpdate()
 {
 	CEditView::OnInitialUpdate();
 	// TODO:  在此添加专用代码和/或调用基类
-	AfxGetMainWnd()->SendMessage(REGISTER, NULL, NULL);
-	mysock.Bind(6500);
 }

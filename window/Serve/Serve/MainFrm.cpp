@@ -1,7 +1,7 @@
 
 // MainFrm.cpp : CMainFrame 类的实现
 //
-
+#pragma once
 #include "stdafx.h"
 #include "Serve.h"
 
@@ -18,9 +18,9 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
-	ON_WM_COPYDATA()
-	ON_MESSAGE(REGISTER, Register)
-	ON_MESSAGE(SENDTONPC, SendToNPC)
+	//ON_WM_COPYDATA()
+	//ON_MESSAGE(REGISTER, Register)
+	//ON_MESSAGE(SENDTONPC, SendToNPC)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -93,7 +93,7 @@ void CMainFrame::Dump(CDumpContext& dc) const
 #endif //_DEBUG
 
 
-LRESULT CMainFrame::Register(WPARAM wparam, LPARAM lparam)
+/*LRESULT CMainFrame::Register(WPARAM wparam, LPARAM lparam)
 {
 	COPYDATASTRUCT mycp;
 	protocolwnd = ::FindWindow(NULL, _T("NetProtocol"));
@@ -142,6 +142,6 @@ LRESULT CMainFrame::SendToNPC(WPARAM wparam, LPARAM lparam)
 	mycp.lpData = (void *)lparam;
 	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
 	return 0;
-}
+}*/
 
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "HustNet.h"
+#include "Serve.h"
 
 class CmyAsyncSocket
 {
@@ -39,11 +39,11 @@ public:
 	bool Create(UINT nHostPort);
 	/**  消息来临时接收
 	*/
-	void  OnReceive(int nErrorCode);
+	virtual void  OnReceive(int nErrorCode);
 
-	void  OnAccept(int nErrorCode);
+	virtual void  OnAccept(int nErrorCode);
 
-	void  OnClose(int nErrorCode);
+	virtual void  OnClose(int nErrorCode);
 
 	void Close();
 
@@ -57,7 +57,7 @@ public:
 
 	void GetSockMark(regstruct *preg, regstruct *myreg);
 
-	static DWORD WINAPI ReadSock(LPVOID lParam);
+	static DWORD WINAPI NewThread(LPVOID lParam);
 
-	static DWORD WINAPI WriteSock(LPVOID lParam);
+	void ReadSock();
 };

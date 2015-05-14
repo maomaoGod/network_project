@@ -216,8 +216,8 @@ void TCP_controller()
 		{
 			// 新建对应TCP连接的Msg
 			tcplist *temp1 = getNode(global_ip, global_port);
-			temp1->tcp_msg_send[temp1->MSG_sum].tcpmessage = global_new_tcp_msg;
-			temp1->tcp_msg_send[temp1->MSG_sum].datalen = global_datalen;
+			//temp1->tcp_msg_send[temp1->MSG_sum].tcpmessage = global_new_tcp_msg;
+			//temp1->tcp_msg_send[temp1->MSG_sum].datalen = global_datalen;
 			++(temp1->MSG_sum);
 			if (temp1->MSG_sum >= SEND_BUFFER_SIZE)
 			{
@@ -234,8 +234,8 @@ void TCP_controller()
 		{
 			// 更新对应TCP和Msg的window和ack
 			tcplist *temp1 = getNode(global_ip, global_port);
-			temp1->tcp_msg_rcvd[temp1->LastByteRcvd].tcpmessage = global_new_tcp_msg;
-			temp1->tcp_msg_rcvd[temp1->LastByteRcvd].datalen = global_datalen;
+		//	temp1->tcp_msg_rcvd[temp1->LastByteRcvd].tcpmessage = global_new_tcp_msg;
+		//	temp1->tcp_msg_rcvd[temp1->LastByteRcvd].datalen = global_datalen;
 			++(temp1->LastByteRcvd);
 			if (temp1->LastByteRcvd >= RCVD_BUFFER_SIZE)
 			{

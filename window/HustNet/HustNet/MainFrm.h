@@ -36,7 +36,6 @@ public:
 	*²Ù×÷
 	*/
 public:
-	map <portsrc, int> src2port;
 	/**
 	*ÖØÐ´
 	*/

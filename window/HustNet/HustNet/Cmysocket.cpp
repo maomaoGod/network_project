@@ -226,6 +226,17 @@ void  CmySocket::Accept(CmySocket& rConnectedSocket)
 {
 	WaitForSingleObject(myEvent.CSsock, INFINITE);
 	myEvent.Wpro->FuncID = SOCKACCEPT;
-	myEvent.Wpro->AcceptSockMark = rConnectedSocket.myEvent.Wpro->SockMark;
+	myEvent.Wpro->AcceptSockMark = rConnectedSocket.myEvent.Wpro->SockMark;//标志转接套接字的编号
+	memcpy(myEvent.Wpro->mysock.srcip, myEvent.Rpro->mysock.dstip, 20);
+	memcpy(myEvent.Wpro->mysock.dstip, myEvent.Rpro->mysock.srcip, 20);
+	myEvent.Wpro->mysock.srcport = myEvent.Wpro->mysock.dstport;
+	myEvent.Wpro->mysock.dstport = myEvent.Wpro->mysock.srcport;
+	ReleaseSemaphore(myEvent.PRsock, 1, NULL);
+}
+
+void CmySocket::Close()
+{
+	WaitForSingleObject(myEvent.CSsock, INFINITE);
+	myEvent.Wpro->FuncID = SOCKCLOSE;
 	ReleaseSemaphore(myEvent.PRsock, 1, NULL);
 }

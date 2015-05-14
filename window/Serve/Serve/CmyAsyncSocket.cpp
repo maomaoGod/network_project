@@ -1,7 +1,10 @@
+
 #pragma once 
 #include "stdafx.h"
 #include "CmyAsyncSocket.h"
-#include "HustNet.h"
+#include "Serve.h"
+
+extern void PrintView(CString e);
 
 int    SOCKCOUNT = 0;
 
@@ -10,13 +13,13 @@ CmyAsyncSocket::CmyAsyncSocket()
 	flag = false;
 	HANDLE MFile = OpenFileMapping(FILE_MAP_WRITE, FALSE, _T("NetProtocolListen"));//打开连接文件
 	if (NULL == MFile){
-		AfxMessageBox(_T("失败"));
+		AfxMessageBox(_T("打开连接文件失败"));
 		return;
 	}
-	regstruct *preg  = (regstruct*)MapViewOfFile(MFile, FILE_MAP_WRITE, 0, 0, sizeof(regstruct));//映射连接文件到本地
+	regstruct *preg = (regstruct*)MapViewOfFile(MFile, FILE_MAP_WRITE, 0, 0, sizeof(regstruct));//映射连接文件到本地
 	if (NULL == preg){
 		AfxMessageBox(_T("失败"));
-	   return;
+		return;
 	}
 	HANDLE Csemaphore = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, _T("NetProtocolCsemaphore"));//打开应用程序信号量
 	if (NULL == Csemaphore){
@@ -29,8 +32,8 @@ CmyAsyncSocket::CmyAsyncSocket()
 		return;
 	}
 	regstruct myreg;
-	WaitForSingleObject(Csemaphore,INFINITE);  //等待信号到来
-	GetSockMark(preg,&myreg);  //准备好共享内存名和使用的信号量名
+	WaitForSingleObject(Csemaphore, INFINITE);  //等待信号到来
+	GetSockMark(preg, &myreg);  //准备好共享内存名和使用的信号量名
 	ReleaseSemaphore(Psemaphore, 1, NULL); //注册socket
 	HANDLE Success = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, _T("NetProtocolCreateSuccess"));
 	WaitForSingleObject(Success, 10000); //等待注册完成，信号量和共享内存创建完毕
@@ -38,31 +41,30 @@ CmyAsyncSocket::CmyAsyncSocket()
 		AfxMessageBox(_T("创建套接字失败"));
 		return;
 	}
-	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ReadSock, (LPVOID)this, NULL, NULL);//创建接收线程
+	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewThread, (LPVOID)this, NULL, NULL);//创建接收线程
 	flag = true;
 }
-
 
 CmyAsyncSocket::~CmyAsyncSocket()
 {
 
 }
 
-bool CmyAsyncSocket::InitalEvent(regstruct *myreg)
+bool CmyAsyncSocket::InitalEvent( regstruct *myreg)
 {
 	myEvent.WFile = OpenFileMapping(FILE_MAP_WRITE, FALSE, myreg->writefilename);  //打开共享内存
-	myEvent.RFile  = OpenFileMapping(FILE_MAP_WRITE, FALSE, myreg->readfilename);
+	myEvent.RFile =  OpenFileMapping(FILE_MAP_WRITE, FALSE, myreg->readfilename);
 	if (myEvent.WFile == NULL || myEvent.RFile == NULL)
 		return false;
-	myEvent.Rpro=   (prostruct *)MapViewOfFile(myEvent.RFile,  FILE_MAP_WRITE, 0, 0, sizeof(prostruct)); //映射共享内存
+	myEvent.Rpro = (prostruct *)MapViewOfFile(myEvent.RFile, FILE_MAP_WRITE, 0, 0, sizeof(prostruct)); //映射共享内存
 	myEvent.Wpro = (prostruct *)MapViewOfFile(myEvent.WFile, FILE_MAP_WRITE, 0, 0, sizeof(prostruct));
 	if (myEvent.Rpro == NULL || myEvent.Wpro == NULL)
 		return false;
-	myEvent.PSsock  = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->PSname); //获取信号量句柄
-	myEvent.PRsock  = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->PRname);
+	myEvent.PSsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->PSname); //获取信号量句柄
+	myEvent.PRsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->PRname);
 	myEvent.PWsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->PWname);
-	myEvent.CSsock  = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->CSname);
-	myEvent.CRsock  = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->CRname);
+	myEvent.CSsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->CSname);
+	myEvent.CRsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->CRname);
 	myEvent.CWsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->CWname);
 	if (!(myEvent.PRsock || myEvent.PSsock || myEvent.PWsock || myEvent.CSsock || myEvent.CRsock || myEvent.CWsock))
 		return false;
@@ -107,16 +109,23 @@ int CmyAsyncSocket::SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTS
 }
 /** 接收数据
 */
-void  CmyAsyncSocket::OnReceive(int nErrorCode)
-{
-
-}
 
 int  CmyAsyncSocket::Receive(void* lpBuf, int nBufLen)
 {
-	memcpy(lpBuf, myEvent.Rpro->mysock.data, nBufLen);  //读取数据
+	memcpy(myEvent.Wpro->mysock.srcip, myEvent.Rpro->mysock.dstip, 20);
+	memcpy(myEvent.Wpro->mysock.dstip, myEvent.Rpro->mysock.srcip, 20);
+	myEvent.Wpro->mysock.srcport = myEvent.Rpro->mysock.dstport;
+	myEvent.Wpro->mysock.dstport = myEvent.Rpro->mysock.srcport;
+	memset(lpBuf, 0, nBufLen);
+	memcpy(lpBuf, myEvent.Rpro->mysock.data, myEvent.Rpro->mysock.datalength);  //读取数据
 	return nBufLen;
 }
+
+ void CmyAsyncSocket::OnReceive(int nErrorCode)
+{
+
+}
+
 
 /** 建立TCP连接
 */
@@ -153,24 +162,29 @@ bool CmyAsyncSocket::Create(UINT nHostPort)
 	return false;
 }
 
-DWORD WINAPI CmyAsyncSocket::ReadSock(LPVOID lParam)
+DWORD WINAPI CmyAsyncSocket::NewThread(LPVOID lParam)
 {
 	CmyAsyncSocket *pthis = (CmyAsyncSocket *)lParam;
+	pthis->ReadSock();
+	return 0;
+}
+
+void CmyAsyncSocket::ReadSock()
+{	
 	while (true){
-		WaitForSingleObject(pthis->myEvent.CRsock, INFINITE);
-		switch (pthis->myEvent.Rpro->FuncID){
+		WaitForSingleObject(myEvent.CRsock, INFINITE);
+		switch (myEvent.Rpro->FuncID){
 		case SOCKSEND:  //如果是协议程序为发送数据到来，则收
 		case SOCKSENDTO:
-			pthis->OnReceive(true);
+			OnReceive(true);
 			break;
 		case SOCKCONNECT:
-			pthis->OnAccept(true);
+			OnAccept(true);
 		case SOCKCLOSE:
-			pthis->OnClose(true);
+			OnClose(true);
 		}
-		ReleaseSemaphore(pthis->myEvent.PSsock,1,NULL);
+		ReleaseSemaphore(myEvent.PSsock, 1, NULL);
 	}
-	return 0;
 }
 
 bool CmyAsyncSocket::Bind(UINT nSocketPort)

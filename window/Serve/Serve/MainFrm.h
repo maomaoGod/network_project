@@ -37,12 +37,12 @@ protected:  // 控件条嵌入成员
 // 生成的消息映射函数
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg LRESULT Register(WPARAM, LPARAM);
+//	afx_msg LRESULT Register(WPARAM, LPARAM);
 	DECLARE_MESSAGE_MAP()
 
 public:
-	afx_msg BOOL OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct);
-	afx_msg LRESULT SendToNPC(WPARAM wparam, LPARAM lparam);
+//	afx_msg BOOL OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct);
+//	afx_msg LRESULT SendToNPC(WPARAM wparam, LPARAM lparam);
 };
 
 

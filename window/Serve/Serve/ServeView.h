@@ -4,6 +4,7 @@
 #include "HttpServeSocket.h"
 #include "FTPServeSocket.h"
 #include "Cmysocket.h"
+#include "CmyTestSocket.h"
 #pragma once
 
 class CServeView : public CEditView
@@ -18,7 +19,7 @@ public:
 
 // ²Ù×÷
 public:
-	Cmysocket mysock;
+	CmyTestSocket    mytestsock;
 protected :
 	HttpServeSocket  HttpManagerSocket;
 	FTPServeSocket FtpManagerSocket;

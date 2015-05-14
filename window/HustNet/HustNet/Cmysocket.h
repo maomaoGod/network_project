@@ -44,6 +44,8 @@ public:
 
 	void  Tchar2char(LPCTSTR src, LPSTR dst);
 
+	void Close();
+
 	void GetSockMark(regstruct *preg, regstruct *myreg);
 };
 
