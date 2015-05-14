@@ -40,8 +40,13 @@ void FTPClientSocket::OnReceive(int nErrorCode)
 		app.GetData(STR::CS2S(result));
 		app.DealWith(app.GetCMD());
 		//char *stemp;
-		back.Format(_T("%d"), app.GetCode());
-		back = back + _T("\r\n") + STR::S2CS(app.GetResMsg());
+		if (app.GetCode() == Rev_OK){
+			back = STR::S2CS(app.GetResMsg());
+		}
+		else{
+			back.Format(_T("%d"), app.GetCode());
+		    back = back + _T("\r\n") + STR::S2CS(app.GetResMsg());
+		}
 		PrintView(back);
 		//back.Format(_T("成功接收消息:%s"), Buffer);
 		Send(back, back.GetLength()*sizeof(TCHAR));
