@@ -145,28 +145,57 @@ namespace NetWork{
 
 	};
 
+
 	class FTPWork{
 	public:
 		FTPWork(){
+		}
+		//div the word
+		void split_input(CStringArray *data, CString Source, TCHAR div){
+			//use the tools from namespace Tools
+			Tstr::CCarg(data, Source, div);
+		}
+		void deal_send_Msg(CString *Msg, CStringArray *Data){
+			int i;
+			CString temp;
+			for (i = 0; i < Data->GetSize(); i++){
+				temp = Data->GetAt(i).Mid(0);
+				*Msg = *Msg + _T(' ') + temp;
+			}
+		}
+	};
+
+	//take over the system
+	class FTPApp{
+	public:
+		FTPApp(){
 			AfxSocketInit();
+			ftpwork = new FTPWork();
+		}
+		~FTPApp(){
+			delete ftpwork;
 		}
 		void Begin(){
 			CString mystr;
 			TakeOverCmd(_T("Myftp>"));
 			aSocket = new CSocket();
+			//create a Socket
 			if (!aSocket->Create()){
 				CString error;
 				error.Format(_T("创建失败:%d"), aSocket->GetLastError());
 				PrintLog(error);
 				return;
 			}
+			//take over the cmd
 			while ((mystr = GetLine()).Compare(_T("exit")) != 0){
 				CleanRp(NULL);
 				PrintLog(_T("Accept ") + mystr);
 				CStringArray code;
-				Tstr::CCarg(&code, mystr, _T(' '));
+				ftpwork->split_input(&code, mystr, _T(' '));
+				//Conn at first
 				if (code[0] == _T("Conn")){
-					if (aSocket->Connect(IP, 7600)){
+					PrintLog(code[1]);
+					if (aSocket->Connect(code[1], 7600)){
 						aSocket->Receive((void *)szRecValue, 1024);
 						rev.Format(_T("来自服务器的消息:%s"), szRecValue);
 						PrintRp(rev);
@@ -180,28 +209,38 @@ namespace NetWork{
 				}
 				//UPLOAD + client_path + serve_path
 				else if (code[0] == _T("UPLOAD") || code[0] == _T("upload")){
-					if (Uploadfile(&code)){
+					if (!Uploadfile(&code)){
 						PrintLog(_T("Interrupt Error!"));
+						continue;
 					}
-					else Rev();
+					Rev();
 				}
 				//DOWNLOAD + serve_path + client_path
 				else if (code[0] == _T("DOWNLOAD") || code[0] == _T("download")){
 					if (!Send(code[0], &code)){
 						PrintLog(_T("Interrupt Error!"));
+						continue;
 					}
-					else Downloadfile(&code);
+					Downloadfile(&code);
 				}
 				else{
 					if (!Send(code[0], &code)){
 						PrintLog(_T("Interrupt Error!"));
+						continue;
 					}
-					else Rev();
+					Rev();
 				}
 			}
 			aSocket->Close();
 			delete aSocket;
 		}
+	private:
+		FTPWork *ftpwork;
+		CSocket *aSocket;
+		CString IP;
+		CString Path;
+		CString rev;
+		TCHAR szRecValue[1024];
 		//UPLOAD + client_path + serve_path
 		bool Uploadfile(CStringArray *data){
 			string path = Tstr::CS2S(data->GetAt(1));
@@ -221,53 +260,50 @@ namespace NetWork{
 					delete temp;
 				}
 			}
-			Msg = data->GetAt(0) + _T(' ') + Tstr::S2CS(read) + _T(' ') + data->GetAt(2);
+			Msg = data->GetAt(0) + _T(' ') + data->GetAt(2) + _T(' ') + Tstr::S2CS(read);
 			aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
 			return true;
 		}
 		//DOWNLOAD + serve_path + client_path
 		void Downloadfile(CStringArray *data){
-			string path = Tstr::CS2S(data->GetAt(2));//client_path
+			string path = Tstr::CS2S(data->GetAt(2));//client_path 
 			CString temp;
 			FILE *fp;
 			fopen_s(&fp, path.c_str(), "w");
-			while (aSocket->Receive((void *)szRecValue, 1024)){
-				temp.Format(_T("%s"), szRecValue);
-				fprintf_s(fp, "%s\n", temp);
-			}
+			//while (){
+			aSocket->Receive((void *)szRecValue, 1024);
+			temp.Format(_T("%s"), szRecValue);
+			//fprintf_s(fp, "%s", temp);
+			fprintf_s(fp, "%s\n", Tstr::CS2S(temp).c_str());
+			//}
+			fclose(fp);
 			PrintRp(_T("Rev OK"));
 		}
+		
 		bool Send(CString Method, CStringArray *url){
-			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
+			//memset(szRecValue, 0, 1024 * sizeof(TCHAR));
 			int i;
-			CString Msg, temp;
-			Msg = Method + _T(' ') + Path;
-			for (i = 1; i < url->GetSize(); i++){
-				temp = url->GetAt(i).Mid(0);
-				Msg = Msg + _T(' ') + temp;
-			}
+			CString Msg;
+			ftpwork->deal_send_Msg(&Msg, url);
 			aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
 			return true;
 		}
+		
 		void Rev(){
 			rev = _T("");
 			CString temp;
 			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
-			while (aSocket->Receive((void *)szRecValue, 1024)){
-				temp.Format(_T("%s"), szRecValue);
-				rev += temp;
-				memset(szRecValue, 0, 1024 * sizeof(TCHAR));
-			}
+			//while (aSocket->Receive((void *)szRecValue, 1024)){
+			aSocket->Receive((void *)szRecValue, 1024);
+			temp.Format(_T("%s"), szRecValue);
+			rev += temp;
+			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
+			//}
 			PrintRp(rev);
 		}
 
-	private:
-		CSocket *aSocket;
-		CString IP;
-		CString Path;
-		CString rev;
-		TCHAR szRecValue[1024];
 	};
+
 
 	/**
 	 *@class AppLayerHttp NetWork
@@ -276,12 +312,50 @@ namespace NetWork{
 	 *@note
 	 *to achieve communication of the client and the server with HTTP protocol
 	 */
+
+	class HTTPWork{
+	public:
+		HTTPWork(){
+		}
+		//div the word
+		void split_input(CStringArray *data, CString Source, TCHAR div){
+			//use the tools from namespace Tools
+			Tstr::CCarg(data, Source, div);
+		}
+		void DivP(CStringArray *Data){
+			int i = Data->GetAt(1).Find(_T('/'));
+			IP = Data->GetAt(1).Mid(0, i);
+			Path = Data->GetAt(1).Mid(i + 1);//
+		}
+		CString GetIP(){
+			return IP;
+		}
+		CString GetPath(){
+			return Path;
+		}
+		void deal_send_Msg(CString *Msg, CStringArray *Data){
+			int i; 
+			CString temp;
+			*Msg = Data->GetAt(0) + _T(' ') + Path;
+			for (i = 2; i < Data->GetSize(); i++){
+				temp = Data->GetAt(i).Mid(0);
+				*Msg = *Msg + _T(' ') + temp;
+			}
+		}
+	private:
+		CString IP;
+		CString Path;
+	};
+
 	class AppLayerHttp{
 	public:
 		AppLayerHttp(){
 			AfxSocketInit();
+			httpwork = new HTTPWork();
 		}
-		
+		~AppLayerHttp(){
+			delete httpwork;
+		}
 		void Begin(){
 			CString mystr;
 			TakeOverCmd(_T("Myhttp>"));
@@ -289,7 +363,7 @@ namespace NetWork{
 				CleanRp(NULL);
 				PrintLog(_T("Accept ") + mystr);
 				CStringArray code;
-				Tstr::CCarg(&code ,mystr ,_T(' '));
+				httpwork->split_input(&code ,mystr ,_T(' '));
 				//Create();
 				aSocket = new CSocket();
 				//failed
@@ -331,13 +405,9 @@ namespace NetWork{
 		 */
 		bool Send(CString Method, CStringArray *url){
 			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
-			int i = url->GetAt(1).Find(_T('/'));
 			//int i = url.Find(_T('\\'));
-			IP = url->GetAt(1).Mid(0, i);
-			Path = url->GetAt(1).Mid(i + 1);//
-			PrintLog(IP);
-			PrintLog(Path);
-			if(aSocket->Connect(IP, 6500)){
+			httpwork->DivP(url);
+			if(aSocket->Connect(httpwork->GetIP(), 6500)){
 				aSocket->Receive((void *)szRecValue, 1024);
 				rev.Format(_T("来自服务器的消息:%s"), szRecValue);
 				PrintRp(rev);
@@ -348,12 +418,8 @@ namespace NetWork{
 				PrintLog(error);
 				return false;
 			}
-			CString Msg, temp;
-			Msg = Method + _T(' ') + Path;
-			for (i = 2; i < url->GetSize(); i++){
-				temp = url->GetAt(i).Mid(0);
-				Msg = Msg + _T(' ') + temp;
-			}
+			CString Msg;
+			httpwork->deal_send_Msg(&Msg, url);
 			aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
 			return true;
 		}
@@ -386,12 +452,165 @@ namespace NetWork{
 	private:
 		//typedef void(AppLayerHttp::*DealWithFunciton)(vector<CString> data);
 		//no data
+		HTTPWork *httpwork;
 		CSocket *aSocket;
-		CString IP;
-		CString Path;
+		//CString IP;
+		//CString Path;
 		CString rev;
 		TCHAR szRecValue[1024];
 	};
+
+	class SMTPWork
+	{
+	public:
+		SMTPWork()
+		{
+			command.clear();
+			command[_T("auth")] = 1;
+			command[_T("helo")] = 1;
+			command[_T("mail")] = 1;
+			command[_T("rcpt")] = 1;
+			command[_T("noop")] = 1;
+			command[_T("help")] = 1;
+			command[_T("data")] = 1;
+			command[_T("quit")] = 1;
+			command[_T("rset")] = 1;
+
+		}
+		bool checkgrammar(CString s)
+		{
+			s.MakeLower();
+			if (command[s])
+				return true;
+			else
+				return false;
+		}
+		//div the word
+		void split_input(CStringArray *data, CString Source, TCHAR div){
+			//use the tools from namespace Tools
+			Tstr::CCarg(data, Source, div);
+		}
+	private:
+		map <CString, bool> command;
+	};
+#define RECEIVE_CMD 0
+#define RECEIVE_MAIL 1
+#define SMTP_PORT 8000
+	class AppLayerSMTP
+	{
+	public:
+		AppLayerSMTP(CString IP){
+			AfxSocketInit();
+			smtpwork = new SMTPWork();
+			aSocket = new CSocket();
+			if (!aSocket->Create()){
+				CString error;
+				error.Format(_T("创建失败:%d"), aSocket->GetLastError());
+				PrintLog(error);
+				return;
+			}
+			TCHAR szRecValue[1024] = { 0 };
+			CString rev;
+			if (aSocket->Connect(IP, 8000)){
+				aSocket->Receive((void *)szRecValue, 1024);
+				rev.Format(_T("来自服务器的消息:%s"), szRecValue);
+				PrintRp(rev);
+				Connect = true;
+			}
+			else{
+				CString error;
+				error.Format(_T("连接服务器失败:%d"), aSocket->GetLastError());
+				PrintLog(error);
+				Connect = false;
+			}
+			state = RECEIVE_CMD;
+		}
+		~AppLayerSMTP(){
+			delete smtpwork;
+			delete aSocket;
+		}
+	public:
+		void Begin(){
+			CString mystr;
+
+			if (!Connect)
+				return;
+			bool finish = 0;
+			TakeOverCmd(_T("MySMTP>"));
+			do
+			{
+				mystr = GetLine();
+				CleanRp(NULL);
+				if (state == RECEIVE_CMD)
+				{
+
+					CStringArray code;
+					smtpwork->split_input(&code, mystr, _T(' '));
+					if (!smtpwork->checkgrammar(code[0]))
+					{
+						PrintLog(_T("Unknown Command!\n"));
+					}
+					else
+					{
+						if (code[0].MakeLower() == _T("quit"))
+							finish = 1;
+						PrintLog(_T("Accept: ") + code[0]);
+						if (!Send(mystr))
+						{
+							PrintLog(_T("Interrupt Error!"));
+							return;
+						}
+						CString Revdata = Rev();
+						CStringArray rev_split;
+						smtpwork->split_input(&rev_split, Revdata, _T('\r'));
+						if (code[0].MakeLower() == _T("data") && rev_split[0] == "354")
+							state = RECEIVE_MAIL;
+						PrintRp(Revdata);
+					}
+				}
+				else
+				{
+					if (!Send(mystr))
+					{
+						PrintLog(_T("Interrupt Error!"));
+						return;
+					}
+					if (mystr == _T("."))
+					{
+						CString Revdata = Rev();
+						PrintRp(Revdata);
+						state = RECEIVE_CMD;
+					}
+				}
+			} while (!finish);
+		}
+	private:
+		bool Send(CString Msg)
+		{
+			if (!aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR)))
+				return false;
+			return true;
+		}
+		CString Rev()
+		{
+			CString temp;
+			temp = _T("");
+			TCHAR RecBuffer[1024] = { 0 };
+			if (aSocket->Receive((void *)RecBuffer, 1024)){
+				CString t;
+				t.Format(_T("%s"), RecBuffer);
+				temp += t;
+				memset(RecBuffer, 0, 1024 * sizeof(TCHAR));
+			}
+			return temp;
+		}
+	private:
+		SMTPWork *smtpwork;
+		CSocket *aSocket;
+		bool Connect;
+		int state;
+	};
+
 }
 
 

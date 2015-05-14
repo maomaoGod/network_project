@@ -9,29 +9,9 @@
 
 #include "resource.h"       // 主符号
 
-#define PRINT              WM_USER + 1000
-#define REGISTER       WM_USER + 1001
-#define SENDTONPC   WM_USER + 1002
-
-#define  SOCKCONNECT             200
-#define  SOCKBIND                     201
-#define  SOCKLISTEN                 202
-#define  SOCKSEND                   203
-#define  SOCKSENDTO               204
-#define  SOCKRECEIVE              205
-#define  SOCKRECEIVEFROM    206
-#define  SOCKCLOSE                 207
-
-struct sockstruct {
-	unsigned short  dstport;   //目的端口号
-	unsigned short  srcport;   //源端口号
-	unsigned short  bindport; //绑定端口号
-	int    datalength;             //数据长度
-	char srcip[20];                //原地址ip
-	char dstip[20];                //目标地址ip
-	char data[2048];             //数据
-};
-
+#define PRINT          WM_USER +1000
+#define REGISTER   WM_USER +1001
+#define SENDOUT    WM_USER +1002
 
 // CServeApp:
 // 有关此类的实现，请参阅 Serve.cpp

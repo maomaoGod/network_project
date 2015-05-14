@@ -7,13 +7,11 @@
 #include "UserCmd.h"
 #include "UICtrl.h"
 
-#define CLIENT 100
-
 IMPLEMENT_DYNCREATE(CmdView, CEditView)
 
 CmdView::CmdView()
 {
-	myedit = (CEdit *)this;
+
 }
 
 CmdView::~CmdView()
@@ -152,15 +150,14 @@ void CmdView::Initialcmd()
 	my_map.insert(pair<CString, CMDPROC>(_T("cleanrp"), &UserCmd::cleanrp));
 	my_map.insert(pair<CString, CMDPROC>(_T("cleanlog"), &UserCmd::cleanlog));
 	my_map.insert(pair<CString, CMDPROC>(_T("compute"), &UserCmd::Compute));
-	my_map.insert(pair<CString, CMDPROC>(_T("conn"),    &UserCmd::Connect));
-	my_map.insert(pair<CString, CMDPROC>(_T("setdll"),    &UserCmd::SetDll));
+	my_map.insert(pair<CString, CMDPROC>(_T("conn"), &UserCmd::Connect));
+	my_map.insert(pair<CString, CMDPROC>(_T("setdll"), &UserCmd::SetDll));
 	my_map.insert(pair<CString, CMDPROC>(_T("gethtml"), &UserCmd::GetHtml));
-	my_map.insert(pair<CString, CMDPROC>(_T("visit"), &UserCmd::Visit));
-	my_map.insert(pair<CString, CMDPROC>(_T("sendout"), &UserCmd::sendout));
-	my_map.insert(pair<CString, CMDPROC>(_T("mytest"), &UserCmd::mytest));
-	//my_map[_T("Mail")] = &UserCmd::Mail;//equal to before
+//	my_map.insert(pair<CString, CMDPROC>(_T("visit"), &UserCmd::Visit));
 	my_map[_T("Http")] = &UserCmd::Http;//equal to before
 	my_map[_T("Chat")] = &UserCmd::Chat;
+	my_map[_T("Ftp")] = &UserCmd::Ftp;
+	my_map[_T("smtp")] = &UserCmd::Smtp;
 }
 
 /** @brief 处理回车键消息,触发命令处理函数*/
@@ -261,6 +258,7 @@ void CmdView::OnInitialUpdate()
 	CEditView::OnInitialUpdate();
 
 	// TODO:  在此添加专用代码和/或调用基类
+	myedit = (CEdit *)this;
 	Initialcmd();
 	/**
 	*@brief 设置字体
@@ -270,9 +268,7 @@ void CmdView::OnInitialUpdate()
 	/**
 	*@brief 打印命令提示语
 	*/
-
 	SetHint(_T("Command:"));
-//  AfxGetMainWnd()->SendMessage(REGISTER, NULL, NULL);
 	myedit->ReplaceSel(Hint);
 	HintLine = 0;
 }
