@@ -105,15 +105,17 @@ namespace NetWork{
 		//, vector<string> args
 		void DealWith(string CMD){
 		    /**@brief DON'T HAVE THIS CMD return BADxxx */
-			if (Function.find(CMD)==Function.end()){
+			if (Function.find(CMD)==Function.end( )){
 				ErrorCode = BAD_REQUEST;
+				RespondMsg += "The request is not supported.";
+				RespondMsg += "\r\n";
 				return;
 			}
 			try{
-				//注意1：这里必须使用this->，否则会有error C2171: “*”:
-				//“void (__thiscall CUtil::* )(int)”类型的操作数非法的错误
-				//注意2：这里必须使用*解引用，才能实现函数调用，
-				//否则会有error C2064: 项不会计算为接受 1 个参数的函数的错误
+				/**@brief 注意1：这里必须使用this->，否则会有error C2171: “*”:*/
+				/**@brief“void (__thiscall CUtil::* )(int)”类型的操作数非法的错误 */
+				/** @brief 注意2：这里必须使用*解引用，才能实现函数调用，*/
+				/**@brief 否则会有error C2064: 项不会计算为接受 1 个参数的函数的错误*/
 				(this->*Function[CMD])(data);//args
 				
 			}
@@ -175,9 +177,13 @@ namespace NetWork{
 			FILE *fp;
 			if (fopen_s(&fp, path, "r")){
 				ErrorCode = NO_FOUND;
+				RespondMsg += "The page does not exist.";
+				RespondMsg += "\r\n";
 				return;
 			}
 			ErrorCode = MSG_OK;
+			RespondMsg += ".";
+			RespondMsg += "\r\n";
 			while (fscanf_s(fp, "%s", t, 1024)!= -1){
 				temp = new string(t);
 				RespondMsg += *temp;
@@ -217,6 +223,8 @@ namespace NetWork{
 			FILE *fp;
 			if (fopen_s(&fp, path, "r")){
 				ErrorCode = NO_FOUND;
+				RespondMsg += "The page does not exist.";
+				RespondMsg += "\r\n";
 				return;
 			}
 			ErrorCode = MSG_OK;
@@ -280,6 +288,8 @@ namespace NetWork{
 			}
 			else
 				ErrorCode = Created;
+			RespondMsg += "The page is created.";
+			RespondMsg += "\r\n";
 			fopen_s(&fp, path, "w");
 			char *temp;
 			if (data.size() < 3) data.push_back("");
@@ -325,9 +335,13 @@ namespace NetWork{
 			FILE *fp;
 			if (fopen_s(&fp, path, "r")){
 				ErrorCode = NO_FOUND;
+				RespondMsg += "The file does not exist.";
+				RespondMsg += "\r\n";
 				return;
 			}
 			ErrorCode = MSG_OK;
+			RespondMsg += "Successfully delete.";
+			RespondMsg += "\r\n";
 			fclose(fp);
 			DeleteFile(STR::String2LPCWSTR(data[1]));
 		}
@@ -469,6 +483,7 @@ namespace NetWork{
 #define OP_OK 120
 #define OP_Fail 302
 #define QUIT_EXIT 303
+#define Rev_OK 320
 
 	class AppLayerFtp{
 		class people{
@@ -543,6 +558,8 @@ namespace NetWork{
 				}
 				RespondMsg = data[1] + " has logged in\r\n";
 				ErrorCode = Sign_SU;
+				if(Sign_in->name=="root") RespondMsg += "Superuser logs on.";
+				RespondMsg += "\r\n";
 				struct _finddata_t files;
 				int File_Handle;
 				string *temp;
@@ -561,6 +578,8 @@ namespace NetWork{
 			else{
 				delete Sign_in;
 				ErrorCode = Sign_Fail;
+				RespondMsg += "Fail to log on to server.";
+				RespondMsg += "\r\n";
 				return;
 			}
 		}
@@ -581,8 +600,12 @@ namespace NetWork{
 			File_Handle = _findfirst(data[1].c_str() , &files);
 			if (File_Handle == -1){
 				ErrorCode = OP_Fail;
+				RespondMsg += "Fail to open folder.";
+				RespondMsg += "\r\n";
 				return;
 			}
+			RespondMsg += "Folder list.";
+			RespondMsg += "\r\n";
 			do{
 				temp=new string(files.name);
 				RespondMsg += (*temp + " ");
@@ -611,6 +634,8 @@ namespace NetWork{
 			File_Handle = _findfirst(data[1].c_str(), &files);
 			if (File_Handle == -1){
 				ErrorCode = OP_Fail;
+				RespondMsg += "Fail to creat folder.";
+				RespondMsg += "\r\n";
 				return;
 			}
 			do{
@@ -638,9 +663,13 @@ namespace NetWork{
 			FILE *fp;
 			if (fopen_s(&fp, path, "r")){
 				ErrorCode = OP_Fail;
+				RespondMsg += "Fail to delete file.";
+				RespondMsg += "\r\n";
 				return;
 			}
 			ErrorCode = OP_OK;
+			RespondMsg += "Successfully delete.";
+			RespondMsg += "\r\n";
 			fclose(fp);
 			DeleteFile(STR::String2LPCWSTR(data[1]));
 		}
@@ -655,6 +684,8 @@ namespace NetWork{
 			FILE *fp;
 			data[1] = Sign_in->path +"/"+ data[1];
 			ErrorCode = OP_OK;
+			RespondMsg += "Successfully upload.";
+			RespondMsg += "\r\n";
 			//memcpy(path, data[1].c_str(), data.size());
 			//path[data.size()] = '\0';
 			fopen_s(&fp, data[1].c_str(), "w");
@@ -687,16 +718,19 @@ namespace NetWork{
 			FILE *fp;
 			if (fopen_s(&fp, path, "r")){
 				ErrorCode = OP_Fail;
+				RespondMsg += "Fail to download.";
+				RespondMsg += "\r\n";
 				return;
 			}
-			ErrorCode = OP_OK;
+			ErrorCode = Rev_OK;
+			RespondMsg += "Successfully download.";
+			RespondMsg += "\r\n";
 			while (fscanf_s(fp, "%s", t, 1024) != -1){
 				temp = new string(t);
 				RespondMsg += *temp;
 				delete temp;
 			}
 			fclose(fp);
-			
 		}
 		void ADDUSER(vector<string> data){
 			struct _finddata_t files;
@@ -723,6 +757,8 @@ namespace NetWork{
 					RespondMsg += "The User alreay exists/r/n";
 				}
 				ErrorCode = OP_OK;
+				RespondMsg += "Successfully add user.";
+				RespondMsg += "\r\n";
 			}
 			else {
 				ErrorCode = OP_Fail;
@@ -815,4 +851,243 @@ namespace NetWork{
 		}
 
 	};
+
+#ifndef SMTP
+#define SMTP_PORT 8000
+#define LOGIN 235
+#define OK 250
+#define GO 354
+#define SMTP_QUIT 221
+#define SYNTAX_ERROR 500
+#define OPERATION_ERROR 550
+#define RECEIVE_CMD 0
+#define RECEIVE_MAIL 1
+#endif
+	class SMTP
+	{
+	public:
+		SMTP()
+		{
+			memset(&M_re, 0, sizeof(M_re));
+			Sign_in = 0;
+			state = RECEIVE_CMD;
+			ErrorCode = 0;
+			RespondMsg = "";
+		}
+		~SMTP()
+		{}
+		int GetCode()
+		{
+			return ErrorCode;
+		}
+		string GetMsg()
+		{
+			return RespondMsg;
+		}
+		void CMD_Dispatch(string MSG)
+		{
+			this->MSG = MSG;
+			if (state == RECEIVE_CMD)
+			{
+				STR::Split(MSG, &Split_msg, ' ');
+				Split_msg[0] = STR::lower(Split_msg[0]);
+				if (Split_msg[0] == "auth")
+					auth();
+				else if (Split_msg[0] == "noop")
+					noop();
+				else if (Split_msg[0] == "help")
+					help();
+				else if (Split_msg[0] == "data")
+					data();
+				else if (Split_msg[0] == "mail")
+					from();
+				else if (Split_msg[0] == "rcpt")
+					to();
+				else if (Split_msg[0] == "quit")
+					quit();
+				else if (Split_msg[0] == "rset")
+					rset();
+				else
+				{
+					//未知命令
+					ErrorCode = SYNTAX_ERROR;
+					RespondMsg = "Unknown Command!\r\n";
+				}
+			}
+			else
+			if (state == RECEIVE_MAIL)
+			{
+				data();
+			}
+			//未知状态
+		}
+	private:
+		string RespondMsg;
+		int ErrorCode;
+		string MSG;
+		vector<string> Split_msg;
+		int state;
+		int Sign_in;
+		struct Mail
+		{
+			string to;
+			string from;
+			string content;
+		}M_re;
+	private:
+		void rset()
+		{
+			memset(&M_re, 0, sizeof(M_re));
+			ErrorCode = OK;
+			RespondMsg = "Clear the data\r\n";
+		}
+		void auth()
+		{
+			if (Sign_in)
+			{
+				ErrorCode = OPERATION_ERROR;
+				RespondMsg = "Already Login in!\r\n";
+			}
+			else
+			if (Split_msg[1] == "login" || Split_msg[1] == "LOGIN")
+			{
+				ErrorCode = LOGIN;
+				RespondMsg = "OK Authenticated!\r\n";
+				Sign_in = 1;
+			}
+			else
+			{
+				ErrorCode = SYNTAX_ERROR;
+				RespondMsg = "Unknown Command!\r\n";
+			}
+			return;
+		}
+		void noop()
+		{
+			ErrorCode = OK;
+			RespondMsg = "OK!\r\n";
+			return;
+		}
+		void help()
+		{
+			ErrorCode = OK;
+			RespondMsg = "Supported Command:\r\n";
+			RespondMsg += "\tauth login<CRLF>\r\n";
+			RespondMsg += "\tMAIL FROM: xxx@xxx<CRLF>\r\n";
+			RespondMsg += "\tRCPT TO: xxx@xxx<CRLF>\r\n";
+			RespondMsg += "\tnoop<CRLF>\r\n";
+			RespondMsg += "\thelp<CRLF>\r\n";
+			RespondMsg += "\tdata<CRLF>(Mail)<CRLF>.<CRLF>\r\n";
+			RespondMsg += "\trset<CRLF>\r\n";
+//			RespondMsg += "\thelo Domain<CRLF>\r\n";
+			RespondMsg += "\tquit<CRLF>\r\n";
+			return;
+		}
+		void data()
+		{
+			if (Sign_in == 0)
+			{
+				ErrorCode = OPERATION_ERROR;
+				RespondMsg = "user not login in!\r\n";
+				return;
+			}
+			if (state == RECEIVE_CMD)
+			{
+				ErrorCode = GO;
+				RespondMsg = "go ahead\r\n";
+				state = RECEIVE_MAIL;
+			}
+			else
+			{
+				if (MSG != ".")
+				{
+					M_re.content += MSG;
+					ErrorCode = 0;
+				}
+				else
+				{
+					char path[1024];
+					FILE *f;
+					_itoa_s(rand(), path, 10);
+					int l = strlen(path);
+					path[l] = '.';
+					path[l + 1] = 't';
+					path[2 + l] = 'x';
+					path[3 + l] = 't';
+					path[4 + l] = 0;
+					fopen_s(&f, path, "w");
+					fprintf_s(f, "%s", M_re.content.c_str());
+					state = RECEIVE_CMD;
+					ErrorCode = OK;
+					RespondMsg = "Mail Received, named ";
+					RespondMsg += path;
+					RespondMsg += "\r\n";
+					fclose(f);
+				}
+			}
+
+		}
+		void to()
+		{
+			if (Sign_in == 0)
+			{
+				ErrorCode = OPERATION_ERROR;
+				RespondMsg = "user not login in!\r\n";
+				return;
+			}
+			string mailAddr = Split_msg[2];
+			string suffix = ".com";
+			string str1 = "@";
+			string::size_type idx1 = mailAddr.find(suffix);
+			string::size_type idx2 = mailAddr.find(str1);
+			if ((idx1 == string::npos) || (idx2 == string::npos))
+			{
+				ErrorCode = SYNTAX_ERROR;
+				RespondMsg = "Wrong mail address!\r\n";
+				return;
+			}
+			M_re.to = mailAddr;
+			ErrorCode = OK;
+			RespondMsg = "Sender <";
+			RespondMsg += Split_msg[2];
+			RespondMsg += "> ok!\r\n";
+			return;
+		}
+		void from()
+		{
+			if (Sign_in == 0)
+			{
+				ErrorCode = OPERATION_ERROR;
+				RespondMsg = "user not login in!\r\n";
+				return;
+			}
+			string mailAddr = Split_msg[2];
+			string suffix = ".com";
+			string str1 = "@";
+			string::size_type idx1 = mailAddr.find(suffix);
+			string::size_type idx2 = mailAddr.find(str1);
+			if ((idx1 == string::npos) || (idx2 == string::npos))
+			{
+				ErrorCode = SYNTAX_ERROR;
+				RespondMsg = "Wrong mail address!\r\n";
+				return;
+			}
+			M_re.from = mailAddr;
+			ErrorCode = OK;
+			RespondMsg = "Sender <";
+			RespondMsg += Split_msg[2];
+			RespondMsg += "> ok!\r\n";
+			return;
+		}
+
+		void quit()
+		{
+			Sign_in = NULL;
+			ErrorCode = SMTP_QUIT;
+			RespondMsg = "Bye!\r\n";
+			return;
+		}
+	};
+
+
 }

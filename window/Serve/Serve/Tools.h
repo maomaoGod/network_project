@@ -13,6 +13,13 @@ using namespace std;
 namespace Tools{
 	class STR{
 	public:
+		static string lower(string s)
+		{
+			for (string::iterator it = s.begin(); it < s.end(); it++)
+			if (*it >= 'A'&&*it <= 'Z')
+				*it = *it + 'a' - 'A';
+			return s;
+		}
 		static void Split(string Seq,vector<string> *strArray, char div){
 			if (strArray->size() != 0){
 				strArray->clear();

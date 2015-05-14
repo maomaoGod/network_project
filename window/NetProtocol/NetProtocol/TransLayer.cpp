@@ -409,6 +409,18 @@ ctrl_receive:
 			// ack字段是否有效
 			if (new_tcp_msg.tcp_ack != 0)
 			{
+				if (tcp->status == CONG_SS)
+				{
+					tcp->cong_wind = tcp->cong_wind + MSS;
+					if (tcp->cong_wind > tcp->threshold)
+					{
+						tcp->status = CONG_CA;
+					}
+				}
+				else if (tcp->status == CONG_CA)
+				{
+					tcp->cong_wind = tcp->cong_wind + MSS*MSS / tcp->cong_wind;
+				}
 				// ack有效，判断是否是冗余或确认ack
 				if (new_tcp_msg.tcp_ack_number >= tcp->wait_for_ack)
 				{
@@ -427,6 +439,8 @@ ctrl_receive:
 						{
 							// 3次冗余ack，快速重传
 							// fast_re_send
+							tcp->threshold = tcp->cong_wind / 2;
+							tcp->cong_wind = tcp->threshold;
 						}
 					}
 					else
@@ -463,6 +477,21 @@ ctrl_destroy:
 
 
 
+<<<<<<< HEAD
+		tcplist* temp3 = head;
+		while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
+		{
+			if (GetTickCount() - temp3->tcp_msg_send[temp3->wait_for_ack_msg].time > RTT)
+			{
+				temp3->threshold = temp3->cong_wind / 2;
+				temp3->cong_wind = MSS;
+				temp3->tcp_msg_send[temp3->wait_for_ack_msg].time = GetTickCount();
+				//sendtoip(temp3->tcp_msg_send[temp3->MSG_ACK].tcpmessage, temp3->IP, 第一个参数这个报文的长度);
+			}
+			temp3 = temp3->next;
+		}
+		//
+=======
 		//tcplist* temp3 = head;
 		//while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
 		//{
@@ -476,15 +505,16 @@ ctrl_destroy:
 		//	temp3 = temp3->next;
 		//}
 		////
+>>>>>>> origin/master
 
 		tcplist* temp3 = head;
 		while (temp3)
 		{
 			//发送报文
-			while (min(temp3->wait_for_fill, temp3->wait_for_send + MSS) - temp3->wait_for_ack <= min(temp3->cwnd, temp3->RcvWindow))
+			while (min(temp3->wait_for_fill, temp3->wait_for_send + MSS) - temp3->wait_for_ack <= min(temp3->cong_wind, temp3->rcvd_wind))
 			{
 				int new_send;
-		//		new_send = min(temp3->wait_for_ack + min(temp3->cwnd, temp3->RcvWindow), min(temp3->wait_for_fill, temp3->wait_for_send + MSS));
+		//		new_send = min(temp3->wait_for_ack + min(temp3->cong_wind, temp3->rcvd_wind), min(temp3->wait_for_fill, temp3->wait_for_send + MSS));
 				new_send = min(temp3->wait_for_fill, temp3->wait_for_send + MSS);
 				temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen = new_send - temp3->wait_for_send;
 				temp3->tcp_msg_send[temp3->wait_for_fill_msg].time = GetTickCount();
