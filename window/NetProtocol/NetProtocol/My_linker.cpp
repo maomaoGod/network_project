@@ -98,7 +98,6 @@ pcap_t * my_linker::get_adapter()
 		errorBuffer    // error buffer
 
 		);
-
 	if (adapterHandle == NULL)
 
 	{//指定适配器打开失败

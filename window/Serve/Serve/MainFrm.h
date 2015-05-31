@@ -1,7 +1,6 @@
 
 // MainFrm.h : CMainFrame 类的接口
 //
-
 #pragma once
 
 class CMainFrame : public CFrameWnd
@@ -40,6 +39,7 @@ protected:
 //	afx_msg LRESULT Register(WPARAM, LPARAM);
 	DECLARE_MESSAGE_MAP()
 public:
+	afx_msg void OnDns();
 };
 
 

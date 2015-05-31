@@ -20,7 +20,7 @@ public:
 
 // ²Ù×÷
 public:
-	CmyTestSocket    mytestsock;
+	//CmyTestSocket    mytestsock;
 protected :
 	HttpServeSocket  HttpManagerSocket;
 	FTPServeSocket FtpManagerSocket;
