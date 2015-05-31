@@ -5,6 +5,7 @@
 #include "FTPServeSocket.h"
 #include "Cmysocket.h"
 #include "CmyTestSocket.h"
+#include "SMTPServeSocket.h"
 #pragma once
 
 class CServeView : public CEditView
@@ -23,6 +24,7 @@ public:
 protected :
 	HttpServeSocket  HttpManagerSocket;
 	FTPServeSocket FtpManagerSocket;
+	SMTPServeSocket SmtpManagerSocket;
 // 重写
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
@@ -52,7 +54,6 @@ protected:
 	void OnPrint(CString e);
 public:
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
-	virtual void OnInitialUpdate();
 };
 
 #ifndef _DEBUG  // ServeView.cpp 中的调试版本

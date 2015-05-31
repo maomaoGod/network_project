@@ -64,7 +64,7 @@ u16 tcpmakesum(u16 len_tcp, u16 src_port,u16 dest_port, bool padding, u16 *buff)
     int i;
     ///< Find out if the length of data is even or odd number. If odd,
     ///< add a padding byte = 0 at the end of packet
-    if (padding&1==1){
+    if ((padding&1)==1){
         padd=1;
         buff[len_tcp]=0;
     }
@@ -98,29 +98,28 @@ u16 tcpmakesum(u16 len_tcp, u16 src_port,u16 dest_port, bool padding, u16 *buff)
 *
  */
 bool udpcheck(u16 len_udp, u16 src_port,u16 dest_port, bool padding, u16 *buff, u16 checksum)
- {
+{
     u16 sum;///<sum of data and checksum
-    sum = udpmakesum(len_udp, src_port, dest_port, padding, buff)+checksum;
-    if (sum == 0xffff)
+    sum = udpmakesum(len_udp, src_port, dest_port, padding, buff)-checksum;
+    if (sum == 0x0000)
         return 1;
     else
         return 0;
- }
+}
 
 /** @tcpcheck
  * @brief check the ckecksum of tcp
 *
  */
 bool tcpcheck(u16 len_tcp, u16 src_port,u16 dest_port, bool padding, u16 *buff, u16 checksum)
- {
+{
     u16 sum;///<sum of data and checksum
-    sum = tcpmakesum(len_tcp, src_port, dest_port, padding, buff)+checksum;
-    if (sum == 0xffff)
+    sum = tcpmakesum(len_tcp, src_port, dest_port, padding, buff)-checksum;
+    if (sum == 0x0000)
         return 1;
     else
         return 0;
- }
-
+}
 
 unsigned int getIP()
 {

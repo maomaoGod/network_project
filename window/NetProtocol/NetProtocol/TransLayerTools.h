@@ -13,6 +13,8 @@
 
 using namespace std;
 
+#define MSS 1024
+
 /**
 *@class UDP报文段结构
 *@brief 存放UDP报文段的结构体
@@ -26,7 +28,7 @@ struct udp_message
 	unsigned udp_dst_port : 16;	///< 目的端口号
 	unsigned udp_msg_length : 16;	///< 报文长度
 	unsigned udp_checksum : 16;	///< 检验和
-	char udp_app_data[2048];	///< 数据
+	char udp_app_data[MSS];	///< 数据
 };
 
 /**
@@ -53,7 +55,7 @@ struct tcp_message
 	unsigned tcp_rcv_window : 16;	///< 接收窗口
 	unsigned tcp_checksum : 16;	///< 检验和
 	unsigned tcp_urg_ptr : 16;	///< 紧急数据指针（并未使用）
-	char tcp_opts_and_app_data[2048];	///< 选项字段（通常没有，故通常首部长度为20Byte）和数据
+	char tcp_opts_and_app_data[MSS];	///< 选项字段（通常没有，故通常首部长度为20Byte）和数据
 };
 
 /**

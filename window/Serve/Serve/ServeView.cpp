@@ -49,6 +49,8 @@ CServeView::CServeView()
 	FtpManagerSocket.Create(7600);//7600
 	FtpManagerSocket.Listen();
 	mytestsock.Bind(6500);
+	SmtpManagerSocket.Create(8000);
+	SmtpManagerSocket.Listen();
 }
 
 CServeView::~CServeView()
@@ -133,11 +135,4 @@ void CServeView::OnSetFocus(CWnd* pOldWnd)
 	//CEditView::OnSetFocus(pOldWnd);
 
 	// TODO:  在此处添加消息处理程序代码
-}
-
-
-void CServeView::OnInitialUpdate()
-{
-	CEditView::OnInitialUpdate();
-	// TODO:  在此添加专用代码和/或调用基类
 }

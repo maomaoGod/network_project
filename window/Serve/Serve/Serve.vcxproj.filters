@@ -63,6 +63,12 @@
     <ClInclude Include="Cmysocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="SMTPClientSocket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SMTPServeSocket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="CmyTestSocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -102,6 +108,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CmyTestSocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SMTPClientSocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SMTPServeSocket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

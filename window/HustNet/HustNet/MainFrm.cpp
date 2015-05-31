@@ -6,9 +6,6 @@
 #include "MainFrm.h"
 #include "NetSet.h"
 #include "UIctrl.h"
-//#include<process.h>
-#define SERVE 1000
-#define CLIENT 2000
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -24,11 +21,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_MESSAGE(DISPATCH,Dispatch)
-//	ON_MESSAGE(SENDTONPC,SendToNPC)
-//	ON_MESSAGE(REGISTER,Register)
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_NETSET, &CMainFrame::OnNETSET)
-	ON_WM_COPYDATA()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -284,43 +278,3 @@ void CMainFrame::OnNETSET()
 	*/
 	SetDlg.DoModal();
 }
-
-/*LRESULT CMainFrame::Register(WPARAM wparam, LPARAM lparam)
-{
-	COPYDATASTRUCT mycp;
-	protocolwnd = ::FindWindow(NULL, _T("NetProtocol"));
-	if (protocolwnd == NULL){
-		AfxMessageBox(_T("网络协议未开启"));
-		//DestroyWindow();
-		return 0;
-	}
-	mycp.dwData = NULL;
-	mycp.cbData = NULL;
-	mycp.lpData =  NULL;
-	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
-	return 0;
-}*/
-
-/*LRESULT CMainFrame::SendToNPC(WPARAM wparam, LPARAM lparam)
-{
-	if (protocolwnd == NULL)//目前默认网络服务是启动的
-		Register(NULL,NULL);
-	if (protocolwnd == NULL)
-		return 0;
-	COPYDATASTRUCT mycp;
-	mycp.dwData = wparam;
-	mycp.cbData = sizeof(struct sockstruct);
-	mycp.lpData = (void *)lparam;
-	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
-	return 0;
-}*/
-
-/*BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
-{
-	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	if (pCopyDataStruct != NULL)
-	{
-		sockstruct mysock = *((sockstruct *)(pCopyDataStruct->lpData));
-	}
-	return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
-}*/

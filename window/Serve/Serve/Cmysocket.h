@@ -1,10 +1,12 @@
 #pragma once
+
+#include "stdafx.h"
 #include "Serve.h"
 
 class CmySocket
 {
 public:
-	CmySocket();
+   	  CmySocket();
 	~CmySocket();
 public:
 	ObjEvent    myEvent;
@@ -36,15 +38,15 @@ public:
 
 	void  OnAccept(int nErrorCode);
 
-	void  Accept(CmySocket& rConnectedSocket);
+	void  Accept(CmySocket & rConnectedSocket);
 
 	bool Bind(UINT nSocketPort);
 
-	void  char2Tchar(LPSTR src, LPCTSTR dst, int maxlen);
+	void  char2Tchar( LPSTR src, LPCTSTR dst, int maxlen);
 
 	void  Tchar2char(LPCTSTR src, LPSTR dst);
 
-	void Close();
+	void  Close();
 
 	void GetSockMark(regstruct *preg, regstruct *myreg);
 };

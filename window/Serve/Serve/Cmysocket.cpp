@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "CmySocket.h"
 
-
 extern int SOCKCOUNT;
+
 CmySocket::CmySocket()
 {
 	flag = false;
@@ -40,11 +40,9 @@ CmySocket::CmySocket()
 	flag = true;
 }
 
-
 CmySocket::~CmySocket()
 {
 }
-
 
 bool CmySocket::InitalEvent(regstruct *myreg)
 {
@@ -56,11 +54,11 @@ bool CmySocket::InitalEvent(regstruct *myreg)
 	myEvent.Wpro = (prostruct *)MapViewOfFile(myEvent.WFile, FILE_MAP_WRITE, 0, 0, sizeof(prostruct));
 	if (myEvent.Rpro == NULL || myEvent.Wpro == NULL)
 		return false;
-	myEvent.PSsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->PSname); //获取信号量句柄
-	myEvent.PRsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->PRname);
+	myEvent.PSsock  = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->PSname); //获取信号量句柄
+	myEvent.PRsock  = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->PRname);
 	myEvent.PWsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->PWname);
-	myEvent.CSsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->CSname);
-	myEvent.CRsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->CRname);
+	myEvent.CSsock  = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->CSname);
+	myEvent.CRsock  = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->CRname);
 	myEvent.CWsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->CWname);
 	if (!(myEvent.PRsock || myEvent.PSsock || myEvent.PWsock || myEvent.CSsock || myEvent.CRsock || myEvent.CWsock))
 		return false;

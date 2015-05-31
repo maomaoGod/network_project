@@ -52,5 +52,3 @@ CString  GetLine();
 /**
 *@brief 通知主窗口命令已获取完成*/
 void EndInput();
-
-void SendOut(CString);
