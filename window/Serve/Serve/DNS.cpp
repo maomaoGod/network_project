@@ -28,7 +28,19 @@ void CDNS::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CDNS, CDialogEx)
+	ON_BN_CLICKED(IDOK, &CDNS::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 
 // CDNS 消息处理程序
+
+
+void CDNS::OnBnClickedOk()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	CString Domain, IPaddr;
+	GetDlgItem(IDC_domain)->GetWindowText(Domain);
+	GetDlgItem(IDC_IPADDRESS)->GetWindowText(IPaddr);
+	AfxGetApp()->m_pMainWnd->SendMessage(DNSADD,(WPARAM)&Domain,(LPARAM)&IPaddr);
+	CDialogEx::OnOK();
+}

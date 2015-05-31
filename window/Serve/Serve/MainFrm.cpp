@@ -20,6 +20,7 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_COMMAND(ADD_DNS, &CMainFrame::OnDns)
+	ON_MESSAGE(DNSADD,DnsAdd)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -141,9 +142,15 @@ LRESULT CMainFrame::SendOut(WPARAM wparam, LPARAM lparam)
 	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
 	return 0;
 }*/
-
-
-
+LRESULT CMainFrame::DnsAdd(WPARAM wparam, LPARAM lparam)
+{
+	CString   Domain, IPaddr;
+	Domain = *((CString *)wparam);
+	IPaddr =   *((CString *)lparam);
+	AfxMessageBox(Domain);
+	AfxMessageBox(IPaddr);
+	return 0;
+}
 
 
 void CMainFrame::OnDns()

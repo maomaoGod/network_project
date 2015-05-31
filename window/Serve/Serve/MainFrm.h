@@ -39,6 +39,7 @@ protected:
 //	afx_msg LRESULT Register(WPARAM, LPARAM);
 	DECLARE_MESSAGE_MAP()
 public:
+	afx_msg LRESULT DnsAdd(WPARAM, LPARAM);
 	afx_msg void OnDns();
 };
 

@@ -12,6 +12,7 @@
 #define PRINT              WM_USER + 1000
 #define REGISTER       WM_USER + 1001
 #define SENDTONPC   WM_USER + 1002
+#define DNSADD          WM_USER + 1003
 
 #define  SOCKCONNECT             200
 #define  SOCKBIND                     201
