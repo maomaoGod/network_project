@@ -26,8 +26,9 @@ public:
 	void UserCmd::Chat(CString e);
 	void UserCmd::SetDll(CString e);
 	void UserCmd::GetHtml(CString url);
-	//void UserCmd::Visit(CString url);
+	void UserCmd::Visit(CString url);
 	void UserCmd::Ftp(CString url);
 	void UserCmd::Smtp(CString IP);
+	void UserCmd::mytest(CString IP);
 };
 

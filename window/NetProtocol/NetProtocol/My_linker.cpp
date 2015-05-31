@@ -53,7 +53,7 @@ pcap_t * my_linker::get_adapter()
 	*/
 	//选择要捕获数据包的适配器
 
-	int adapterNumber = 6;
+	//int adapterNumber = 5;
 	/*
 	printf("Enter the adapter number between 1 and %d:", crtAdapter);
 
@@ -75,7 +75,7 @@ pcap_t * my_linker::get_adapter()
 	*/
 	adapter = allAdapters;
 
-	for (crtAdapter = 0; crtAdapter < adapterNumber - 1; crtAdapter++)
+	for (crtAdapter = 0; adapter -> next != NULL; crtAdapter++)
 
 		adapter = adapter->next;
 
