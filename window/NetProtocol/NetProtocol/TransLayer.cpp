@@ -2,7 +2,6 @@
 #include "stdafx.h"
 #include "TransLayer.h"
 
-struct tcplist tcp_list;
 tcplist* head = NULL;
 
 int ACK_global;
@@ -15,19 +14,13 @@ static int ACK_Now = -1;
 
 bool createNodeList()
 {
-	head = (tcplist*)malloc(sizeof(tcp_list));
-	if (NULL == head)
+	head = (tcplist *)malloc(sizeof(struct tcplist));
+	if (head == NULL)
 	{
 		return false;
 	}
 	else
 	{
-		head->MSG_num = 0;
-		head->cwnd = MSS;
-		head->IP = 0;
-		head->PORT = 0;
-		head->Threshold = 65 * 1024;
-		head->MSG_ACK = 0;
 		head->next = NULL;
 		head->tcp_src_ip = global_new_src_ip;
 		head->tcp_dst_ip = global_new_dst_ip;
@@ -56,14 +49,14 @@ bool createNodeList()
 	}
 }
 
-bool addNode(tcplist* tcp_list)
+bool addNode(tcplist *tcp_list)
 {
 	if (NULL == head)
 	{
 		return false;
 	}
-	tcplist* p = head->next;
-	tcplist* q = head;
+	tcplist *p = head->next;
+	tcplist *q = head;
 	while (NULL != p)
 	{
 		q = p;
@@ -74,10 +67,10 @@ bool addNode(tcplist* tcp_list)
 	return true;
 }
 
-bool deletenode(tcplist* p)
+bool deleteNode(tcplist *p)
 {
-	tcplist* s1;
-	tcplist* s2;
+	tcplist *s1;
+	tcplist *s2;
 	s2 = s1 = head;
 
 	if (s1 != p && s1 != NULL)
@@ -93,7 +86,6 @@ bool deletenode(tcplist* p)
 		printf("something wrong!");
 		return false;
 	}
-
 
 	if (s1 == NULL)
 	{
@@ -118,14 +110,15 @@ bool deletenode(tcplist* p)
 	}
 }
 
-struct tcplist *getNode(unsigned int ip, unsigned short port)
+struct tcplist *getNode(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port)
 {//ÔÚ´øÍ·½áµãµÄµ¥Á´±íheadÖĞ²éÕÒµÚi¸ö½áµã£¬ÈôÕÒµ½£¨0¡Üi¡Ün£©£¬
 	//Ôò·µ»Ø¸Ã½áµãµÄ´æ´¢Î»ÖÃ£¬·ñÔò·µ»ØNULL¡£
 	tcplist *p;
 	p = head;//´ÓÍ·½áµã¿ªÊ¼É¨Ãè
 	while (p)
 	{//Ë³Ö¸ÕëÏòºóÉ¨Ãè£¬Ö±µ½p->nextÎªNULLÎªÖ¹
-		if (p->IP == ip && p->PORT == port)  //ÈôÕÒµ½Ä¿±êIP£¬Ôò·µ»Øp
+		if (p->tcp_src_ip == src_ip && p->tcp_src_port == src_port
+			&& p->tcp_dst_ip == dst_ip && p->tcp_dst_port == dst_port)  //ÈôÕÒµ½Ä¿±êIP£¬Ôò·µ»Øp
 		{
 			return p;
 		}
@@ -135,47 +128,50 @@ struct tcplist *getNode(unsigned int ip, unsigned short port)
 }
 
 bool global_TCP_new_flag;
+unsigned int global_new_src_ip;
+unsigned short global_new_src_port;
+unsigned int global_new_dst_ip;
+unsigned short global_new_dst_port;
 
 bool global_TCP_send_flag;
+struct sockstruct global_send_sockstruct;
 
 bool global_TCP_receive_flag;
+struct Msg global_receive_ip_msg;
+
 bool global_TCP_resend_flag;
+
 bool global_TCP_destroy_flag;
+unsigned int global_destroy_src_ip;
+unsigned short global_destroy_src_port;
+unsigned int global_destroy_dst_ip;
+unsigned short global_destroy_dst_port;
 
-struct tcp_message global_new_tcp_msg;
-unsigned int global_ip;
-unsigned short global_port;
-int global_datalen;
-
-void TCP_new(unsigned int ip_temp, unsigned short port_temp)
+void TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port)
 {
 	// ÂÖÑ¯£¬ÒòÎªÍøËÙ¿ìÓÚ´¦ÀíËÙ¶È£¬ÂÖÑ¯Ğ§ÂÊ·´¶ø¸ß
 	while (global_TCP_new_flag);
 	global_TCP_new_flag = true;
-	global_ip = ip_temp;
-	global_port = port_temp;
+	global_new_src_ip = src_ip;
+	global_new_src_port = src_port;
+	global_new_dst_ip = dst_ip;
+	global_new_dst_port = dst_port;
 }
 
-void TCP_send(unsigned int ip_temp, unsigned short port_temp, struct tcp_message tcp_msg_temp, int datalen_temp)
+void TCP_send(struct sockstruct data_from_applayer)
 {
 	// ÂÖÑ¯£¬ÒòÎªÍøËÙ¿ìÓÚ´¦ÀíËÙ¶È£¬ÂÖÑ¯Ğ§ÂÊ·´¶ø¸ß
 	while (global_TCP_send_flag);
 	global_TCP_send_flag = true;
-	global_ip = ip_temp;
-	global_port = port_temp;
-	global_new_tcp_msg = tcp_msg_temp;
-	global_datalen = datalen_temp;
+	global_send_sockstruct = data_from_applayer;
 }
 
-void TCP_receive(unsigned int ip_temp, unsigned short port_temp, struct tcp_message tcp_msg_temp, int datalen_temp)
+void TCP_receive(struct Msg data_from_netlayer)
 {
 	// ÂÖÑ¯£¬ÒòÎªÍøËÙ¿ìÓÚ´¦ÀíËÙ¶È£¬ÂÖÑ¯Ğ§ÂÊ·´¶ø¸ß
 	while (global_TCP_receive_flag);
 	global_TCP_receive_flag = true;
-	global_ip = ip_temp;
-	global_port = port_temp;
-	global_new_tcp_msg = tcp_msg_temp;
-	global_datalen = datalen_temp;
+	global_receive_ip_msg = data_from_netlayer;
 }
 
 void TCP_resend()
@@ -185,16 +181,16 @@ void TCP_resend()
 	global_TCP_resend_flag = true;
 }
 
-void TCP_destroy(unsigned int ip_temp, unsigned short port_temp)
+void TCP_destroy(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port)
 {
 	// ÂÖÑ¯£¬ÒòÎªÍøËÙ¿ìÓÚ´¦ÀíËÙ¶È£¬ÂÖÑ¯Ğ§ÂÊ·´¶ø¸ß
 	while (global_TCP_destroy_flag);
 	global_TCP_destroy_flag = true;
-	global_ip = ip_temp;
-	global_port = port_temp;
+	global_destroy_src_ip = src_ip;
+	global_destroy_src_port = src_port;
+	global_destroy_dst_ip = dst_ip;
+	global_destroy_dst_port = dst_port;
 }
-
-
 
 void TCP_controller()
 {
@@ -251,89 +247,213 @@ void TCP_controller()
 
 		// ÊÇ·ñĞèÒª·¢ËÍÒ»¸öTCP±¨ÎÄ£¬ÕâÀï²¢²»ÊÇÕæÕıµÄ·¢ËÍ£¬¶øÊÇ¼ÓÈë´ı·¢ËÍ±¨ÎÄ¶ÓÁĞ
 		// µÈ´ıºÏÊÊÊ±»úÏòÏÂµİ½»
+ctrl_send:
 		if (global_TCP_send_flag)
 		{
-			// ĞÂ½¨¶ÔÓ¦TCPÁ¬½ÓµÄMsg
-			tcplist *temp1 = getNode(global_ip, global_port);
-			//temp1->tcp_msg_send[temp1->MSG_sum].tcpmessage = global_new_tcp_msg;
-			//temp1->tcp_msg_send[temp1->MSG_sum].datalen = global_datalen;
-			++(temp1->MSG_sum);
-			if (temp1->MSG_sum >= SEND_BUFFER_SIZE)
+			// ´¦ÀíÊı¾İ
+			unsigned int src_ip = getIP();
+			unsigned short src_port = global_send_sockstruct.srcport;
+			unsigned int dst_ip = IP_chars2uint(global_send_sockstruct.dstip);
+			unsigned short dst_port = global_send_sockstruct.dstport;	
+
+			// ¸ù¾İËÄÔª×éÕÒµ½TCPÁ¬½ÓÁ´±íÖĞµÄ¶ÔÓ¦±í
+			tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);
+			
+			// ·¢ËÍ»º³åÇøºÄ¾¡
+			int unack_size = tcp->wait_for_fill-tcp->wait_for_ack;
+			if (unack_size+global_send_sockstruct.datalength > SEND_BUFFER_SIZE)
 			{
-				temp1->MSG_sum = 0;
+				printf("Out of send-buffer! Cannot send these data!\n");
+				goto ctrl_receive;
 			}
-			// ´ı·¢ËÍ´óĞ¡¸üĞÂ
-			temp1->send_size += global_datalen;
+
+			// ½«Òª·¢Êı¾İÌîÈë·¢ËÍ»º³å
+			for (int i = 0; i < global_send_sockstruct.datalength; ++i)
+			{
+				tcp->tcp_buf_send[(i+tcp->wait_for_fill)%SEND_BUFFER_SIZE] = global_send_sockstruct.data[i];
+			}
+			// ¸üĞÂ´ıÌî³äĞòºÅ
+			tcp->wait_for_fill = tcp->wait_for_fill+global_send_sockstruct.datalength;
 			global_TCP_send_flag = false;
 		}
 
 		// ÊÇ·ñĞèÒª½ÓÊÕÒ»¸öTCP±¨ÎÄ£¬½«ÍøÂç²ã½»¸¶µÄ±¨ÎÄÌîÈë½ÓÊÕ»º´æ£¬µÈ´ıºÏÊÊ
 		// Ê±»úÏòÉÏ½»¸¶
+ctrl_receive:
 		if (global_TCP_receive_flag)
 		{
-			// ¸üĞÂ¶ÔÓ¦TCPºÍMsgµÄwindowºÍack
-			tcplist *temp1 = getNode(global_ip, global_port);
-		//	temp1->tcp_msg_rcvd[temp1->LastByteRcvd].tcpmessage = global_new_tcp_msg;
-		//	temp1->tcp_msg_rcvd[temp1->LastByteRcvd].datalen = global_datalen;
-			++(temp1->LastByteRcvd);
-			if (temp1->LastByteRcvd >= RCVD_BUFFER_SIZE)
-			{
-				temp1->LastByteRcvd = 0;
-			}
-			// ½ÓÊÕ´°¿Ú¸üĞÂ
-			temp1->RcvWindow -= global_datalen;
+			// »ñÈ¡TCP±¨ÎÄ¶Î
+			struct tcp_message new_tcp_msg;
+			memcpy(&new_tcp_msg, global_receive_ip_msg.data, global_receive_ip_msg.datelen);
 
+			// optsºÍdataÒ»Í¬½øĞĞ¼ìÑé
+			unsigned opts_data_len = global_receive_ip_msg.datelen-20;
+
+			// ¼ìÑéºÍ
+			if (!udpcheck(opts_data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, opts_data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
+			{
+				// ÉáÆú±¨ÎÄ
+				goto ctrl_destroy;
+			}
+			
+			// ´¦ÀíÊı¾İ
+			unsigned int src_ip = global_receive_ip_msg.sip;
+			unsigned short src_port = global_receive_ip_msg.ih_sport;
+			unsigned int dst_ip = global_receive_ip_msg.dip;
+			unsigned short dst_port = global_receive_ip_msg.ih_dport;
+
+			// ¸ù¾İËÄÔª×éÕÒµ½TCPÁ¬½ÓÁ´±íÖĞµÄ¶ÔÓ¦±í
+			tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);
+			
+			int data_len = global_receive_ip_msg.datelen-new_tcp_msg.tcp_hdr_length;
+			int opts_offset = new_tcp_msg.tcp_hdr_length-20;
+			if (tcp->last_rcvd > new_tcp_msg.tcp_seq_number)
+			{
+				// ¿ÉÄÜÊÇÖ®Ç°Î´ÊÕµ½µÄ±¨ÎÄ£¬»òÕßÊÇÖØ¸´ÊÕµ½µÄ±¨ÎÄ
+				if (rcvd_msg_existed(tcp, new_tcp_msg.tcp_seq_number))
+				{
+					// ÊÇÖØ¸´ÊÕµ½µÄ±¨ÎÄ£¬ÉáÆú
+					goto ctrl_destroy;
+				}
+				else
+				{
+					// ÊÇÖ®Ç°Î´ÊÕµ½µÄ±¨ÎÄ
+					if (tcp->last_read+1 == new_tcp_msg.tcp_seq_number)
+					{
+						// Ç¡ºÃÊÇÎÒÃÇÖ®Ç°µÈ´ıµÄ£¬½ÓÊÕ
+						// ½«Ëù½ÓÊÕÊı¾İÌîÈë½ÓÊÕ»º³å£¬²»°üÀ¨opts
+						for (int i = 0; i < data_len; ++i)
+						{
+							tcp->tcp_buf_rcvd[(i+tcp->last_read+1)%RCVD_BUFFER_SIZE] = new_tcp_msg.tcp_opts_and_app_data[i+opts_offset];
+						}
+						// ÎŞĞè¸üĞÂÒÑÌî³äµÄ×îºóÒ»¸ö×Ö½ÚÁ÷µÄĞòºÅ
+
+						// ¼ÓÈë½ÓÊÕ±¨ÎÄ¶ÓÁĞ
+						tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].datalen = data_len;
+						tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].seq_number = tcp->last_read+1;
+						tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].handin = false;
+					}
+					else
+					{
+						// ²»ÊÇÎÒÃÇÖ®Ç°µÈ´ıµÄ£¬µ«ÊÇÒ²ÄÜÌî²¹¿ÕÏ¶
+						// ½«Ëù½ÓÊÕÊı¾İÌîÈë½ÓÊÕ»º³å£¬²»°üÀ¨opts
+						for (int i = 0; i < data_len; ++i)
+						{
+							tcp->tcp_buf_rcvd[(i+new_tcp_msg.tcp_seq_number)%RCVD_BUFFER_SIZE] = new_tcp_msg.tcp_opts_and_app_data[i+opts_offset];
+						}
+						// ÎŞĞè¸üĞÂÒÑÌî³äµÄ×îºóÒ»¸ö×Ö½ÚÁ÷µÄĞòºÅ
+
+						// ¼ÓÈë½ÓÊÕ±¨ÎÄ¶ÓÁĞ
+						tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].datalen = data_len;
+						tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].seq_number = new_tcp_msg.tcp_seq_number;
+						tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].handin = false;
+					}
+				}
+			}
+			else
+			{
+				// ¿ÉÄÜÊÇÕıÔÚÆÚ´ıµÄ±¨ÎÄ£¬Ò²¿ÉÄÜÊÇÌø²½±¨ÎÄ£¬ĞèÒª»º´æ¶ø²»ÄÜ½»¸¶
+				if (tcp->last_rcvd+1 == new_tcp_msg.tcp_seq_number)
+				{
+					// ½ÓÊÕ»º³åÇøºÄ¾¡£¨ÓÉÓÚÁ÷Á¿¿ØÖÆ£¬Ò»°ã²»¿ÉÄÜ·¢Éú£©
+					int unhandin_size = tcp->last_rcvd-tcp->last_read;
+					if (unhandin_size+global_receive_ip_msg.datelen > RCVD_BUFFER_SIZE)
+					{
+						printf("Out of receive-buffer! Cannot store these data!\n");
+						goto ctrl_destroy;
+					}
+
+					// Ç¡ºÃÊÇÎÒÃÇÖ®Ç°µÈ´ıµÄ£¬½ÓÊÕ
+					// ½«Ëù½ÓÊÕÊı¾İÌîÈë½ÓÊÕ»º³å£¬²»°üÀ¨opts
+					for (int i = 0; i < data_len; ++i)
+					{
+						tcp->tcp_buf_rcvd[(i+tcp->last_rcvd+1)%RCVD_BUFFER_SIZE] = new_tcp_msg.tcp_opts_and_app_data[i+opts_offset];
+					}
+					// Ğè¸üĞÂÒÑÌî³äµÄ×îºóÒ»¸ö×Ö½ÚÁ÷µÄĞòºÅ
+					tcp->last_rcvd = tcp->last_rcvd+data_len;
+
+					// ¼ÓÈë½ÓÊÕ±¨ÎÄ¶ÓÁĞ
+					tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].datalen = data_len;
+					tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].seq_number = tcp->last_rcvd+1;
+					tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].handin = false;
+				}
+				else
+				{
+					// ½ÓÊÕ»º³åÇøºÄ¾¡£¨ÓÉÓÚÁ÷Á¿¿ØÖÆ£¬Ò»°ã²»¿ÉÄÜ·¢Éú£©
+					int unhandin_size = new_tcp_msg.tcp_seq_number-1-tcp->last_read;
+					if (unhandin_size+global_receive_ip_msg.datelen > RCVD_BUFFER_SIZE)
+					{
+						printf("Out of receive-buffer! Cannot store these data!\n");
+						goto ctrl_destroy;
+					}
+
+					// ²»ÊÇÎÒÃÇÖ®Ç°µÈ´ıµÄ£¬ÊÇÌø²½±¨ÎÄ
+					// ½«Ëù½ÓÊÕÊı¾İÌîÈë½ÓÊÕ»º³å£¬²»°üÀ¨opts
+					for (int i = 0; i < data_len; ++i)
+					{
+						tcp->tcp_buf_rcvd[(i+new_tcp_msg.tcp_seq_number)%RCVD_BUFFER_SIZE] = new_tcp_msg.tcp_opts_and_app_data[i+opts_offset];
+					}
+					// Ğè¸üĞÂÒÑÌî³äµÄ×îºóÒ»¸ö×Ö½ÚÁ÷µÄĞòºÅ
+					tcp->last_rcvd = new_tcp_msg.tcp_seq_number+data_len;
+
+					// ¼ÓÈë½ÓÊÕ±¨ÎÄ¶ÓÁĞ
+					tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].datalen = data_len;
+					tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].seq_number = new_tcp_msg.tcp_seq_number;
+					tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].handin = false;
+				}
+			}
+
+			// ¸üĞÂ¶Ô·½µÄ½ÓÊÕ´°¿Ú
+			tcp->rcvd_wind = new_tcp_msg.tcp_rcv_window;
+
+			// ack×Ö¶ÎÊÇ·ñÓĞĞ§
+			if (new_tcp_msg.tcp_ack != 0)
+			{
+				if (tcp->status == CONG_SS)
+				{
+					tcp->cong_wind = tcp->cong_wind + MSS;
+					if (tcp->cong_wind > tcp->threshold)
+					{
+						tcp->status = CONG_CA;
+					}
+				}
+				else if (tcp->status == CONG_CA)
+				{
+					tcp->cong_wind = tcp->cong_wind + MSS*MSS / tcp->cong_wind;
+				}
+				// ackÓĞĞ§£¬ÅĞ¶ÏÊÇ·ñÊÇÈßÓà»òÈ·ÈÏack
+				if (new_tcp_msg.tcp_ack_number >= tcp->wait_for_ack)
+				{
+					// ÀÛ¼ÆÈ·ÈÏack
+					tcp->wait_for_ack = new_tcp_msg.tcp_ack_number+data_len;
+					// ¼ÌĞøÏòºóÈ·ÈÏ£¬·ÀÖ¹¸Ã´ÎackÊÇÌî²¹¿ÕÏ¶
+					tcp->wait_for_ack = next_ack_place(tcp, tcp->wait_for_ack);
+				}
+				else
+				{
+					// ÈßÓàack
+					if (new_tcp_msg.tcp_ack_number == tcp->last_rcvd_ack)
+					{
+						++(tcp->ack_count);
+						if (tcp->ack_count >= 3)
+						{
+							// 3´ÎÈßÓàack£¬¿ìËÙÖØ´«
+							// fast_re_send
+							tcp->threshold = tcp->cong_wind / 2;
+							tcp->cong_wind = tcp->threshold;
+						}
+					}
+					else
+					{
+						tcp->last_rcvd_ack = new_tcp_msg.tcp_ack_number;
+						tcp->ack_count = 0;
+					}
+				}
+			}
+
+			// ÓĞÊ²Ã´ÓÃ£¿
 			// ¼ÆËãRTT
-			RTT = (int)getSampleRTT(GetTickCount(), temp1->tcp_msg_send[temp1->MSG_ACK].time);
-
-			//ÊÇ·ñÓĞACK
-			if (global_new_tcp_msg.tcp_ack != 0)
-			{
-				ACK_global = global_new_tcp_msg.tcp_ack_number;  //¸³ÓèACK£¬µ±Ç°ACKÖµ
-				tcplist *temp2; 
-				temp2 = getNode(global_ip, global_port);
-
-				// ÈßÓàack£¬¼ÆÊı
-				if (temp1->last_ACK == global_new_tcp_msg.tcp_ack_number)
-				{
-					++(temp1->ACK_count);
-				}
-				// ·ÇÈßÓàack£¬È·ÈÏ
-				else
-				{
-					temp1->last_ACK = global_new_tcp_msg.tcp_ack_number;
-				}
-
-				//if (temp2->tcp_msg_send[temp2->MSG_ACK].tcpmessage.tcp_seq_number >= ACK_global)   //ÈßÓàACK¼ÆÊı
-				//{
-				//	temp2->tcp_msg_send[temp2->MSG_ACK].ACK++;  
-				//}
-				//else
-				//{
-				//	temp2->MSG_ACK++;      //µ±Ç°´ıÈ·ÈÏµÄ±¨ÎÄµÃµ½È·ÈÏÁË£¬ÏÂ±ê×ÔÔö£¬Ö¸ÏòÏÂÒ»¸öÕı´ıÈ·ÈÏµÄÒÑ¾­·¢ËÍµÄ±¨ÎÄ
-				//}
-
-				if (temp2->cwnd <= temp2->Threshold) //ÂıÆô¶¯
-				{
-					temp2->cwnd += MSS;
-				}
-				else
-				{
-					//if (temp2->tcp_msg_send[temp2->MSG_ACK].ACK >= 3)    //ÊÕµ½3¸öÈßÓàACK£¬ÉèÖÃÎªÓµÈû±ÜÃâ
-					//{
-					//	temp2->Threshold = temp2->cwnd / 2;
-					//	temp2->cwnd = temp2->Threshold;
-					//	//sendtoip(temp3->tcp_msg_send[temp2->MSG_ACK].tcpmessage, temp2->IP, µÚÒ»¸ö²ÎÊıÕâ¸ö±¨ÎÄµÄ³¤¶È);
-					//}
-					//else      //ÊÕµ½Ç°ÃæÎ´È·ÈÏÊı¾İµÄACK
-					//{
-					//	temp2->cwnd = temp2->cwnd + MSS*(MSS / temp2->cwnd);
-					//}
-				}
-				ACK_global = 0;
-
-
-			}
+			RTT = (int)getSampleRTT(tcp->tcp_msg_send[tcp->wait_for_ack_msg].time, GetTickCount());
 
 			global_TCP_send_flag = false;
 
@@ -345,13 +465,13 @@ void TCP_controller()
 		}
 
 		// ÊÇ·ñĞèÒª²ğ³ıÒ»¸öTCPÁ¬½Ó
+ctrl_destroy:
 		if (global_TCP_destroy_flag)
 		{
 			// ²ğ³ıTCPÁ¬½Ó
-			deletenode(getNode(global_ip, global_port));
+			deleteNode(getNode(global_destroy_src_ip, global_destroy_src_port, global_destroy_dst_ip, global_destroy_dst_port));
 			global_TCP_destroy_flag = false;
 		}
-
 
 		//tcplist* temp3 = head;
 		//while (temp3)         //ÊµÊ±¼ì²éÃ¿¸öTCPÏÂµ±Ç°Õı´ıÏìÓ¦µÄ±¨ÎÄÊÇ·ñ³¬Ê±Î´ÏìÓ¦
@@ -462,10 +582,10 @@ float getSampleRTT(int sendtime, int gettime)		//Íù·µÊ±ÑÓµÄ¹À¼ÆÓë³¬Ê±£¬·µ»Ø³¬Ê±Ê
 	//printf("DevRTT = %f \n", DevRTT);
 }
 
-void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int dst_ip, unsigned int data_len)
+void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int src_ip, unsigned int dst_ip, unsigned int data_len)
 {
 	struct Msg new_ip_msg;
-	new_ip_msg.sip = getIP();
+	new_ip_msg.sip = src_ip;
 	new_ip_msg.dip = dst_ip;
 	new_ip_msg.ih_sport = send_tcp_message.tcp_src_port;
 	new_ip_msg.ih_dport = send_tcp_message.tcp_dst_port;
