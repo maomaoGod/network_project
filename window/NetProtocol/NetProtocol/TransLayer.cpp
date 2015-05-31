@@ -29,6 +29,29 @@ bool createNodeList()
 		head->Threshold = 65 * 1024;
 		head->MSG_ACK = 0;
 		head->next = NULL;
+		head->tcp_src_ip = global_new_src_ip;
+		head->tcp_dst_ip = global_new_dst_ip;
+		head->tcp_src_port = global_new_src_port;
+		head->tcp_dst_port = global_new_dst_port;
+		head->cong_wind = MSS;
+		head->threshold = INITIAL_THRESHOLD;
+		head->seq_number = rand()%RANDOM_SEQ_NUMBER_MODULE;
+		head->wait_for_ack = head->seq_number;
+		head->wait_for_send = head->seq_number;
+		head->wait_for_fill = head->seq_number;
+		head->last_rcvd = 0;
+		head->last_read = 0;
+		head->rcvd_wind = INITIAL_RCVD_WIND;
+		head->ack_count = 0;
+		head->last_rcvd_ack = 0;
+		head->next_send_ack = 0;
+		head->send_ack_needed = false;
+		head->wait_for_ack_msg = 0;
+		head->wait_for_fill_msg = 0;
+		head->last_rcvd_msg = 0;
+		head->last_read_msg = 0;
+		head->status = CONG_SS;
+		head->tcp_established_syn_seq = -1;
 		return true;
 	}
 }
@@ -189,24 +212,40 @@ void TCP_controller()
 		// 是否需要新建一个TCP连接
 		if (global_TCP_new_flag)
 		{
-			tcplist *node1 = (tcplist *)malloc(sizeof(tcp_list));
-			node1->next = NULL;
-			node1->cwnd = MSS;
-			node1->IP = global_ip;
-			node1->PORT = global_port;
-			node1->MSG_ACK = 0;
-			node1->MSG_sum = 0;
-			node1->MSG_num = 0;
-			node1->send_size = 0;
-			node1->Threshold = INITIAL_THRESHOLD;
-			node1->LastByteRcvd = 0;
-			node1->LastByteRead = 0;  
-			node1->rec_size = 0;
-			node1->RcvWindow = Rcvbuffer;
-			node1->seq_number = rand()%RANDOM_SEQ_NUMBER_MODULE;
-			node1->ACK_count = 0;
-			node1->last_ACK = 0;
-			addNode(node1);
+			tcplist *new_tcp = (tcplist *)malloc(sizeof(struct tcplist));
+			
+			// 内存耗尽
+			if (new_tcp == NULL)
+			{
+				printf("Out of memory! Cannot setup a new TCP link!\n");
+				goto ctrl_send;
+			}
+
+			new_tcp->next = NULL;
+			new_tcp->tcp_src_ip = global_new_src_ip;
+			new_tcp->tcp_dst_ip = global_new_dst_ip;
+			new_tcp->tcp_src_port = global_new_src_port;
+			new_tcp->tcp_dst_port = global_new_dst_port;
+			new_tcp->cong_wind = MSS;
+			new_tcp->threshold = INITIAL_THRESHOLD;
+			new_tcp->seq_number = rand()%RANDOM_SEQ_NUMBER_MODULE;
+			new_tcp->wait_for_ack = new_tcp->seq_number;
+			new_tcp->wait_for_send = new_tcp->seq_number;
+			new_tcp->wait_for_fill = new_tcp->seq_number;
+			new_tcp->last_rcvd = 0;
+			new_tcp->last_read = 0;
+			new_tcp->rcvd_wind = INITIAL_RCVD_WIND;
+			new_tcp->ack_count = 0;
+			new_tcp->last_rcvd_ack = 0;
+			new_tcp->next_send_ack = 0;
+			new_tcp->send_ack_needed = false;
+			new_tcp->wait_for_ack_msg = 0;
+			new_tcp->wait_for_fill_msg = 0;
+			new_tcp->last_rcvd_msg = 0;
+			new_tcp->last_read_msg = 0;
+			new_tcp->status = CONG_SS;
+			new_tcp->tcp_established_syn_seq = -1;
+			addNode(new_tcp);
 			global_TCP_new_flag = false;
 		}
 
@@ -313,23 +352,45 @@ void TCP_controller()
 			global_TCP_destroy_flag = false;
 		}
 
- 
 
-
+		//tcplist* temp3 = head;
+		//while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
+		//{
+		//	if (GetTickCount() - temp3->tcp_msg_send[temp3->wait_for_ack_msg].time > RTT)
+		//	{
+		//		temp3->Threshold = temp3->cwnd / 2;
+		//		temp3->cwnd = MSS;
+		//		temp3->tcp_msg_send[temp3->wait_for_ack_msg].time = GetTickCount();
+		//		//sendtoip(temp3->tcp_msg_send[temp3->MSG_ACK].tcpmessage, temp3->IP, 第一个参数这个报文的长度);
+		//	}
+		//	temp3 = temp3->next;
+		//}
+		////
 
 		tcplist* temp3 = head;
-		while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
+		while (temp3)
 		{
-			if (GetTickCount() - temp3->tcp_msg_send[temp3->MSG_ACK].time > RTT)
+			//发送报文
+			while (min(temp3->wait_for_fill, temp3->wait_for_send + MSS) - temp3->wait_for_ack <= min(temp3->cong_wind, temp3->rcvd_wind))
 			{
-				temp3->Threshold = temp3->cwnd / 2;
-				temp3->cwnd = MSS;
-				temp3->tcp_msg_send[temp3->MSG_ACK].time = GetTickCount();
-				//sendtoip(temp3->tcp_msg_send[temp3->MSG_ACK].tcpmessage, temp3->IP, 第一个参数这个报文的长度);
+				int new_send;
+		//		new_send = min(temp3->wait_for_ack + min(temp3->cong_wind, temp3->rcvd_wind), min(temp3->wait_for_fill, temp3->wait_for_send + MSS));
+				new_send = min(temp3->wait_for_fill, temp3->wait_for_send + MSS);
+				temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen = new_send - temp3->wait_for_send;
+				temp3->tcp_msg_send[temp3->wait_for_fill_msg].time = GetTickCount();
+				temp3->tcp_msg_send[temp3->wait_for_fill_msg].seq_number = temp3->wait_for_send;
+				tcp_message temp4;
+				temp4.tcp_src_port = temp3->tcp_src_port;
+				temp4.tcp_dst_port = temp3->tcp_dst_port;
+				temp4.tcp_hdr_length = 20;
+				memcpy(temp4.tcp_opts_and_app_data, &temp3->tcp_buf_send[temp3->wait_for_send], temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen);
+				TCP_Send2IP(temp4, temp3->tcp_src_ip, temp3->tcp_dst_ip, temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen);
+				temp3->wait_for_send = new_send;
+				temp3->wait_for_fill_msg++;
 			}
 			temp3 = temp3->next;
 		}
-		//
+		free(temp3);
 
 
 
@@ -414,4 +475,46 @@ void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int dst_ip, unsig
 
 	// 发往网络层
 	AfxGetApp()->m_pMainWnd->SendMessage(IPTOLINK, (WPARAM)&new_ip_msg, (LPARAM)0);	// 第三个参数完全不需要
+}
+
+bool rcvd_msg_existed(struct tcplist *tcp, unsigned int seq_number)
+{
+	if (seq_number <= tcp->last_read)
+	{
+		return true;
+	}
+	for (int i = tcp->last_read_msg+1; i <= tcp->last_rcvd_msg; ++i)
+	{
+		if (tcp->tcp_msg_rcvd[i%RCVD_STRUCT_SIZE].seq_number == seq_number)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+int next_ack_place(struct tcplist *tcp, unsigned int init_ack_place)
+{
+	int next_ack = init_ack_place;
+	for (int i = tcp->wait_for_ack_msg; i < tcp->wait_for_fill_msg; ++i)
+	{
+		if (tcp->tcp_msg_send[i%SEND_STRUCT_SIZE].seq_number == next_ack)
+		{
+			next_ack += tcp->tcp_msg_send[i%SEND_STRUCT_SIZE].datalen;
+			i = tcp->wait_for_ack_msg;
+		}
+	}
+	return next_ack;
+}
+
+int wait_for_handshaking_ack(struct tcplist *tcp)
+{
+	for (;;)
+	{
+		if (tcp->tcp_established_syn_seq != -1)
+		{
+			break;
+		}
+	}
+	return tcp->tcp_established_syn_seq+1;
 }

@@ -68,6 +68,7 @@ struct tcplist
 	int last_rcvd_msg;	// 收到的报文最后一个报文编号
 	int last_read_msg;	// 收到的报文已经交付的最后一个报文编号
 	int status;	// 拥塞控制状态
+	int tcp_established_syn_seq;	// 对方发来的syn所在报文编号
 };
 
 bool createNodeList();
