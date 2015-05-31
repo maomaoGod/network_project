@@ -12,6 +12,26 @@ static float DevRTT;
 static int CountACK = 0;//ÈßÓàACK¼ÆÊýÆ÷£»
 static int ACK_Now = -1;
 
+bool global_TCP_new_flag;
+unsigned int global_new_src_ip;
+unsigned short global_new_src_port;
+unsigned int global_new_dst_ip;
+unsigned short global_new_dst_port;
+
+bool global_TCP_send_flag;
+struct sockstruct global_send_sockstruct;
+
+bool global_TCP_receive_flag;
+struct Msg global_receive_ip_msg;
+
+bool global_TCP_resend_flag;
+
+bool global_TCP_destroy_flag;
+unsigned int global_destroy_src_ip;
+unsigned short global_destroy_src_port;
+unsigned int global_destroy_dst_ip;
+unsigned short global_destroy_dst_port;
+
 bool createNodeList()
 {
 	head = (tcplist *)malloc(sizeof(struct tcplist));
@@ -126,26 +146,6 @@ struct tcplist *getNode(unsigned int src_ip, unsigned short src_port, unsigned i
 	}
 	return NULL;
 }
-
-bool global_TCP_new_flag;
-unsigned int global_new_src_ip;
-unsigned short global_new_src_port;
-unsigned int global_new_dst_ip;
-unsigned short global_new_dst_port;
-
-bool global_TCP_send_flag;
-struct sockstruct global_send_sockstruct;
-
-bool global_TCP_receive_flag;
-struct Msg global_receive_ip_msg;
-
-bool global_TCP_resend_flag;
-
-bool global_TCP_destroy_flag;
-unsigned int global_destroy_src_ip;
-unsigned short global_destroy_src_port;
-unsigned int global_destroy_dst_ip;
-unsigned short global_destroy_dst_port;
 
 void TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port)
 {
