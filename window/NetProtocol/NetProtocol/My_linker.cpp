@@ -53,7 +53,7 @@ pcap_t * my_linker::get_adapter()
 	*/
 	//选择要捕获数据包的适配器
 
-	//int adapterNumber = 5;
+	int adapterNumber = 2;
 	/*
 	printf("Enter the adapter number between 1 and %d:", crtAdapter);
 
@@ -75,7 +75,7 @@ pcap_t * my_linker::get_adapter()
 	*/
 	adapter = allAdapters;
 
-	for (crtAdapter = 0; adapter -> next != NULL; crtAdapter++)
+	for (crtAdapter = 0; crtAdapter < adapterNumber; crtAdapter++)
 
 		adapter = adapter->next;
 
@@ -134,9 +134,13 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle, u
 		frame.MAC_src[0] =  0x34C4;
 		frame.MAC_src[1] =  0x016B;
 		frame.MAC_src[2] =  0x58D1;*/
-		frame.MAC_des[0] = 0x34C4;
+		
+		/*frame.MAC_des[0] = 0x34C4;
 		frame.MAC_des[1] = 0x016B;
-		frame.MAC_des[2] = 0x58D1;
+		frame.MAC_des[2] = 0x58D1;*/
+		frame.MAC_des[0] = 0x88B8;
+		frame.MAC_des[1] = 0x31E3;
+		frame.MAC_des[2] = 0x7A2C;
 		frame.MAC_src[0] = 0x34C4;
 		frame.MAC_src[1] = 0x016B;
 		frame.MAC_src[2] = 0x58D1;
@@ -183,7 +187,9 @@ IP_Msg * my_linker::combine(const u_char * packetData)
 	if (Receive.MAC_src[0] != 0x34C4 || Receive.MAC_src[1] != 0x016B || Receive.MAC_src[2] != 0x58D1) return NULL;
 	*/
 	if (Receive.MAC_des[0] != 0x34C4 || Receive.MAC_des[1] != 0x016B || Receive.MAC_des[2] != 0x58D1) return NULL;
-	if (Receive.MAC_src[0] != 0x34C4 || Receive.MAC_src[1] != 0x016B || Receive.MAC_src[2] != 0x58D1) return NULL;
+	//if (Receive.MAC_src[0] != 0x34C4 || Receive.MAC_src[1] != 0x016B || Receive.MAC_src[2] != 0x58D1) return NULL;
+	if (Receive.MAC_src[0] != 0x88B8 || Receive.MAC_src[1] != 0x31E3 || Receive.MAC_src[2] != 0x7A2C) return NULL;
+
 
 	//puts("fuck");
 

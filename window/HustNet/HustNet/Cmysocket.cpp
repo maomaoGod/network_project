@@ -62,7 +62,7 @@ bool CmySocket::InitalEvent(regstruct *myreg)
 	myEvent.CSsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->CSname);
 	myEvent.CRsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->CRname);
 	myEvent.CWsock = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, (LPCWSTR)myreg->CWname);
-	if (!(myEvent.PRsock || myEvent.PSsock || myEvent.PWsock || myEvent.CSsock || myEvent.CRsock || myEvent.CWsock))
+	if (!(myEvent.PRsock && myEvent.PSsock && myEvent.PWsock && myEvent.CSsock && myEvent.CRsock && myEvent.CWsock))
 		return false;
 	myEvent.Wpro->SockMark = SockMark;
 	return true;

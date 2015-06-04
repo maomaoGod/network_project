@@ -248,8 +248,11 @@ LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //链路层解包传输数据
 	const u_char * packetData = (const u_char *)wparam;
 	IP_Msg * ip_msg;
 	ip_msg = receiver.combine(packetData);
-	if (ip_msg != NULL) AfxGetMainWnd()->SendMessage(IPTOTRANS, (WPARAM)ip_msg);
-	delete ip_msg->iphdr;
+	if (ip_msg != NULL)
+	{
+		AfxGetMainWnd()->SendMessage(IPTOTRANS, (WPARAM)ip_msg);
+		delete ip_msg->iphdr;
+	}
 	return 0;
 }
 
@@ -405,7 +408,7 @@ DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
 
 	{
 		if (retValue == 0) continue;
-		if (packetHeader->len != 176) continue;
+//		if (packetHeader->len != 176) continue;
 		AfxGetApp()->m_pMainWnd->SendMessage(LINKTOIP, (WPARAM)packetData, (LPARAM)receiver);
 	}
 	return 0;
