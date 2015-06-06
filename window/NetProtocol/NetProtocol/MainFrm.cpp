@@ -8,7 +8,6 @@
 #include "Tools.h"
 #include "pcap.h"
 
-
 int sockcount = 0;
 
 #ifdef _DEBUG
@@ -17,23 +16,19 @@ int sockcount = 0;
 #define SERVE 1000
 #define CLIENT 2000
 extern void PrintView(CString e);
-// CMainFrame
 
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
-//    ON_WM_COPYDATA()
-//ON_MESSAGE(CHECKHWND, OnCheck)
-    ON_MESSAGE(APPSEND, OnAppSend)
+	ON_MESSAGE(APPSEND, OnAppSend)
 	ON_MESSAGE(TRANSTOAPP, OnTrans2App)
-	ON_MESSAGE(APPTOTRANS, OnApp2Trans)
 	ON_MESSAGE(IPTOTRANS, OnIP2Trans)
 	ON_MESSAGE(LINKTOIP, OnLink2IP)
 	ON_MESSAGE(TRANSTOIP, OnTrans2IP)
 	ON_MESSAGE(IPTOLINK, OnIP2Link)
 	ON_MESSAGE(LINKSEND, OnLinkSend)
-//	ON_COMMAND(ID_32783, &CMainFrame::OnSENDHUST)
+	ON_MESSAGE(SOCKSTATEUPDATE, SockStateUpdate)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -48,16 +43,8 @@ static UINT indicators[] =
 
 CMainFrame::CMainFrame()
 {
-	// TODO:  在此添加成员初始化代码
-	psock = NULL;
 	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
-		AfxMessageBox(_T("创建抓包线程失败！"));
-	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)connect, (LPVOID) this, NULL, NULL))
-		AfxMessageBox(_T("创建连接线程失败！"));
-	// TODO:  在此添加成员初始化代码
-	/*(if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
-		AfxMessageBox(_T("抓包线程创建失败"));
-	numprocess = 0;*/
+		AfxMessageBox(_T("创建抓包线程失败!"));
 }
 
 CMainFrame::~CMainFrame()
@@ -80,7 +67,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // 未能创建
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
-	// TODO:  如果不需要可停靠工具栏，则删除这三行
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);
@@ -93,6 +79,8 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 		return FALSE;
 	// TODO:  在此处通过修改
 	//  CREATESTRUCT cs 来修改窗口类或样式
+	cs.style &= ~WS_THICKFRAME;
+	cs.style |= WS_DLGFRAME;
 	cs.style &= ~FWS_ADDTOTITLE;
 	return TRUE;
 }
@@ -112,46 +100,8 @@ void CMainFrame::Dump(CDumpContext& dc) const
 #endif //_DEBUG
 
 
-LRESULT CMainFrame::OnApp2Trans(WPARAM wparam,LPARAM lparam)
-{	
-	int nPort = wparam;
-	int BindPort = Port2Sock[nPort]->Rpro->mysock.bindport;
-	UINT FuncID = port2Rstruct[nPort]->FuncID;
-	portsrc tempsrc;
-	switch (FuncID)
-	{
-	case SOCKBIND:
-		SockMark2Port[Port2Sock[nPort]->Rpro->SockMark] = BindPort;
-		Sock2Port[Port2Sock[nPort]] = BindPort;
-		if (BindPort != nPort){
-			port2Rstruct[BindPort] = port2Rstruct[nPort]; //用绑定的端口号来接收原来的环境
-			Port2Sock[BindPort] = Port2Sock[nPort];   
-			port2Wstruct[BindPort] = port2Wstruct[nPort];
-			port2Rstruct.erase(nPort); //擦出原来的环境
-			Port2Sock.erase(nPort);
-			port2Wstruct.erase(nPort);
-		}
-		break;
-	case SOCKLISTEN:
-		break;
-	case SOCKSEND:
-	case SOCKSENDTO:
-		port2Rstruct[nPort]->mysock.srcport = nPort;
-		SendMessage(TRANSTOIP, (WPARAM)&port2Rstruct[nPort]->mysock, (LPARAM)SOCKSEND);
-		break;
-	case SOCKACCEPT:
-		memcpy(tempsrc.srcip, port2Rstruct[nPort]->mysock.dstip, 20);
-		tempsrc.srcport = port2Rstruct[nPort]->mysock.dstport;
-		tempsrc.dstport = port2Rstruct[nPort]->mysock.srcport;
-		src2port[tempsrc] = SockMark2Port[port2Rstruct[nPort]->AcceptSockMark];
-		break;
-	default:
-		break;
-	}
-	return 0;
-}
 LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包传输数据到应用层的接口
-{  //使用sendmessage向应用程序发送消息
+{   //使用sendmessage向应用程序发送消息
 	//example 向端口号为0的应用程序发送pCopyDataStruct数据  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//应用层发往传输层的数据在OnCopyData中获取
 	struct Msg new_ip_msg = *((struct Msg *)wparam);
@@ -179,7 +129,7 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包传输数
 		struct sockstruct new_sockstruct;
 		new_sockstruct.dstport = new_udp_msg.udp_dst_port;
 		new_sockstruct.srcport = new_udp_msg.udp_src_port;
-		new_sockstruct.bindport = 0;
+	//	new_sockstruct.bindport = 0;
 		new_sockstruct.datalength = new_udp_msg.udp_msg_length - 8;
 		IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
 		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
@@ -424,11 +374,21 @@ LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //网络层打包数据发送
 LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //链路层打包数据发送出去接口
 {
 	static int seq = 0;
-	if ((linker.send_by_frame((struct IP_Msg *)wparam, linker.get_adapter(), seq)) == 0)
+	struct IP_Msg *datagram = (struct IP_Msg *)wparam;
+	pcap_t *adapter = linker.get_adapter();
+	unsigned int Src_IP = (*datagram).iphdr->ih_saddr;
+	unsigned int Des_IP = (*datagram).iphdr->ih_daddr;
+	if (!linker.transtable(Des_IP))
+	{
+		linker.send_broadcast(adapter, Src_IP, Des_IP);
+		linker.get_mac(adapter);
+	}
+	if ((linker.send_by_frame(datagram, adapter, seq)) == 0)
 	{
 		seq += 1;
 		seq = seq % 100;
 	}
+	//告诉网络层发送失败
 	return 0;
 }
 
@@ -449,102 +409,43 @@ DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
 
 	{
 		if (retValue == 0) continue;
-//		if (packetHeader->len != 176) continue;
-		AfxGetApp()->m_pMainWnd->SendMessage(LINKTOIP, (WPARAM)packetData, (LPARAM)receiver);
+		if (sizeof(Broadcast_frame) > packetHeader->len) continue;
+
+		if (receiver->check(packetData))
+		{
+			if (receiver->checkCrc16((unsigned char *)packetData, packetHeader->len) != 0)
+			{
+				//puts("fuck!!!");
+			}
+			Broadcast_frame r_frame = *((Broadcast_frame *)packetData), s_frame;
+			for (int i = 0; i < 3; ++i)
+			{
+				receiver->mac_des[i] = s_frame.MAC_des[i] = r_frame.MAC_src[i];
+				s_frame.MAC_src[i] = receiver->mac_src[i];
+			}
+			s_frame.type = 0x0806;
+			s_frame.IP_dst = r_frame.IP_src;
+			s_frame.IP_src = r_frame.IP_dst;
+			pcap_sendpacket(adapterHandle,
+				(const u_char *)&s_frame,
+				sizeof(s_frame));
+		}
+		else AfxGetApp()->m_pMainWnd->SendMessage(LINKTOIP, (WPARAM)packetData, (LPARAM)receiver);
 	}
 	return 0;
-}
-
-DWORD WINAPI CMainFrame::connect(LPVOID lParam)
-{
-	CMainFrame *pthis = (CMainFrame *)lParam;
-	HANDLE Psemaphore = CreateSemaphore(NULL,0,100, _T("NetProtocolPsemaphore"));//创建信号量P
-	HANDLE Csemaphore = CreateSemaphore(NULL,1,100, _T("NetProtocolCsemaphore"));//创建信号量C
-	HANDLE Ssemaphore = CreateSemaphore(NULL,0, 100, _T("NetProtocolCreateSuccess"));//创建信号量S
-	HANDLE MFile = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(regstruct), _T("NetProtocolListen"));//请求连接共享内存
-	pthis->preg = (regstruct *)MapViewOfFile(MFile, FILE_MAP_WRITE, 0, 0, sizeof(regstruct));//映射共享内存
-	while (true){
-		WaitForSingleObject(Psemaphore, INFINITE);//等待应用程序请求连接
-		parastruct *mypara =   new parastruct();
-		ObjEvent   *myevent = new ObjEvent();
-		pthis->Sock2Port[myevent] = sockcount; //分配端口号
-		pthis->Port2Sock[sockcount] = myevent; //根据端口号找到对应套接字
-		pthis->port2Rstruct[sockcount]  = new prostruct();  //分配本地缓存
-		pthis->port2Wstruct[sockcount] = new prostruct();  //本地缓存
-		pthis->SockMark2Port[pthis->preg->SockMark] = sockcount;
-		sockcount++;   //创建共享文件和同步信号量
-		myevent->RFile = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(prostruct), pthis->preg->writefilename);
-		myevent->WFile = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(prostruct), pthis->preg->readfilename);
-		if (myevent->WFile == NULL || myevent->RFile == NULL){
-			AfxMessageBox(_T("创建共享文件失败"));
-			continue;
-		}
-		myevent->Rpro  =  (prostruct *)MapViewOfFile(myevent->RFile, FILE_MAP_WRITE, 0, 0, sizeof(prostruct)); //创建通信环境
-		myevent->Wpro =  (prostruct *)MapViewOfFile(myevent->WFile, FILE_MAP_WRITE, 0,0,sizeof(prostruct));
-		myevent->PSsock =  CreateSemaphore(NULL, 1, 100, pthis->preg->PSname);
-		myevent->PRsock=   CreateSemaphore(NULL, 0, 100, pthis->preg->PRname);
-		myevent->PWsock = CreateSemaphore(NULL, 0, 100, pthis->preg->PWname);
-		myevent->CSsock =  CreateSemaphore(NULL, 1, 100, pthis->preg->CSname);
-		myevent->CRsock=   CreateSemaphore(NULL, 0, 100, pthis->preg->CRname);
-		myevent->CWsock = CreateSemaphore(NULL, 0, 100, pthis->preg->CWname);
-		if (!(myevent->PRsock || myevent->PSsock || myevent->PWsock || myevent->CSsock || myevent->CRsock || myevent->CWsock)){
-			AfxMessageBox(_T("创建信号量失败"));
-			continue;
-		}
-		mypara->pEvent = myevent;
-		mypara->pClass = pthis;
-    	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ReadFromApp, (LPVOID)mypara, NULL, NULL);
-		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)WriteToApp, (LPVOID)mypara, NULL, NULL);
-		ReleaseSemaphore(Ssemaphore, 1, NULL);
-		ReleaseSemaphore(Csemaphore,1,NULL); //创建完成
-	}
-	return 0;
-}
-
-DWORD WINAPI CMainFrame::ReadFromApp(LPVOID lParam)//从应用程序读取数据
-{
-	parastruct     *mypara = (parastruct *)lParam;
-	CMainFrame *pthis =    (CMainFrame *)mypara->pClass;
-	ObjEvent      *myevent = mypara->pEvent;
-	while (true)
-	{
-		WaitForSingleObject(myevent->PRsock, INFINITE);   //等待应用程序写完成
-		memcpy(pthis->port2Rstruct[pthis->Sock2Port[myevent]],myevent->Rpro,sizeof(prostruct));//拷贝到本地缓存
-		AfxGetApp()->m_pMainWnd->SendMessage(APPTOTRANS, (WPARAM)pthis->Sock2Port[myevent]);//发送本地标号
-		ReleaseSemaphore(myevent->CSsock, 1, NULL);     //读数据完成应用程序可再写
-	}
-}
-
-//发送数据到应用层
-DWORD WINAPI CMainFrame::WriteToApp(LPVOID lParam)
-{
-	parastruct     *mypara  = (parastruct *)lParam;
-	CMainFrame *pthis = (CMainFrame *)mypara->pClass;
-	ObjEvent      *myevent = mypara->pEvent;
-	while (true)
-	{
-		WaitForSingleObject(myevent->PWsock, INFINITE);  //等待写结构
-		memcpy(myevent->Wpro,pthis->port2Wstruct[pthis->Sock2Port[myevent]], sizeof(prostruct)); //拷贝结构
-		ReleaseSemaphore(myevent->CRsock, 1, NULL);//应用程序写
-	}
 }
 
 //将数据拷贝准备发送数据到应用层
-LRESULT CMainFrame::OnAppSend(WPARAM wparam, LPARAM lparam)
+LRESULT CMainFrame::OnAppSend(WPARAM wparam,LPARAM lparam)
 {
-	sockstruct  *pmysock= (sockstruct *)wparam;
-	UINT           FuncID = lparam;
-	portsrc        tempsrc;
-	unsigned short nPort;
-	memcpy(tempsrc.srcip, pmysock->srcip, 20); //根据源端口源地址目的端口找到通信端口
-	tempsrc.srcport = pmysock->srcport;
-	tempsrc.dstport = pmysock->dstport;
-	nPort = (src2port.find(tempsrc) == src2port.end()) ? pmysock->dstport : src2port[tempsrc];   //找到目标端口
-	if (Port2Sock.find(nPort) == Port2Sock.end())
-		return 0;//若未找到指定端口，丢包
-	WaitForSingleObject(Port2Sock[nPort]->PSsock, INFINITE); //等待
-	memcpy(&port2Wstruct[nPort]->mysock, pmysock, sizeof(sockstruct));  //拷贝数据
-	port2Wstruct[nPort]->FuncID = FuncID; //拷贝目的数据
-	ReleaseSemaphore(Port2Sock[nPort]->PWsock, 1, NULL);
+	m_sockpool.SendToApp((void *)wparam);
 	return 0;
 }
+
+LRESULT CMainFrame::SockStateUpdate(WPARAM wparam, LPARAM lparam)
+{
+	GetActiveView()->SendMessage(SOCKSTATEUPDATE, wparam);
+	return 0;
+}
+
+

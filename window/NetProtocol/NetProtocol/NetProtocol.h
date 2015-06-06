@@ -24,6 +24,7 @@
 #define  IPTOTRANS      WM_USER+1005
 #define  LINKTOIP          WM_USER+1006
 #define  APPSEND         WM_USER+1007
+#define SOCKSTATEUPDATE WM_USER+1008
 
 #define  SOCKCONNECT             200
 #define  SOCKBIND                     201
@@ -53,64 +54,6 @@ struct prostruct   //进程间通信结构体
 	sockstruct  mysock;
 };
 
-struct portsrc    //得到目的端口的数据结构
-{
-	char srcip[20];
-	unsigned short srcport;
-	unsigned short dstport;
-	bool operator <(const portsrc & other) const
-	  {
-		if (strcmp(srcip, other.srcip) < 0)
-			return true;
-		else if (strcmp(srcip, other.srcip) >0)
-			return false;
-		else {
-			if (srcport < other.srcport)
-				return true;
-			else if (srcport>other.srcport)
-				return false;
-			else {
-				if (dstport < other.dstport)
-					return true;
-				else if (dstport>other.dstport)
-					return false;
-				return false;
-			}
-		}     
-	  }
-};
-
-struct regstruct{
-	int SockMark;  //socket唯一标识码
-	TCHAR readfilename[20];  //socket读
-	TCHAR writefilename[20]; //socket写
-	TCHAR PSname[20];       //有数据准备发送到应用程序
-	TCHAR PRname[20];       //协议申请读 
-	TCHAR PWname[20];      //协议申请写
-	TCHAR CSname[20];       //应用程序有数据准备发送
-	TCHAR CRname[20];       //应用申请读
-	TCHAR CWname[20];      //应用申请写
-};
-
-struct ObjEvent
-{
-	HANDLE    RFile;       //应用程序读文件句柄
-	HANDLE    WFile;      //应用程序写文件句柄 
-	prostruct    *Rpro;       //映射到本地读文件指针
-	prostruct    *Wpro;      //映射到本地写文件指针
-	HANDLE    PSsock;   //协议程序准备写信号量
-	HANDLE    PRsock;   //协议程序读信号量
-	HANDLE    PWsock;  //协议程序写信号量
-	HANDLE    CSsock;   //应用程序准备写信号量
-	HANDLE    CRsock;   //应用程序读信号量 
-	HANDLE    CWsock;  //应用程序写信号量
-};
-
-struct parastruct
-{
-	ObjEvent *pEvent;
-	void *pClass;
-};
  
 typedef unsigned char Byte;
 typedef unsigned short Ushort;
@@ -136,6 +79,24 @@ struct _iphdr //定义IP首部
 	unsigned int ih_daddr;		///< 32位目的IP
 	unsigned int ih_sport;		///< 32位源端口号
 	unsigned int ih_dport;		///< 32位目的端口号
+	bool operator == (const _iphdr &it) const
+	{
+		if (ih_version != it.ih_version) return false;
+		if (ih_len != it.ih_len) return false;
+		if (ih_ident != it.ih_ident) return false;
+		if (ih_flags != it.ih_flags) return false;
+		if (ih_offset != it.ih_offset) return false;
+		if (ih_protl != it.ih_protl) return false;
+		if (ih_saddr != it.ih_saddr) return false;
+		if (ih_daddr != it.ih_daddr) return false;
+		if (ih_sport != it.ih_sport) return false;
+		if (ih_dport != it.ih_dport) return false;
+		return true;
+	}
+	bool operator != (const _iphdr &it) const
+	{
+		return !((*this) == it);
+	}
 };
 
 struct Msg{                     ///<数据
