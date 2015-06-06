@@ -51,7 +51,7 @@ void HttpClientSocket::OnReceive(int nErrorCode)
 		Send(back, back.GetLength()*sizeof(TCHAR));
 		this->Close();
 	}
-CAsyncSocket::OnReceive(nErrorCode);
+CmyAsyncSocket::OnReceive(nErrorCode);
 }
 
 
@@ -61,7 +61,7 @@ void HttpClientSocket::OnSend(int nErrorCode)
 	CString back;
 	back.Format(_T("应答第%d次网页请求，已连接，请等待网页数据"), myclient[this] + 1);
 	Send(back, back.GetLength()*sizeof(TCHAR));
-	CAsyncSocket::OnSend(nErrorCode);
+	CmyAsyncSocket::OnSend(nErrorCode);
 }
 
 void HttpClientSocket::OnClose(int nErrorCode)
@@ -70,6 +70,6 @@ void HttpClientSocket::OnClose(int nErrorCode)
 	CString log;
 	log.Format(_T("客户端%d已断开连接"), myclient[this]);
 	PrintView(log);
-	CAsyncSocket::OnClose(nErrorCode);
+	CmyAsyncSocket::OnClose(nErrorCode);
 	delete this;
 }

@@ -13,6 +13,8 @@
 #include "map"
 #include "Tools.h"
 #include "UICtrl.h"
+#include "Cmysocket.h"
+
 //#import "dll/JHttp.dll"
 
 using namespace std;
@@ -91,7 +93,7 @@ namespace NetWork{
 		int No;	
 		CString Obj;///< CString Msg*/
 		CString CNo, TNo;
-		CSocket csocket;
+		CmySocket csocket;
 		CString strIP;///< IP*/
 		TCHAR szRecValue[1024];
 		void init(){
@@ -119,7 +121,7 @@ namespace NetWork{
 			if (!csocket.Create())
 			{
 				CString error;
-				error.Format(_T("创建失败:%d"), csocket.GetLastError());
+				error.Format(_T("创建失败"));
 				PrintLog(error);
 				return;
 			}
@@ -138,7 +140,7 @@ namespace NetWork{
 			}
 			else{
 				CString error;
-				error.Format(_T("创建失败:%d"), csocket.GetLastError());
+				error.Format(_T("创建失败"));
 				PrintLog(error);
 			}
 		}
@@ -365,11 +367,11 @@ namespace NetWork{
 				CStringArray code;
 				httpwork->split_input(&code ,mystr ,_T(' '));
 				//Create();
-				aSocket = new CSocket();
+				aSocket = new CmySocket();
 				//failed
 			    if (!aSocket->Create()){
 					CString error;
-				    error.Format(_T("创建失败:%d"), aSocket->GetLastError());
+				    error.Format(_T("创建失败"));
 				    PrintLog(error);
 				    return;
 			    }
@@ -414,7 +416,7 @@ namespace NetWork{
 			}
 			else{
 				CString error;
-				error.Format(_T("连接服务器失败:%d"), aSocket->GetLastError());
+				error.Format(_T("连接服务器失败"));
 				PrintLog(error);
 				return false;
 			}
@@ -453,7 +455,7 @@ namespace NetWork{
 		//typedef void(AppLayerHttp::*DealWithFunciton)(vector<CString> data);
 		//no data
 		HTTPWork *httpwork;
-		CSocket *aSocket;
+		CmySocket *aSocket;
 		//CString IP;
 		//CString Path;
 		CString rev;

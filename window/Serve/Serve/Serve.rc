@@ -142,6 +142,13 @@ BEGIN
     BEGIN
         MENUITEM "DNS映射",                       ADD_DNS
     END
+    POPUP "启用"
+    BEGIN
+        MENUITEM "DNS服务",                       ID_32773
+        MENUITEM "FTP服务",                       ID_32774
+        MENUITEM "HTTP服务",                      ID_32775
+        MENUITEM "STMP服务",                      ID_32776
+    END
 END
 
 
