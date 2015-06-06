@@ -11,41 +11,36 @@
 
 #include "NetProtocolDoc.h"
 #include "NetProtocolView.h"
-#include "Mainfrm.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-void PrintView(CString e)
-{
-	((CMainFrame *)AfxGetApp()->GetMainWnd())->GetActiveView()->SendMessage(PRINT, (WPARAM)&e);
-}
-
 
 // CNetProtocolView
 
-IMPLEMENT_DYNCREATE(CNetProtocolView, CEditView)
+IMPLEMENT_DYNCREATE(CNetProtocolView, CFormView)
 
-BEGIN_MESSAGE_MAP(CNetProtocolView, CEditView)
-	// 标准打印命令
-	ON_COMMAND(ID_FILE_PRINT, &CEditView::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CEditView::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CEditView::OnFilePrintPreview)
-	ON_MESSAGE(PRINT, OnPrint)
-//	ON_WM_CONTEXTMENU()
+BEGIN_MESSAGE_MAP(CNetProtocolView, CFormView)
+	ON_MESSAGE(SOCKSTATEUPDATE, SockStateUpdate)
 END_MESSAGE_MAP()
 
 // CNetProtocolView 构造/析构
 
 CNetProtocolView::CNetProtocolView()
+: CFormView(CNetProtocolView::IDD)
 {
 	// TODO:  在此处添加构造代码
-	log.Empty();
+
 }
 
 CNetProtocolView::~CNetProtocolView()
 {
+}
+
+void CNetProtocolView::DoDataExchange(CDataExchange* pDX)
+{
+	CFormView::DoDataExchange(pDX);
 }
 
 BOOL CNetProtocolView::PreCreateWindow(CREATESTRUCT& cs)
@@ -53,31 +48,18 @@ BOOL CNetProtocolView::PreCreateWindow(CREATESTRUCT& cs)
 	// TODO:  在此处通过修改
 	//  CREATESTRUCT cs 来修改窗口类或样式
 
-	BOOL bPreCreated = CEditView::PreCreateWindow(cs);
-	cs.style &= ~(ES_AUTOHSCROLL|WS_HSCROLL);	// 启用换行
-
-	return bPreCreated;
+	return CFormView::PreCreateWindow(cs);
 }
 
-
-// CNetProtocolView 打印
-
-BOOL CNetProtocolView::OnPreparePrinting(CPrintInfo* pInfo)
+void CNetProtocolView::OnInitialUpdate()
 {
-	// 默认 CEditView 准备
-	return CEditView::OnPreparePrinting(pInfo);
-}
-
-void CNetProtocolView::OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo)
-{
-	// 默认 CEditView 开始打印
-	CEditView::OnBeginPrinting(pDC, pInfo);
-}
-
-void CNetProtocolView::OnEndPrinting(CDC* pDC, CPrintInfo* pInfo)
-{
-	// 默认 CEditView 结束打印
-	CEditView::OnEndPrinting(pDC, pInfo);
+	CFormView::OnInitialUpdate();
+	GetParentFrame()->RecalcLayout();
+	ResizeParentToFit();
+	GetDlgItem(IDC_SOCKNUM)->SetWindowText(_T("0"));
+	GetDlgItem(IDC_APPNUM)->SetWindowText(_T("0"));
+	GetDlgItem(IDC_UPLOAD)->SetWindowText(_T("0 B/s"));
+	GetDlgItem(IDC_DOWNLOAD)->SetWindowText(_T("0 B/s"));
 }
 
 
@@ -86,12 +68,12 @@ void CNetProtocolView::OnEndPrinting(CDC* pDC, CPrintInfo* pInfo)
 #ifdef _DEBUG
 void CNetProtocolView::AssertValid() const
 {
-	CEditView::AssertValid();
+	CFormView::AssertValid();
 }
 
 void CNetProtocolView::Dump(CDumpContext& dc) const
 {
-	CEditView::Dump(dc);
+	CFormView::Dump(dc);
 }
 
 CNetProtocolDoc* CNetProtocolView::GetDocument() const // 非调试版本是内联的
@@ -103,12 +85,15 @@ CNetProtocolDoc* CNetProtocolView::GetDocument() const // 非调试版本是内联的
 
 
 // CNetProtocolView 消息处理程序
-LRESULT CNetProtocolView::OnPrint(WPARAM wparam, LPARAM lparam)
+
+LRESULT CNetProtocolView::SockStateUpdate(WPARAM wparam, LPARAM lparam)
 {
-	CString mystr;
-	mystr = *((CString *)wparam)+ _T("\r\n");
-	log += mystr;
-	SetWindowText(log);
+	TCHAR Buf[10];
+	if (wparam == 1)
+		socknum++;
+	else
+		socknum--;
+	_itot_s(socknum, Buf, 10);
+	GetDlgItem(IDC_SOCKNUM)->SetWindowText(Buf);
 	return 0;
 }
-

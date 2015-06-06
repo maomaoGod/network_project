@@ -69,7 +69,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\NetProtocol.ico"
+IDR_MAINFRAME           ICON                    "res\\protocol.ico"
 IDR_NetProtocolTYPE     ICON                    "res\\NetProtocolDoc.ico"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -108,8 +108,16 @@ IDR_MAINFRAME MENU
 BEGIN
     POPUP "设置(&S)"
     BEGIN
-        MENUITEM "传输层",                         ID_32771
-        MENUITEM "网络层",                         ID_32772
+        POPUP "传输层"
+        BEGIN
+            MENUITEM "Go_Back_N",                   ID_32784
+            MENUITEM "选择重传",                        ID_32785
+            MENUITEM "快速重传",                        ID_32786
+        END
+        POPUP "网络层"
+        BEGIN
+            MENUITEM "NAT服务",                       ID_32787
+        END
         MENUITEM "链路层",                         ID_32773
     END
     POPUP "视图(&V)"
@@ -121,7 +129,6 @@ BEGIN
     BEGIN
         MENUITEM "关于 NetProtocol(&A)...",       ID_APP_ABOUT
     END
-    MENUITEM "发送",                          ID_32783
 END
 
 
@@ -163,10 +170,24 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "关于 NetProtocol"
 FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
     LTEXT           "NetProtocol，1.0 版",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2015",IDC_STATIC,42,26,114,8
+    LTEXT           "Copyright (C) 2015  HUST12ACM",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "确定",IDOK,113,41,50,14,WS_GROUP
+END
+
+IDD_NETPROTOCOL_FORM DIALOGEX 0, 0, 162, 193
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 9, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "服务套接字个数：",IDC_STATIC,15,26,58,8
+    LTEXT           "Static",IDC_SOCKNUM,91,26,58,17,WS_BORDER
+    LTEXT           "服务应用个数：",IDC_STATIC,18,68,49,8
+    LTEXT           "Static",IDC_APPNUM,91,63,58,18,WS_BORDER
+    LTEXT           "上传速度：",IDC_STATIC,25,108,35,8
+    LTEXT           "Static",IDC_UPLOAD,91,101,58,17,WS_BORDER
+    LTEXT           "下载速度：",IDC_STATIC,25,138,35,8
+    LTEXT           "Static",IDC_DOWNLOAD,91,138,58,17,WS_BORDER
 END
 
 
@@ -223,6 +244,10 @@ BEGIN
         RIGHTMARGIN, 163
         TOPMARGIN, 7
         BOTTOMMARGIN, 55
+    END
+
+    IDD_NETPROTOCOL_FORM, DIALOG
+    BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED

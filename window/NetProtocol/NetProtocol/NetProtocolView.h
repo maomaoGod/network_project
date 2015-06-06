@@ -4,30 +4,33 @@
 
 #pragma once
 
+#include "resource.h"
 
-class CNetProtocolView : public CEditView
+
+class CNetProtocolView : public CFormView
 {
 protected: // 仅从序列化创建
 	CNetProtocolView();
 	DECLARE_DYNCREATE(CNetProtocolView)
 
-// 特性
+public:
+	enum{ IDD = IDD_NETPROTOCOL_FORM };
+
+	// 特性
 public:
 	CNetProtocolDoc* GetDocument() const;
-	CString  log;
-// 操作
+
+	// 操作
 public:
 
-// 重写
+	// 重写
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 protected:
-	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
-	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
-	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
-	afx_msg LRESULT OnPrint(WPARAM wparam,LPARAM lparam);
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+	virtual void OnInitialUpdate(); // 构造后第一次调用
 
-// 实现
+	// 实现
 public:
 	virtual ~CNetProtocolView();
 #ifdef _DEBUG
@@ -36,16 +39,21 @@ public:
 #endif
 
 protected:
-
-// 生成的消息映射函数
+	afx_msg LRESULT SockStateUpdate(WPARAM, LPARAM);
+	// 生成的消息映射函数
 protected:
 	DECLARE_MESSAGE_MAP()
-public:
-//	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+private:
+	unsigned socknum=0;
+	unsigned appnum=0;
+	unsigned uploadrate=0;
+	unsigned downloadrate=0;
 };
 
 #ifndef _DEBUG  // NetProtocolView.cpp 中的调试版本
 inline CNetProtocolDoc* CNetProtocolView::GetDocument() const
-   { return reinterpret_cast<CNetProtocolDoc*>(m_pDocument); }
+{
+	return reinterpret_cast<CNetProtocolDoc*>(m_pDocument);
+}
 #endif
 
