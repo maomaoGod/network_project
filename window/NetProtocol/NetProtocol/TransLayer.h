@@ -22,6 +22,12 @@ using namespace std;
 #define CONG_SS 0
 #define CONG_CA 1
 
+#define CONNECTING 0
+#define CONNECTED 1
+#define CONNECT_BIDIR 2
+#define SELF_HALF_OPEN 3
+#define PEER_HALF_OPEN 4
+#define CONNECT_LOSE 5
 
 struct tcpmsg_send
 {
@@ -67,8 +73,9 @@ struct tcplist
 	int wait_for_fill_msg;	// 当前正在等待填充的报文编号，是数组下标
 	int last_rcvd_msg;	// 收到的报文最后一个报文编号
 	int last_read_msg;	// 收到的报文已经交付的最后一个报文编号
-	int status;	// 拥塞控制状态
+	int cong_status;	// 拥塞控制状态
 	int tcp_established_syn_seq;	// 对方发来的syn所在报文编号
+	int connect_status;	// TCP连接状态
 };
 
 bool createNodeList();
@@ -91,11 +98,11 @@ void TCP_destroy(unsigned int src_ip, unsigned short src_port, unsigned int dst_
 
 void TCP_controller();
 
-int Wrongretrasnsmit(int ACK_global, u16 len_tcp, u16 src_port, u16 dest_port, bool padding, u16 *buff, u16 checksum);//返回需要重发的ACK序号
-
-int Fastretransmit(int ACK_global);   //快速重传
-
-int Count_ACK(int ACK_global);   //冗余ACK计数器
+//int Wrongretrasnsmit(int ACK_global, u16 len_tcp, u16 src_port, u16 dest_port, bool padding, u16 *buff, u16 checksum);//返回需要重发的ACK序号
+//
+//int Fastretransmit(int ACK_global);   //快速重传
+//
+//int Count_ACK(int ACK_global);   //冗余ACK计数器
 
 void initialRTT();			//初始化RTT
 

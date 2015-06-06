@@ -63,8 +63,9 @@ bool createNodeList()
 		head->wait_for_fill_msg = 0;
 		head->last_rcvd_msg = 0;
 		head->last_read_msg = 0;
-		head->status = CONG_SS;
+		head->cong_status = CONG_SS;
 		head->tcp_established_syn_seq = -1;
+		head->connect_status = -1;
 		return true;
 	}
 }
@@ -151,27 +152,30 @@ void TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, 
 {
 	// 轮询，因为网速快于处理速度，轮询效率反而高
 	while (global_TCP_new_flag);
-	global_TCP_new_flag = true;
 	global_new_src_ip = src_ip;
 	global_new_src_port = src_port;
 	global_new_dst_ip = dst_ip;
 	global_new_dst_port = dst_port;
+	global_TCP_new_flag = true;
+	while (global_TCP_new_flag);
 }
 
 void TCP_send(struct sockstruct data_from_applayer)
 {
 	// 轮询，因为网速快于处理速度，轮询效率反而高
 	while (global_TCP_send_flag);
-	global_TCP_send_flag = true;
 	global_send_sockstruct = data_from_applayer;
+	global_TCP_send_flag = true;
+	while (global_TCP_send_flag);
 }
 
 void TCP_receive(struct Msg data_from_netlayer)
 {
 	// 轮询，因为网速快于处理速度，轮询效率反而高
 	while (global_TCP_receive_flag);
-	global_TCP_receive_flag = true;
 	global_receive_ip_msg = data_from_netlayer;
+	global_TCP_receive_flag = true;
+	while (global_TCP_receive_flag);
 }
 
 void TCP_resend()
@@ -179,17 +183,19 @@ void TCP_resend()
 	// 轮询，因为网速快于处理速度，轮询效率反而高
 	while (global_TCP_resend_flag);
 	global_TCP_resend_flag = true;
+	while (global_TCP_resend_flag);
 }
 
 void TCP_destroy(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port)
 {
 	// 轮询，因为网速快于处理速度，轮询效率反而高
 	while (global_TCP_destroy_flag);
-	global_TCP_destroy_flag = true;
 	global_destroy_src_ip = src_ip;
 	global_destroy_src_port = src_port;
 	global_destroy_dst_ip = dst_ip;
 	global_destroy_dst_port = dst_port;
+	global_TCP_destroy_flag = true;
+	while (global_TCP_destroy_flag);
 }
 
 void TCP_controller()
@@ -239,8 +245,9 @@ void TCP_controller()
 			new_tcp->wait_for_fill_msg = 0;
 			new_tcp->last_rcvd_msg = 0;
 			new_tcp->last_read_msg = 0;
-			new_tcp->status = CONG_SS;
+			new_tcp->cong_status = CONG_SS;
 			new_tcp->tcp_established_syn_seq = -1;
+			new_tcp->connect_status = CONNECTING;
 			addNode(new_tcp);
 			global_TCP_new_flag = false;
 		}
@@ -409,15 +416,15 @@ ctrl_receive:
 			// ack字段是否有效
 			if (new_tcp_msg.tcp_ack != 0)
 			{
-				if (tcp->status == CONG_SS)
+				if (tcp->cong_status == CONG_SS)
 				{
 					tcp->cong_wind = tcp->cong_wind + MSS;
 					if (tcp->cong_wind > tcp->threshold)
 					{
-						tcp->status = CONG_CA;
+						tcp->cong_status = CONG_CA;
 					}
 				}
-				else if (tcp->status == CONG_CA)
+				else if (tcp->cong_status == CONG_CA)
 				{
 					tcp->cong_wind = tcp->cong_wind + MSS*MSS / tcp->cong_wind;
 				}
@@ -494,7 +501,7 @@ ctrl_destroy:
 			while (min(temp3->wait_for_fill, temp3->wait_for_send + MSS) - temp3->wait_for_ack <= min(temp3->cong_wind, temp3->rcvd_wind))
 			{
 				int new_send;
-		//		new_send = min(temp3->wait_for_ack + min(temp3->cong_wind, temp3->rcvd_wind), min(temp3->wait_for_fill, temp3->wait_for_send + MSS));
+				//new_send = min(temp3->wait_for_ack + min(temp3->cong_wind, temp3->rcvd_wind), min(temp3->wait_for_fill, temp3->wait_for_send + MSS));
 				new_send = min(temp3->wait_for_fill, temp3->wait_for_send + MSS);
 				temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen = new_send - temp3->wait_for_send;
 				temp3->tcp_msg_send[temp3->wait_for_fill_msg].time = GetTickCount();
@@ -512,51 +519,49 @@ ctrl_destroy:
 		}
 		free(temp3);
 
-
-
 	}
 }
 
-int Count_ACK(int ACK_global)         //收到3次冗余ACK返回global_TCP_resend_flag的值
-{
-	if (ACK_Now != ACK_global) //New ID
-	{
-		CountACK = 1;
-		ACK_Now = ACK_global;
-		return 0;
-	}
-	else
-	{
-		if (CountACK == 2)
-			return 1;
-		else
-		{
-			CountACK += 1;
-			return 0;
-		}
-	}
-}
+//int Count_ACK(int ACK_global)         //收到3次冗余ACK返回global_TCP_resend_flag的值
+//{
+//	if (ACK_Now != ACK_global) //New ID
+//	{
+//		CountACK = 1;
+//		ACK_Now = ACK_global;
+//		return 0;
+//	}
+//	else
+//	{
+//		if (CountACK == 2)
+//			return 1;
+//		else
+//		{
+//			CountACK += 1;
+//			return 0;
+//		}
+//	}
+//}
 
-int Fastretransmit(int ACK_global)    //返回需要重发的ACK序号
-{
-	int retransmitACKID;
-	retransmitACKID = ACK_global;
-	return retransmitACKID;
-}
+//int Fastretransmit(int ACK_global)    //返回需要重发的ACK序号
+//{
+//	int retransmitACKID;
+//	retransmitACKID = ACK_global;
+//	return retransmitACKID;
+//}
 
-int Wrongretrasnsmit(int ACK_global, u16 len_tcp, u16 src_port, u16 dest_port, bool padding, u16 *buff, u16 checksum) //返回需要重发的ACK序号,-1表示不需要重传
-{
-	int sum;
-	sum = tcpmakesum(len_tcp, src_port, dest_port, padding, buff) + checksum;
-	if (sum != 0xffff)                                                                                    //发生错误
-	{
-		return ACK_global;
-	}
-	else
-	{
-		return -1;
-	}
-}
+//int Wrongretrasnsmit(int ACK_global, u16 len_tcp, u16 src_port, u16 dest_port, bool padding, u16 *buff, u16 checksum) //返回需要重发的ACK序号,-1表示不需要重传
+//{
+//	int sum;
+//	sum = tcpmakesum(len_tcp, src_port, dest_port, padding, buff) + checksum;
+//	if (sum != 0xffff)                                                                                    //发生错误
+//	{
+//		return ACK_global;
+//	}
+//	else
+//	{
+//		return -1;
+//	}
+//}
 
 void initialRTT()                   //初始化RTT需要的变量
 {
@@ -638,3 +643,5 @@ int wait_for_handshaking_ack(struct tcplist *tcp)
 	}
 	return tcp->tcp_established_syn_seq+1;
 }
+
+//int wait
