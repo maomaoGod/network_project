@@ -18,9 +18,9 @@ unsigned short global_new_src_port;
 unsigned int global_new_dst_ip;
 unsigned short global_new_dst_port;
 int global_new_status;
-struct tcplist *global_newed_tcp;
 
 bool global_TCP_send_flag;
+struct tcplist *global_send_tcp;
 struct sockstruct global_send_sockstruct;
 
 bool global_TCP_receive_flag;
@@ -28,11 +28,8 @@ struct Msg global_receive_ip_msg;
 
 bool global_TCP_resend_flag;
 
-bool global_TCP_destroy_flag;
-unsigned int global_destroy_src_ip;
-unsigned short global_destroy_src_port;
-unsigned int global_destroy_dst_ip;
-unsigned short global_destroy_dst_port;
+bool global_TCP_close_flag;
+struct tcplist *global_close_tcp;
 
 bool listening_flag[MAX_PORT];
 
@@ -152,7 +149,7 @@ struct tcplist *getNode(unsigned int src_ip, unsigned short src_port, unsigned i
 	return NULL;
 }
 
-struct tcplist *TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port, int status)
+void TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port, int status)
 {
 	// 轮询，因为网速快于处理速度，轮询效率反而高
 	while (global_TCP_new_flag);
@@ -163,13 +160,21 @@ struct tcplist *TCP_new(unsigned int src_ip, unsigned short src_port, unsigned i
 	global_new_status = status;
 	global_TCP_new_flag = true;
 	while (global_TCP_new_flag);
-	return global_newed_tcp;
 }
 
 void TCP_send(struct sockstruct data_from_applayer)
 {
+	struct tcplist *found_tcp = getNode(IP_chars2uint(data_from_applayer.srcip), data_from_applayer.srcport,
+										IP_chars2uint(data_from_applayer.dstip), data_from_applayer.dstport);
+	if (found_tcp == NULL)
+	{
+		// 未建立TCP连接
+		printf("TCP link has not been established!\n");
+		return;
+	}
 	// 轮询，因为网速快于处理速度，轮询效率反而高
 	while (global_TCP_send_flag);
+	global_send_tcp = found_tcp;
 	global_send_sockstruct = data_from_applayer;
 	global_TCP_send_flag = true;
 	while (global_TCP_send_flag);
@@ -192,16 +197,19 @@ void TCP_resend()
 	while (global_TCP_resend_flag);
 }
 
-void TCP_destroy(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port)
+void TCP_close(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port)
 {
-	// 轮询，因为网速快于处理速度，轮询效率反而高
-	while (global_TCP_destroy_flag);
-	global_destroy_src_ip = src_ip;
-	global_destroy_src_port = src_port;
-	global_destroy_dst_ip = dst_ip;
-	global_destroy_dst_port = dst_port;
-	global_TCP_destroy_flag = true;
-	while (global_TCP_destroy_flag);
+	struct tcplist *found_tcp = getNode(src_ip, src_port, dst_ip, dst_port);
+	if (found_tcp == NULL)
+	{
+		// 未建立TCP连接，静默
+		printf("TCP link has not been established!\n");
+		return;
+	}
+	while (global_TCP_close_flag);
+	global_close_tcp = found_tcp;
+	global_TCP_close_flag = true;
+	while (global_TCP_close_flag);
 }
 
 void TCP_controller()
@@ -212,7 +220,7 @@ void TCP_controller()
 	// 初始化TCP连接链表
 	createNodeList();
 	// 初始化TCP操作标志
-	global_TCP_new_flag = global_TCP_send_flag = global_TCP_resend_flag = global_TCP_receive_flag = global_TCP_destroy_flag = false;
+	global_TCP_new_flag = global_TCP_send_flag = global_TCP_resend_flag = global_TCP_receive_flag = global_TCP_close_flag = false;
 	// 初始化监听标志
 	memset(listening_flag, 0, sizeof(listening_flag));
 
@@ -257,8 +265,6 @@ void TCP_controller()
 			new_tcp->tcp_established_syn_seq = -1;
 			new_tcp->connect_status = global_new_status;
 			addNode(new_tcp);
-			// 传递作为返回值，其实应该是发消息
-			global_newed_tcp = new_tcp;
 			global_TCP_new_flag = false;
 		}
 
@@ -268,13 +274,13 @@ ctrl_send:
 		if (global_TCP_send_flag)
 		{
 			// 处理数据
-			unsigned int src_ip = getIP();
-			unsigned short src_port = global_send_sockstruct.srcport;
-			unsigned int dst_ip = IP_chars2uint(global_send_sockstruct.dstip);
-			unsigned short dst_port = global_send_sockstruct.dstport;	
+			//unsigned int src_ip = getIP();
+			//unsigned short src_port = global_send_sockstruct.srcport;
+			//unsigned int dst_ip = IP_chars2uint(global_send_sockstruct.dstip);
+			//unsigned short dst_port = global_send_sockstruct.dstport;	
 
 			// 根据四元组找到TCP连接链表中的对应表
-			struct tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);
+			struct tcplist *tcp = global_send_tcp;
 			
 			// 发送缓冲区耗尽
 			int unack_size = tcp->wait_for_fill-tcp->wait_for_ack;
@@ -310,7 +316,7 @@ ctrl_receive:
 			if (!udpcheck(opts_data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, opts_data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
 			{
 				// 舍弃报文
-				goto ctrl_destroy;
+				goto ctrl_close;
 			}
 			
 			// 处理数据
@@ -330,7 +336,7 @@ ctrl_receive:
 				if (rcvd_msg_existed(tcp, new_tcp_msg.tcp_seq_number))
 				{
 					// 是重复收到的报文，舍弃
-					goto ctrl_destroy;
+					goto ctrl_close;
 				}
 				else
 				{
@@ -377,7 +383,7 @@ ctrl_receive:
 					if (unhandin_size+global_receive_ip_msg.datelen > RCVD_BUFFER_SIZE)
 					{
 						printf("Out of receive-buffer! Cannot store these data!\n");
-						goto ctrl_destroy;
+						goto ctrl_close;
 					}
 
 					// 恰好是我们之前等待的，接收
@@ -401,7 +407,7 @@ ctrl_receive:
 					if (unhandin_size+global_receive_ip_msg.datelen > RCVD_BUFFER_SIZE)
 					{
 						printf("Out of receive-buffer! Cannot store these data!\n");
-						goto ctrl_destroy;
+						goto ctrl_close;
 					}
 
 					// 不是我们之前等待的，是跳步报文
@@ -473,7 +479,6 @@ ctrl_receive:
 			RTT = (int)getSampleRTT(tcp->tcp_msg_send[tcp->wait_for_ack_msg].time, GetTickCount());
 
 			global_TCP_send_flag = false;
-
 		}
 
 		// 重传..有点问题？
@@ -481,54 +486,180 @@ ctrl_receive:
 		{
 		}
 
-		// 是否需要拆除一个TCP连接
-ctrl_destroy:
-		if (global_TCP_destroy_flag)
+		// 关闭TCP连接，如果双关闭则拆除
+ctrl_close:
+		if (global_TCP_close_flag)
 		{
-			// 拆除TCP连接
-			deleteNode(getNode(global_destroy_src_ip, global_destroy_src_port, global_destroy_dst_ip, global_destroy_dst_port));
-			global_TCP_destroy_flag = false;
+			// 双方都关闭就拆除TCP连接
+			if (global_close_tcp->connect_status = LINK_PEER_HALF_OPEN)
+			{
+				deleteNode(global_close_tcp);
+			}
+			else
+			{
+				// 关闭本方的tcp连接，但是仍然可以接收到对方的数据，可以发ack
+				global_close_tcp->connect_status = LINK_SELF_HALF_OPEN;
+			}
 		}
 
-		//tcplist* temp3 = head;
-		//while (temp3)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
+		//tcplist* single_tcp = head;
+		//while (single_tcp)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
 		//{
-		//	if (GetTickCount() - temp3->tcp_msg_send[temp3->wait_for_ack_msg].time > RTT)
+		//	if (GetTickCount() - single_tcp->tcp_msg_send[single_tcp->wait_for_ack_msg].time > RTT)
 		//	{
-		//		temp3->Threshold = temp3->cwnd / 2;
-		//		temp3->cwnd = MSS;
-		//		temp3->tcp_msg_send[temp3->wait_for_ack_msg].time = GetTickCount();
-		//		//sendtoip(temp3->tcp_msg_send[temp3->MSG_ACK].tcpmessage, temp3->IP, 第一个参数这个报文的长度);
+		//		single_tcp->Threshold = single_tcp->cwnd / 2;
+		//		single_tcp->cwnd = MSS;
+		//		single_tcp->tcp_msg_send[single_tcp->wait_for_ack_msg].time = GetTickCount();
+		//		//sendtoip(single_tcp->tcp_msg_send[single_tcp->MSG_ACK].tcpmessage, single_tcp->IP, 第一个参数这个报文的长度);
 		//	}
-		//	temp3 = temp3->next;
+		//	single_tcp = single_tcp->next;
 		//}
 		////
 
-		struct tcplist *temp3 = head;
-		while (temp3)
+		// 遍历tcp管理链表，处理待处理的信息
+		struct tcplist *single_tcp = head;
+		while (single_tcp != NULL)
 		{
 			//发送报文
-			while (min(temp3->wait_for_fill, temp3->wait_for_send + MSS) - temp3->wait_for_ack <= min(temp3->cong_wind, temp3->rcvd_wind))
+			while (min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS) - single_tcp->wait_for_ack <= min(single_tcp->cong_wind, single_tcp->rcvd_wind))
 			{
 				int new_send;
-				//new_send = min(temp3->wait_for_ack + min(temp3->cong_wind, temp3->rcvd_wind), min(temp3->wait_for_fill, temp3->wait_for_send + MSS));
-				new_send = min(temp3->wait_for_fill, temp3->wait_for_send + MSS);
-				temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen = new_send - temp3->wait_for_send;
-				temp3->tcp_msg_send[temp3->wait_for_fill_msg].time = GetTickCount();
-				temp3->tcp_msg_send[temp3->wait_for_fill_msg].seq_number = temp3->wait_for_send;
-				struct tcp_message temp4;
-				temp4.tcp_src_port = temp3->tcp_src_port;
-				temp4.tcp_dst_port = temp3->tcp_dst_port;
-				temp4.tcp_hdr_length = 20;
-				memcpy(temp4.tcp_opts_and_app_data, &temp3->tcp_buf_send[temp3->wait_for_send], temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen);
-				TCP_Send2IP(temp4, temp3->tcp_src_ip, temp3->tcp_dst_ip, temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen);
-				temp3->wait_for_send = new_send;
-				temp3->wait_for_fill_msg++;
+				//new_send = min(single_tcp->wait_for_ack + min(single_tcp->cong_wind, single_tcp->rcvd_wind), min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS));
+				new_send = min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS);
+				single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen = new_send - single_tcp->wait_for_send;
+				single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].time = GetTickCount();
+				single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].seq_number = single_tcp->wait_for_send;
+				struct tcp_message new_tcp_message;
+				new_tcp_message.tcp_src_port = single_tcp->tcp_src_port;
+				new_tcp_message.tcp_dst_port = single_tcp->tcp_dst_port;
+				new_tcp_message.tcp_hdr_length = 20;
+				memcpy(new_tcp_message.tcp_opts_and_app_data, &single_tcp->tcp_buf_send[single_tcp->wait_for_send], single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
+				TCP_Send2IP(new_tcp_message, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
+				single_tcp->wait_for_send = new_send;
+				single_tcp->wait_for_fill_msg++;
 			}
-			temp3 = temp3->next;
-		}
-		free(temp3);
 
+			// 发送SYN，第一次握手
+			if (single_tcp->connect_status == LINK_CONNECTING)
+			{
+				// 构造SYN报文段
+				struct tcp_message new_tcp_msg;
+				new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
+				new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
+				new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
+				new_tcp_msg.tcp_ack_number = 0;
+				new_tcp_msg.tcp_hdr_length = 20;
+				new_tcp_msg.tcp_reserved = 0;
+				new_tcp_msg.tcp_urg = 0;
+				new_tcp_msg.tcp_ack = 0;
+				new_tcp_msg.tcp_psh = 0;
+				new_tcp_msg.tcp_rst = 0;
+				new_tcp_msg.tcp_syn = 1;
+				new_tcp_msg.tcp_fin = 0;
+				new_tcp_msg.tcp_rcv_window = single_tcp->rcvd_wind;
+				new_tcp_msg.tcp_urg_ptr = NULL;
+				new_tcp_msg.tcp_opts_and_app_data[0] = 33;	// whatever
+				new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
+			
+				// 不走TCP_send()，不加入TCP报文结构和报文缓冲，因为其中未记录SYN
+				TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 1);
+
+				// 改变tcp连接的状态，等待对方发来的syn报文
+				single_tcp->connect_status = LINK_WAIT_FOR_SYN;
+			}
+
+			// 发送SYN和ACK，第二次握手
+			if (single_tcp->connect_status == LINK_CONNECTED)
+			{
+				// 构造SYN报文段
+				struct tcp_message new_tcp_msg;
+				new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
+				new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
+				new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
+				new_tcp_msg.tcp_ack_number = single_tcp->next_send_ack;
+				new_tcp_msg.tcp_hdr_length = 20;
+				new_tcp_msg.tcp_reserved = 0;
+				new_tcp_msg.tcp_urg = 0;
+				new_tcp_msg.tcp_ack = 1;
+				new_tcp_msg.tcp_psh = 0;
+				new_tcp_msg.tcp_rst = 0;
+				new_tcp_msg.tcp_syn = 1;
+				new_tcp_msg.tcp_fin = 0;
+				new_tcp_msg.tcp_rcv_window = single_tcp->rcvd_wind;
+				new_tcp_msg.tcp_urg_ptr = NULL;
+				new_tcp_msg.tcp_opts_and_app_data[0] = 33;	// whatever
+				new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
+			
+				// 不走TCP_send()，不加入TCP报文结构和报文缓冲，因为其中未记录SYN
+				TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 1);
+
+				// 改变tcp连接的状态，等待对方发来的syn报文
+				single_tcp->connect_status = LINK_WAIT_FOR_SYNACK;
+			}
+
+			// 发送ACK，第三次握手
+			if (single_tcp->connect_status == LINK_GOT_SYN)
+			{
+				// 构造ACK报文段
+				struct tcp_message new_tcp_msg;
+				new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
+				new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
+				new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
+				new_tcp_msg.tcp_ack_number = single_tcp->next_send_ack;
+				new_tcp_msg.tcp_hdr_length = 20;
+				new_tcp_msg.tcp_reserved = 0;
+				new_tcp_msg.tcp_urg = 0;
+				new_tcp_msg.tcp_ack = 1;
+				new_tcp_msg.tcp_psh = 0;
+				new_tcp_msg.tcp_rst = 0;
+				new_tcp_msg.tcp_syn = 0;
+				new_tcp_msg.tcp_fin = 0;
+				new_tcp_msg.tcp_rcv_window = single_tcp->rcvd_wind;
+				new_tcp_msg.tcp_urg_ptr = NULL;
+				new_tcp_msg.tcp_opts_and_app_data[0] = 33;	// whatever
+				new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
+			
+				// 不走TCP_send()，不加入TCP报文结构和报文缓冲，因为其中未记录SYN
+				TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 1);
+
+				// 改变tcp连接的状态，等待对方发来的syn报文
+				single_tcp->connect_status = LINK_CONNECTED;
+
+				// 通知应用层可以分配资源了
+				// 填入送往应用层的结构中
+				struct sockstruct new_sockstruct;
+				new_sockstruct.dstport = new_tcp_msg.tcp_dst_port;
+				new_sockstruct.srcport = new_tcp_msg.tcp_src_port;
+				new_sockstruct.funcID = SOCKCONNECT;
+				new_sockstruct.datalength = 0;
+				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_src_ip);
+				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_dst_ip);
+				new_sockstruct.data = NULL;
+
+				// 送往应用层
+				AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct, (LPARAM)SOCKSEND);
+			}
+
+			// 通知应用层分配资源
+			if (single_tcp->connect_status == LINK_GOT_SYNACK)
+			{
+				// 填入送往应用层的结构中
+				struct sockstruct new_sockstruct;
+				new_sockstruct.dstport = single_tcp->tcp_dst_port;
+				new_sockstruct.srcport = single_tcp->tcp_src_port;
+				new_sockstruct.funcID = SOCKCONNECT;
+				new_sockstruct.datalength = 0;
+				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_src_ip);
+				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_dst_ip);
+				new_sockstruct.data = NULL;
+
+				// 送往应用层
+				AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct, (LPARAM)SOCKSEND);
+			}
+
+			single_tcp = single_tcp->next;
+		}
+		//free(single_tcp);杀妈之作
 	}
 }
 

@@ -23,12 +23,16 @@ using namespace std;
 #define CONG_SS 0
 #define CONG_CA 1
 
-#define CONNECTING 0
-#define CONNECTED 1
-#define CONNECT_BIDIR 2
-#define SELF_HALF_OPEN 3
-#define PEER_HALF_OPEN 4
-#define CONNECT_LOSE 5
+#define LINK_CONNECTING 0
+#define LINK_WAIT_FOR_SYN 1
+#define LINK_GOT_SYN 2
+#define LINK_CONNECTED 3
+#define LINK_WAIT_FOR_SYNACK 4
+#define LINK_GOT_SYNACK 5
+#define LINK_CONNECT_BIDIR 6
+#define LINK_SELF_HALF_OPEN 7
+#define LINK_PEER_HALF_OPEN 8
+#define LINK_CONNECT_LOSE 9
 
 struct tcpmsg_send
 {
@@ -48,7 +52,7 @@ struct tcpmsg_rcvd
 
 struct tcplist
 {
-	tcplist *next;
+	struct tcplist *next;
 	unsigned tcp_src_ip : 32;
 	unsigned tcp_dst_ip : 32;
 	unsigned tcp_src_port : 16;
@@ -87,7 +91,7 @@ bool deleteNode(tcplist* p);
 
 struct tcplist *getNode(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port);
 
-struct tcplist *TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port, int status);
+void TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port, int status);
 
 void TCP_send(struct sockstruct data_from_applayer);
 
@@ -95,7 +99,7 @@ void TCP_receive(struct Msg data_from_netlayer);
 
 void TCP_resend();
 
-void TCP_destroy(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port);
+void TCP_close(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port);
 
 void TCP_controller();
 
