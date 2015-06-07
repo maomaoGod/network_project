@@ -2,21 +2,23 @@
 #include "stdafx.h"
 #include "TransLayer.h"
 
-tcplist* head = NULL;
+struct tcplist* head = NULL;
 
-int ACK_global;
-int RTT;
+int ACK_global;	// ???
+int RTT;		// ???
 
 static float EstimatedRTT;
 static float DevRTT;
-static int CountACK = 0;//冗余ACK计数器；
-static int ACK_Now = -1;
+static int CountACK = 0;	//冗余ACK计数器；???
+static int ACK_Now = -1;	// ???
 
 bool global_TCP_new_flag;
 unsigned int global_new_src_ip;
 unsigned short global_new_src_port;
 unsigned int global_new_dst_ip;
 unsigned short global_new_dst_port;
+int global_new_status;
+struct tcplist *global_newed_tcp;
 
 bool global_TCP_send_flag;
 struct sockstruct global_send_sockstruct;
@@ -31,6 +33,8 @@ unsigned int global_destroy_src_ip;
 unsigned short global_destroy_src_port;
 unsigned int global_destroy_dst_ip;
 unsigned short global_destroy_dst_port;
+
+bool listening_flag[MAX_PORT];
 
 bool createNodeList()
 {
@@ -148,7 +152,7 @@ struct tcplist *getNode(unsigned int src_ip, unsigned short src_port, unsigned i
 	return NULL;
 }
 
-void TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port)
+struct tcplist *TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port, int status)
 {
 	// 轮询，因为网速快于处理速度，轮询效率反而高
 	while (global_TCP_new_flag);
@@ -156,8 +160,10 @@ void TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, 
 	global_new_src_port = src_port;
 	global_new_dst_ip = dst_ip;
 	global_new_dst_port = dst_port;
+	global_new_status = status;
 	global_TCP_new_flag = true;
 	while (global_TCP_new_flag);
+	return global_newed_tcp;
 }
 
 void TCP_send(struct sockstruct data_from_applayer)
@@ -207,6 +213,8 @@ void TCP_controller()
 	createNodeList();
 	// 初始化TCP操作标志
 	global_TCP_new_flag = global_TCP_send_flag = global_TCP_resend_flag = global_TCP_receive_flag = global_TCP_destroy_flag = false;
+	// 初始化监听标志
+	memset(listening_flag, 0, sizeof(listening_flag));
 
 	// 控制流
 	for (;;)
@@ -214,7 +222,7 @@ void TCP_controller()
 		// 是否需要新建一个TCP连接
 		if (global_TCP_new_flag)
 		{
-			tcplist *new_tcp = (tcplist *)malloc(sizeof(struct tcplist));
+			struct tcplist *new_tcp = (tcplist *)malloc(sizeof(struct tcplist));
 			
 			// 内存耗尽
 			if (new_tcp == NULL)
@@ -247,8 +255,10 @@ void TCP_controller()
 			new_tcp->last_read_msg = 0;
 			new_tcp->cong_status = CONG_SS;
 			new_tcp->tcp_established_syn_seq = -1;
-			new_tcp->connect_status = CONNECTING;
+			new_tcp->connect_status = global_new_status;
 			addNode(new_tcp);
+			// 传递作为返回值，其实应该是发消息
+			global_newed_tcp = new_tcp;
 			global_TCP_new_flag = false;
 		}
 
@@ -264,7 +274,7 @@ ctrl_send:
 			unsigned short dst_port = global_send_sockstruct.dstport;	
 
 			// 根据四元组找到TCP连接链表中的对应表
-			tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);
+			struct tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);
 			
 			// 发送缓冲区耗尽
 			int unack_size = tcp->wait_for_fill-tcp->wait_for_ack;
@@ -310,7 +320,7 @@ ctrl_receive:
 			unsigned short dst_port = global_receive_ip_msg.ih_dport;
 
 			// 根据四元组找到TCP连接链表中的对应表
-			tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);
+			struct tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);
 			
 			int data_len = global_receive_ip_msg.datelen-new_tcp_msg.tcp_hdr_length;
 			int opts_offset = new_tcp_msg.tcp_hdr_length-20;
@@ -494,7 +504,7 @@ ctrl_destroy:
 		//}
 		////
 
-		tcplist* temp3 = head;
+		struct tcplist *temp3 = head;
 		while (temp3)
 		{
 			//发送报文
@@ -506,7 +516,7 @@ ctrl_destroy:
 				temp3->tcp_msg_send[temp3->wait_for_fill_msg].datalen = new_send - temp3->wait_for_send;
 				temp3->tcp_msg_send[temp3->wait_for_fill_msg].time = GetTickCount();
 				temp3->tcp_msg_send[temp3->wait_for_fill_msg].seq_number = temp3->wait_for_send;
-				tcp_message temp4;
+				struct tcp_message temp4;
 				temp4.tcp_src_port = temp3->tcp_src_port;
 				temp4.tcp_dst_port = temp3->tcp_dst_port;
 				temp4.tcp_hdr_length = 20;
@@ -644,4 +654,12 @@ int wait_for_handshaking_ack(struct tcplist *tcp)
 	return tcp->tcp_established_syn_seq+1;
 }
 
-//int wait
+void port_listen(unsigned short port)
+{
+	listening_flag[port] = true;
+}
+
+bool check_listening(unsigned short port)
+{
+	return listening_flag[port];
+}

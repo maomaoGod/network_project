@@ -218,11 +218,11 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 	unsigned int data_len = data_from_applayer.datalength;
 
 	// »ñÈ¡Function ID
-	int funID = (int)lparam;
+	int funcID = data_from_applayer.funcID;
 
 	// ÅÐ¶ÏÊÇUDP»¹ÊÇTCP
 	// UDP
-	if (funID == SOCKSENDTO)
+	if (funcID == SOCKSENDTO)
 	{
 		struct udp_message new_udp_msg;
 		// ÌîÈëUDP±¨ÎÄ¶Î½á¹¹
@@ -249,17 +249,12 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 	else
 	{
 		// ·½·¨ÅÐ¶Ï
-		if (funID == SOCKCONNECT)
+		if (funcID == SOCKCONNECT)
 		{
 			// Èý´ÎÎÕÊÖ
 
 			// ÐÂ½¨TCPÁ¬½Ó£¬³õÊ¼»¯TCPÁ¬½ÓÁ´±í
-			TCP_new(src_ip, src_port, dst_ip, dst_port);
-
-			// Èç¹ûTCP¿ØÖÆÆ÷Ã¦ÓÚ·¢ËÍ»òÕß½ÓÊÕ£¬ÕâÒ»ÐÐ¾Í»á±ÈÐÂ½¨TCPÁ´½Ó¿ìµÃ¶à£¬Æñ²»ÊÇ³öÎÊÌâ
-			// Òò´ËÐèÒª°ÑTCP_ÏµÁÐÉè¼Æ³ÉÎª×èÈûµÄ
-			// »ñÈ¡ÐÂ½¨µÄTCPÁ¬½ÓÖ¸Õë
-			struct tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);
+			struct tcplist *tcp = TCP_new(src_ip, src_port, dst_ip, dst_port, CONNECTING);
 
 			// µÚÒ»´ÎÎÕÊÖ£¬·¢ËÍSYN
 			// ¹¹ÔìSYN±¨ÎÄ¶Î
@@ -278,7 +273,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 			new_tcp_msg.tcp_fin = 0;
 			new_tcp_msg.tcp_rcv_window = tcp->rcvd_wind;
 			new_tcp_msg.tcp_urg_ptr = NULL;
-			new_tcp_msg.tcp_opts_and_app_data[0] = 21;	// whatever
+			new_tcp_msg.tcp_opts_and_app_data[0] = 33;	// whatever
 			new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
 			
 			// ²»×ßTCP_send()£¬²»¼ÓÈëTCP±¨ÎÄ½á¹¹ºÍ±¨ÎÄ»º³å£¬ÒòÎªÆäÖÐÎ´¼ÇÂ¼SYN
@@ -291,7 +286,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 			new_tcp_msg.tcp_syn = 0;
 			TCP_Send2IP(new_tcp_msg, src_ip, dst_ip, 1);
 		}
-		else if (funID == SOCKSEND)
+		else if (funcID == SOCKSEND)
 		{
 			struct tcplist *found_TCP = getNode(src_ip, src_port, dst_ip, dst_port);
 			if (found_TCP == NULL)
@@ -304,7 +299,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 			// ²»Ðè²ð·ÖÀ´×ÔÓ¦ÓÃ²ãµÄ¹ý´óÊý¾Ý¶Î
 			TCP_send(data_from_applayer);
 		}
-		else if (funID == SOCKCLOSE)
+		else if (funcID == SOCKCLOSE)
 		{
 			struct tcplist *found_TCP = getNode(src_ip, src_port, dst_ip, dst_port);
 			if (found_TCP == NULL)
@@ -316,7 +311,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 
 			// Ö÷¶¯¶Ï¿ªÁ¬½Ó£¬³ÉÎª°ë¿ª×´Ì¬£¬¿ÉÒÔ½ÓÊÕÊý¾Ýµ«ÊÇ²»·¢ËÍ
 			// ¿É²»¿ÉÒÔ·¢ËÍACKÄØ£¿£¿£¿
-			// ¹¹ÔìSYN±¨ÎÄ¶Î
+			// ¹¹ÔìFIN±¨ÎÄ¶Î
 			struct tcp_message new_tcp_msg;
 			new_tcp_msg.tcp_src_port = src_port;
 			new_tcp_msg.tcp_dst_port = dst_port;
@@ -336,6 +331,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 			new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
 			
 			// ²»×ßTCP_send()£¬²»¼ÓÈëTCP±¨ÎÄ½á¹¹ºÍ±¨ÎÄ»º³å£¬ÒòÎªÆäÖÐÎ´¼ÇÂ¼FIN
+			// Ò²¾ÍÊÇËµ£¬TCPµÄÁ¬½ÓÇëÇó´Ó²»ÖØ·¢
 			TCP_Send2IP(new_tcp_msg, src_ip, dst_ip, 1);
 
 			// µÈ´ýÀ´×Ô¶Ô·½µÄsynºÍack
@@ -347,9 +343,10 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 
 			TCP_destroy;
 		}
-		else if (funID == SOCKLISTEN)
+		else if (funcID == SOCKLISTEN)
 		{
-			// listen to the port
+			// ¼àÌý¶Ë¿Ú
+			port_listen(src_port);
 		}
 		else
 		{

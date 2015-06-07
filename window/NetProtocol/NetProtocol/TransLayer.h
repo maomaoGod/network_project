@@ -18,6 +18,7 @@ using namespace std;
 #define RCVD_BUFFER_SIZE 1024*1024
 #define INITIAL_THRESHOLD 65*1024 // 65KB
 #define RANDOM_SEQ_NUMBER_MODULE 321
+#define MAX_PORT 65536
 
 #define CONG_SS 0
 #define CONG_CA 1
@@ -86,7 +87,7 @@ bool deleteNode(tcplist* p);
 
 struct tcplist *getNode(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port);
 
-void TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port);
+struct tcplist *TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port, int status);
 
 void TCP_send(struct sockstruct data_from_applayer);
 
@@ -113,3 +114,9 @@ void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int src_ip, unsig
 bool rcvd_msg_existed(struct tcplist *tcp, unsigned int seg_number);
 
 int next_ack_place(struct tcplist *tcp, unsigned int init_ack_place);
+
+int wait_for_handshaking_ack(struct tcplist *tcp);
+
+void port_listen(unsigned short port);
+
+bool check_listening(unsigned short port);
