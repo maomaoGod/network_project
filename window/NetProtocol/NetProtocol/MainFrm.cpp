@@ -138,40 +138,13 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength); // +1 for \0
 
 		// ËÍÍùÓ¦ÓÃ²ã
-		SendMessage(APPSEND, (WPARAM)&new_sockstruct, (LPARAM)SOCKSEND);
+		SendMessage(APPSEND, (WPARAM)&new_sockstruct);
 	}
 	// TCP
 	else if (new_ip_msg.protocol == PROTOCOL_TCP)
 	{
-		//// »ñÈ¡TCP±¨ÎÄ¶Î
-		//struct tcp_message new_tcp_msg;
-		//memcpy(&new_tcp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
-
-		//// optsºÍdataÒ»Í¬½øĞĞ¼ìÑé
-		//unsigned data_len = strlen(new_tcp_msg.tcp_opts_and_app_data) + 1; // +1 for \0
-
-		//// ¼ìÑéºÍ
-		//if (!udpcheck(data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
-		//{
-		//	// ÉáÆú±¨ÎÄ
-		//	return -1;
-		//}
-
 		// ´¥·¢½ÓÊÕÊÂ¼ş
 		TCP_receive(new_ip_msg);
-
-		//// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖĞ
-		//struct sockstruct new_sockstruct;
-		//new_sockstruct.dstport = new_tcp_msg.tcp_dst_port;
-		//new_sockstruct.srcport = new_tcp_msg.tcp_src_port;
-		//new_sockstruct.funcID = SOCKSEND;
-		//new_sockstruct.datalength = data_len;
-		//IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
-		//IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
-		//memcpy(new_sockstruct.data, new_tcp_msg.tcp_opts_and_app_data, new_sockstruct.datalength + 1); // +1 for \0
-
-		//// ËÍÍùÓ¦ÓÃ²ã
-		//SendMessage(APPSEND, (WPARAM)&new_sockstruct, (LPARAM)SOCKSEND);
 	}
 	else
 	{
@@ -226,26 +199,8 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 	// UDP
 	if (funcID == SOCKSENDTO)
 	{
-		struct udp_message new_udp_msg;
-		// ÌîÈëUDP±¨ÎÄ¶Î½á¹¹
-		new_udp_msg.udp_src_port = src_port;
-		new_udp_msg.udp_dst_port = dst_port;
-		new_udp_msg.udp_msg_length = 8 + data_len;
-		memcpy(new_udp_msg.udp_app_data, data_from_applayer.data, data_len + 1); // +1 for \0
-		new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)src_port, (u16)dst_port, data_len % 2, (u16 *)&(new_udp_msg.udp_app_data));
-
-		// UDPÎŞÓµÈû¿ØÖÆ
-		struct Msg new_ip_msg;
-		new_ip_msg.sip = src_ip;
-		new_ip_msg.dip = dst_ip;
-		new_ip_msg.ih_sport = src_port;
-		new_ip_msg.ih_dport = dst_port;
-		new_ip_msg.datelen = new_udp_msg.udp_msg_length;
-		memcpy(new_ip_msg.data, &new_udp_msg, new_ip_msg.datelen);
-		new_ip_msg.protocol = PROTOCOL_UDP;	// 17 for UDP
-
-		// ·¢ÍùÍøÂç²ã
-		SendMessage(IPTOLINK, (WPARAM)&new_ip_msg, lparam);
+		// Ö±½Ó·¢ËÍ¿©
+		UDP_Send2IP(data_from_applayer, src_ip, dst_ip, data_len);
 	}
 	// TCP
 	else
@@ -257,36 +212,6 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 
 			// ĞÂ½¨TCPÁ¬½Ó£¬³õÊ¼»¯TCPÁ¬½ÓÁ´±í
 			TCP_new(src_ip, src_port, dst_ip, dst_port, LINK_CONNECTING);
-
-			//// µÚÒ»´ÎÎÕÊÖ£¬·¢ËÍSYN
-			//// ¹¹ÔìSYN±¨ÎÄ¶Î
-			//struct tcp_message new_tcp_msg;
-			//new_tcp_msg.tcp_src_port = src_port;
-			//new_tcp_msg.tcp_dst_port = dst_port;
-			//new_tcp_msg.tcp_seq_number = tcp->seq_number;
-			//new_tcp_msg.tcp_ack_number = 0;
-			//new_tcp_msg.tcp_hdr_length = 20;
-			//new_tcp_msg.tcp_reserved = 0;
-			//new_tcp_msg.tcp_urg = 0;
-			//new_tcp_msg.tcp_ack = 0;
-			//new_tcp_msg.tcp_psh = 0;
-			//new_tcp_msg.tcp_rst = 0;
-			//new_tcp_msg.tcp_syn = 1;
-			//new_tcp_msg.tcp_fin = 0;
-			//new_tcp_msg.tcp_rcv_window = tcp->rcvd_wind;
-			//new_tcp_msg.tcp_urg_ptr = NULL;
-			//new_tcp_msg.tcp_opts_and_app_data[0] = 33;	// whatever
-			//new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
-			//
-			//// ²»×ßTCP_send()£¬²»¼ÓÈëTCP±¨ÎÄ½á¹¹ºÍ±¨ÎÄ»º³å£¬ÒòÎªÆäÖĞÎ´¼ÇÂ¼SYN
-			//TCP_Send2IP(new_tcp_msg, src_ip, dst_ip, 1);
-
-			//// µÈ´ıÀ´×Ô¶Ô·½µÄsynºÍack
-			//int waited_seq = wait_for_handshaking_ack(tcp);
-
-			// ²»×ßTCP_send()£¬²»¼ÓÈëTCP±¨ÎÄ½á¹¹ºÍ±¨ÎÄ»º³å£¬ÒòÎªÆäÖĞÎ´¼ÇÂ¼SYN
-			//new_tcp_msg.tcp_syn = 0;
-			//TCP_Send2IP(new_tcp_msg, src_ip, dst_ip, 1);
 		}
 		else if (funcID == SOCKSEND)
 		{
@@ -297,38 +222,6 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 		{
 			// Ö÷¶¯¶Ï¿ªÁ¬½Ó£¬³ÉÎª°ë¿ª×´Ì¬£¬¿ÉÒÔ½ÓÊÕÊı¾İµ«ÊÇ²»·¢ËÍ
 			TCP_close(src_ip, src_port, dst_ip, dst_port);
-
-			//// ¹¹ÔìFIN±¨ÎÄ¶Î
-			//struct tcp_message new_tcp_msg;
-			//new_tcp_msg.tcp_src_port = src_port;
-			//new_tcp_msg.tcp_dst_port = dst_port;
-			//new_tcp_msg.tcp_seq_number = found_TCP->seq_number;
-			//new_tcp_msg.tcp_ack_number = 0;
-			//new_tcp_msg.tcp_hdr_length = 20;
-			//new_tcp_msg.tcp_reserved = 0;
-			//new_tcp_msg.tcp_urg = 0;
-			//new_tcp_msg.tcp_ack = 0;
-			//new_tcp_msg.tcp_psh = 0;
-			//new_tcp_msg.tcp_rst = 0;
-			//new_tcp_msg.tcp_syn = 0;
-			//new_tcp_msg.tcp_fin = 1;
-			//new_tcp_msg.tcp_rcv_window = found_TCP->rcvd_wind;
-			//new_tcp_msg.tcp_urg_ptr = NULL;
-			//new_tcp_msg.tcp_opts_and_app_data[0] = 21;	// whatever
-			//new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
-			//
-			//// ²»×ßTCP_send()£¬²»¼ÓÈëTCP±¨ÎÄ½á¹¹ºÍ±¨ÎÄ»º³å£¬ÒòÎªÆäÖĞÎ´¼ÇÂ¼FIN
-			//// Ò²¾ÍÊÇËµ£¬TCPµÄÁ¬½ÓÇëÇó´Ó²»ÖØ·¢
-			//TCP_Send2IP(new_tcp_msg, src_ip, dst_ip, 1);
-
-			//// µÈ´ıÀ´×Ô¶Ô·½µÄsynºÍack
-			//int waited_seq = wait_for_handshaking_ack(found_TCP);
-
-			//// ²»×ßTCP_send()£¬²»¼ÓÈëTCP±¨ÎÄ½á¹¹ºÍ±¨ÎÄ»º³å£¬ÒòÎªÆäÖĞÎ´¼ÇÂ¼FIN
-			//new_tcp_msg.tcp_syn = 0;
-			//TCP_Send2IP(new_tcp_msg, src_ip, dst_ip, 1);
-
-			//TCP_destroy;
 		}
 		else if (funcID == SOCKLISTEN)
 		{

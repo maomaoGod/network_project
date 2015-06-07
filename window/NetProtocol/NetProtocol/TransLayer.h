@@ -30,9 +30,15 @@ using namespace std;
 #define LINK_WAIT_FOR_SYNACK 4
 #define LINK_GOT_SYNACK 5
 #define LINK_CONNECT_BIDIR 6
-#define LINK_SELF_HALF_OPEN 7
-#define LINK_PEER_HALF_OPEN 8
-#define LINK_CONNECT_LOSE 9
+#define LINK_FINISHING 7
+#define LINK_WAIT_FOR_FINACK 8
+#define LINK_SELF_HALF_OPEN 9
+#define LINK_FINISHED 10
+#define LINK_PEER_HALF_OPEN 11
+#define LINK_CONNECT_DESTROYED 12
+#define LINK_CONNECT_DESTROYING 13
+#define LINK_WAIT_FOR_DESACK 14
+#define LINK_CONNECT_LOSE 15
 
 struct tcpmsg_send
 {
@@ -115,6 +121,8 @@ float getSampleRTT(int sendtime, int gettime); //动态计算超时间隔
 
 void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int src_ip, unsigned int dst_ip, unsigned int data_len);
 
+void UDP_Send2IP(struct sockstruct data_from_applayer, unsigned int src_ip, unsigned int dst_ip, unsigned int data_len);
+
 bool rcvd_msg_existed(struct tcplist *tcp, unsigned int seg_number);
 
 int next_ack_place(struct tcplist *tcp, unsigned int init_ack_place);
@@ -124,3 +132,6 @@ int wait_for_handshaking_ack(struct tcplist *tcp);
 void port_listen(unsigned short port);
 
 bool check_listening(unsigned short port);
+
+void fill_new_tcplist(struct tcplist *new_tcp);
+
