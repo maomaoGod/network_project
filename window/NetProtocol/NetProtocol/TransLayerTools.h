@@ -84,5 +84,3 @@ void IP_uint2chars(char ip[], unsigned int ip_int);
 unsigned int IP_string2uint(string ip);
 
 unsigned int port_string2uint(string port);
-
-int wait_for_handshaking_ack(struct tcplist *tcp);
