@@ -54,7 +54,7 @@ pcap_t * my_linker::get_adapter()
 
 	adapter = allAdapters;
 
-	for (crtAdapter = 0; ; crtAdapter++)
+	for (crtAdapter = 0;  ; crtAdapter++)
 
 	{
 		bool ck = false;
@@ -169,6 +169,7 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
 			}
 			else
 			{
+				/*
 				ck = false;
 				bg = clock();
 				while ((retValue = pcap_next_ex(adapterHandle, &packetHeader, &packetData)) >= 0)
@@ -188,6 +189,8 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
 					}
 				}
 				if (!ck) K = min(K + 1, 10);
+				*/
+				ck = true;
 				printf("send frame %d successfully!: size %d bytes\n", seq, sizeof(frame));	
 				seq += 1;
 			}
@@ -349,7 +352,7 @@ bool my_linker::check(const u_char * packetData)
 {
 	Broadcast_frame frame = *((Broadcast_frame *)packetData);
 	if (frame.type == 0x0806 && frame.MAC_des[0] == 0xFFFF && frame.MAC_des[0] == 0xFFFF && frame.MAC_des[0] == 0xFFFF
-		&& (frame.MAC_src[0] != mac_src[0] || frame.MAC_src[1] != mac_src[1] || frame.MAC_src[2] != mac_src[2]))
+		&& frame.IP_dst==getIP())
 		return true;
 	return false;
 }
@@ -551,4 +554,41 @@ bool my_linker::transtable(unsigned int IP)
 		}
 	}
 	return false;
+}
+
+inline unsigned int my_linker::getIP()
+{
+	WSADATA wsaData;
+	char name[155];
+	char *ip;
+	PHOSTENT hostinfo;
+	if (WSAStartup(MAKEWORD(2, 0), &wsaData) == 0)
+	{
+		if (gethostname(name, sizeof(name)) == 0)
+		{
+			if ((hostinfo = gethostbyname(name)) != NULL)
+			{
+				// 这些就是获得IP的函数
+				ip = inet_ntoa(*(struct in_addr *)*hostinfo->h_addr_list);
+			}
+		}
+		WSACleanup();
+	}
+	// 将ip从字符串转为unsigned int
+	unsigned int ip_number = 0;
+	unsigned int ip_seg_number = 0;
+	for (int i = 0; i < 15 && ip[i]; ++i)
+	{
+		if (ip[i] == '.')
+		{
+			ip_number = ip_number * 256 + ip_seg_number;
+			ip_seg_number = 0;
+		}
+		else
+		{
+			ip_seg_number = ip_seg_number * 10 + ip[i] - 48;
+		}
+	}
+	ip_number = ip_number * 256 + ip_seg_number;
+	return ip_number;
 }

@@ -90,6 +90,7 @@ public:
 
 	//Ä¿µÄMACµØÖ·
 	unsigned short mac_des[3];
+	static pcap_t * adapterHandle;
 	unsigned int transIP[table_size];
 	unsigned short transmac[table_size][3];
 	my_linker()
@@ -140,4 +141,5 @@ public:
 	void send_broadcast(pcap_t  *adapterHandle, unsigned int src_IP, unsigned int dst_IP);
 	void get_mac(pcap_t  *adapterHandle);
 	bool transtable(unsigned int IP);
+	unsigned int getIP();
 };

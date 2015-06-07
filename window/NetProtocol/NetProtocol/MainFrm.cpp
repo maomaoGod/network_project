@@ -16,19 +16,19 @@ int sockcount = 0;
 #define SERVE 1000
 #define CLIENT 2000
 extern void PrintView(CString e);
+// CMainFrame
 
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
-	ON_MESSAGE(APPSEND, OnAppSend)
+    ON_MESSAGE(APPSEND, OnAppSend)
 	ON_MESSAGE(TRANSTOAPP, OnTrans2App)
 	ON_MESSAGE(IPTOTRANS, OnIP2Trans)
 	ON_MESSAGE(LINKTOIP, OnLink2IP)
 	ON_MESSAGE(TRANSTOIP, OnTrans2IP)
 	ON_MESSAGE(IPTOLINK, OnIP2Link)
 	ON_MESSAGE(LINKSEND, OnLinkSend)
-	ON_MESSAGE(SOCKSTATEUPDATE, SockStateUpdate)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -43,8 +43,9 @@ static UINT indicators[] =
 
 CMainFrame::CMainFrame()
 {
+	// TODO:  ÔÚ´ËÌí¼Ó³ÉÔ±³õÊ¼»¯´úÂë
 	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
-		AfxMessageBox(_T("´´½¨×¥°üÏß³ÌÊ§°Ü!"));
+		AfxMessageBox(_T("´´½¨×¥°üÏß³ÌÊ§°Ü£¡"));
 }
 
 CMainFrame::~CMainFrame()
@@ -67,6 +68,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // Î´ÄÜ´´½¨
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
+	// TODO:  Èç¹û²»ÐèÒª¿ÉÍ£¿¿¹¤¾ßÀ¸£¬ÔòÉ¾³ýÕâÈýÐÐ
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);
@@ -79,8 +81,6 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 		return FALSE;
 	// TODO:  ÔÚ´Ë´¦Í¨¹ýÐÞ¸Ä
 	//  CREATESTRUCT cs À´ÐÞ¸Ä´°¿ÚÀà»òÑùÊ½
-	cs.style &= ~WS_THICKFRAME;
-	cs.style |= WS_DLGFRAME;
 	cs.style &= ~FWS_ADDTOTITLE;
 	return TRUE;
 }
@@ -98,6 +98,8 @@ void CMainFrame::Dump(CDumpContext& dc) const
 	CFrameWnd::Dump(dc);
 }
 #endif //_DEBUG
+
+
 
 
 LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊý¾Ýµ½Ó¦ÓÃ²ãµÄ½Ó¿Ú
@@ -200,7 +202,7 @@ LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊý¾Ý
 	ip_msg = receiver.combine(packetData);
 	if (ip_msg != NULL)
 	{
-		AfxGetMainWnd()->SendMessage(IPTOTRANS, (WPARAM)ip_msg);
+		AfxGetApp()->m_pMainWnd->SendMessage(IPTOTRANS, (WPARAM)ip_msg);
 		delete ip_msg->iphdr;
 	}
 	return 0;
@@ -341,6 +343,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 	return 0;
 }
 
+
 LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊý¾Ý·¢ËÍµ½Á´Â·²ã½Ó¿Ú
 {
 	///< ½«ÔËÊä²ãËÍÀ´µÄMsg½á¹¹ºÍIPµØÖ·²åÈëµ½IP_msg½á¹¹ÖÐ,
@@ -395,10 +398,6 @@ DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
 
 		if (receiver->check(packetData))
 		{
-			if (receiver->checkCrc16((unsigned char *)packetData, packetHeader->len) != 0)
-			{
-				//puts("fuck!!!");
-			}
 			Broadcast_frame r_frame = *((Broadcast_frame *)packetData), s_frame;
 			for (int i = 0; i < 3; ++i)
 			{
@@ -417,8 +416,7 @@ DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
 	return 0;
 }
 
-//½«Êý¾Ý¿½±´×¼±¸·¢ËÍÊý¾Ýµ½Ó¦ÓÃ²ã
-LRESULT CMainFrame::OnAppSend(WPARAM wparam,LPARAM lparam)
+LRESULT CMainFrame::OnAppSend(WPARAM wparam, LPARAM lparam)
 {
 	m_sockpool.SendToApp((void *)wparam);
 	return 0;
@@ -429,5 +427,4 @@ LRESULT CMainFrame::SockStateUpdate(WPARAM wparam, LPARAM lparam)
 	GetActiveView()->SendMessage(SOCKSTATEUPDATE, wparam);
 	return 0;
 }
-
 
