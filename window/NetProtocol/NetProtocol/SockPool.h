@@ -3,14 +3,14 @@
 #include <map>
 using namespace std;
 
-#define  TRANSTOIP       WM_USER+1000
-#define  IPTOLINK           WM_USER+1001
-#define  LINKSEND         WM_USER+1002
-#define  TRANSTOAPP   WM_USER+1003
-#define  APPTOTRANS	 WM_USER+1004
-#define  IPTOTRANS       WM_USER+1005
-#define  LINKTOIP           WM_USER+1006
-#define  APPSEND          WM_USER+1007
+#define  TRANSTOIP              WM_USER+1000
+#define  IPTOLINK                  WM_USER+1001
+#define  LINKSEND                WM_USER+1002
+#define  TRANSTOAPP          WM_USER+1003
+#define  APPTOTRANS	       WM_USER+1004
+#define  IPTOTRANS             WM_USER+1005
+#define  LINKTOIP                 WM_USER+1006
+#define  APPSEND                WM_USER+1007
 #define SOCKSTATEUPDATE WM_USER+1008
 
 #define  SOCKCONNECT             200
@@ -34,7 +34,7 @@ typedef struct Manager
 	HANDLE Tail;
 } *PM;
 
-struct lsockstruct {
+struct transstruct {
 	unsigned short  dstport;   //目的端口号
 	unsigned short  srcport;   //源端口号
 	unsigned int  function;     //绑定端口号
@@ -119,7 +119,7 @@ public:
 private:	
 	int nPort=0;
 	map <portsrc, unsigned int> SrcPort2ScokMark;
-	map <unsigned int, lsockstruct *> SockMark2SockStruct;
+	map <unsigned int, transstruct *> SockMark2SockStruct;
 	map <unsigned int, unsigned short>  SockMark2Port;
 	map <unsigned short, unsigned int>  Port2SockMark;
 	map <unsigned int, CEvent *>SockMark2WEvent;

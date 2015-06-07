@@ -10,7 +10,7 @@ public:
 private:
 	HANDLE   ReadQueue, WriteQueue;
 	Manager  *pReadQueue, *pWriteQueue;
-	HANDLE SH,CH;
+	HANDLE   SH, CH;
 	PC   pConnQueue;
 	char srcip[20], dstip[20];
 	unsigned short srcport, dstport;

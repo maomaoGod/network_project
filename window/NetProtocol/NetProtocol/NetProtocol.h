@@ -39,11 +39,11 @@
 struct sockstruct {
 	unsigned short  dstport;   //目的端口号
 	unsigned short  srcport;   //源端口号
-	unsigned short  bindport; //绑定端口号
+	unsigned short  funcID;   //socket操作码
 	int    datalength;             //数据长度
 	char srcip[20];                //原地址ip
 	char dstip[20];                //目标地址ip
-	char data[2048];             //数据
+	char *data;                   //数据
 };
 
 struct prostruct   //进程间通信结构体

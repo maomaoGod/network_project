@@ -38,7 +38,6 @@
 #define  SOCKCLOSE                 207
 #define  SOCKACCEPT               208
 
-
 /**
 *@brief 用户自定义消息的参数传递结构
 */

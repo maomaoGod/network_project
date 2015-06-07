@@ -58,8 +58,8 @@ public:
 private:
       bool flag;
 public:
-	 static int SockMark;
-	 static bool Isfirst;
+	 static int    SockMark;
+	 static bool  Isfirst;
 	 static HANDLE  MFile,Csemaphore, Psemaphore, Ssemaphore;  //注册文件和同步信号量
 	 static regstruct *preg;                                      
 	 void  GetSockMark(int &sockmark,regstruct &myreg);

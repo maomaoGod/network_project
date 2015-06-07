@@ -91,7 +91,7 @@ DWORD WINAPI SockPool::NewReadThread(LPVOID lParam)
 void SockPool::ReadSock(HANDLE CH,unsigned int SockMark,HANDLE ReadQueue,PM pReadQueue)
 {
 	PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));//获取Cur映射内存块
-	lsockstruct  AppData;
+	transstruct  AppData;
 	HANDLE HData=NULL;
 	portsrc myportsrc;
 	while (SockMark2ReadState[SockMark]) {
@@ -104,7 +104,7 @@ void SockPool::ReadSock(HANDLE CH,unsigned int SockMark,HANDLE ReadQueue,PM pRea
 		pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));
 
 		PN pNode = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));
-		memset(&AppData, 0, sizeof(lsockstruct));
+		memset(&AppData, 0, sizeof(transstruct));
 		switch (pNode->FuncID){
 		case SOCKBIND:
 			    Port2SockMark.erase(SockMark2Port[SockMark]);
@@ -169,7 +169,7 @@ DWORD WINAPI SockPool::NewWriteThread(LPVOID lParam)
 
 void   SockPool::SockDataToNode(PN pNode, unsigned int SockMark)
 {
-	lsockstruct *psockstruct = SockMark2SockStruct[SockMark];
+	transstruct *psockstruct = SockMark2SockStruct[SockMark];
 	memcpy(pNode->dstip, psockstruct->dstip, 20);
 	memcpy(pNode->srcip, psockstruct->srcip, 20);
 	pNode->dstport = psockstruct->dstport;
@@ -218,7 +218,7 @@ void  SockPool::AllocResource(unsigned int SockMark)
 	SockMark2Port[SockMark] = nPort++;
 	SockMark2ReadState[SockMark] = true;
 	SockMark2WriteState[SockMark] = true;
-	SockMark2SockStruct[SockMark] = new lsockstruct();
+	SockMark2SockStruct[SockMark] = new transstruct();
 	SockMark2WEvent[SockMark] = new CEvent();
 	SockMark2WEvent[SockMark]->SetEvent();
 	SockMark2REvent[SockMark] = new CEvent();
@@ -243,6 +243,7 @@ void SockPool::Connect()
 			struct Para rPara, wPara;
 
 			AllocResource(preg->SockMark);
+
 			ReadQueue = OpenFileMapping(FILE_MAP_WRITE, FALSE, preg->WriteQueueName);
 			InitalReadQueue(ReadQueue,pReadQueue,CH);
 			WriteQueue = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(Manager), preg->ReadQueueName);
@@ -296,7 +297,7 @@ void    SockPool::SendToApp(void *psock)
 {
 	portsrc        tempsrc;
 	unsigned short nPort;
-	lsockstruct *pmysock = (lsockstruct *)psock;
+	transstruct *pmysock = (transstruct *)psock;
 	memcpy(tempsrc.srcip, pmysock->srcip, 20); //根据源端口源地址目的端口找到通信端口
 	tempsrc.srcport = pmysock->srcport;
 	tempsrc.dstport = pmysock->dstport;
@@ -305,7 +306,7 @@ void    SockPool::SendToApp(void *psock)
 		return;
 	unsigned int SockMark = Port2SockMark[nPort];
 	WaitForSingleObject(*SockMark2WEvent[SockMark],INFINITE);
-	memcpy(SockMark2SockStruct[SockMark], pmysock, sizeof(lsockstruct));
+	memcpy(SockMark2SockStruct[SockMark], pmysock, sizeof(transstruct));
 	SockMark2REvent[SockMark]->SetEvent();
 }
 
