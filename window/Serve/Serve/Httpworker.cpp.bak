@@ -1,0 +1,248 @@
+#include "stdafx.h"
+#include "Httpworker.h"
+#include "Tools.h"
+#define Conntion 0
+
+using namespace Tools;
+
+Httpworker::Httpworker()
+{
+	//nothing
+	alg = new checkarg();
+	fun = new map<string, DealWithFunciton>();
+	word = new resword();
+	(*alg)["get"] = (*alg)["GET"] = 2;
+	(*alg)["post"] = (*alg)["POST"] = 3;
+	(*alg)["put"] = (*alg)["PUT"] = 3;
+	(*alg)["head"] = (*alg)["HEAD"] = 2;
+	(*alg)["delete"] = (*alg)["DELETE"] = 2;
+	(*alg)["options"] = (*alg)["OPTIONS"] = 2;
+	(*alg)["trace"] = (*alg)["TRACE"] = 2;
+	(*alg)["connect"] = (*alg)["CONNECT"] = 2;
+
+	//connect
+	(*alg)["close"] = 0;
+	(*alg)["keep-alive"] = 1;
+
+	//set fun
+	(*fun)["GET"] = (*fun)["get"] = &Httpworker::GET;
+	(*fun)["HEAD"] = (*fun)["head"] = &Httpworker::HEAD;
+	(*fun)["POST"] = (*fun)["post"] = &Httpworker::POST;
+	(*fun)["PUT"] = (*fun)["put"] = &Httpworker::PUT;
+	(*fun)["DELETE"] = (*fun)["delete"] = &Httpworker::DELETEFILE;
+	(*fun)["OPTIONS"] = (*fun)["options"] = &Httpworker::OPTIONS;
+	(*fun)["TRACE"] = (*fun)["trace"] = &Httpworker::TRACE_HTTP;
+	(*fun)["CONNECT"] = (*fun)["connect"] = &Httpworker::CONNECT;
+	//bad res
+	(*fun)["BAD"] = (*fun)["bad"] = &Httpworker::BAD_RES;
+	//int error
+	(*fun)["ERROR"] = (*fun)["error"] = &Httpworker::ERROR_HTTP;
+
+	(*word)[200] = "OK";
+	(*word)[304] = "NOT Modified";
+}
+
+Httpworker::~Httpworker()
+{
+	delete msg;
+	delete rmsg;
+	delete alg;
+	delete fun;
+	delete word;
+	host = "";
+}
+
+void Httpworker::Make(){
+	if (fun->find(rmsg->method) == fun->end()){
+		(this->*(*fun)["bad"])();//args
+		return;
+	}
+	try{(this->*(*fun)[rmsg->method])();//args
+
+	}
+	catch (exception e){
+		(this->*(*fun)["error"])();//args
+		return;
+	}
+	/*
+	if(msg) delete msg;
+	msg = new HttpMsg();
+	msg->method = data[0];
+	msg->path = data[1];
+	msg->no = 11;
+	msg->host = this->host;
+	msg->user = "HUST ACN2012 Virtual Terminal - v1.0";
+	msg->language = "chinese";
+	msg->connect = "close";
+	if (Conntion) msg->connect = "keep-alive";
+	//at last
+	msg->cookie = new Httpcookie();
+	for (int i = 2; i < data.size(); i++)
+		msg->data += data[i];
+		*/
+}
+
+http_error_code Httpworker::analy(){
+	//set msg;
+	msg = new HttpMsg();
+	msg->connect = rmsg->connect;
+	msg->no = rmsg->no;
+	msg->date = Timer::GetCurtime();
+	msg->server = "HUST ACN2012 Virtual Terminal - v1.0";
+	msg->last_modified = Timer::FilelastChange(rmsg->path);
+	msg->cookie = new Httpcookie();
+	return 0;//success
+}
+
+/*
+//request
+string method;
+string path;
+version no;
+//host
+string host;
+string user;
+string language;
+string connect;
+string if_modified_since;
+Httpcookie *cookie;
+string options;
+string data;
+*/
+/*
+
+int length;
+string data;
+*/
+
+void Httpworker::GET(){
+	// not exist
+	if (!FIO::Exist(rmsg->path)){
+		msg->code = 404;
+		msg->word = (*word)[msg->code];
+		return;
+	}
+	// web cache
+	if (rmsg->if_modified_since != ""){
+		//condtional get
+		if (msg->last_modified == rmsg->if_modified_since){
+			msg->code = 304;
+			msg->word = (*word)[msg->code];
+			return;
+		}
+	}
+	// 200
+	msg->code = 200;
+	msg->word = (*word)[msg->code];
+	msg->type = "html";
+	msg->data = FIO::ReadFile(rmsg->path);
+	msg->length = msg->data.length();
+	return;
+}
+/**
+*@brief the function we choose to deal with the data request like GET
+*@author  ACM2012
+*@param [in] <data> some information we want to get
+*@return void
+*@note
+*与GET方法相同，服务器只返回状态行和头标，
+*并不返回请求文档, Map it to 2
+*path >> data[1]
+*host >> data[2]
+*1 find the file according to the path
+*2 if not exist return (NO_FOUND,"NOT FOUND")
+given the Msg like (no of state, and text Msg)
+use sender to send it out
+*/
+void Httpworker::HEAD(){
+}
+/**
+*@brief POST methods
+*@author  ACM2012
+*@param [in] <data> some information we want to get
+*@return void
+*@note
+*服务器接受被写入客户端输出流中的数据的请求,Map it to 3
+*path >> data[1]
+*host >> data[2]
+*1 analysis the data from client
+*2 save it the Socket conn to it
+*return OK
+*/
+void Httpworker::POST(){
+}
+/**
+*@brief PUT method
+*@author  ACM2012
+*@param [in] <data> some information we want to get
+*@return void
+*@note
+*服务器保存请求数据作为指定URI新内容的请求,Map it to 4
+*path >> data[1]
+*host >> data[2]
+*1 find the file in path?
+*2 no -> save it in this path ,return OK
+*3 yes ->
+* 3.1 rewrite it in this path , return OK
+* 3.2 return HAVE_EXISTED
+*/
+void Httpworker::PUT(){
+}
+/**
+*@brief DELETE some options of request methods
+*@author  ACM2012
+*@param [in] <data> some information we want to get
+*@return void
+*@note
+*服务器删除URI中命名的资源的请求, Map it to 5
+*path >> data[1]
+*host >> data[2]
+*1 find the file in path?
+*2 yes -> delete it in this path ,return OK
+*3 no ->
+* 3.1 return OK anyway
+* 3.2 return warnning "NOT_EXIST"
+*/
+void Httpworker::DELETEFILE(){
+}
+/**
+*@brief some options of request methods
+*@author  ACM2012
+*@param [in] <data> some information we want to get
+*@return void
+*@note
+*关于服务器支持的请求方法信息的请求,Map it to 6
+*just tell the people things this serve support
+* 1 return OK
+* 2 return "GET HEAD POST PUT DELETE OPTIONS TRACE CONNECT"as Msg
+*/
+void Httpworker::OPTIONS(){
+}
+/**
+*@brief don't Know what's it meaning
+*@author  ACM2012
+*@param [in] <data> some information we want to get
+*@return void
+*@note
+*Web服务器反馈Http请求和其头标的请求,Map it to 7
+*/
+void Httpworker::TRACE_HTTP(){
+}
+/**
+*@brief NOT USE FUNCTION
+*@author  ACM2012
+*@param [in] <data> some information we want to get
+*@return void
+*@note
+*已文档化但当前未实现的一个方法,预留做隧道处理, Map it to 8
+*this function leaved to satifiy other function
+*and it doesn't has a function now
+*/
+void Httpworker::CONNECT(){
+}
+
+void Httpworker::BAD_RES(){
+}
+
+void Httpworker::ERROR_HTTP(){
+}

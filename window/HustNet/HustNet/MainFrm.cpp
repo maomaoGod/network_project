@@ -6,7 +6,6 @@
 #include "MainFrm.h"
 #include "NetSet.h"
 #include "UIctrl.h"
-#include "ComSocket.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

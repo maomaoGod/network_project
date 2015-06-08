@@ -140,14 +140,7 @@ BEGIN
     END
     POPUP "添加（&A）"
     BEGIN
-        MENUITEM "DNS映射",                       ADD_DNS
-    END
-    POPUP "启用"
-    BEGIN
-        MENUITEM "DNS服务",                       ID_32773
-        MENUITEM "FTP服务",                       ID_32774
-        MENUITEM "HTTP服务",                      ID_32775
-        MENUITEM "STMP服务",                      ID_32776
+        MENUITEM "DNSADDR映射",                       ADD_DNSADDR
     END
 END
 
@@ -196,9 +189,9 @@ BEGIN
     DEFPUSHBUTTON   "确定",IDOK,113,41,50,14,WS_GROUP
 END
 
-IDD_DNS DIALOGEX 0, 0, 161, 178
+IDD_DNSADDR DIALOGEX 0, 0, 161, 178
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "DNS映射"
+CAPTION "DNSADDR映射"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     EDITTEXT        IDC_domain,37,62,110,14,ES_AUTOHSCROLL
@@ -274,7 +267,7 @@ BEGIN
         BOTTOMMARGIN, 55
     END
 
-    IDD_DNS, DIALOG
+    IDD_DNSADDR, DIALOG
     BEGIN
         BOTTOMMARGIN, 177
     END

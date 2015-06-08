@@ -6,6 +6,8 @@
 #include "Cmysocket.h"
 #include "CmyTestSocket.h"
 #include "SMTPServeSocket.h"
+#include "DNSServeSocket.h"
+#include "DnsSocket.h"
 #pragma once
 
 class CServeView : public CEditView
@@ -23,8 +25,10 @@ public:
    // CmyTestSocket    mytestsock;
 protected :
 	HttpServeSocket  HttpManagerSocket;
-	FTPServeSocket  FtpManagerSocket;
+	FTPServeSocket FtpManagerSocket;
 	SMTPServeSocket SmtpManagerSocket;
+	DNSServeSocket DnsManagerSocket;
+	//DnsSocket DnsManagerSocket;
 // ÖØÐ´
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
@@ -50,6 +54,7 @@ protected:
 public:
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg LRESULT OnPrint(WPARAM wparam, LPARAM lparam);
+	afx_msg LRESULT DNSADDRAdd(WPARAM, LPARAM);
 protected:
 	void OnPrint(CString e);
 public:

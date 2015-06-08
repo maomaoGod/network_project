@@ -4,7 +4,7 @@
 #pragma once
 #include "stdafx.h"
 #include "Serve.h"
-#include "DNS.h"
+#include "DNSADDR.h"
 
 #include "MainFrm.h"
 
@@ -19,8 +19,8 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
-	ON_COMMAND(ADD_DNS, &CMainFrame::OnDns)
-	ON_MESSAGE(DNSADD,DnsAdd)
+	ON_COMMAND(ADD_DNSADDR, &CMainFrame::OnDNSADDR)
+    ON_MESSAGE(DNSADDRADD,DNSADDRAdd)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -94,20 +94,65 @@ void CMainFrame::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
-LRESULT CMainFrame::DnsAdd(WPARAM wparam, LPARAM lparam)
+
+/*LRESULT CMainFrame::Register(WPARAM wparam, LPARAM lparam)
 {
-	CString   Domain, IPaddr;
-	Domain = *((CString *)wparam);
-	IPaddr =   *((CString *)lparam);
-	AfxMessageBox(Domain);
-	AfxMessageBox(IPaddr);
+	COPYDATASTRUCT mycp;
+	protocolwnd = ::FindWindow(NULL, _T("NetProtocol"));
+	if (protocolwnd == NULL){
+		AfxMessageBox(_T("网络协议未开启"));
+		DestroyWindow();
+		return 0;
+	}
+	mycp.dwData = NULL;
+	mycp.cbData =  NULL;
+	mycp.lpData =   NULL;
+	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
+	return 0;
+}
+
+// CMainFrame 消息处理程序
+BOOL CMainFrame::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	if (pCopyDataStruct != NULL)
+	{
+		LPCTSTR pszText = (LPCTSTR)(pCopyDataStruct->lpData);
+		DWORD   dwLength = (DWORD)(pCopyDataStruct->cbData);
+		CString mystr;
+		memcpy(mystr.GetBuffer(dwLength / sizeof(TCHAR)), pszText, dwLength);
+		mystr.ReleaseBuffer();
+		PrintView(mystr);
+		SendMessage(SENDOUT, (WPARAM)&mystr);
+	}
+	return CFrameWnd::OnCopyData(pWnd, pCopyDataStruct);
+}
+
+LRESULT CMainFrame::SendOut(WPARAM wparam, LPARAM lparam)
+{
+	if (protocolwnd == NULL)//目前默认网络服务是启动的
+		Register(NULL, NULL);
+	if (protocolwnd == NULL)
+		return 0;
+	CString *sendtext = (CString *)wparam;
+	COPYDATASTRUCT mycp;
+	mycp.dwData = _getpid();
+	mycp.cbData = (*sendtext).GetLength()*sizeof(TCHAR);
+	mycp.lpData = (void*)(*sendtext).GetBuffer(0);
+	::SendMessage(protocolwnd, WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)&mycp);
+	return 0;
+}*/
+
+LRESULT CMainFrame::DNSADDRAdd(WPARAM wparam, LPARAM lparam)
+{
+	GetActiveView()->SendMessage(DNSADDRADD,wparam, lparam);
 	return 0;
 }
 
 
-void CMainFrame::OnDns()
+void CMainFrame::OnDNSADDR()
 {
 	// TODO:  在此添加命令处理程序代码
-	CDNS mydns;
-	mydns.DoModal();
+	CDNSADDR myDNSADDR;
+	myDNSADDR.DoModal();
 }

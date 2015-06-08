@@ -4,7 +4,6 @@
 #include "UICtrl.h"
 #include "NetHtml.h"
 #include "NetWork.h"
-#include "CmySocket.h"
 using namespace Tools;
 using namespace NetWork;
 
@@ -119,18 +118,6 @@ void UserCmd::Ftp(CString e){
 	FTPApp myftp;
 	myftp.Begin();
 }
-
-
-void UserCmd::Smtp(CString IP){
-	if (IP == "")
-	{
-		PrintLog(_T("IP should be attached!\r\n"));
-		return;
-	}
-	AppLayerSMTP smtper(IP);
-	smtper.Begin();
-}
-
 void UserCmd::Chat(CString e){
 	ChatWork chat;
 	chat.Begin();
@@ -173,16 +160,4 @@ void UserCmd::cleanlog(CString e){
     CleanLog(NULL);
 }
 
-void UserCmd::mytest(CString e){
-	CString sed;
-	TakeOverCmd(_T("Test>"));
-	TCHAR S[100];
-	CmySocket mysock;
-	mysock.Connect(_T("127.0.0.1"), 6500);
-	while ((sed = GetLine()).Compare(_T("exit")) != 0){
-		mysock.Send(sed, sed.GetLength()*sizeof(TCHAR));
-		mysock.Receive(S, 100);
-		PrintRp(S);
-	}
-}
 
