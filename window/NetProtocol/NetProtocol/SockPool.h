@@ -3,10 +3,10 @@
 #include <map>
 using namespace std;
 
-#define  TRANSTOIP              WM_USER+1000
-#define  IPTOLINK                  WM_USER+1001
-#define  LINKSEND                WM_USER+1002
-#define  TRANSTOAPP          WM_USER+1003
+#define  TRANSTOIP             WM_USER+1000
+#define  IPTOLINK                 WM_USER+1001
+#define  LINKSEND               WM_USER+1002
+#define  TRANSTOAPP         WM_USER+1003
 #define  APPTOTRANS	       WM_USER+1004
 #define  IPTOTRANS             WM_USER+1005
 #define  LINKTOIP                 WM_USER+1006
@@ -41,37 +41,28 @@ struct transstruct {
 	int    datalength;             //数据长度
 	char srcip[20];                //原地址ip
 	char dstip[20];                //目标地址ip
-	char *data;                      //数据
+	char *data;                     //数据
 };
 
 typedef struct Node
 {
-	unsigned int FuncID;
-	unsigned int SockMark;
-	unsigned int AcceptSockMark;
-	unsigned short  srcport;   //源端口号
-	unsigned short  dstport;   //目的端口号
-	char srcip[20];                //源ip
-	char dstip[20];                //目的ip
-	unsigned short  bindport; //绑定端口号
-	unsigned int  DataLen; //数据长度
-	HANDLE Data;
-	HANDLE Next;
+	unsigned int FuncID;///< 套接字消息类型
+	unsigned int AcceptSockMark;///<指派套接字标识
+	unsigned short  srcport;    ///<源端口号
+	unsigned short  dstport;    ///<目的端口号
+	char srcip[20];                 ///<源ip
+	char dstip[20];                 ///<目的ip
+	unsigned short  bindport;  ///<绑定端口号
+	unsigned int  DataLen;     ///<数据长度
+	HANDLE Data;               ///<数据句柄
+	HANDLE Next;              ///<下一个节点句柄
 }*PN;
 
 struct regstruct{
-	int    SockMark;
-	TCHAR ReadQueueName[20];
-	TCHAR WriteQueueName[20];
+	int    SockMark;            ///<套接字唯一标识
+	TCHAR ReadQueueName[20];///<读链表管理结构名
+	TCHAR WriteQueueName[20];///<写链表管理结构名
 };
-
-typedef struct ConnQueue
-{
-	char srcip[20];
-	char dstip[20];
-	unsigned short srcport;
-	unsigned short dstport;
-}*PC;
 
 struct Para
 {
@@ -126,8 +117,10 @@ private:
 	map <unsigned int, CEvent *>SockMark2REvent;
 	map <unsigned int, bool> SockMark2ReadState;
 	map <unsigned int, bool> SockMark2WriteState;
-private:
-	HANDLE Psemaphore, Csemaphore, Ssemaphore;
+	map  <unsigned int, HANDLE> SockMark2ReadThread;
+	map <unsigned int, HANDLE> SockMark2WriteThread;
+ private:
+	HANDLE Wsemaphore, Rsemaphore, Dsemaphore;
 	HANDLE MFile;
 	HANDLE SH;
 	regstruct *preg;

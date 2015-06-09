@@ -10,7 +10,6 @@
 #define  SOCKCLOSE                 207
 #define  SOCKACCEPT               208
 
-
 /**
 * @author ACM2012
 * @note   读写链表管理结构，管理结构为进程共享结构,实现多进程对同一链表的管理。
@@ -29,8 +28,7 @@ typedef struct Manager
 
 typedef struct Node
 {
-	unsigned int FuncID;///< 套接字消息类型
-	unsigned int SockMark;///< 套接字唯一标识
+	unsigned int FuncID;              ///< 套接字消息类型
 	unsigned int AcceptSockMark;///<指派套接字标识
 	unsigned short  srcport;    ///<源端口号
 	unsigned short  dstport;    ///<目的端口号
@@ -38,8 +36,8 @@ typedef struct Node
 	char dstip[20];                 ///<目的ip
 	unsigned short  bindport;  ///<绑定端口号
 	unsigned int  DataLen;     ///<数据长度
-	HANDLE Data;               ///<数据句柄
-	HANDLE Next;              ///<下一个节点句柄
+	HANDLE Data;                ///<数据句柄
+	HANDLE Next;                ///<下一个节点句柄
 }*PN;
 
 struct regstruct{
@@ -48,30 +46,31 @@ struct regstruct{
 	TCHAR WriteQueueName[20];///<写链表管理结构名
 };
 
-typedef struct ConnQueue
-{
-	char srcip[20];   ///<源端口号
-	char dstip[20];   ///<目的端口号
-	unsigned short srcport; ///<
-	unsigned short dstport; ///<
-}*PC;
-
 class CComSocket
 {
 public:
 	  CComSocket();
 	~CComSocket();
 private:
-      bool flag;
-public:
-	 static int SockMark;
-	 static bool Isfirst;
-	 static HANDLE  MFile,Csemaphore, Psemaphore, Ssemaphore;  //注册文件和同步信号量
-	 static regstruct *preg;                                      
-	 void  GetSockMark(int &sockmark,regstruct &myreg);
+     static bool Isfirst; 
+	 static int  SockNum;
 protected:
-	bool  PrintLog(LPCTSTR, bool);
-	void  char2Tchar(LPCTSTR dst, LPSTR src, int maxlen);
-	void  Tchar2char(LPSTR dst, LPCTSTR src);
+	 char srcip[20], dstip[20], csrcip[20], cdstip[20];
+	 unsigned short srcport,dstport,csrcport,cdstport;
+	 unsigned int SockMark;
+	 regstruct myreg;
+public:
+	 static HANDLE  MFile,Wsemaphore, Rsemaphore, Dsemaphore;  //注册文件和同步信号量
+	 static regstruct *preg;                                      
+	 void        GetSockMark(unsigned int &sockmark,regstruct &myreg);
+	 HANDLE PackNode(unsigned int function);
+	 HANDLE PackNode(unsigned int function, UINT nSocketPort);
+	 HANDLE PackNode(unsigned int function, const void* lpBuf, int nBufLen);
+	 HANDLE PackNode(unsigned int function, LPCTSTR lpszHostAddress, UINT nHostPort);
+	 HANDLE PackNode(unsigned int function, CComSocket &rConnectedSocket);
+	 HANDLE PackNode(unsigned int function, const void* lpBuf, int nBufLen, UINT nHostPort, LPCTSTR lpszHostAddress);
+	 bool  PrintLog(LPCTSTR, bool);
+	 void  char2Tchar(LPCTSTR dst, LPSTR src, int maxlen);
+	 void  Tchar2char(LPSTR dst, LPCTSTR src);
 };
 

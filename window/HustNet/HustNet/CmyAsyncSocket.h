@@ -1,7 +1,4 @@
 #pragma once
-#include "stdafx.h"
-
-#include "HustNet.h"
 #include "ComSocket.h"
 
 class  CmyAsyncSocket : public CComSocket
@@ -11,32 +8,29 @@ public:
 	~CmyAsyncSocket();
 private:
 	HANDLE   ReadQueue, WriteQueue;
-	Manager  *pReadQueue, *pWriteQueue;
-	HANDLE SH, CH;
-	PC   pConnQueue;
-	char srcip[20], dstip[20];
-	unsigned short srcport, dstport;
+	HANDLE   SH, CH;
+	HANDLE    Pthread;
+	bool state;
+	Manager   *pReadQueue, *pWriteQueue;
 private:
-	bool   flag;          //创建是否成功标志
-	int     SockMark; //套接字唯一标志 
-	int     LastError;   //错误代号
-	bool  done = true;
-	bool  state = true;
-	char *pReadData;
+	bool    flag;          //创建是否成功标志
+	int      LastError;   //错误代号
+	bool   done = true;
+	char  *pReadData;
 	unsigned int ReadDataLen, DataLen;
 private:
-	bool  InitalWriteQueue();
-	bool  InitalReadQueue();
-	bool  AddToTail(HANDLE NewNode);
-	void  RemoveNode(HANDLE);
-	void  GetSockEvent();
-	static DWORD WINAPI NewGetSockEventThread(LPVOID lParam);
+	bool  InitalWriteQueue(regstruct &);
+	bool  InitalReadQueue(regstruct &);
+	void   RemoveRead();
+	bool   AddToTail(HANDLE NewNode);
+	static DWORD WINAPI NewGetSockEventThread(LPVOID);
+	void   GetSockEvent();
 public:
 	bool Listen();
 
 	int   SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTSTR lpszHostAddress);
 
-	int  ReceiveFrom(void* lpBuf, int nBufLen, CString& rSocketAddress, UINT& rSocketPort, int nFlags = 0);
+	int   ReceiveFrom(void* lpBuf, int nBufLen, CString& rSocketAddress, UINT& rSocketPort, int nFlags = 0);
 
 	bool Bind(UINT nSocketPort);
 

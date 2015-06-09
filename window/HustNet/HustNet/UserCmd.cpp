@@ -8,8 +8,6 @@
 using namespace Tools;
 using namespace NetWork;
 
-
-
 UserCmd::UserCmd()
 {
 }
@@ -178,7 +176,7 @@ void UserCmd::mytest(CString e){
 	TakeOverCmd(_T("Test>"));
 	TCHAR S[100];
 	CmySocket mysock;
-	mysock.Connect(_T("127.0.0.1"), 6500);
+	//mysock.Connect(_T("127.0.0.1"), 6500);
 	while ((sed = GetLine()).Compare(_T("exit")) != 0){
 		mysock.Send(sed, sed.GetLength()*sizeof(TCHAR));
 		mysock.Receive(S, 100);

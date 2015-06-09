@@ -7,23 +7,20 @@ public:
  	  CmySocket();
 	~CmySocket();
 private:
-	HANDLE   ReadQueue, WriteQueue;
-	Manager  *pReadQueue, *pWriteQueue;
-	HANDLE SH,CH;
-	PC   pConnQueue;
-	char srcip[20], dstip[20];
-	unsigned short srcport, dstport;
+	HANDLE   ReadQueue,WriteQueue;
+	HANDLE   SH, CH;
+	Manager   *pReadQueue, *pWriteQueue;
 private:
-	bool   flag;          //创建是否成功标志
-	int     SockMark; //套接字唯一标志 
-	int     LastError;   //错误代号
-	bool  done=true;
-	char *pReadData;
+	bool    flag;          //创建是否成功标志
+	int      LastError;   //错误代号
+	bool   done=true;
+	char  *pReadData;
 	unsigned int ReadDataLen,DataLen;
 private:
-	bool  InitalWriteQueue();
-	bool  InitalReadQueue();
-	bool  AddToTail(HANDLE NewNode);
+	bool  InitalWriteQueue(regstruct &);
+	bool  InitalReadQueue(regstruct &);
+	void   RemoveRead();
+	bool   AddToTail(HANDLE NewNode);
 public:
 	bool Listen();
 
