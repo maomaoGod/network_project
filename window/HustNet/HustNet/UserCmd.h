@@ -28,7 +28,6 @@ public:
 	void UserCmd::GetHtml(CString url);
 	void UserCmd::Visit(CString url);
 	void UserCmd::Ftp(CString url);
-	void UserCmd::Smtp(CString IP);
-	void UserCmd::mytest(CString IP);
+	void UserCmd::mytest(CString e);
 };
 

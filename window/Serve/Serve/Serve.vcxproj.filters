@@ -72,10 +72,25 @@
     <ClInclude Include="CmyTestSocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DNS.h">
+    <ClInclude Include="DNSworker.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Httpworker.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DnsSocket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DNSServeSocket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DNSClientSocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ComSocket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DNS.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -122,7 +137,22 @@
     <ClCompile Include="SMTPServeSocket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="DNS.cpp">
+    <ClCompile Include="DNSADDR.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DNSworker.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Httpworker.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DnsSocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DNSServeSocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DNSClientSocket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ComSocket.cpp">

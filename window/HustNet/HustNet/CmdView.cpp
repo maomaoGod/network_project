@@ -153,12 +153,12 @@ void CmdView::Initialcmd()
 	my_map.insert(pair<CString, CMDPROC>(_T("conn"), &UserCmd::Connect));
 	my_map.insert(pair<CString, CMDPROC>(_T("setdll"), &UserCmd::SetDll));
 	my_map.insert(pair<CString, CMDPROC>(_T("gethtml"), &UserCmd::GetHtml));
-	//my_map.insert(pair<CString, CMDPROC>(_T("visit"), &UserCmd::Visit));
+//	my_map.insert(pair<CString, CMDPROC>(_T("gethtml"), &UserCmd::GetHtml));
+//	my_map.insert(pair<CString, CMDPROC>(_T("visit"), &UserCmd::Visit));
 	my_map.insert(pair<CString, CMDPROC>(_T("mytest"), &UserCmd::mytest));
 	my_map[_T("Http")] = &UserCmd::Http;//equal to before
 	my_map[_T("Chat")] = &UserCmd::Chat;
 	my_map[_T("Ftp")] = &UserCmd::Ftp;
-	my_map[_T("smtp")] = &UserCmd::Smtp;
 }
 
 /** @brief 处理回车键消息,触发命令处理函数*/

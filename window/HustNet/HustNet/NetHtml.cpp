@@ -66,14 +66,14 @@ CString  NetHtml::getURLContext(LPCTSTR pstrURL){
 	else
 	{
 		CString tempGET = tempURL.Mid(i);
-		GET = Tstr::Tchar2string(tempGET.GetBuffer());
+		GET = STR::Tchar2string(tempGET.GetBuffer());
 	}
 	//for (i = 0; myurl[i] != '/' && i < myurl.length(); i++) ;
 	//if (i == myurl.length()) GET = "/";
 	//else GET = myurl.substr(i, myurl.length() - i);
 	CString tempHOST = tempURL.Mid(0, i);
-	pHost = Tstr::Tchar2string(tempHOST.GetBuffer());
-	LPCWSTR host_name = Tstr::String2LPCWSTR(pHost);
+	pHost = STR::Tchar2string(tempHOST.GetBuffer());
+	LPCWSTR host_name = STR::String2LPCWSTR(pHost);
 	string header = "";
 	char buf[MAXLEN];
 	TCHAR TCHAR_buf[MAXLEN];
@@ -85,7 +85,7 @@ CString  NetHtml::getURLContext(LPCTSTR pstrURL){
 		mySocket.Connect(host_name, 80);	// Á¬½Ó80¶Ë¿Ú
 		//mySocket.Receive(buf, MAXLEN, 0);
 		header = "GET " + GET + " HTTP/1.1\nHOST: " + pHost + "\n\n";
-		char *temp = Tstr::S2Cstar(header);
+		char *temp = STR::S2Cstar(header);
 		mySocket.Send(temp, header.length() + 1, 0);
 		mySocket.Send("Connection: Close\n\n", 20, 0);
 		free(temp);

@@ -27,17 +27,6 @@
 #define GETCMDSTATE      WM_USER+1010
 #define GETLINESTATE      WM_USER+1011
 
-
-#define  SOCKCONNECT             200
-#define  SOCKBIND                     201
-#define  SOCKLISTEN                 202
-#define  SOCKSEND                   203
-#define  SOCKSENDTO               204
-#define  SOCKRECEIVE              205
-#define  SOCKRECEIVEFROM    206
-#define  SOCKCLOSE                 207
-#define  SOCKACCEPT               208
-
 /**
 *@brief 用户自定义消息的参数传递结构
 */
@@ -56,6 +45,8 @@ class CHustNetApp : public CWinApp
 {
 public:
 	CHustNetApp();
+
+
 /**
 *重写
 */

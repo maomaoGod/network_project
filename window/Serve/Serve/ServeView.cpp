@@ -13,6 +13,9 @@
 #include "ServeDoc.h"
 #include "ServeView.h"
 #include "CmyTestSocket.h"
+#include "Tools.h"
+
+using namespace Tools;
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -28,6 +31,7 @@ BEGIN_MESSAGE_MAP(CServeView, CEditView)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CEditView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CEditView::OnFilePrintPreview)
 	ON_WM_CHAR()
+	ON_MESSAGE(DNSADDRADD, DNSADDRAdd)
 	ON_MESSAGE(PRINT,OnPrint)
 	ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
@@ -51,6 +55,13 @@ CServeView::CServeView()
 	//mytestsock.Bind(6500);
 	SmtpManagerSocket.Create(8000);
 	SmtpManagerSocket.Listen();
+
+	DnsManagerSocket.Create(dns_port);
+	DnsManagerSocket.Listen();
+	//DnsManagerSocket.Create(dns_port, SOCK_DGRAM);
+	//DnsManagerSocket.Bind(dns_port, _T("127.0.0.1"));
+	//DnsManagerSocket.Listen();
+	
 }
 
 CServeView::~CServeView()
@@ -135,4 +146,14 @@ void CServeView::OnSetFocus(CWnd* pOldWnd)
 	//CEditView::OnSetFocus(pOldWnd);
 
 	// TODO:  在此处添加消息处理程序代码
+}
+
+LRESULT CServeView::DNSADDRAdd(WPARAM wparam, LPARAM lparam)
+{
+	CString   Domain, IPaddr;
+    Domain = *((CString *)wparam);
+    IPaddr =   *((CString *)lparam);
+	DnsManagerSocket.addmap(STR::CS2S(Domain), STR::CS2S(IPaddr));
+    AfxMessageBox(Domain +_T("->") +IPaddr + _T(" map finished"));
+	return 0;
 }

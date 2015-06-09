@@ -7,8 +7,8 @@ public:
 	CmyAsyncSocket();
 	~CmyAsyncSocket();
 private:
-	HANDLE   ReadQueue, WriteQueue;
-	HANDLE   SH, CH;
+	HANDLE    ReadQueue, WriteQueue;
+	HANDLE    SH, CH;
 	HANDLE    Pthread;
 	bool state;
 	Manager   *pReadQueue, *pWriteQueue;

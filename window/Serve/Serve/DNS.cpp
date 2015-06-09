@@ -41,6 +41,6 @@ void CDNS::OnBnClickedOk()
 	CString Domain, IPaddr;
 	GetDlgItem(IDC_domain)->GetWindowText(Domain);
 	GetDlgItem(IDC_IPADDRESS)->GetWindowText(IPaddr);
-	AfxGetApp()->m_pMainWnd->SendMessage(DNSADD,(WPARAM)&Domain,(LPARAM)&IPaddr);
+	AfxGetApp()->m_pMainWnd->SendMessage(DNSADDRADD, (WPARAM)&Domain, (LPARAM)&IPaddr);
 	CDialogEx::OnOK();
 }

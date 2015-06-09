@@ -48,16 +48,10 @@
     <ClInclude Include="NetSet.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Tools.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="NetWork.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="NetDll.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="NetHtml.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="UserCmd.h">
@@ -66,13 +60,22 @@
     <ClInclude Include="UICtrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Cmysocket.h">
+    <ClInclude Include="DNSworker.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Httpworker.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="NetHtml.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ComSocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CmyAsyncSocket.h">
+      <Filter>头文件</Filter>
+	</ClInclude>
+    <ClInclude Include="Tools.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,9 +107,6 @@
     <ClCompile Include="NetDll.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="NetHtml.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="UserCmd.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -120,6 +120,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CmyAsyncSocket.cpp">
+	  <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DNSworker.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Httpworker.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NetHtml.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

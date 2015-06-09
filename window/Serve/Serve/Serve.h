@@ -9,10 +9,10 @@
 
 #include "resource.h"       // 主符号
 
-#define PRINT              WM_USER + 1000
-#define REGISTER       WM_USER + 1001
-#define SENDTONPC   WM_USER + 1002
-#define DNSADD          WM_USER + 1003
+#define PRINT                       WM_USER + 1000
+#define REGISTER                WM_USER + 1001
+#define SENDTONPC            WM_USER + 1002
+#define DNSADDRADD          WM_USER + 1003
 
 #define  SOCKCONNECT             200
 #define  SOCKBIND                     201
@@ -23,16 +23,6 @@
 #define  SOCKRECEIVEFROM    206
 #define  SOCKCLOSE                 207
 #define  SOCKACCEPT               208
-
-struct sockstruct {
-	unsigned short  dstport;   //目的端口号
-	unsigned short  srcport;   //源端口号
-	unsigned short  bindport; //绑定端口号
-	int    datalength;             //数据长度
-	char srcip[20];                //原地址ip
-	char dstip[20];                //目标地址ip
-	char data[2048];             //数据
-};
 
 
 // CServeApp:

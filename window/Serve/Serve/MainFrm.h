@@ -36,11 +36,11 @@ protected:  // 控件条嵌入成员
 // 生成的消息映射函数
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-//	afx_msg LRESULT Register(WPARAM, LPARAM);
+	afx_msg LRESULT Register(WPARAM, LPARAM);
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg LRESULT DnsAdd(WPARAM, LPARAM);
-	afx_msg void OnDns();
+	afx_msg LRESULT DNSADDRAdd(WPARAM, LPARAM);
+	afx_msg void OnDNSADDR();
 };
 
 

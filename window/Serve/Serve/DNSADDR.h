@@ -1,15 +1,15 @@
 #pragma once
 
 
-// CDNS 对话框
+// CDNSADDR 对话框
 
-class CDNS : public CDialogEx
+class CDNSADDR : public CDialogEx
 {
-	DECLARE_DYNAMIC(CDNS)
+	DECLARE_DYNAMIC(CDNSADDR)
 
 public:
-	CDNS(CWnd* pParent = NULL);   // 标准构造函数
-	virtual ~CDNS();
+	CDNSADDR(CWnd* pParent = NULL);   // 标准构造函数
+	virtual ~CDNSADDR();
 
 // 对话框数据
 	enum { IDD = IDD_DNSADDR };

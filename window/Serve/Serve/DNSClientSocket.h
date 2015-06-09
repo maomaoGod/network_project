@@ -1,15 +1,15 @@
 #pragma once
+#include "DNSServeSocket.h"
+// DNSClientSocket 命令目标
 
-// HttpClientSocket 命令目标
-
-
-class HttpClientSocket : public CAsyncSocket
+class DNSClientSocket : public CAsyncSocket
 {
 public:
-	HttpClientSocket();
-	virtual ~HttpClientSocket();
+	DNSClientSocket();
+	virtual ~DNSClientSocket();
 	TCHAR Buffer[1024];
 	int MAXLEN = 1024;
+	dnsmap *dnshost;
 	virtual void OnReceive(int nErrorCode);
 	virtual void OnSend(int nErrorCode);
 	virtual void OnClose(int nErrorCode);
