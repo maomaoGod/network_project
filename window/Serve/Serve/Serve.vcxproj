@@ -104,6 +104,7 @@
     <ClInclude Include="CmyAsyncSocket.h" />
     <ClInclude Include="Cmysocket.h" />
     <ClInclude Include="CmyTestSocket.h" />
+    <ClInclude Include="ComSocket.h" />
     <ClInclude Include="DNS.h" />
     <ClInclude Include="FTPClientSocket.h" />
     <ClInclude Include="FTPServeSocket.h" />
@@ -125,6 +126,7 @@
     <ClCompile Include="CmyAsyncSocket.cpp" />
     <ClCompile Include="CmySocket.cpp" />
     <ClCompile Include="CmyTestSocket.cpp" />
+    <ClCompile Include="ComSocket.cpp" />
     <ClCompile Include="DNS.cpp" />
     <ClCompile Include="FTPClientSocket.cpp" />
     <ClCompile Include="FTPServeSocket.cpp" />
