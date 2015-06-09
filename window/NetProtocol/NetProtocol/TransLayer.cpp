@@ -623,9 +623,9 @@ ctrl_close:
 		struct tcplist *single_tcp = head;
 		while (single_tcp != NULL)
 		{
-			//发送报文
 			if (single_tcp->connect_status = LINK_CONNECT_BIDIR || single_tcp->connect_status == LINK_PEER_HALF_OPEN)
 			{
+				// 向下递交报文段
 				while (min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS) - single_tcp->wait_for_ack <= min(single_tcp->cong_wind, single_tcp->rcvd_wind))
 				{
 					int new_send;
@@ -639,14 +639,41 @@ ctrl_close:
 					new_tcp_message.tcp_dst_port = single_tcp->tcp_dst_port;
 					new_tcp_message.tcp_hdr_length = 20;
 					memcpy(new_tcp_message.tcp_opts_and_app_data, &single_tcp->tcp_buf_send[single_tcp->wait_for_send], single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
+
+					// 送往网络层
 					TCP_Send2IP(new_tcp_message, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
+					
 					single_tcp->wait_for_send = new_send;
 					single_tcp->wait_for_fill_msg++;
+				}
+
+				// 向上交付报文
+				if (single_tcp->last_rcvd > single_tcp->last_read)
+				{
+					// 填入送往应用层的结构中
+					struct sockstruct new_sockstruct;
+					new_sockstruct.dstport = single_tcp->tcp_dst_port;
+					new_sockstruct.srcport = single_tcp->tcp_src_port;
+					new_sockstruct.funcID = SOCKSEND;
+					new_sockstruct.datalength = single_tcp->last_rcvd - single_tcp->last_read;
+					IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_src_ip);
+					IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_dst_ip);
+					// ---------由socket释放，这个写法似乎不太规范--------------------------------
+					new_sockstruct.data = (char *)malloc(new_sockstruct.datalength*sizeof(char));
+					// ---------由socket释放，这个写法似乎不太规范--------------------------------
+					memcpy(new_sockstruct.data, single_tcp->tcp_buf_rcvd+single_tcp->last_read+1, new_sockstruct.datalength);
+
+					// 送往应用层
+					AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct);
+
+					single_tcp->last_read = single_tcp->last_rcvd;
+					// 标记已经上交（这个似乎不需要？看样子可以把handin字段删掉）
+					// 甚至整个tcpmsg_rcvd都没球的用吧！！！
 				}
 			}
 
 			// 发送SYN，第一次握手
-			if (single_tcp->connect_status == LINK_CONNECTING)
+			else if (single_tcp->connect_status == LINK_CONNECTING)
 			{
 				// 构造SYN报文段
 				struct tcp_message new_tcp_msg;
