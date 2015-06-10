@@ -9,7 +9,7 @@
 */
 SockPool::SockPool()
 {
-	Wsemaphore = CreateSemaphore(NULL,1, 100, _T("NetProtocolWsemaphore"));//创建信号量P
+	Wsemaphore = CreateSemaphore(NULL, 1, 100, _T("NetProtocolWsemaphore"));//创建信号量P
 	Rsemaphore  = CreateSemaphore(NULL, 0, 100,  _T("NetProtocolRsemaphore"));//创建信号量C
 	Dsemaphore  = CreateSemaphore(NULL, 0, 100,  _T("NetProtocolDsemaphore"));//创建信号量S
 	MFile = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(regstruct), _T("NetProtocolListen"));
@@ -129,6 +129,7 @@ void SockPool::ReadSock(HANDLE CH,unsigned int SockMark,HANDLE ReadQueue,PM pRea
 			    AppData.dstport = pNode->dstport;
 			    AppData.datalength = pNode->DataLen;
 			    AppData.srcport = SockMark2Port[SockMark];
+				AppData.function = pNode->FuncID;
 				DuplicateHandle(CH,pNode->Data, SH, &HData, NULL, true, DUPLICATE_SAME_ACCESS);
 			    AppData.data = (char *) MapViewOfFile(HData, FILE_MAP_WRITE, 0, 0, pNode->DataLen);
 				AfxGetApp()->m_pMainWnd->SendMessage(TRANSTOIP, (WPARAM)&AppData, (LPARAM)pNode->FuncID);
@@ -138,10 +139,12 @@ void SockPool::ReadSock(HANDLE CH,unsigned int SockMark,HANDLE ReadQueue,PM pRea
 		    	memcpy(AppData.dstip, pNode->dstip,20);
 			    AppData.dstport = pNode->dstport;
 			    AppData.srcport = SockMark2Port[SockMark];
+				AppData.function = pNode->FuncID;
 				AfxGetApp()->m_pMainWnd->SendMessage(TRANSTOIP, (WPARAM)&AppData, (LPARAM)pNode->FuncID);
 				break;
 		case SOCKLISTEN:
 			     AppData.srcport = SockMark2Port[SockMark];
+				 AppData.function = pNode->FuncID;
 				 AfxGetApp()->m_pMainWnd->SendMessage(TRANSTOIP, (WPARAM)&AppData, (LPARAM)pNode->FuncID);
 				 break;
 		default:
@@ -296,6 +299,7 @@ void SockPool::Connect()
 			InitalThreadPara(wPara, CH, WriteQueue, pWriteQueue, preg->SockMark);
 			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewWriteThread, (LPVOID)&wPara, NULL, NULL);
 			ReleaseSemaphore(Rsemaphore, 1, NULL);
+
 			AfxGetApp()->m_pMainWnd->SendMessage(SOCKSTATEUPDATE, 1);
 		}
 }

@@ -24,6 +24,7 @@ public:
 public:
    // CmyTestSocket    mytestsock;
 protected :
+	CmyTestSocket mytestsock;
 	HttpServeSocket  HttpManagerSocket;
 	FTPServeSocket FtpManagerSocket;
 	SMTPServeSocket SmtpManagerSocket;

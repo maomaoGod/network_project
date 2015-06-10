@@ -20,7 +20,7 @@ CComSocket::CComSocket()
 		preg = (regstruct*)MapViewOfFile(MFile, FILE_MAP_WRITE, 0, 0, sizeof(regstruct));///<映射注册连接文件到本地
 		Wsemaphore = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, _T("NetProtocolWsemaphore"));///<打开应用程序信号量
 		Rsemaphore =  OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, _T("NetProtocolRsemaphore"));///<打开协议服务程序信号量
-		Dsemaphore =  OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, _T("NetProtocolRsemaphore"));///<打开协议服务成功信号量
+		Dsemaphore =  OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, _T("NetProtocolDsemaphore"));///<打开协议服务成功信号量
 		if (!(preg||Wsemaphore||Rsemaphore)){    
 			AfxMessageBox(_T("打开协议服务程序信号量失败"));
 			return;

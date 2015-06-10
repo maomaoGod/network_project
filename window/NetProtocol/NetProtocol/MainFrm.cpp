@@ -29,6 +29,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(TRANSTOIP, OnTrans2IP)
 	ON_MESSAGE(IPTOLINK, OnIP2Link)
 	ON_MESSAGE(LINKSEND, OnLinkSend)
+	ON_MESSAGE(SOCKSTATEUPDATE, SockStateUpdate)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -40,12 +41,15 @@ static UINT indicators[] =
 };
 
 // CMainFrame ¹¹Ôì/Îö¹¹
+DWORD WINAPI NewTcpControlThread(LPVOID)
+{
+	TCP_controller();
+	return 0;
+}
 
 CMainFrame::CMainFrame()
 {
-	// TODO:  ÔÚ´ËÌí¼Ó³ÉÔ±³õÊ¼»¯´úÂë
-	if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)packcap, (LPVOID) this, NULL, NULL))
-		AfxMessageBox(_T("´´½¨×¥°üÏß³ÌÊ§°Ü£¡"));
+	 CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewTcpControlThread, NULL, NULL, NULL);
 }
 
 CMainFrame::~CMainFrame()
@@ -169,15 +173,7 @@ LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´
 
 LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊý¾ÝÍøÂç²ãµÄ½Ó¿Ú
 {
-	my_linker &receiver = (*(my_linker *)lparam);
-	const u_char * packetData = (const u_char *)wparam;
-	IP_Msg * ip_msg;
-	ip_msg = receiver.combine(packetData);
-	if (ip_msg != NULL)
-	{
-		AfxGetApp()->m_pMainWnd->SendMessage(IPTOTRANS, (WPARAM)ip_msg);
-		delete ip_msg->iphdr;
-	}
+	linker.Link2IP(wparam);
 	return 0;
 }
 
@@ -253,15 +249,26 @@ LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊý¾Ý·¢Ë
 {
 	static int seq = 0;
 	struct IP_Msg *datagram = (struct IP_Msg *)wparam;
-	pcap_t *adapter = linker.get_adapter();
 	unsigned int Src_IP = (*datagram).iphdr->ih_saddr;
 	unsigned int Des_IP = (*datagram).iphdr->ih_daddr;
-	if (!linker.transtable(Des_IP))
+
+	if (Des_IP != getIP())
 	{
-		linker.send_broadcast(adapter, Src_IP, Des_IP);
-		linker.get_mac(adapter);
+		while (true)
+		{
+			linker.send_broadcast(linker.adapterHandle, Src_IP, Des_IP);
+			if (linker.get_mac(linker.adapterHandle)) break;
+			Sleep(200);
+		}
 	}
-	if ((linker.send_by_frame(datagram, adapter, seq)) == 0)
+	else
+	{
+		for (int i = 0; i < 3; ++i) linker.mac_des[i] = linker.mac_src[i];
+	}
+
+
+	//for (int i = 0; i < 3; ++i) linker.mac_des[i] = linker.mac_src[i];
+	if ((linker.send_by_frame(datagram, linker.adapterHandle, seq)) == 0)
 	{
 		seq += 1;
 		seq = seq % 100;
@@ -270,44 +277,6 @@ LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊý¾Ý·¢Ë
 	return 0;
 }
 
-DWORD WINAPI CMainFrame::packcap(LPVOID lParam)
-{
-	my_linker *receiver = new my_linker();
-	pcap_t * adapterHandle = receiver->get_adapter();
-	struct pcap_pkthdr * packetHeader;
-	const u_char       * packetData;
-	int retValue;
-	receiver->initialize();
-
-	while ((retValue = pcap_next_ex(adapterHandle,
-
-		&packetHeader,
-
-		&packetData)) >= 0)
-
-	{
-		if (retValue == 0) continue;
-		if (sizeof(Broadcast_frame) > packetHeader->len) continue;
-
-		if (receiver->check(packetData))
-		{
-			Broadcast_frame r_frame = *((Broadcast_frame *)packetData), s_frame;
-			for (int i = 0; i < 3; ++i)
-			{
-				receiver->mac_des[i] = s_frame.MAC_des[i] = r_frame.MAC_src[i];
-				s_frame.MAC_src[i] = receiver->mac_src[i];
-			}
-			s_frame.type = 0x0806;
-			s_frame.IP_dst = r_frame.IP_src;
-			s_frame.IP_src = r_frame.IP_dst;
-			pcap_sendpacket(adapterHandle,
-				(const u_char *)&s_frame,
-				sizeof(s_frame));
-		}
-		else AfxGetApp()->m_pMainWnd->SendMessage(LINKTOIP, (WPARAM)packetData, (LPARAM)receiver);
-	}
-	return 0;
-}
 
 LRESULT CMainFrame::OnAppSend(WPARAM wparam, LPARAM lparam)
 {

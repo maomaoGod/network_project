@@ -45,7 +45,6 @@ protected:  // 控件条嵌入成员
 	// 生成的消息映射函数
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	static DWORD WINAPI packcap(LPVOID lParam);
     static DWORD WINAPI connect(LPVOID lParam);
 	static DWORD WINAPI ReadFromApp(LPVOID lParam);
 	static DWORD WINAPI WriteToApp(LPVOID lParam);

@@ -82,6 +82,7 @@ private:
 	int bp;
 	int **data_pointer;
 	int *left;					 //每个数据报还剩多少帧
+	void get_adapter();
 
 public:
 
@@ -90,7 +91,7 @@ public:
 
 	//目的MAC地址
 	unsigned short mac_des[3];
-	static pcap_t * adapterHandle;
+	pcap_t * adapterHandle;
 	unsigned int transIP[table_size];
 	unsigned short transmac[table_size][3];
 	my_linker()
@@ -105,6 +106,9 @@ public:
 			data_pointer[i] = NULL;
 			ip_msg->iphdr = NULL;
 		}
+		get_adapter();
+		if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewPackThread, (LPVOID) this, NULL, NULL))
+			AfxMessageBox(_T("创建抓包线程失败！"));
 	}
 	~my_linker()
 	{
@@ -127,8 +131,8 @@ public:
 			data_pointer[i] = NULL;
 			ip_msg->iphdr = NULL;
 		}
+		get_adapter();
 	}
-	pcap_t * get_adapter();
 	IP_Msg * combine(const u_char *);
 	int send_by_frame(IP_Msg *, pcap_t *, unsigned short);
 	void GetSelfMac(char*, unsigned short *);
@@ -139,7 +143,10 @@ public:
 	int pppEncode(unsigned char * buf, int len);
 	int pppDecode(unsigned char * buf, int len);
 	void send_broadcast(pcap_t  *adapterHandle, unsigned int src_IP, unsigned int dst_IP);
-	void get_mac(pcap_t  *adapterHandle);
+	bool get_mac(pcap_t  *adapterHandle);
 	bool transtable(unsigned int IP);
+	void packcap();
+	void Link2IP(WPARAM wparam);
+	static DWORD WINAPI NewPackThread(LPVOID lParam);
 	unsigned int getIP();
 };

@@ -5,7 +5,7 @@
 
 typedef _iphdr IP_HEADER;
 
-pcap_t * my_linker::get_adapter()
+void my_linker::get_adapter()
 {
 	pcap_if_t * allAdapters;//适配器列表
 
@@ -23,7 +23,7 @@ pcap_t * my_linker::get_adapter()
 
 		fprintf(stderr, "Error in pcap_findalldevs_ex function: %s\n", errorBuffer);
 
-		return NULL;
+		return ;
 
 	}
 
@@ -33,7 +33,7 @@ pcap_t * my_linker::get_adapter()
 
 		printf("\nNo adapters found! Make sure WinPcap is installed.\n");
 
-		return 0;
+		return ;
 
 	}
 
@@ -54,22 +54,21 @@ pcap_t * my_linker::get_adapter()
 
 	adapter = allAdapters;
 
-	for (crtAdapter = 0;  ; crtAdapter++)
+	for (; ; )
 
 	{
 		bool ck = false;
-		int ck_times = 0;
 		int retValue;
 		struct pcap_pkthdr * packetHeader;
 		const u_char       * packetData;
 		adapterHandle = pcap_open(adapter->name, 65536, PCAP_OPENFLAG_PROMISCUOUS, 1000, NULL, errorBuffer);
-		while ((retValue = pcap_next_ex(adapterHandle, &packetHeader, &packetData)) >= 0)
+		if ((retValue = pcap_next_ex(adapterHandle, &packetHeader, &packetData)) > 0)
 		{
-			if (++ck_times >= 5) break;
-			if (retValue > 0) break;
+			ck = true;
 		}
-		if (ck_times < 5) break;
+		if (ck) break;
 		adapter = adapter->next;
+		if (adapter == NULL) adapter = allAdapters;
 	}
 	// 打开指定适配器
 
@@ -103,12 +102,12 @@ pcap_t * my_linker::get_adapter()
 
 		pcap_freealldevs(allAdapters);
 
-		return NULL;
+		return ;
 
 	}
 	pcap_freealldevs(allAdapters);//释放适配器列表
 
-	return adapterHandle;
+	this->adapterHandle = adapterHandle;
 
 }
 
@@ -190,9 +189,9 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
 				}
 				if (!ck) K = min(K + 1, 10);
 				*/
-				ck = true;
 				printf("send frame %d successfully!: size %d bytes\n", seq, sizeof(frame));	
 				seq += 1;
+				break;
 			}
 		}
 	}
@@ -214,11 +213,6 @@ IP_Msg * my_linker::combine(const u_char * packetData)
 		if (Receive.MAC_des[i] != mac_src[i]) return NULL;
 		if (Receive.MAC_src[i] != mac_des[i]) return NULL;
 	}
-
-	//if (Receive.MAC_des[0] != 0xEC24 || Receive.MAC_des[1] != 0x1A99 || Receive.MAC_des[2] != 0x8C07) return NULL;
-	//if (Receive.MAC_src[0] != 0x5d68 || Receive.MAC_src[1] != 0xE643 || Receive.MAC_src[2] != 0xfdac) return NULL;
-
-	//printf("%d\n", (char *)&Receive.CRC - (char *)&Receive + 2);
 
 	if (checkCrc16((unsigned char *)packetData, (char *)&Receive.CRC - (char *)&Receive + 2) != 0)
 	{
@@ -353,7 +347,14 @@ bool my_linker::check(const u_char * packetData)
 	Broadcast_frame frame = *((Broadcast_frame *)packetData);
 	if (frame.type == 0x0806 && frame.MAC_des[0] == 0xFFFF && frame.MAC_des[0] == 0xFFFF && frame.MAC_des[0] == 0xFFFF
 		&& frame.IP_dst==getIP())
+	{
+		unsigned int tmp = getIP();
+		if (tmp != frame.IP_dst)
+		{
+			puts("");
+		}
 		return true;
+	}
 	return false;
 }
 
@@ -521,13 +522,13 @@ void my_linker::send_broadcast(pcap_t  *adapterHandle, unsigned int src_IP, unsi
 	}
 }
 
-void my_linker::get_mac(pcap_t  *adapterHandle)
+bool my_linker::get_mac(pcap_t  *adapterHandle)
 {
 	//接收广播的数据报
 	struct pcap_pkthdr * packetHeader;
 	const u_char       * packetData;
 	struct  Broadcast_frame* t;
-	int retValue;
+	int retValue, times = 0;
 	while ((retValue = pcap_next_ex(adapterHandle, &packetHeader, &packetData)) >= 0)
 	{
 		if (retValue == 0)
@@ -538,10 +539,12 @@ void my_linker::get_mac(pcap_t  *adapterHandle)
 			if ((t->type == 0x0806) && (t->MAC_des[0] == mac_src[0] || t->MAC_des[1] == mac_src[1] || t->MAC_des[2] == mac_src[2]))
 			{
 				memcpy(mac_des, t->MAC_src, sizeof(short)* 3);
-				break;
+				return true;
 			}
+			if (++times >= 10) break;
 		}
 	}
+	return false;
 }
 bool my_linker::transtable(unsigned int IP)
 {
@@ -591,4 +594,60 @@ inline unsigned int my_linker::getIP()
 	}
 	ip_number = ip_number * 256 + ip_seg_number;
 	return ip_number;
+}
+
+DWORD WINAPI my_linker::NewPackThread(LPVOID lParam)
+{
+	my_linker *pthis = (my_linker *)lParam;
+	while (AfxGetApp()->m_pMainWnd == NULL);
+	pthis->packcap();
+	return 0;
+}
+
+void my_linker::packcap()
+{
+	struct pcap_pkthdr * packetHeader;
+	const u_char       * packetData;
+	int retValue;
+
+	while ((retValue = pcap_next_ex(adapterHandle,
+
+		&packetHeader,
+
+		&packetData)) >= 0)
+
+	{
+		if (retValue == 0) continue;
+		if (sizeof(Broadcast_frame) > packetHeader->len) continue;
+
+		if (check(packetData))
+		{
+			Broadcast_frame r_frame = *((Broadcast_frame *)packetData), s_frame;
+			for (int i = 0; i < 3; ++i)
+			{
+				mac_des[i] = s_frame.MAC_des[i] = r_frame.MAC_src[i];
+				s_frame.MAC_src[i] =mac_src[i];
+			}
+			s_frame.type = 0x0806;
+			s_frame.IP_dst = r_frame.IP_src;
+			s_frame.IP_src = r_frame.IP_dst;
+			Sleep(200);
+			pcap_sendpacket(adapterHandle,
+				(const u_char *)&s_frame,
+				sizeof(s_frame));
+		}
+		else AfxGetApp()->m_pMainWnd->SendMessage(LINKTOIP, (WPARAM)packetData);
+	}
+}
+
+void my_linker::Link2IP(WPARAM wparam)
+{
+	const u_char * packetData = (const u_char *)wparam;
+	IP_Msg * ip_msg;
+	ip_msg = combine(packetData);
+	if (ip_msg != NULL)
+	{
+		AfxGetApp()->m_pMainWnd->SendMessage(IPTOTRANS, (WPARAM)ip_msg);
+		delete ip_msg->iphdr;
+	}
 }

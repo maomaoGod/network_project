@@ -52,7 +52,8 @@ CServeView::CServeView()
 	HttpManagerSocket.Listen();
 	FtpManagerSocket.Create(7600);//7600
 	FtpManagerSocket.Listen();
-	//mytestsock.Bind(6500);
+	mytestsock.Listen();
+	mytestsock.Bind(6500);
 	SmtpManagerSocket.Create(8000);
 	SmtpManagerSocket.Listen();
 

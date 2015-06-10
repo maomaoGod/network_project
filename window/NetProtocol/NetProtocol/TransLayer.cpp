@@ -296,7 +296,7 @@ ctrl_receive:
 			unsigned opts_data_len = global_receive_ip_msg.datelen-20;
 
 			// 检验和
-			if (!udpcheck(opts_data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, opts_data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
+			if (!tcpcheck(opts_data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, opts_data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
 			{
 				// 舍弃报文
 				global_TCP_receive_flag = false;
@@ -427,8 +427,8 @@ ctrl_receive:
 			// 不是TCP控制信息，是一般报文
 			else
 			{
-				int data_len = global_receive_ip_msg.datelen-new_tcp_msg.tcp_hdr_length;
-				int opts_offset = new_tcp_msg.tcp_hdr_length-20;
+				int data_len = global_receive_ip_msg.datelen-4*new_tcp_msg.tcp_hdr_length;
+				int opts_offset = 4*new_tcp_msg.tcp_hdr_length-20;
 				if (tcp->last_rcvd > new_tcp_msg.tcp_seq_number)
 				{
 					// 可能是之前未收到的报文，或者是重复收到的报文
@@ -577,9 +577,9 @@ ctrl_receive:
 				}
 			}
 
-			// 有什么用？
+			// 有什么用？ERROR....EDITING Needed
 			// 计算RTT
-			RTT = (int)getSampleRTT(tcp->tcp_msg_send[tcp->wait_for_ack_msg].time, GetTickCount());
+			//RTT = (int)getSampleRTT(tcp->tcp_msg_send[tcp->wait_for_ack_msg].time, GetTickCount());
 
 			global_TCP_receive_flag = false;
 		}
@@ -620,31 +620,36 @@ ctrl_close:
 		//}
 
 		// 遍历tcp管理链表，处理待处理的信息
-		struct tcplist *single_tcp = head;
+		struct tcplist *single_tcp = head->next;	// fuck your mom
 		while (single_tcp != NULL)
 		{
-			if (single_tcp->connect_status = LINK_CONNECT_BIDIR || single_tcp->connect_status == LINK_PEER_HALF_OPEN)
+			if (single_tcp->connect_status == LINK_CONNECT_BIDIR || single_tcp->connect_status == LINK_PEER_HALF_OPEN)
 			{
 				// 向下递交报文段
-				while (min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS) - single_tcp->wait_for_ack <= min(single_tcp->cong_wind, single_tcp->rcvd_wind))
+				if (single_tcp->wait_for_fill > single_tcp->wait_for_send)
 				{
-					int new_send;
-					//new_send = min(single_tcp->wait_for_ack + min(single_tcp->cong_wind, single_tcp->rcvd_wind), min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS));
-					new_send = min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS);
-					single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen = new_send - single_tcp->wait_for_send;
-					single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].time = GetTickCount();
-					single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].seq_number = single_tcp->wait_for_send;
-					struct tcp_message new_tcp_message;
-					new_tcp_message.tcp_src_port = single_tcp->tcp_src_port;
-					new_tcp_message.tcp_dst_port = single_tcp->tcp_dst_port;
-					new_tcp_message.tcp_hdr_length = 20;
-					memcpy(new_tcp_message.tcp_opts_and_app_data, &single_tcp->tcp_buf_send[single_tcp->wait_for_send], single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
+					while (min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS) - single_tcp->wait_for_ack <= min(single_tcp->cong_wind, single_tcp->rcvd_wind))
+					{
+						int new_send;
+						//new_send = min(single_tcp->wait_for_ack + min(single_tcp->cong_wind, single_tcp->rcvd_wind), min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS));
+						new_send = min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS);
+						single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen = new_send - single_tcp->wait_for_send;
+						single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].time = GetTickCount();
+						single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].seq_number = single_tcp->wait_for_send;
+						struct tcp_message new_tcp_message;
+						int datalen = new_send - single_tcp->wait_for_send;
+						new_tcp_message.tcp_src_port = single_tcp->tcp_src_port;
+						new_tcp_message.tcp_dst_port = single_tcp->tcp_dst_port;
+						new_tcp_message.tcp_hdr_length = 5;
+						memcpy(new_tcp_message.tcp_opts_and_app_data, &single_tcp->tcp_buf_send[single_tcp->wait_for_send], single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
+						new_tcp_message.tcp_checksum = tcpmakesum(datalen, new_tcp_message.tcp_src_port, new_tcp_message.tcp_dst_port, datalen % 2, (u16 *)&(new_tcp_message.tcp_opts_and_app_data));
 
-					// 送往网络层
-					TCP_Send2IP(new_tcp_message, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
-					
-					single_tcp->wait_for_send = new_send;
-					single_tcp->wait_for_fill_msg++;
+						// 送往网络层
+						TCP_Send2IP(new_tcp_message, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
+
+						single_tcp->wait_for_send = new_send;
+						single_tcp->wait_for_fill_msg++;
+					}
 				}
 
 				// 向上交付报文
@@ -681,7 +686,7 @@ ctrl_close:
 				new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
 				new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
 				new_tcp_msg.tcp_ack_number = 0;
-				new_tcp_msg.tcp_hdr_length = 20;
+				new_tcp_msg.tcp_hdr_length = 5;
 				new_tcp_msg.tcp_reserved = 0;
 				new_tcp_msg.tcp_urg = 0;
 				new_tcp_msg.tcp_ack = 0;
@@ -710,7 +715,7 @@ ctrl_close:
 				new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
 				new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
 				new_tcp_msg.tcp_ack_number = single_tcp->next_send_ack;
-				new_tcp_msg.tcp_hdr_length = 20;
+				new_tcp_msg.tcp_hdr_length = 5;
 				new_tcp_msg.tcp_reserved = 0;
 				new_tcp_msg.tcp_urg = 0;
 				new_tcp_msg.tcp_ack = 1;
@@ -739,7 +744,7 @@ ctrl_close:
 				new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
 				new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
 				new_tcp_msg.tcp_ack_number = single_tcp->next_send_ack;
-				new_tcp_msg.tcp_hdr_length = 20;
+				new_tcp_msg.tcp_hdr_length = 5;
 				new_tcp_msg.tcp_reserved = 0;
 				new_tcp_msg.tcp_urg = 0;
 				new_tcp_msg.tcp_ack = 1;
@@ -806,7 +811,7 @@ ctrl_close:
 					new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
 					new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
 					new_tcp_msg.tcp_ack_number = 0;
-					new_tcp_msg.tcp_hdr_length = 20;
+					new_tcp_msg.tcp_hdr_length = 5;
 					new_tcp_msg.tcp_reserved = 0;
 					new_tcp_msg.tcp_urg = 0;
 					new_tcp_msg.tcp_ack = 0;
@@ -845,7 +850,7 @@ ctrl_close:
 				new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
 				new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
 				new_tcp_msg.tcp_ack_number = single_tcp->next_send_ack;
-				new_tcp_msg.tcp_hdr_length = 20;
+				new_tcp_msg.tcp_hdr_length = 5;
 				new_tcp_msg.tcp_reserved = 0;
 				new_tcp_msg.tcp_urg = 0;
 				new_tcp_msg.tcp_ack = 1;
@@ -874,8 +879,7 @@ ctrl_close:
 			}
 			else
 			{
-				// 这是什么鬼
-				printf("What is this in TCP_ctrl?\n");
+				// nothing
 			}
 
 			// 断开连接，一定要用if咯，不能接着用elseif
@@ -976,7 +980,7 @@ void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int src_ip, unsig
 	new_ip_msg.dip = dst_ip;
 	new_ip_msg.ih_sport = send_tcp_message.tcp_src_port;
 	new_ip_msg.ih_dport = send_tcp_message.tcp_dst_port;
-	new_ip_msg.datelen = data_len+send_tcp_message.tcp_hdr_length;
+	new_ip_msg.datelen = data_len+4*send_tcp_message.tcp_hdr_length;
 	memcpy(new_ip_msg.data, &send_tcp_message, new_ip_msg.datelen);
 	new_ip_msg.protocol = PROTOCOL_TCP;	// 6 for TCP
 

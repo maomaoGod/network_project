@@ -48,15 +48,15 @@ public:
 
 	bool  Connect(LPCTSTR lpszHostAddress, UINT nHostPort);
 
-	void  OnReceive(int nErrorCode);
+	virtual void  OnReceive(int nErrorCode);
 
-	void  OnAccept(int nErrorCode);
+	virtual void  OnAccept(int nErrorCode);
 
-	void  OnClose(int nErrorCode);
+	virtual void  OnClose(int nErrorCode);
 
-	void  OnSend(int nErrorCode);
+	virtual void  OnSend(int nErrorCode);
 
-	void  OnConnect(int nErrorCode);
+	virtual void  OnConnect(int nErrorCode);
 
 	int GetLastError();
 };
