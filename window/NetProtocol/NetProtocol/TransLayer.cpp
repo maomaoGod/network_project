@@ -315,6 +315,13 @@ ctrl_receive:
 			// 被第一次握手
 			if (new_tcp_msg.tcp_syn == 1 && new_tcp_msg.tcp_ack == 0)
 			{
+				if (!check_listening(src_port))
+				{
+					// 未监听，静默过滤
+					global_TCP_receive_flag = false;
+					goto ctrl_close;
+				}
+
 				struct tcplist *new_tcp = (tcplist *)malloc(sizeof(struct tcplist));
 			
 				// 内存耗尽
@@ -733,6 +740,20 @@ ctrl_close:
 
 				// 改变tcp连接的状态，等待对方发来的synack报文
 				single_tcp->connect_status = LINK_WAIT_FOR_SYNACK;
+
+				// 通知应用层Accept事件
+				// 填入送往应用层的结构中
+				struct sockstruct new_sockstruct;
+				new_sockstruct.dstport = new_tcp_msg.tcp_dst_port;
+				new_sockstruct.srcport = new_tcp_msg.tcp_src_port;
+				new_sockstruct.funcID = SOCKACCEPT;
+				new_sockstruct.datalength = 0;
+				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_src_ip);
+				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_dst_ip);
+				new_sockstruct.data = NULL;
+
+				// 送往应用层
+				AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct);
 			}
 
 			// 发送SYNACK，第三次握手
