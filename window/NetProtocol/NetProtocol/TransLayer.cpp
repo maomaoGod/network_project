@@ -1142,6 +1142,7 @@ void stop_wait()   //停止等待
 	new_sandw.time = 0;
 	new_sandw.last_waitforsend_msg = 0;
 	new_sandw.last_send_msg = 0;
+	new_sandw.last_ack = 0;
 	for (;;)
 	{
 
@@ -1172,7 +1173,9 @@ void stop_wait()   //停止等待
 			{
 				if (new_tcp_msg.tcp_ack_number == new_sandw.last_send.tcp_seq_number)  //如果收到的ACK确认号和发送的报文序号相同
 				{
+					new_sandw.last_ack = new_tcp_msg.tcp_ack_number;
 					global_sandw_sendtoIP_flag = true;
+
 				}
 
 			}
@@ -1191,6 +1194,7 @@ void stop_wait()   //停止等待
 				new_tcp_message.tcp_src_port = new_sandw.send_buf[new_sandw.last_send_msg].srcport;
 				new_tcp_message.tcp_dst_port = new_sandw.send_buf[new_sandw.last_send_msg].dstport;
 				new_tcp_message.tcp_hdr_length = 5;
+				new_tcp_message.tcp_seq_number = 1 - new_sandw.last_ack;
 				memcpy(new_tcp_message.tcp_opts_and_app_data, new_sandw.send_buf[new_sandw.last_send_msg].data, new_sandw.send_buf[new_sandw.last_send_msg].datalength);
 				int datalen = 20 + new_sandw.send_buf[new_sandw.last_send_msg].datalength;
 				new_tcp_message.tcp_checksum = tcpmakesum(datalen, new_tcp_message.tcp_src_port, new_tcp_message.tcp_dst_port, datalen % 2, (u16 *)&(new_tcp_message.tcp_opts_and_app_data));

@@ -96,6 +96,7 @@ struct stopandwait
 	int last_waitforsend_msg;     //当前缓冲区中正待被发送的报文下标
 	int last_send_msg;            //当前缓冲区中将要发送的最后一个报文的下标
 	struct tcp_message last_send;   //上一个发送出去的报文
+	int last_ack;
 };
 
 bool createNodeList();
