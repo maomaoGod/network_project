@@ -89,6 +89,15 @@ struct tcplist
 	int connect_status;	// TCP连接状态
 };
 
+struct stopandwait
+{
+	int time;               //记录发送报文的时间
+	struct sockstruct send_buf[SEND_STRUCT_SIZE];   //发送缓冲区
+	int last_waitforsend_msg;     //当前缓冲区中正待被发送的报文下标
+	int last_send_msg;            //当前缓冲区中将要发送的最后一个报文的下标
+	struct tcp_message last_send;   //上一个发送出去的报文
+};
+
 bool createNodeList();
 
 bool addNode(tcplist* tcp_list);

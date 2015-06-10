@@ -31,6 +31,16 @@ bool global_TCP_resend_flag;
 bool global_TCP_close_flag;
 struct tcplist *global_close_tcp;
 
+struct stopandwait new_sandw;
+
+bool global_sandw_send_flag;
+struct sockstruct global_send_sockstruct_sandw;
+
+bool global_sandw_receive_flag;
+struct Msg global_receive_ip_msg_sandw;
+
+bool global_sandw_sendtoIP_flag;
+
 bool listening_flag[MAX_PORT];
 
 bool createNodeList()
@@ -1106,3 +1116,93 @@ void fill_new_tcplist(struct tcplist *new_tcp)
 	new_tcp->cong_status = CONG_SS;
 	new_tcp->tcp_established_syn_seq = -1;
 }
+
+
+void sandw_send(struct sockstruct data_from_applayer)   
+{
+	while (global_sandw_send_flag);
+	global_send_sockstruct_sandw = data_from_applayer;
+	global_sandw_send_flag = true;
+	while (global_sandw_send_flag);
+}
+
+void sandw_receive(struct Msg data_from_netlayer)
+{
+	while (global_sandw_receive_flag);
+	global_receive_ip_msg_sandw = data_from_netlayer;
+	global_sandw_receive_flag = true;
+	while (global_sandw_receive_flag);
+}
+
+void stop_wait()   //停止等待
+{
+	srand(time(0));
+	global_sandw_send_flag = global_sandw_receive_flag = false;
+	global_sandw_sendtoIP_flag = true;
+	new_sandw.time = 0;
+	new_sandw.last_waitforsend_msg = 0;
+	new_sandw.last_send_msg = 0;
+	for (;;)
+	{
+
+		if (global_sandw_send_flag)   //如果收到应用层传下来的报文
+		{
+			new_sandw.send_buf[new_sandw.last_waitforsend_msg] = global_send_sockstruct_sandw;  //将该报文放入发送缓冲区
+			new_sandw.last_waitforsend_msg++;
+			global_sandw_send_flag = false;
+		}
+
+		if (global_sandw_receive_flag)   //如果收到下层传上来的报文
+		{
+			struct tcp_message new_tcp_msg;
+			memcpy(&new_tcp_msg, global_receive_ip_msg.data, global_receive_ip_msg.datelen);
+
+			// opts和data一同进行检验
+			unsigned opts_data_len = global_receive_ip_msg.datelen - 20;
+
+			// 检验和
+			if (!tcpcheck(opts_data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, opts_data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
+			{
+				// 舍弃报文
+				global_TCP_receive_flag = false;
+				break;
+			}
+
+			if (new_tcp_msg.tcp_ack)   //如果是应答报文
+			{
+				if (new_tcp_msg.tcp_ack_number == new_sandw.last_send.tcp_seq_number)  //如果收到的ACK确认号和发送的报文序号相同
+				{
+					global_sandw_sendtoIP_flag = true;
+				}
+
+			}
+
+			/*将接收到的报文封装发给上层IP*/
+			//sendtoip
+
+			global_sandw_receive_flag = false;
+		}
+
+		if (global_sandw_sendtoIP_flag)    //开始向下层发报文
+		{
+			if (new_sandw.last_waitforsend_msg > new_sandw.last_send_msg)  //如果缓冲区还有没有发送的报文
+			{
+				struct tcp_message new_tcp_message;
+				new_tcp_message.tcp_src_port = new_sandw.send_buf[new_sandw.last_send_msg].srcport;
+				new_tcp_message.tcp_dst_port = new_sandw.send_buf[new_sandw.last_send_msg].dstport;
+				new_tcp_message.tcp_hdr_length = 5;
+				memcpy(new_tcp_message.tcp_opts_and_app_data, new_sandw.send_buf[new_sandw.last_send_msg].data, new_sandw.send_buf[new_sandw.last_send_msg].datalength);
+				int datalen = 20 + new_sandw.send_buf[new_sandw.last_send_msg].datalength;
+				new_tcp_message.tcp_checksum = tcpmakesum(datalen, new_tcp_message.tcp_src_port, new_tcp_message.tcp_dst_port, datalen % 2, (u16 *)&(new_tcp_message.tcp_opts_and_app_data));
+
+				new_sandw.time = GetTickCount();
+				new_sandw.last_send_msg++;
+			}
+			global_sandw_sendtoIP_flag = false;
+		}
+
+		//超时重传new_sandw.last_send
+
+	}
+}
+
