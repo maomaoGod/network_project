@@ -987,11 +987,6 @@ float getSampleRTT(int sendtime, int gettime)		//Íù·µÊ±ÑÓµÄ¹À¼ÆÓë³¬Ê±£¬·µ»Ø³¬Ê±Ê
 	DevRTT = (1 - beta)*DevRTT + beta*abs(sampleRTT - EstimatedRTT);
 	TimeoutInterval = EstimatedRTT + 4 * DevRTT;
 	return TimeoutInterval;
-	//printf("sampleRTT = %d \n", sampleRTT);
-	//printf("test = %f\n", 0.125*sampleRTT);
-	//printf("test2 = %f \n", (1 - alpha)*EstimatedRTT);
-	//printf("EstimatedRTT = %f \n", EstimatedRTT);
-	//printf("DevRTT = %f \n", DevRTT);
 }
 
 void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int src_ip, unsigned int dst_ip, unsigned int data_len)

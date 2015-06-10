@@ -112,11 +112,6 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包传输数
 	//应用层发往传输层的数据在OnCopyData中获取
 	struct Msg new_ip_msg = *((struct Msg *)wparam);
 
-	//// 由于UDP和TCP的开头都是源端口，直接假s定其为UDP来获取源端口号
-	//struct udp_message assume_udp_msg;
-	//memcpy(&assume_udp_msg, new_ip_msg.data, strlen(new_ip_msg.data) + 1); // +1 for \0
-	//struct tcplist *found_TCP = getNode(new_ip_msg.sip, assume_udp_msg.udp_src_port);
-
 	// UDP
 	if (new_ip_msg.protocol == PROTOCOL_UDP)
 	{
@@ -139,7 +134,7 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //传输层解包传输数
 		new_sockstruct.datalength = new_udp_msg.udp_msg_length - 8;
 		IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
 		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
-		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength); // +1 for \0
+		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength);
 
 		// 送往应用层
 		SendMessage(APPSEND, (WPARAM)&new_sockstruct);
