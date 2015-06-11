@@ -224,7 +224,7 @@ int    CmyAsyncSocket::ReceiveFrom(void* lpBuf, int nBufLen, CString& rSocketAdd
 		UnmapViewOfFile(pCur);
 		pReadQueue->cid++;
 		PN pNode = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));
-		if (pNode->FuncID = SOCKCLOSE){
+		if (pNode->FuncID == SOCKCLOSE){
 			char2Tchar(rSocketAddress, pNode->srcip, 20);
 			rSocketPort = pNode->srcport;
 			return 0;
@@ -335,7 +335,7 @@ int  CmyAsyncSocket::Receive(void* lpBuf, int nBufLen)
 		UnmapViewOfFile(pCur);
 		pReadQueue->cid++;
 		PN pNode = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));
-		if (pNode->FuncID = SOCKCLOSE){
+		if (pNode->FuncID == SOCKCLOSE){
 			return 0;
 		}
 		else if (pNode->FuncID != SOCKSEND)

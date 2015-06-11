@@ -302,7 +302,7 @@ int  CmySocket::Receive(void* lpBuf, int nBufLen)
 			UnmapViewOfFile(pCur);
 			pReadQueue->cid++;
 			PN pNode = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));
-			if (pNode->FuncID = SOCKCLOSE){
+			if (pNode->FuncID == SOCKCLOSE){
 				return 0;
 			}
 
@@ -445,6 +445,7 @@ bool  CmySocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 	sockstate = TCP_FLAG;
 	Tchar2char(dstip, lpszHostAddress);
 	dstport = nHostPort;
+	WaitForSockEvent(SOCKACCEPT);
 	return WaitForSockEvent(SOCKCONNECT);
 }
 
@@ -459,7 +460,7 @@ bool CmySocket::WaitForSockEvent(unsigned int SOCKEVENT)
 	UnmapViewOfFile(pCur);
 	PN pNode = (PN)MapViewOfFile(Next, FILE_MAP_WRITE, 0, 0, sizeof(Node));///<获取Cur映射内存块
 	
-	rvalue = (pNode->FuncID == SOCKEVENT) ? true : false;///<查看是否是目的事件，若是,返回true,否则返回false
+	rvalue = (pNode->FuncID ==SOCKEVENT) ? true : false;///<查看是否是目的事件，若是,返回true,否则返回false
 	UnmapViewOfFile(pNode);
 	RemoveRead();
 	return rvalue;

@@ -16,7 +16,7 @@ SockPool::SockPool()
 	SH = OpenProcess(PROCESS_ALL_ACCESS, FALSE, _getpid());
 	preg = (regstruct *)MapViewOfFile(MFile, FILE_MAP_WRITE, 0, 0, sizeof(regstruct));
 	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewConnThread, (LPVOID) this, NULL, NULL);
-}
+}																																																																											
 
 SockPool::~SockPool()
 {
