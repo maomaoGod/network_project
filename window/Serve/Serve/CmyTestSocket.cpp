@@ -17,6 +17,7 @@ CmyTestSocket::~CmyTestSocket()
 void  CmyTestSocket::OnReceive(int nErrorCode)
 {
 	TCHAR S[100];
+	memset(S, 0, 100 * sizeof(TCHAR));
 	Receive(S, 100);
 	Send(S, 10);
 	PrintView(S);

@@ -613,9 +613,9 @@ ctrl_receive:
 					if (new_tcp_msg.tcp_ack_number >= tcp->wait_for_ack)
 					{
 						// 累计确认ack
-						tcp->wait_for_ack = new_tcp_msg.tcp_ack_number+data_len;
-						// 继续向后确认，防止该次ack是填补空隙
-						tcp->wait_for_ack = next_ack_place(tcp, tcp->wait_for_ack);
+						tcp->wait_for_ack = new_tcp_msg.tcp_ack_number;
+						//// 继续向后确认，防止该次ack是填补空隙（涉嫌混淆收发）
+						//tcp->wait_for_ack = next_ack_place(tcp, tcp->wait_for_ack);
 					}
 					else
 					{

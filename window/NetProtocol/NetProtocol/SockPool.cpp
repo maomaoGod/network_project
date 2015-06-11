@@ -101,7 +101,7 @@ void SockPool::ReadSock(HANDLE CH,unsigned int SockMark,HANDLE ReadQueue,PM pRea
 	PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));//获取Cur映射内存块
 	transstruct  AppData;
 	HANDLE HData=NULL;
-	portsrc myportsrc;
+	portin myportsrc;
 	while (SockMark2ReadState[SockMark]) {
 
 		if (pCur->Next == NULL)
@@ -124,14 +124,15 @@ void SockPool::ReadSock(HANDLE CH,unsigned int SockMark,HANDLE ReadQueue,PM pRea
 			    memcpy(myportsrc.srcip, pNode->srcip, 20);
 		    	myportsrc.srcport = pNode->srcport;
 			    myportsrc.dstport = SockMark2Port[SockMark];
-			    SrcPort2ScokMark[myportsrc] = pNode->AcceptSockMark;
+			    PortIn2ScokMark[myportsrc] = pNode->AcceptSockMark;
+				Port2PortOut[SockMark2Port[pNode->AcceptSockMark]] = pNode->dstport;
 				break;
 		case SOCKSEND:
 		case SOCKSENDTO:
 			    memcpy(AppData.dstip, pNode->dstip,20);
 			    AppData.dstport = pNode->dstport;
 			    AppData.datalength = pNode->DataLen;
-			    AppData.srcport = SockMark2Port[SockMark];
+				AppData.srcport = (Port2PortOut.find(SockMark2Port[SockMark]) == Port2PortOut.end()) ? SockMark2Port[SockMark] : Port2PortOut[SockMark2Port[SockMark]];
 				AppData.function = pNode->FuncID;
 				DuplicateHandle(CH,pNode->Data, SH, &HData, NULL, true, DUPLICATE_SAME_ACCESS);
 			    AppData.data = (char *) MapViewOfFile(HData, FILE_MAP_WRITE, 0, 0, pNode->DataLen);
@@ -364,13 +365,13 @@ bool   SockPool::InitalWriteQueue(HANDLE WriteQueue, PM &pWriteQueue)
 
 void    SockPool::SendToApp(void *psock)
 {
-	portsrc        tempsrc;
+	portin        tempsrc;
 	unsigned short nPort;
 	transstruct *pmysock = (transstruct *)psock;
 	memcpy(tempsrc.srcip, pmysock->srcip, 20); //根据源端口源地址目的端口找到通信端口
 	tempsrc.srcport = pmysock->srcport;
 	tempsrc.dstport = pmysock->dstport;
-	nPort = (SrcPort2ScokMark.find(tempsrc) == SrcPort2ScokMark.end()) ? pmysock->dstport : SockMark2Port[SrcPort2ScokMark[tempsrc]];
+	nPort = (PortIn2ScokMark.find(tempsrc) == PortIn2ScokMark.end()) ? pmysock->dstport : SockMark2Port[PortIn2ScokMark[tempsrc]];
 	if (Port2SockMark.find(nPort) == Port2SockMark.end())
 		return;
 	unsigned int SockMark = Port2SockMark[nPort];

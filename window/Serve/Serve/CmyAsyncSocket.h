@@ -10,7 +10,7 @@ private:
 	HANDLE    ReadQueue, WriteQueue;
 	HANDLE    SH, CH;
 	HANDLE    Pthread;
-	bool state;
+	bool state = true;
 	Manager   *pReadQueue, *pWriteQueue;
 private:
 	bool    flag;          //创建是否成功标志

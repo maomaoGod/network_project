@@ -402,7 +402,7 @@ void   CmySocket::OnSend(int nErrorCode)
 */
 int CmySocket::Send(const void* lpBuf, int nBufLen) //·¢ËÍÊý¾Ý
 {
-	if (sockstate != INIT_FLAG || sockstate != TCP_FLAG){
+	if (sockstate != INIT_FLAG&&sockstate != TCP_FLAG){
 		LastError = SOCK_NOT_TCP;
 		return 0;
 	}

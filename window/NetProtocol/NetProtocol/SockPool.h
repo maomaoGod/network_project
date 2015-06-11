@@ -73,12 +73,12 @@ struct Para
 	PM pQueue;
 };
 
-struct portsrc    //得到目的端口的数据结构
+struct portin    //得到目的端口的数据结构
 {
 	char srcip[20];
 	unsigned short srcport;
 	unsigned short dstport;
-	bool operator <(const portsrc & other) const
+	bool operator <(const portin & other) const
 	{
 		if (strcmp(srcip, other.srcip) < 0)
 			return true;
@@ -109,7 +109,8 @@ public:
 	void   SendToApp(void *);
 private:	
 	int nPort=0;
-	map <portsrc, unsigned int> SrcPort2ScokMark;
+	map <portin, unsigned int> PortIn2ScokMark;
+	map <unsigned short, unsigned short> Port2PortOut;
 	map <unsigned int, transstruct *> SockMark2SockStruct;
 	map <unsigned int, unsigned short>  SockMark2Port;
 	map <unsigned short, unsigned int>  Port2SockMark;

@@ -12,7 +12,6 @@
 #include "MainFrm.h"
 #include "ServeDoc.h"
 #include "ServeView.h"
-#include "CmyTestSocket.h"
 #include "Tools.h"
 
 using namespace Tools;

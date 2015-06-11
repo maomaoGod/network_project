@@ -23,7 +23,7 @@ CmyAsyncSocket::CmyAsyncSocket()
 		return;
 	}
 	sockstate = INIT_FLAG;
-	Pthread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewGetSockEventThread, (LPVOID) this, NULL, NULL);
+	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewGetSockEventThread, (LPVOID)this, NULL, NULL);
 	flag = true;
 }
 
@@ -119,10 +119,17 @@ void CmyAsyncSocket::GetSockEvent()
 		switch (pNode->FuncID){
 		case SOCKSENDTO: 
 		case SOCKSEND: OnReceive(true); break;
-		case SOCKCONNECT: OnAccept(true); break;
+		case SOCKCONNECT: OnConnect(true); break;
 		case SOCKCLOSE: OnClose(true); break;
+		case SOCKACCEPT: memcpy(csrcip, pNode->srcip, 20);
+			                            memcpy(cdstip, pNode->dstip, 20);
+										csrcport = pNode->srcport;
+										cdstport = pNode->dstport;
+			                            OnAccept(true);
 		default:  break;
 		}
+		PN Head = (PN)MapViewOfFile(pReadQueue->Head, FILE_MAP_WRITE, 0, 0, sizeof(Node));
+		PN Tail = (PN)MapViewOfFile(pReadQueue->Tail, FILE_MAP_WRITE, 0, 0, sizeof(Node));
 		UnmapViewOfFile(pNode);
 		CloseHandle(Next);
 		RemoveRead();
@@ -209,7 +216,7 @@ int CmyAsyncSocket::SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTS
 
 int    CmyAsyncSocket::ReceiveFrom(void* lpBuf, int nBufLen, CString& rSocketAddress, UINT& rSocketPort, int nFlags)
 {
-	if (sockstate != INIT_FLAG || sockstate != UDP_FLAG) {
+	if (sockstate != INIT_FLAG && sockstate != UDP_FLAG) {
 		LastError = SOCK_NOT_UDP;
 		return 0;
 	}
@@ -330,7 +337,7 @@ int  CmyAsyncSocket::Receive(void* lpBuf, int nBufLen)
 		while (pCur->Next == NULL) //永久等待数据到来
 			Sleep(100);
 		CloseHandle(pReadQueue->Cur);//释放Cur
-		pReadQueue = NULL;
+		pReadQueue->Cur = NULL;
 		DuplicateHandle(SH, pCur->Next, CH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
 		UnmapViewOfFile(pCur);
 		pReadQueue->cid++;
@@ -435,7 +442,7 @@ void   CmyAsyncSocket::OnSend(int nErrorCode)
 */
 int CmyAsyncSocket::Send(const void* lpBuf, int nBufLen) //发送数据
 {
-	if (sockstate != INIT_FLAG || sockstate != TCP_FLAG){
+	if (sockstate != INIT_FLAG && sockstate != TCP_FLAG){
 		LastError = SOCK_NOT_TCP;
 		return 0;
 	}

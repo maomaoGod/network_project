@@ -4,7 +4,7 @@
 #include "HttpServeSocket.h"
 #include "FTPServeSocket.h"
 #include "Cmysocket.h"
-#include "CmyTestSocket.h"
+#include "TestServeSocket.h"
 #include "SMTPServeSocket.h"
 #include "DNSServeSocket.h"
 #include "DnsSocket.h"
@@ -24,7 +24,7 @@ public:
 public:
    // CmyTestSocket    mytestsock;
 protected :
-	CmyTestSocket mytestsock;
+	CTestServeSocket mytestsock;
 	HttpServeSocket  HttpManagerSocket;
 	FTPServeSocket FtpManagerSocket;
 	SMTPServeSocket SmtpManagerSocket;
