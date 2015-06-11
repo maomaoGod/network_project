@@ -22,6 +22,7 @@ CmySocket::CmySocket()
 		AfxMessageBox(_T("初始化读队列失败"));
 		return;
 	}
+	sockstate = INIT_FLAG;
 	flag = true;
 }
 
@@ -90,6 +91,11 @@ bool   CmySocket::InitalReadQueue(regstruct &myreg)
 	return true;
 }
 
+
+/**
+* @author ACM2012
+* @note   函数移除当前指向节点，并将已读节点数计数加1
+*/
 void   CmySocket::RemoveRead()
 {
 	HANDLE Next;
@@ -99,7 +105,7 @@ void   CmySocket::RemoveRead()
 	UnmapViewOfFile(pCur);
 	CloseHandle(pReadQueue->Cur);
 	pReadQueue->Cur = NULL;
-	DuplicateHandle(SH, Next, CH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
+	DuplicateHandle(CH, Next, CH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
 	pReadQueue->cid++;
 }
 
@@ -129,9 +135,14 @@ bool  CmySocket::AddToTail(HANDLE NewNode)
 */
 bool CmySocket::Listen()
 {
+	if (sockstate != INIT_FLAG){
+		LastError = SOCK_LS_FAILED;
+		return  true;
+	}
 	HANDLE NewNode = PackNode(SOCKLISTEN);
 	AddToTail(NewNode);
 	CloseHandle(NewNode);
+	sockstate = LISTEN_FLAG;
 	return true;
 }
 
@@ -144,9 +155,14 @@ bool CmySocket::Listen()
 */
 int CmySocket::SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTSTR lpszHostAddress)
 {
+	if (sockstate != INIT_FLAG&&sockstate!=UDP_FLAG) {
+		LastError = SOCK_NOT_UDP;
+		return 0;
+	}
 	HANDLE NewNode = PackNode(SOCKSENDTO, lpBuf, nBufLen, nHostPort, lpszHostAddress);
     AddToTail(NewNode);
 	CloseHandle(NewNode); ///<Close LocalHandle
+	sockstate = UDP_FLAG;
 	return nBufLen;
 }
 
@@ -160,6 +176,11 @@ int CmySocket::SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTSTR lp
 
 int    CmySocket::ReceiveFrom(void* lpBuf, int nBufLen, CString& rSocketAddress, UINT& rSocketPort, int nFlags)
 {
+	if (sockstate != INIT_FLAG&&sockstate!=UDP_FLAG) {
+		LastError = SOCK_NOT_UDP;
+		return 0;
+	}
+	sockstate = UDP_FLAG;
 	if (done){
 		PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));//获取Cur映射内存块
 		while (pCur->Next == NULL) //永久等待数据到来
@@ -266,12 +287,17 @@ void   CmySocket::OnReceive(int nErrorCode)
 */
 int  CmySocket::Receive(void* lpBuf, int nBufLen)
 {
-		if (done){
+	if (sockstate != INIT_FLAG&&sockstate!=TCP_FLAG) {
+		LastError = SOCK_NOT_TCP;
+		return 0;
+	}
+	sockstate = TCP_FLAG;
+	if (done){
 			PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));//获取Cur映射内存块
 			while (pCur->Next == NULL) //永久等待数据到来
 				Sleep(100);
 			CloseHandle(pReadQueue->Cur);//释放Cur
-			pReadQueue = NULL;
+			pReadQueue->Cur = NULL;
 			DuplicateHandle(SH, pCur->Next, CH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
 			UnmapViewOfFile(pCur);
 			pReadQueue->cid++;
@@ -279,8 +305,6 @@ int  CmySocket::Receive(void* lpBuf, int nBufLen)
 			if (pNode->FuncID = SOCKCLOSE){
 				return 0;
 			}
-			else if (pNode->FuncID != SOCKSEND)
-				RemoveRead();
 
 			HANDLE HData;
 			DuplicateHandle(SH, pNode->Data, CH, &HData, NULL, true, DUPLICATE_SAME_ACCESS);
@@ -324,13 +348,18 @@ void   CmySocket::OnAccept(int nErrorCode)
 应用套接字继续监听请求连接
 */
 
-void  CmySocket::Accept(CmySocket& rConnectedSocket)
+bool  CmySocket::Accept(CmySocket& rConnectedSocket)
 {
+	if (sockstate != LISTEN_FLAG){
+		LastError = SOCK_NOT_LISTEN;
+		return false;
+	}
 	HANDLE NewNode = PackNode(SOCKACCEPT, rConnectedSocket);
     AddToTail(NewNode);
 	memcpy(rConnectedSocket.dstip, csrcip, 20);
 	rConnectedSocket.dstport = csrcport;
 	CloseHandle(NewNode);//Close LocalHandle
+	return true;
 }
 
 /**
@@ -338,6 +367,7 @@ void  CmySocket::Accept(CmySocket& rConnectedSocket)
 * @param [in] nErrorCode错误码
 * @note  该函数表明接收到对方套接字关闭消息
 */
+
 void   CmySocket::OnClose(int nErrorCode)
 {
 
@@ -352,6 +382,7 @@ void CmySocket::Close()
 	HANDLE NewNode = PackNode(SOCKCLOSE);
 	AddToTail(NewNode);
 	CloseHandle(NewNode);
+	sockstate = CLOSE_FLAG;
 }
 
 /**
@@ -371,9 +402,18 @@ void   CmySocket::OnSend(int nErrorCode)
 */
 int CmySocket::Send(const void* lpBuf, int nBufLen) //发送数据
 {
+	if (sockstate != INIT_FLAG && sockstate != TCP_FLAG){
+		LastError = SOCK_NOT_TCP;
+		return 0;
+	}
+	if (sockstate == CLOSE_FLAG){
+		LastError = SOCK_IS_CLOSED;
+		return 0;
+	}
 	HANDLE NewNode = PackNode(SOCKSEND, lpBuf, nBufLen);
 	AddToTail(NewNode);
 	CloseHandle(NewNode);
+	sockstate = TCP_FLAG;
 	return nBufLen;
 }
 
@@ -395,10 +435,32 @@ void   CmySocket::OnConnect(int nErrorCode)
 */
 bool  CmySocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 {
+	if (sockstate != INIT_FLAG){
+		LastError = SOCK_NOT_TCP;
+		return false;
+	}
 	HANDLE  NewNode = PackNode(SOCKCONNECT, lpszHostAddress, nHostPort);
 	AddToTail(NewNode);
 	CloseHandle(NewNode);
+	sockstate = TCP_FLAG;
 	Tchar2char(dstip, lpszHostAddress);
 	dstport = nHostPort;
-	return true;
+	return WaitForSockEvent(SOCKCONNECT);
+}
+
+bool CmySocket::WaitForSockEvent(unsigned int SOCKEVENT)
+{
+	HANDLE Next;
+	bool rvalue;
+	PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));///<获取Cur映射内存块
+	while (pCur->Next == NULL) ///<永久等待数据到来
+		Sleep(100);
+	DuplicateHandle(SH, pCur->Next, CH, &Next, NULL, true, DUPLICATE_SAME_ACCESS);
+	UnmapViewOfFile(pCur);
+	PN pNode = (PN)MapViewOfFile(Next, FILE_MAP_WRITE, 0, 0, sizeof(Node));///<获取Cur映射内存块
+	
+	rvalue = (pNode->FuncID == SOCKEVENT) ? true : false;///<查看是否是目的事件，若是,返回true,否则返回false
+	UnmapViewOfFile(pNode);
+	RemoveRead();
+	return rvalue;
 }

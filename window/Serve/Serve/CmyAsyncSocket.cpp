@@ -22,6 +22,7 @@ CmyAsyncSocket::CmyAsyncSocket()
 		AfxMessageBox(_T("初始化读队列失败"));
 		return;
 	}
+	sockstate = INIT_FLAG;
 	Pthread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewGetSockEventThread, (LPVOID) this, NULL, NULL);
 	flag = true;
 }
@@ -107,8 +108,8 @@ void CmyAsyncSocket::GetSockEvent()
 {
 	while (state)
 	{
-		PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));//获取Cur映射内存块
-		while (pCur->Next == NULL)//永久等待数据到来
+		PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));///<获取Cur映射内存块
+		while (pCur->Next == NULL) ///<永久等待数据到来
 			Sleep(100);
 		HANDLE Next;
 		DuplicateHandle(SH, pCur->Next, CH, &Next, NULL, true, DUPLICATE_SAME_ACCESS);
@@ -120,10 +121,11 @@ void CmyAsyncSocket::GetSockEvent()
 		case SOCKSEND: OnReceive(true); break;
 		case SOCKCONNECT: OnAccept(true); break;
 		case SOCKCLOSE: OnClose(true); break;
-		default:  RemoveRead(); break;
+		default:  break;
 		}
 		UnmapViewOfFile(pNode);
 		CloseHandle(Next);
+		RemoveRead();
 	}
 }
 
@@ -136,7 +138,7 @@ void   CmyAsyncSocket::RemoveRead()
 	UnmapViewOfFile(pCur);
 	CloseHandle(pReadQueue->Cur);
 	pReadQueue->Cur = NULL;
-	DuplicateHandle(SH, Next, CH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
+	DuplicateHandle(CH, Next, CH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
 	pReadQueue->cid++;
 }
 
@@ -166,9 +168,14 @@ bool  CmyAsyncSocket::AddToTail(HANDLE NewNode)
 */
 bool CmyAsyncSocket::Listen()
 {
+	if (sockstate != INIT_FLAG){
+		LastError = SOCK_LS_FAILED;
+		return  true;
+	}
 	HANDLE NewNode = PackNode(SOCKLISTEN);
 	AddToTail(NewNode);
 	CloseHandle(NewNode);
+	sockstate = LISTEN_FLAG;
 	return true;
 }
 
@@ -181,9 +188,14 @@ bool CmyAsyncSocket::Listen()
 */
 int CmyAsyncSocket::SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTSTR lpszHostAddress)
 {
+	if (sockstate != INIT_FLAG && sockstate != UDP_FLAG) {
+		LastError = SOCK_NOT_UDP;
+		return 0;
+	}
 	HANDLE NewNode = PackNode(SOCKSENDTO, lpBuf, nBufLen, nHostPort, lpszHostAddress);
 	AddToTail(NewNode);
 	CloseHandle(NewNode); ///<Close LocalHandle
+	sockstate = UDP_FLAG;
 	return nBufLen;
 }
 
@@ -197,6 +209,11 @@ int CmyAsyncSocket::SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTS
 
 int    CmyAsyncSocket::ReceiveFrom(void* lpBuf, int nBufLen, CString& rSocketAddress, UINT& rSocketPort, int nFlags)
 {
+	if (sockstate != INIT_FLAG || sockstate != UDP_FLAG) {
+		LastError = SOCK_NOT_UDP;
+		return 0;
+	}
+	sockstate = UDP_FLAG;
 	if (done){
 		PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));//获取Cur映射内存块
 		while (pCur->Next == NULL) //永久等待数据到来
@@ -303,6 +320,11 @@ void   CmyAsyncSocket::OnReceive(int nErrorCode)
 */
 int  CmyAsyncSocket::Receive(void* lpBuf, int nBufLen)
 {
+	if (sockstate != INIT_FLAG) {
+		LastError = SOCK_NOT_TCP;
+		return 0;
+	}
+	sockstate = TCP_FLAG;
 	if (done){
 		PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));//获取Cur映射内存块
 		while (pCur->Next == NULL) //永久等待数据到来
@@ -361,8 +383,12 @@ void   CmyAsyncSocket::OnAccept(int nErrorCode)
 应用套接字继续监听请求连接
 */
 
-void  CmyAsyncSocket::Accept(CmyAsyncSocket& rConnectedSocket)
+bool CmyAsyncSocket::Accept(CmyAsyncSocket& rConnectedSocket)
 {
+	if (sockstate != LISTEN_FLAG){
+		LastError = SOCK_NOT_LISTEN;
+		return false;
+	}
 	HANDLE NewNode = PackNode(SOCKACCEPT, rConnectedSocket);
 	AddToTail(NewNode);
 	memcpy(rConnectedSocket.dstip, csrcip, 20);
@@ -389,6 +415,7 @@ void CmyAsyncSocket::Close()
 	HANDLE NewNode = PackNode(SOCKCLOSE);
 	AddToTail(NewNode);
 	CloseHandle(NewNode);
+	sockstate = CLOSE_FLAG;
 }
 
 /**
@@ -408,9 +435,18 @@ void   CmyAsyncSocket::OnSend(int nErrorCode)
 */
 int CmyAsyncSocket::Send(const void* lpBuf, int nBufLen) //发送数据
 {
+	if (sockstate != INIT_FLAG || sockstate != TCP_FLAG){
+		LastError = SOCK_NOT_TCP;
+		return 0;
+	}
+	if (sockstate == CLOSE_FLAG){
+		LastError = SOCK_IS_CLOSED;
+		return 0;
+	}
 	HANDLE NewNode = PackNode(SOCKSEND, lpBuf, nBufLen);
 	AddToTail(NewNode);
 	CloseHandle(NewNode);
+	sockstate = TCP_FLAG;
 	return nBufLen;
 }
 
@@ -432,10 +468,31 @@ void   CmyAsyncSocket::OnConnect(int nErrorCode)
 */
 bool  CmyAsyncSocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 {
+	if (sockstate != INIT_FLAG){
+		LastError = SOCK_NOT_TCP;
+		return false;
+	}
 	HANDLE  NewNode = PackNode(SOCKCONNECT, lpszHostAddress, nHostPort);
 	AddToTail(NewNode);
 	CloseHandle(NewNode);
 	Tchar2char(dstip, lpszHostAddress);
 	dstport = nHostPort;
-	return true;
+	return WaitForSockEvent(SOCKCONNECT);
+}
+
+bool CmyAsyncSocket::WaitForSockEvent(unsigned int SOCKEVENT)
+{
+	HANDLE Next;
+	bool rvalue;
+	PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));///<获取Cur映射内存块
+	while (pCur->Next == NULL) ///<永久等待数据到来
+		Sleep(100);
+	DuplicateHandle(SH, pCur->Next, CH, &Next, NULL, true, DUPLICATE_SAME_ACCESS);
+	UnmapViewOfFile(pCur);
+	PN pNode = (PN)MapViewOfFile(Next, FILE_MAP_WRITE, 0, 0, sizeof(Node));///<获取Cur映射内存块
+
+	rvalue = (pNode->FuncID == SOCKEVENT) ? true : false;///<查看是否是目的事件，若是,返回true,否则返回false
+	UnmapViewOfFile(pNode);
+	RemoveRead();
+	return rvalue;
 }

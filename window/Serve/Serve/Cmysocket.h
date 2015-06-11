@@ -11,7 +11,7 @@ private:
 	HANDLE   SH, CH;
 	Manager   *pReadQueue, *pWriteQueue;
 private:
-	bool    flag;          //创建是否成功标志
+	bool    flag;           //创建是否成功标志
 	int      LastError;   //错误代号
 	bool   done=true;
 	char  *pReadData;
@@ -21,6 +21,7 @@ private:
 	bool  InitalReadQueue(regstruct &);
 	void   RemoveRead();
 	bool   AddToTail(HANDLE NewNode);
+	bool  WaitForSockEvent(unsigned int SOCKEVENT);
 public:
 	bool Listen();
 
@@ -36,7 +37,7 @@ public:
 
 	int    Receive(void* lpBuf, int nBufLen);
 	
-	void  Accept(CmySocket& rConnectedSocket);
+	bool  Accept(CmySocket& rConnectedSocket);
 
 	void  Close();
 
@@ -54,6 +55,6 @@ public:
 
 	void  OnConnect(int nErrorCode);
 
-	int GetLastError();
+	int    GetLastError();
 };
 

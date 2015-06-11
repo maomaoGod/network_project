@@ -174,7 +174,7 @@ void TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, 
 
 void TCP_send(struct sockstruct data_from_applayer)
 {
-	struct tcplist *found_tcp = getNode(IP_chars2uint(data_from_applayer.srcip), data_from_applayer.srcport,
+	struct tcplist *found_tcp = getNode(getIP(), data_from_applayer.srcport,
 										IP_chars2uint(data_from_applayer.dstip), data_from_applayer.dstport);
 	if (found_tcp == NULL)
 	{
@@ -643,30 +643,40 @@ ctrl_close:
 			if (single_tcp->connect_status == LINK_CONNECT_BIDIR || single_tcp->connect_status == LINK_PEER_HALF_OPEN)
 			{
 				// 向下递交报文段
-				if (single_tcp->wait_for_fill > single_tcp->wait_for_send)
+				while (min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS) - single_tcp->wait_for_ack <= min(single_tcp->cong_wind, single_tcp->rcvd_wind)
+					&& single_tcp->wait_for_fill > single_tcp->wait_for_send)
 				{
-					while (min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS) - single_tcp->wait_for_ack <= min(single_tcp->cong_wind, single_tcp->rcvd_wind))
-					{
-						int new_send;
-						//new_send = min(single_tcp->wait_for_ack + min(single_tcp->cong_wind, single_tcp->rcvd_wind), min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS));
-						new_send = min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS);
-						single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen = new_send - single_tcp->wait_for_send;
-						single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].time = GetTickCount();
-						single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].seq_number = single_tcp->wait_for_send;
-						struct tcp_message new_tcp_message;
-						int datalen = new_send - single_tcp->wait_for_send;
-						new_tcp_message.tcp_src_port = single_tcp->tcp_src_port;
-						new_tcp_message.tcp_dst_port = single_tcp->tcp_dst_port;
-						new_tcp_message.tcp_hdr_length = 5;
-						memcpy(new_tcp_message.tcp_opts_and_app_data, &single_tcp->tcp_buf_send[single_tcp->wait_for_send], single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
-						new_tcp_message.tcp_checksum = tcpmakesum(datalen, new_tcp_message.tcp_src_port, new_tcp_message.tcp_dst_port, datalen % 2, (u16 *)&(new_tcp_message.tcp_opts_and_app_data));
+					int new_send;
+					//new_send = min(single_tcp->wait_for_ack + min(single_tcp->cong_wind, single_tcp->rcvd_wind), min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS));
+					new_send = min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS);
+					single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen = new_send - single_tcp->wait_for_send;
+					single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].time = GetTickCount();
+					single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].seq_number = single_tcp->wait_for_send;
 
-						// 送往网络层
-						TCP_Send2IP(new_tcp_message, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
+					struct tcp_message new_tcp_msg;
+					int datalen = new_send - single_tcp->wait_for_send;
+					new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
+					new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
+					new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
+					new_tcp_msg.tcp_ack_number = single_tcp->send_ack_needed ? single_tcp->next_send_ack : 0;
+					new_tcp_msg.tcp_hdr_length = 5;
+					new_tcp_msg.tcp_reserved = 0;
+					new_tcp_msg.tcp_urg = 0;
+					new_tcp_msg.tcp_ack = single_tcp->send_ack_needed ? 1 : 0;
+					new_tcp_msg.tcp_psh = 0;
+					new_tcp_msg.tcp_rst = 0;
+					new_tcp_msg.tcp_syn = 0;
+					new_tcp_msg.tcp_fin = 0;
+					new_tcp_msg.tcp_rcv_window = single_tcp->rcvd_wind;
+					new_tcp_msg.tcp_urg_ptr = NULL;
+					memcpy(new_tcp_msg.tcp_opts_and_app_data, &single_tcp->tcp_buf_send[single_tcp->wait_for_send], single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
+					new_tcp_msg.tcp_checksum = tcpmakesum(datalen, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, datalen % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
+							
+					// 送往网络层
+					TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
 
-						single_tcp->wait_for_send = new_send;
-						single_tcp->wait_for_fill_msg++;
-					}
+					single_tcp->wait_for_send = new_send;
+					single_tcp->wait_for_fill_msg++;
 				}
 
 				// 向上交付报文

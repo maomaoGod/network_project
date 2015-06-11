@@ -23,6 +23,7 @@ private:
 	bool  InitalReadQueue(regstruct &);
 	void   RemoveRead();
 	bool   AddToTail(HANDLE NewNode);
+	bool  WaitForSockEvent(unsigned int SOCKEVENT);
 	static DWORD WINAPI NewGetSockEventThread(LPVOID);
 	void   GetSockEvent();
 public:
@@ -40,7 +41,7 @@ public:
 
 	int    Receive(void* lpBuf, int nBufLen);
 
-	void  Accept(CmyAsyncSocket& rConnectedSocket);
+	bool  Accept(CmyAsyncSocket& rConnectedSocket);
 
 	void  Close();
 
@@ -48,15 +49,15 @@ public:
 
 	bool  Connect(LPCTSTR lpszHostAddress, UINT nHostPort);
 
-	virtual void  OnReceive(int nErrorCode);
+	void  OnReceive(int nErrorCode);
 
-	virtual void  OnAccept(int nErrorCode);
+	void  OnAccept(int nErrorCode);
 
-	virtual void  OnClose(int nErrorCode);
+	void  OnClose(int nErrorCode);
 
-	virtual void  OnSend(int nErrorCode);
+	void  OnSend(int nErrorCode);
 
-	virtual void  OnConnect(int nErrorCode);
+	void  OnConnect(int nErrorCode);
 
 	int GetLastError();
 };

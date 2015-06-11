@@ -10,6 +10,13 @@
 #define  SOCKCLOSE                 207
 #define  SOCKACCEPT               208
 
+
+
+#define SOCK_NOT_UDP           1000
+#define SOCK_NOT_TCP            1001
+#define SOCK_NOT_LISTEN       1002
+#define SOCK_IS_CLOSED         1003
+#define SOCK_LS_FAILED          1004
 /**
 * @author ACM2012
 * @note   读写链表管理结构，管理结构为进程共享结构,实现多进程对同一链表的管理。
@@ -55,6 +62,7 @@ private:
      static bool Isfirst; 
 	 static int  SockNum;
 protected:
+     enum  { INIT_FLAG, LISTEN_FLAG, TCP_FLAG, UDP_FLAG, CLOSE_FLAG, DIE_FLAG } sockstate;
 	 char srcip[20], dstip[20], csrcip[20], cdstip[20];
 	 unsigned short srcport,dstport,csrcport,cdstport;
 	 unsigned int SockMark;

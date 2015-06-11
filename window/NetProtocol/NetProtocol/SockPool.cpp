@@ -48,7 +48,10 @@ bool  SockPool::AddToTail(PM &pWriteQueue,HANDLE NewNode)
 	DuplicateHandle(SH, NewNode, SH, &LastNode->Next, NULL, true, DUPLICATE_SAME_ACCESS);
 	UnmapViewOfFile(LastNode);
 	CloseHandle(pWriteQueue->Tail);
+	pWriteQueue->Tail = NULL;
 	DuplicateHandle(SH,NewNode, SH, &pWriteQueue->Tail, NULL, true, DUPLICATE_SAME_ACCESS);
+	PN phead = (PN)MapViewOfFile(pWriteQueue->Head, FILE_MAP_WRITE, 0, 0, sizeof(Node));
+	PN ptail = (PN)MapViewOfFile(pWriteQueue->Tail, FILE_MAP_WRITE, 0, 0, sizeof(Node));
 	if (pWriteQueue->Tail == NULL)
 		return PrintLog(_T("添加到写队列节点失败"),false);
 	return true;

@@ -23,6 +23,7 @@ private:
 	bool  InitalReadQueue(regstruct &);
 	void   RemoveRead();
 	bool   AddToTail(HANDLE NewNode);
+	bool  WaitForSockEvent(unsigned int SOCKEVENT);
 	static DWORD WINAPI NewGetSockEventThread(LPVOID);
 	void   GetSockEvent();
 public:
@@ -40,7 +41,7 @@ public:
 
 	int    Receive(void* lpBuf, int nBufLen);
 
-	void  Accept(CmyAsyncSocket& rConnectedSocket);
+	bool  Accept(CmyAsyncSocket& rConnectedSocket);
 
 	void  Close();
 
