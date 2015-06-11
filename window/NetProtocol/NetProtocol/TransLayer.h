@@ -11,7 +11,7 @@ using namespace std;
 #define PROTOCOL_UDP 17
 
 #define MSS 1024
-#define INITIAL_RCVD_WIND (1024*1024)
+#define INITIAL_RCVD_WIND 65535
 #define SEND_STRUCT_SIZE 1024
 #define RCVD_STRUCT_SIZE 1024
 #define SEND_BUFFER_SIZE (1024*1024)

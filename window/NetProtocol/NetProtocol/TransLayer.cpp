@@ -349,6 +349,11 @@ ctrl_receive:
 				new_tcp->connect_status = LINK_CONNECTED;
 				fill_new_tcplist(new_tcp);
 				addNode(new_tcp);
+
+				// 更新对方的seq_number系列
+				new_tcp->send_ack_needed = true;
+				new_tcp->next_send_ack = new_tcp_msg.tcp_seq_number+1;
+				new_tcp->last_read_msg = new_tcp->last_rcvd_msg = new_tcp->next_send_ack;
 			}
 
 			// 被第二次握手
@@ -367,6 +372,11 @@ ctrl_receive:
 					if (tcp->connect_status == LINK_WAIT_FOR_SYN)
 					{
 						tcp->connect_status = LINK_GOT_SYN;
+
+						// 更新对方的seq_number系列
+						tcp->send_ack_needed = true;
+						tcp->next_send_ack = new_tcp_msg.tcp_seq_number+1;
+						tcp->last_read_msg = tcp->last_rcvd_msg = tcp->next_send_ack;
 					}
 					// 不在等待第二次握手，静默（或其他处理方案？）
 					else
@@ -381,6 +391,11 @@ ctrl_receive:
 			{
 				// 确实在等待第三次握手
 				tcp->connect_status = LINK_GOT_SYNACK;
+
+				// 更新对方的seq_number系列
+				tcp->send_ack_needed = false;
+				++(tcp->last_read_msg);
+				++(tcp->last_rcvd_msg);
 			}
 
 			// 收到FIN
@@ -397,12 +412,26 @@ ctrl_receive:
 					{
 						// 状态变为本方半开
 						tcp->connect_status = LINK_FINISHED;
+
+						// 更新对方的seq_number系列
+						tcp->send_ack_needed = true;
+						tcp->next_send_ack = new_tcp_msg.tcp_seq_number+1;
+						// 如果有数据未确认就不可以发送FIN，所以可以直接表示read过了
+						++(tcp->last_read_msg);
+						++(tcp->last_rcvd_msg);
 					}
 					// 确实在可以FIN，本方已半开
 					else if (tcp->connect_status == LINK_SELF_HALF_OPEN)
 					{
 						// 状态变为连接丢失
 						tcp->connect_status = LINK_CONNECT_DESTROYED;
+
+						// 更新对方的seq_number系列
+						tcp->send_ack_needed = true;
+						tcp->next_send_ack = new_tcp_msg.tcp_seq_number+1;
+						// 如果有数据未确认就不可以发送FIN，所以可以直接表示read过了
+						++(tcp->last_read_msg);
+						++(tcp->last_rcvd_msg);
 					}
 					// 不在等待FINACK，静默（或其他处理方案？）
 					else
@@ -472,6 +501,10 @@ ctrl_receive:
 							tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].datalen = data_len;
 							tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].seq_number = tcp->last_read+1;
 							tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].handin = false;
+
+							// 更新ack
+							tcp->send_ack_needed = true;
+							tcp->next_send_ack = new_tcp_msg.tcp_seq_number+data_len;
 						}
 						else
 						{
@@ -487,6 +520,10 @@ ctrl_receive:
 							tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].datalen = data_len;
 							tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].seq_number = new_tcp_msg.tcp_seq_number;
 							tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].handin = false;
+
+							// 更新ack
+							tcp->send_ack_needed = true;
+							tcp->next_send_ack = tcp->last_read+1;
 						}
 					}
 				}
@@ -517,6 +554,10 @@ ctrl_receive:
 						tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].datalen = data_len;
 						tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].seq_number = tcp->last_rcvd+1;
 						tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].handin = false;
+
+						// 更新ack
+						tcp->send_ack_needed = true;
+						tcp->next_send_ack = tcp->last_read+1;
 					}
 					else
 					{
@@ -542,6 +583,10 @@ ctrl_receive:
 						tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].datalen = data_len;
 						tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].seq_number = new_tcp_msg.tcp_seq_number;
 						tcp->tcp_msg_rcvd[tcp->last_rcvd_msg].handin = false;
+
+						// 更新ack
+						tcp->send_ack_needed = true;
+						tcp->next_send_ack = tcp->last_read+1;
 					}
 				}
 
@@ -731,6 +776,12 @@ ctrl_close:
 
 				// 改变tcp连接的状态，等待对方发来的syn报文
 				single_tcp->connect_status = LINK_WAIT_FOR_SYN;
+
+				// 更新缓冲区指针，装作从TCP_send发过数据的状态
+				++(single_tcp->seq_number);
+				++(single_tcp->wait_for_fill);
+				++(single_tcp->wait_for_ack);
+				++(single_tcp->wait_for_send);
 			}
 
 			// 发送SYN和ACK，第二次握手
@@ -760,6 +811,12 @@ ctrl_close:
 
 				// 改变tcp连接的状态，等待对方发来的synack报文
 				single_tcp->connect_status = LINK_WAIT_FOR_SYNACK;
+
+				// 更新缓冲区指针，装作从TCP_send发过数据的状态
+				++(single_tcp->seq_number);
+				++(single_tcp->wait_for_fill);
+				++(single_tcp->wait_for_ack);
+				++(single_tcp->wait_for_send);
 
 				// 通知应用层Accept事件
 				// 填入送往应用层的结构中
@@ -804,19 +861,25 @@ ctrl_close:
 				// 改变tcp连接的状态，已连接
 				single_tcp->connect_status = LINK_CONNECT_BIDIR;
 
-				// 通知应用层可以分配资源了
-				// 填入送往应用层的结构中
-				struct sockstruct new_sockstruct;
-				new_sockstruct.dstport = new_tcp_msg.tcp_dst_port;
-				new_sockstruct.srcport = new_tcp_msg.tcp_src_port;
-				new_sockstruct.funcID = SOCKCONNECT;
-				new_sockstruct.datalength = 0;
-				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_src_ip);
-				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_dst_ip);
-				new_sockstruct.data = NULL;
+				// 更新缓冲区指针，装作从TCP_send发过数据的状态
+				++(single_tcp->seq_number);
+				++(single_tcp->wait_for_fill);
+				++(single_tcp->wait_for_ack);
+				++(single_tcp->wait_for_send);
 
-				// 送往应用层
-				AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct);
+				//// 通知应用层可以分配资源了
+				//// 填入送往应用层的结构中
+				//struct sockstruct new_sockstruct;
+				//new_sockstruct.dstport = new_tcp_msg.tcp_dst_port;
+				//new_sockstruct.srcport = new_tcp_msg.tcp_src_port;
+				//new_sockstruct.funcID = SOCKCONNECT;
+				//new_sockstruct.datalength = 0;
+				//IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_src_ip);
+				//IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_dst_ip);
+				//new_sockstruct.data = NULL;
+
+				//// 送往应用层
+				//AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct);
 			}
 
 			// 通知应用层分配资源
@@ -868,6 +931,12 @@ ctrl_close:
 					// 不走TCP_send()，不加入TCP报文结构和报文缓冲，因为其中未记录fin
 					TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 1);
 
+					// 更新缓冲区指针，装作从TCP_send发过数据的状态
+					++(single_tcp->seq_number);
+					++(single_tcp->wait_for_fill);
+					++(single_tcp->wait_for_ack);
+					++(single_tcp->wait_for_send);
+
 					if (single_tcp->connect_status == LINK_FINISHING)
 					{
 						// 改变tcp连接的状态，等待对方发来的finack报文
@@ -906,6 +975,12 @@ ctrl_close:
 			
 				// 不走TCP_send()，不加入TCP报文结构和报文缓冲，因为其中未记录SYN
 				TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 1);
+
+				// 更新缓冲区指针，装作从TCP_send发过数据的状态
+				++(single_tcp->seq_number);
+				++(single_tcp->wait_for_fill);
+				++(single_tcp->wait_for_ack);
+				++(single_tcp->wait_for_send);
 
 				if (single_tcp->connect_status == LINK_FINISHED)
 				{
