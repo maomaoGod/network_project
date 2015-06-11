@@ -445,7 +445,6 @@ bool  CmySocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 	sockstate = TCP_FLAG;
 	Tchar2char(dstip, lpszHostAddress);
 	dstport = nHostPort;
-	WaitForSockEvent(SOCKACCEPT);
 	return WaitForSockEvent(SOCKCONNECT);
 }
 

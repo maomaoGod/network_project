@@ -353,7 +353,7 @@ ctrl_receive:
 				// 更新对方的seq_number系列
 				new_tcp->send_ack_needed = true;
 				new_tcp->next_send_ack = new_tcp_msg.tcp_seq_number+1;
-				new_tcp->last_read_msg = new_tcp->last_rcvd_msg = new_tcp->next_send_ack;
+				new_tcp->last_read = new_tcp->last_rcvd = new_tcp_msg.tcp_seq_number;
 			}
 
 			// 被第二次握手
@@ -376,7 +376,7 @@ ctrl_receive:
 						// 更新对方的seq_number系列
 						tcp->send_ack_needed = true;
 						tcp->next_send_ack = new_tcp_msg.tcp_seq_number+1;
-						tcp->last_read_msg = tcp->last_rcvd_msg = tcp->next_send_ack;
+						tcp->last_read = tcp->last_rcvd = new_tcp_msg.tcp_seq_number;
 					}
 					// 不在等待第二次握手，静默（或其他处理方案？）
 					else
@@ -394,8 +394,8 @@ ctrl_receive:
 
 				// 更新对方的seq_number系列
 				tcp->send_ack_needed = false;
-				++(tcp->last_read_msg);
-				++(tcp->last_rcvd_msg);
+				++(tcp->last_read);
+				++(tcp->last_rcvd);
 			}
 
 			// 收到FIN
@@ -417,8 +417,8 @@ ctrl_receive:
 						tcp->send_ack_needed = true;
 						tcp->next_send_ack = new_tcp_msg.tcp_seq_number+1;
 						// 如果有数据未确认就不可以发送FIN，所以可以直接表示read过了
-						++(tcp->last_read_msg);
-						++(tcp->last_rcvd_msg);
+						++(tcp->last_read);
+						++(tcp->last_rcvd);
 					}
 					// 确实在可以FIN，本方已半开
 					else if (tcp->connect_status == LINK_SELF_HALF_OPEN)
@@ -430,8 +430,8 @@ ctrl_receive:
 						tcp->send_ack_needed = true;
 						tcp->next_send_ack = new_tcp_msg.tcp_seq_number+1;
 						// 如果有数据未确认就不可以发送FIN，所以可以直接表示read过了
-						++(tcp->last_read_msg);
-						++(tcp->last_rcvd_msg);
+						++(tcp->last_read);
+						++(tcp->last_rcvd);
 					}
 					// 不在等待FINACK，静默（或其他处理方案？）
 					else
@@ -729,12 +729,12 @@ ctrl_close:
 				{
 					// 填入送往应用层的结构中
 					struct sockstruct new_sockstruct;
-					new_sockstruct.dstport = single_tcp->tcp_dst_port;
-					new_sockstruct.srcport = single_tcp->tcp_src_port;
+					new_sockstruct.dstport = single_tcp->tcp_src_port;
+					new_sockstruct.srcport = single_tcp->tcp_dst_port;
 					new_sockstruct.funcID = SOCKSEND;
 					new_sockstruct.datalength = single_tcp->last_rcvd - single_tcp->last_read;
-					IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_src_ip);
-					IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_dst_ip);
+					IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_dst_ip);
+					IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_src_ip);
 					// ---------由socket释放，这个写法似乎不太规范--------------------------------
 					new_sockstruct.data = (char *)malloc(new_sockstruct.datalength*sizeof(char));
 					// ---------由socket释放，这个写法似乎不太规范--------------------------------
@@ -821,12 +821,12 @@ ctrl_close:
 				// 通知应用层Accept事件
 				// 填入送往应用层的结构中
 				struct sockstruct new_sockstruct;
-				new_sockstruct.dstport = new_tcp_msg.tcp_dst_port;
-				new_sockstruct.srcport = new_tcp_msg.tcp_src_port;
+				new_sockstruct.dstport = new_tcp_msg.tcp_src_port;
+				new_sockstruct.srcport = new_tcp_msg.tcp_dst_port;
 				new_sockstruct.funcID = SOCKACCEPT;
 				new_sockstruct.datalength = 0;
-				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_src_ip);
-				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_src_ip);
 				new_sockstruct.data = NULL;
 
 				// 送往应用层
@@ -867,19 +867,19 @@ ctrl_close:
 				++(single_tcp->wait_for_ack);
 				++(single_tcp->wait_for_send);
 
-				//// 通知应用层可以分配资源了
-				//// 填入送往应用层的结构中
-				//struct sockstruct new_sockstruct;
-				//new_sockstruct.dstport = new_tcp_msg.tcp_dst_port;
-				//new_sockstruct.srcport = new_tcp_msg.tcp_src_port;
-				//new_sockstruct.funcID = SOCKCONNECT;
-				//new_sockstruct.datalength = 0;
-				//IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_src_ip);
-				//IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_dst_ip);
-				//new_sockstruct.data = NULL;
+				// 通知应用层可以分配资源了
+				// 填入送往应用层的结构中
+				struct sockstruct new_sockstruct;
+				new_sockstruct.dstport = new_tcp_msg.tcp_src_port;
+				new_sockstruct.srcport = new_tcp_msg.tcp_dst_port;
+				new_sockstruct.funcID = SOCKCONNECT;
+				new_sockstruct.datalength = 0;
+				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_src_ip);
+				new_sockstruct.data = NULL;
 
-				//// 送往应用层
-				//AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct);
+				// 送往应用层
+				AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct);
 			}
 
 			// 通知应用层分配资源
@@ -890,12 +890,12 @@ ctrl_close:
 
 				// 填入送往应用层的结构中
 				struct sockstruct new_sockstruct;
-				new_sockstruct.dstport = single_tcp->tcp_dst_port;
-				new_sockstruct.srcport = single_tcp->tcp_src_port;
+				new_sockstruct.dstport = single_tcp->tcp_src_port;
+				new_sockstruct.srcport = single_tcp->tcp_dst_port;
 				new_sockstruct.funcID = SOCKCONNECT;
 				new_sockstruct.datalength = 0;
-				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_src_ip);
-				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_src_ip);
 				new_sockstruct.data = NULL;
 
 				// 送往应用层
@@ -1003,12 +1003,12 @@ ctrl_close:
 			{
 				// 填入送往应用层的结构中
 				struct sockstruct new_sockstruct;
-				new_sockstruct.dstport = single_tcp->tcp_dst_port;
-				new_sockstruct.srcport = single_tcp->tcp_src_port;
+				new_sockstruct.dstport = single_tcp->tcp_src_port;
+				new_sockstruct.srcport = single_tcp->tcp_dst_port;
 				new_sockstruct.funcID = SOCKCLOSE;
 				new_sockstruct.datalength = 0;
-				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_src_ip);
-				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_src_ip);
 				new_sockstruct.data = NULL;
 
 				// 送往应用层
