@@ -99,6 +99,15 @@ struct stopandwait
 	int last_ack;
 };
 
+struct gobackn
+{
+	int time;               //记录发送报文的时间
+	struct sockstruct send_buf[SEND_STRUCT_SIZE];   //发送缓冲区
+	int base;     //当前缓冲区中正待被发送的报文下标
+	int nextseqnum;            
+	int last_send_msg;    //当前缓冲区中将要发送的最后一个报文的下标
+};
+
 bool createNodeList();
 
 bool addNode(tcplist* tcp_list);
@@ -145,3 +154,8 @@ bool check_listening(unsigned short port);
 
 void fill_new_tcplist(struct tcplist *new_tcp);
 
+void sandw_send(struct sockstruct data_from_applayer);
+
+void sandw_receive(struct Msg data_from_netlayer);
+
+void stop_wait();
