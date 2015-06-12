@@ -3,10 +3,13 @@
 #include "Tools.h"
 #include "UICtrl.h"
 
+#include "Httpworker.h"
+
 using namespace Tools;
 
 #define MAXLEN 1024
-extern void PrintLog (CString);
+extern void PrintLog(CString);
+extern void PrintRp(CString);
 
 NetHtml::NetHtml()
 {
@@ -89,6 +92,7 @@ CString  NetHtml::getURLContext(LPCTSTR pstrURL){
 		mySocket.Send(temp, header.length() + 1, 0);
 		mySocket.Send("Connection: Close\n\n", 20, 0);
 		free(temp);
+		/*
 		while (mySocket.Receive(buf, MAXLEN, 0) > 0)
 		{
 			int nBufferSize = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)buf, -1, NULL, 0);
@@ -97,6 +101,31 @@ CString  NetHtml::getURLContext(LPCTSTR pstrURL){
 			MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)buf, -1, pBuffer, nBufferSize*sizeof(TCHAR));//UTF-8转Unicode
 			myhtml += pBuffer;
 		}
+		*/
+		string html = "";
+		char buf[BUFSIZE+1];
+		while (true){
+			memset(buf, 0, sizeof(buf));
+			mySocket.Receive(buf, BUFSIZE);
+			buf[BUFSIZE] = '\0';
+			html += (* new string(buf));
+			if (html.find("/r/n/r/n")) break;
+		}
+		PrintRp(STR::S2CS(html));
+		Httpworker httpworker;
+		int len = httpworker.setMsg(html);
+		html = httpworker.getdata();
+		int count;
+		while (true){
+			if (len == 0) break;
+			memset(buf, 0, sizeof(buf));
+			count = mySocket.Receive(buf, BUFSIZE);
+			buf[BUFSIZE] = '\0';
+			html += (*new string(buf));
+			len -= count;
+		}
+		httpworker.setdata(html);
+		PrintRp(STR::S2CS(httpworker.getdata()));
 	}
 	/**
 	*异常处理

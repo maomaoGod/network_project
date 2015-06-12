@@ -4,9 +4,10 @@
 #include "UICtrl.h"
 #include "NetHtml.h"
 #include "NetWork.h"
-#include "Cmysocket.h"
 using namespace Tools;
 using namespace NetWork;
+
+
 
 UserCmd::UserCmd()
 {
@@ -139,9 +140,12 @@ void UserCmd::SetDll(CString e){
 *函数通过url获取网页html的字符流，并将其显示到响应输出窗口
 * @param url  请求网页html的统一资源定义符
 */
+
+#include "Httpworker.h"
 void UserCmd::GetHtml(CString url){
 	NetHtml myhtml;
 	CString html = myhtml.getURLContext(url);
+	system("pause");
 	SetRp(html);
 }
 
@@ -159,17 +163,4 @@ void UserCmd::cleanlog(CString e){
     CleanLog(NULL);
 }
 
-void UserCmd::mytest(CString e){
-	CString sed;
-	TakeOverCmd(_T("Test>"));
-	TCHAR S[100] = { 0 };
-	CmySocket mysock;
-    mysock.Connect(_T("10.12.56.148"), 6500);
-	while ((sed = GetLine()).Compare(_T("exit")) != 0){
-		mysock.Send(sed, sed.GetLength()*sizeof(TCHAR));
-		mysock.Receive(S, 100);
-		PrintRp(S);
-		memset(S, 0, 100 * sizeof(TCHAR));
-	}
-}
 

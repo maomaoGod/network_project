@@ -1,15 +1,16 @@
 #pragma once
 
 // HttpClientSocket ÃüÁîÄ¿±ê
+#include "Tools.h"
 
+using namespace Tools;
 
 class HttpClientSocket : public CAsyncSocket
 {
 public:
 	HttpClientSocket();
 	virtual ~HttpClientSocket();
-	TCHAR Buffer[1024];
-	int MAXLEN = 1024;
+	TCHAR Buffer[BUFSIZE];
 	virtual void OnReceive(int nErrorCode);
 	virtual void OnSend(int nErrorCode);
 	virtual void OnClose(int nErrorCode);

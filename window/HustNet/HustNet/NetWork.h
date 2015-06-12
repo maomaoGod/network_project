@@ -15,6 +15,8 @@
 #include "UICtrl.h"
 #include "DNSworker.h"
 #include "Httpworker.h"
+#include "Ftpworker.h"
+#include "FtpDataSocket.h"
 //#import "dll/JHttp.dll"
 
 #define HTTP_PORT 6500
@@ -149,34 +151,16 @@ namespace NetWork{
 
 	};
 
-	class FTPWork{
-	public:
-		FTPWork(){
-		}
-		//div the word
-		void split_input(CStringArray *data, CString Source, TCHAR div){
-			//use the tools from namespace Tools
-			STR::CCarg(data, Source, div);
-		}
-		void deal_send_Msg(CString *Msg, CStringArray *Data){
-			int i;
-			CString temp;
-			for (i = 0; i < Data->GetSize(); i++){
-				temp = Data->GetAt(i).Mid(0);
-				*Msg = *Msg + _T(' ') + temp;
-			}
-		}
-	};
 
 	//take over the system
 	class FTPApp{
 	public:
 		FTPApp(){
 			AfxSocketInit();
-			ftpwork = new FTPWork();
+			ftpworker = new Ftpworker();
 		}
 		~FTPApp(){
-			delete ftpwork;
+			delete ftpworker;
 		}
 		void Begin(){
 			CString mystr;
@@ -193,15 +177,23 @@ namespace NetWork{
 			while ((mystr = GetLine()).Compare(_T("exit")) != 0){
 				CleanRp(NULL);
 				PrintLog(_T("Accept ") + mystr);
-				CStringArray code;
-				ftpwork->split_input(&code, mystr, _T(' '));
-				//Conn at first
-				if (code[0] == _T("Conn")){
-					PrintLog(code[1]);
-					if (aSocket->Connect(code[1], 7600)){
+				if (ftpworker->div(STR::CS2S(mystr), ' ') < 0){
+					PrintRp(_T("argc miss"));
+					continue;
+				}
+				//first conn
+				int error_code = ftpworker->dealwith();
+				if (error_code < 0){
+					PrintRp(_T("NOP code or not set the SendWay"));
+					continue;
+				}
+				if (!error_code){//dealwith
+					if (aSocket->Connect(STR::S2CS(ftpworker->getIP()), ftp_port)){
 						aSocket->Receive((void *)szRecValue, 1024);
 						rev.Format(_T("来自服务器的消息:%s"), szRecValue);
 						PrintRp(rev);
+						ftpworker->connected = true;
+						continue;
 					}
 					else{
 						CString error;
@@ -210,99 +202,157 @@ namespace NetWork{
 						return;
 					}
 				}
-				//UPLOAD + client_path + serve_path
-				else if (code[0] == _T("UPLOAD") || code[0] == _T("upload")){
-					if (!Uploadfile(&code)){
-						PrintLog(_T("Interrupt Error!"));
+				//not use conn cmd
+				if (!ftpworker->connected){
+					PrintRp(_T("not connect!"));
+					ftpworker->connected = false;
+					continue;
+				}
+				//send data and rev
+				
+				if (error_code == 2){
+					if (ftpworker->getWay() < 0){
+						PrintRp(_T("not set you send style"));
 						continue;
+					}
+				}/*
+				if (error_code == 3){
+					//
+					if (ftpworker->getWay() == 1){
+						//set a port to listen
+						dataworker = new FtpDataSocket();
+						dataworker->Create(ftpworker->GetPort());
+						dataworker->Listen();
+					}
+					else{
+						//wait for us to send a data auto;
+					}
+				}*/
+				if (error_code){
+					if (!Send()){
+						PrintLog(_T("Interrupt Error!"));
+						return;
 					}
 					Rev();
+					/*if (error_code == 2){
+						//use different way to tarns message
+						if (ftpworker->getWay() == 1){
+							//set a port to listen
+							dataworker->src_path = ftpworker->getSrc();
+							dataworker->des_path = ftpworker->getDes();
+							dataworker->style = ftpworker->getStyle();
+							dataworker->good = true;
+							//begin to send
+						}
+						else{
+							//wait for us to send a data auto;
+							bSocket = new CSocket();
+							bSocket->Create();
+							bSocket->Connect(STR::S2CS(ftpworker->getIP()), data_port);
+							TCHAR buf[1024];
+							memset(buf, 0, sizeof(buf));
+							bSocket->Receive((void *)buf, 1024);
+							memset(buf, 0, sizeof(buf));
+							CString sendmsg=_T("null");
+							if (ftpworker->getStyle()){//download
+								bSocket->Send(sendmsg, sizeof(TCHAR)*sendmsg.GetLength());
+								CString rev;
+								CString temp;
+								while (bSocket->Receive((void *)buf, 1024)){
+									temp.Format(_T("%s"), buf);
+									rev += temp;
+									memset(buf, 0, 1024 * sizeof(TCHAR));
+								}
+								FIO::SaveFile(ftpworker->getDes(), &STR::CS2S(rev));
+							}
+							else{//upload
+								sendmsg = STR::S2CS(FIO::ReadFile(ftpworker->getSrc(),1));
+								bSocket->Send(sendmsg, sizeof(TCHAR)*sendmsg.GetLength());
+								bSocket->Receive((void *)buf, 1024);
+							}
+							bSocket->Close();
+							delete bSocket;
+						}
+					}*/
+					ftpworker->Dealfile(error_code);
 				}
-				//DOWNLOAD + serve_path + client_path
-				else if (code[0] == _T("DOWNLOAD") || code[0] == _T("download")){
-					if (!Send(code[0], &code)){
-						PrintLog(_T("Interrupt Error!"));
-						continue;
-					}
-					Downloadfile(&code);
-				}
-				else{
-					if (!Send(code[0], &code)){
-						PrintLog(_T("Interrupt Error!"));
-						continue;
-					}
-					Rev();
-				}
+				// according to different code to diff thing
+				/*
+				if (error_code){
+					//send data and rec data
+					//it may be open last time
+					bSocket = new CSocket();
+					bSocket->Close();
+					delete bSocket;
+				}*/
 			}
 			aSocket->Close();
 			delete aSocket;
 		}
+	
 	private:
-		FTPWork *ftpwork;
+		FtpDataSocket *dataworker;
+		Ftpworker *ftpworker;
 		CSocket *aSocket;
+		CSocket *bSocket;
 		CString IP;
 		CString Path;
 		CString rev;
 		TCHAR szRecValue[1024];
-		//UPLOAD + client_path + serve_path
-		bool Uploadfile(CStringArray *data){
-			string path = STR::CS2S(data->GetAt(1));
-			string *temp;
-			string read;
-			char t[1024];
+		string save;
+
+		bool Send(){
 			CString Msg;
-			FILE *fp;
-			if (fopen_s(&fp, path.c_str(), "r")){
-				PrintRp(_T("NONE FILE"));
-				return false;
-			}
-			else{
-				while (fscanf_s(fp, "%s", t, 1024) != -1){
-					temp = new string(t);
-					read += *temp;
-					delete temp;
+			Msg = STR::S2CS(ftpworker->getMsg());
+			save = ftpworker->getSmallData();
+			//aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
+			TCHAR *senddata;
+			int len = STR::CString2TCHAR(&senddata, &Msg);
+			//aSocket->Send(data, data.GetLength()*sizeof(TCHAR));
+			int i;
+			for (i = 0; i < len; i += BUFSIZE){
+				if(i+BUFSIZE < len)
+					aSocket->Send(senddata + i, BUFSIZE*sizeof(TCHAR));
+				else{
+					CString str = senddata + i;
+					str += STR::FillStr(_T('\n'), BUFSIZE - (len % BUFSIZE));
+					aSocket->Send(str, BUFSIZE*sizeof(TCHAR));
 				}
 			}
-			Msg = data->GetAt(0) + _T(' ') + data->GetAt(2) + _T(' ') + STR::S2CS(read);
-			aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
-			return true;
-		}
-		//DOWNLOAD + serve_path + client_path
-		void Downloadfile(CStringArray *data){
-			string path = STR::CS2S(data->GetAt(2));//client_path
-			CString temp;
-			FILE *fp;
-			fopen_s(&fp, path.c_str(), "w");
-			//while (){
-			aSocket->Receive((void *)szRecValue, 1024);
-			temp.Format(_T("%s"), szRecValue);
-			//fprintf_s(fp, "%s", temp);
-			fprintf_s(fp, "%s\n", STR::CS2S(temp).c_str());
-			//}
-			fclose(fp);
-			PrintRp(_T("Rev OK"));
-		}
-		
-		bool Send(CString Method, CStringArray *url){
-			//memset(szRecValue, 0, 1024 * sizeof(TCHAR));
-			int i;
-			CString Msg;
-			ftpwork->deal_send_Msg(&Msg, url);
-			aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
+			//Msg = _T("ftp ask end");
+			//aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
 			return true;
 		}
 		
 		void Rev(){
+			//need analy
 			rev = _T("");
 			CString temp;
+			int count;
+			while (true){
+				count = 0;
+				memset(szRecValue, 0, BUFSIZE * sizeof(TCHAR));
+				//aSocket->Receive((void *)szRecValue, BUFSIZE);
+				while (true){
+					count += aSocket->Receive((void *)(szRecValue+count), (BUFSIZE-count));
+					if (count == BUFSIZE) break;
+				}
+				temp.Format(_T("%s"), szRecValue);
+				string s = STR::RemoveStr(STR::CS2S(temp), '\n');
+				if (s[0] == '\0')
+					break;
+				rev += temp;
+			}
+			/*
+			CString temp;
 			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
-			//while (aSocket->Receive((void *)szRecValue, 1024)){
 			aSocket->Receive((void *)szRecValue, 1024);
-			temp.Format(_T("%s"), szRecValue);
-			rev += temp;
-			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
-			//}
-			PrintRp(rev);
+			temp.Format(_T("%s"), szRecValue);*/
+			ftpworker->setMsg(STR::CS2S(rev));
+			if (ftpworker->Analy() > 0){
+				//show it and do something else
+				PrintRp(ftpworker->show_msg(save));
+			}
 		}
 
 	};
@@ -319,12 +369,11 @@ namespace NetWork{
 	public:
 		AppLayerHttp(){
 			AfxSocketInit();
-			//httpwork = new HTTPWork();
 			httpworker = new Httpworker();
 			dnsworker = new DNSworker();
+			httpworker->setPort(80);
 		}
 		~AppLayerHttp(){
-			//delete httpwork;
 			delete httpworker;
 			delete dnsworker;
 		}
@@ -336,7 +385,16 @@ namespace NetWork{
 				CleanRp(NULL);
 				PrintLog(_T("Accept ") + mystr);
 				CStringArray code;
-				if (httpworker->div(STR::CS2S(mystr), ' ') < 0){
+				if (httpworker->div(STR::CS2S(mystr), ' ')< 0){
+					vector<string> d;
+					STR::Split(STR::CS2S(mystr), &d, ' ');
+					if (d.size()>1){
+						if (STR::Upper(d[0]) == "SETPORT"){
+							httpworker->setPort(STR::string2int(d[1]));
+							PrintLog(_T("Port ")+STR::S2CS(d[1])+_T(" successfully"));
+							continue;
+						}
+					}
 					PrintLog(_T("argc error"));
 					continue;
 				}
@@ -347,34 +405,6 @@ namespace NetWork{
 				    PrintLog(error);
 				    return;
 			    }
-				if (!httpworker->IPcheck()){//UDP ge IP
-					//UDP get IP accord to host
-					dnsworker = new DNSworker();
-					dnsworker->Make(httpworker->gethost());
-					string dnsmsg = dnsworker->getMsg();
-					CString temp = STR::S2CS(dnsmsg);
-					udp = new CSocket();
-					udp->Create();
-					CString dns_host_ip = STR::S2CS(DNSworker::getdefault_dfs());
-					if (!udp->Connect(dns_host_ip, dns_port)){ PrintRp(_T("dns server can't be access")); continue; };
-					udp->Send(temp, sizeof(TCHAR)*temp.GetLength());
-					string dnsrmsg;
-					memset(szRecValue, 0, 1024 * sizeof(TCHAR));
-					udp->Receive(szRecValue, 1024);
-					udp->Close();
-					delete udp;
-					temp.Format(_T("%s"), szRecValue);
-					dnsrmsg = STR::CS2S(temp);
-					dnsworker->setMsg(dnsrmsg);
-					if (dnsworker->Analy() < 0){
-						PrintRp(_T("host wrong"));
-						continue;
-					}
-					httpworker->setIP(dnsworker->Getip());
-					
-				}
-				else httpworker->setIP(httpworker->gethost());
-
 				if (!Send()){
 					PrintLog(_T("Interrupt Error!"));
 					return;
@@ -402,20 +432,34 @@ namespace NetWork{
 		
 		bool Send(){
 			httpworker->Make();
-			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
-			if (aSocket->Connect(STR::S2CS(httpworker->getIP()), HTTP_PORT)){
-				aSocket->Receive((void *)szRecValue, 1024);
-				rev.Format(_T("来自服务器的消息:%s"), szRecValue);
-				PrintRp(rev);
+			if (httpworker->getPort() == 80){
+				//outside link
+				if (aSocket->Connect(STR::S2CS(httpworker->gethost()), httpworker->getPort())){
+					PrintRp(_T("link to ") + STR::S2CS(httpworker->gethost()));//rev
+				}
+				else{
+					CString error;
+					error.Format(_T("连接服务器失败:%d"), aSocket->GetLastError());
+					PrintLog(error);
+					return false;
+				}
 			}
 			else{
-				CString error;
-				error.Format(_T("连接服务器失败:%d"), aSocket->GetLastError());
-				PrintLog(error);
-				return false;
+				if (aSocket->Connect(STR::S2CS(httpworker->gethost()), httpworker->getPort())){
+			        memset(szRecValue, 0, 1024 * sizeof(TCHAR));
+			        //aSocket->Receive((void *)szRecValue, 1024);
+				    //rev.Format(_T("来自服务器的消息:%s"), szRecValue);
+				    PrintRp(_T("link to ") + STR::S2CS(httpworker->gethost()));//rev
+				}
+				else{
+					CString error;
+				    error.Format(_T("连接服务器失败:%d"), aSocket->GetLastError());
+				    PrintLog(error);
+				    return false;
+				}
 			}
-			CString data = STR::S2CS(httpworker->getMsg());
-			aSocket->Send(data, data.GetLength()*sizeof(TCHAR));
+			string data = httpworker->getMsg();
+			aSocket->Send(data.c_str(), data.length());
 			return true;
 		}
 
@@ -428,32 +472,44 @@ namespace NetWork{
 		 */
 		
 		void Rev(){
-			rev = _T("");
-			CString temp;
-			memset(szRecValue, 0, 1024 * sizeof(TCHAR));
-			while (aSocket->Receive((void *)szRecValue, 1024)){
-				temp.Format(_T("%s"), szRecValue);
-				rev += temp;
-				memset(szRecValue, 0, 1024 * sizeof(TCHAR));
+			string html = "";
+			char buf[BUFSIZE + 1];
+			while (true){
+				memset(buf, 0, sizeof(buf));
+				aSocket->Receive(buf, BUFSIZE);
+				buf[BUFSIZE] = '\0';
+				html += (*new string(buf));
+				if (html.find("\r\n\r\n")) break;
 			}
-			httpworker->setMsg(STR::CS2S(rev));
-			if (httpworker->analy() < 0){
-				PrintRp(_T("recieve wrong"));
-				return;
-			};
-			PrintRp(httpworker->show_rmsg());
+			int xpos = html.find("\r\n\r\n");
+			PrintRp(STR::S2CS(html.substr(0,xpos-1)));
+			int len = httpworker->setMsg(html);
+			if (len > 0){//no data;
+				html = httpworker->getdata();
+				int count;
+				while (true){
+					if (len == 0) break;
+					memset(buf, 0, sizeof(buf));
+					count = aSocket->Receive(buf, BUFSIZE);
+					buf[BUFSIZE] = '\0';
+					html += (*new string(buf));
+					len -= count;
+				}
+				httpworker->setdata(html);
+			}
+			if (httpworker->analy()<0){
+				
+			}
+			PrintRp(STR::S2CS(httpworker->getdata()));
 		}
 	
 	private:
 		Httpworker *httpworker;
 		DNSworker *dnsworker;
 		CSocket *aSocket;
-		CSocket *udp;
 		CString rev;
 		TCHAR szRecValue[1024];
 	};
-
-
 
 }
 
@@ -485,3 +541,76 @@ continue;
 }
 httpworker->setIP(dnsworker->Getip());
 */
+
+/*
+if (!httpworker->IPcheck()){//UDP ge IP
+//UDP get IP accord to host
+dnsworker = new DNSworker();
+dnsworker->Make(httpworker->gethost());
+string dnsmsg = dnsworker->getMsg();
+CString temp = STR::S2CS(dnsmsg);
+udp = new CSocket();
+udp->Create();
+CString dns_host_ip = STR::S2CS(DNSworker::getdefault_dfs());
+if (!udp->Connect(dns_host_ip, dns_port)){ PrintRp(_T("dns server can't be access")); continue; };
+udp->Send(temp, sizeof(TCHAR)*temp.GetLength());
+string dnsrmsg;
+memset(szRecValue, 0, 1024 * sizeof(TCHAR));
+udp->Receive(szRecValue, 1024);
+udp->Close();
+delete udp;
+temp.Format(_T("%s"), szRecValue);
+dnsrmsg = STR::CS2S(temp);
+dnsworker->setMsg(dnsrmsg);
+if (dnsworker->Analy() < 0){
+PrintRp(_T("host wrong"));
+continue;
+}
+httpworker->setIP(dnsworker->Getip());
+}
+else httpworker->setIP(httpworker->gethost());
+if (httpworker->getIP() == ""){
+PrintRp(_T("host can't be analied"));
+continue;
+}*/
+
+/*
+rev = _T("");
+CString temp;
+int count;
+while (true){
+count = 0;
+memset(szRecValue, 0, BUFSIZE * sizeof(TCHAR));
+//
+while (true){
+count += aSocket->Receive((void *)(szRecValue + count), (BUFSIZE - count));
+if (count == BUFSIZE) break;
+}
+temp.Format(_T("%s"), szRecValue);
+string s = STR::RemoveStr(STR::CS2S(temp), '\n');
+if (s[0] == '\0')
+break;
+rev += temp;
+}
+httpworker->setMsg(STR::CS2S(rev));
+if (httpworker->analy() < 0){
+PrintRp(_T("recieve wrong"));
+return;
+};
+PrintRp(httpworker->show_rmsg());
+*/
+
+/*
+CString data = STR::S2CS(httpworker->getMsg());
+TCHAR *senddata;
+int len = STR::CString2TCHAR(&senddata,&data);
+int i;
+for (i = 0; i < len; i += BUFSIZE){
+if (i + BUFSIZE < len)
+aSocket->Send(senddata + i, BUFSIZE*sizeof(TCHAR));
+else{
+CString str = senddata + i;
+str += STR::FillStr(_T('\n'), BUFSIZE - (len % BUFSIZE));
+aSocket->Send(str, BUFSIZE*sizeof(TCHAR));
+}
+}*/

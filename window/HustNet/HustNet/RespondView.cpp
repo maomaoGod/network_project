@@ -147,7 +147,7 @@ void RespondView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 LRESULT RespondView::Print(WPARAM wparam, LPARAM lparam)
 {
 	CString mystr = *((CString *)wparam);
-	Res += _T("Respond: ") + mystr + _T("\r\n");
+	Res += /*_T("Respond: ") +*/ mystr + _T("\r\n");
 	SetWindowText(Res);
 	int l = ((CEdit *)this)->GetWindowTextLength();
 	((CEdit *)this)->SetSel(l,l,false);

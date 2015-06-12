@@ -1,60 +1,53 @@
 #pragma once
-#include "ComSocket.h"
 
-class  CmySocket: public CComSocket
+#include "stdafx.h"
+#include "Serve.h"
+
+class CmySocket
 {
 public:
- 	  CmySocket();
+   	  CmySocket();
 	~CmySocket();
-private:
-	HANDLE   ReadQueue,WriteQueue;
-	HANDLE   SH, CH;
-	Manager   *pReadQueue, *pWriteQueue;
-private:
-	bool    flag;           //创建是否成功标志
-	int      LastError;   //错误代号
-	bool   done=true;
-	char  *pReadData;
-	unsigned int ReadDataLen,DataLen;
-private:
-	bool  InitalWriteQueue(regstruct &);
-	bool  InitalReadQueue(regstruct &);
-	void   RemoveRead();
-	bool   AddToTail(HANDLE NewNode);
-	bool  WaitForSockEvent(unsigned int SOCKEVENT);
 public:
-	bool Listen();
-
-	int   SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTSTR lpszHostAddress);
-
-	int   ReceiveFrom(void* lpBuf, int nBufLen, CString& rSocketAddress, UINT& rSocketPort, int nFlags = 0);
-
-	bool Bind(UINT nSocketPort);
-
-	bool Create();
-    
-	bool Create(UINT nHostPort);
-
-	int    Receive(void* lpBuf, int nBufLen);
-	
-	bool  Accept(CmySocket& rConnectedSocket);
-
-	void  Close();
-
-	int    Send(const void* lpBuf, int nBufLen);
-
+	ObjEvent    myEvent;
+	bool flag;
+	int SockMark;
+public:
+	bool InitalEvent(regstruct *myreg);
+	int   Send(const void* lpBuf, int nBufLen);
+	/** Udp发数据
+	*/
+	int SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTSTR lpszHostAddress);
+	/** 接收数据
+	*/
+	int Receive(void* lpBuf, int nBufLen);
+	/** 建立TCP连接
+	*/
 	bool  Connect(LPCTSTR lpszHostAddress, UINT nHostPort);
+	/** 监听连接请求
+	*/
+	bool Listen();
+	/** 创建socket
+	*/
+	bool Create();
 
+	bool Create(UINT nHostPort);
+	/**  消息来临时接收
+	*/
 	void  OnReceive(int nErrorCode);
 
 	void  OnAccept(int nErrorCode);
 
-	void  OnClose(int nErrorCode);
+	void  Accept(CmySocket & rConnectedSocket);
 
-	void  OnSend(int nErrorCode);
+	bool Bind(UINT nSocketPort);
 
-	void  OnConnect(int nErrorCode);
+	void  char2Tchar( LPSTR src, LPCTSTR dst, int maxlen);
 
-	int    GetLastError();
+	void  Tchar2char(LPCTSTR src, LPSTR dst);
+
+	void  Close();
+
+	void GetSockMark(regstruct *preg, regstruct *myreg);
 };
 

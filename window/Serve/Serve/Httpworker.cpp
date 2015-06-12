@@ -36,13 +36,13 @@ Httpworker::Httpworker()
 	//int error
 	(*fun)["ERROR"] = (*fun)["error"] = &Httpworker::ERROR_HTTP;
 
-	(*word)[200] = "OK";
-	(*word)[301] = "MOVE Permanently";
-	(*word)[304] = "NOT Modified";
-	(*word)[400] = "BAD REQUEST";
-	(*word)[404] = "NOT FOUND";
-	(*word)[505] = " HTTP VERSION NOT SUPPORTED";
-	(*word)[-1] = "Server crashed";
+	(*word)["200"] = "OK";
+	(*word)["301"] = "MOVE Permanently";
+	(*word)["304"] = "NOT Modified";
+	(*word)["400"] = "BAD REQUEST";
+	(*word)["404"] = "NOT FOUND";
+	(*word)["505"] = "HTTP VERSION NOT SUPPORTED";
+	(*word)["-1"] = "Server crashed";
 }
 
 Httpworker::~Httpworker()
@@ -69,10 +69,10 @@ void Httpworker::Make(){
 	}
 }
 
-http_error_code Httpworker::analy(){
+int Httpworker::analy(){
 	//set msg;
 	msg = new HttpMsg();
-	msg->connect = rmsg->connect;
+	msg->connect = "Closed";//rmsg->connect;
 	msg->no = rmsg->no;
 	msg->length = 0;
 	msg->date = Tools::Timer::GetCurtime();
@@ -82,6 +82,7 @@ http_error_code Httpworker::analy(){
 	else
 		msg->last_modified = "";
 	//cookie file produce
+	/*
 	if (rmsg->cookie.num == -1){
 		int x = msg->cookie.RandCook();
 		while (msg->cookie.findcookie()){
@@ -94,26 +95,23 @@ http_error_code Httpworker::analy(){
 		msg->cookie.readcook(rmsg->cookie.num);
 		msg->cookie.history += ('*' + rmsg->method + "->" + msg->date);
 		msg->cookie.create(msg->cookie.num);
-	}
+	}*/
 	return 1;//success
 }
 
 void Httpworker::check(){
-	if (msg->data == "") msg->data = "null";
-	if (msg->type == "") msg->type = "html";
+	if (msg->type.size()==0) msg->type.push_back("text/html");
 	if (FIO::Exist(rmsg->path)&&msg->last_modified=="")
 		msg->last_modified = Tools::Timer::FilelastChange(rmsg->path);
-	if(msg->length==0)
-		msg->length = msg->data.length();
+	if (msg->last_modified == "") msg->last_modified = "";
+	msg->length = msg->data.length();
 }
 
 CString Httpworker::show_rmsg(){
 	CString look = _T("\r\n");
-	string a;
-	a = STR::int2string(rmsg->no);
 	look += _T("Method : ") + STR::S2CS(rmsg->method) + _T("\r\n");
 	look += _T("path : ") + STR::S2CS(rmsg->path) + _T("\r\n");
-	look += _T("Version : ") + STR::S2CS(a) + _T("\r\n");
+	look += _T("Version : ") + STR::S2CS(rmsg->no) + _T("\r\n");
 	look += _T("Host : ") + STR::S2CS(rmsg->host) + _T("\r\n");
 	look += _T("User : ") + STR::S2CS(rmsg->user) + _T("\r\n");
 	look += _T("Language : ") + STR::S2CS(rmsg->language) + _T("\r\n");
@@ -127,51 +125,73 @@ CString Httpworker::show_rmsg(){
 string Httpworker::look_msg(){
 	check();
 	string look;
-	string a, b, c;
-	a = STR::int2string(msg->no);
-	b = STR::int2string(msg->code);
-	c = STR::int2string(msg->length);
-	look = a + "\n" + b + "\n" + msg->word + "\n" + msg->connect + "\n";
-	look += msg->date + "\n" + msg->server + "\n" + msg->last_modified + "\n" + c + "\n";
-	look += msg->type + "\n" + STR::int2string(msg->cookie.num) + '|' + msg->cookie.history +"\n" + msg->data;
+	look = msg->no + ' ' + msg->code + ' ' + msg->word + MarkHttp;
+	look += "Date: " + msg->date + MarkHttp;
+	look += "Content-Type: " + msg->type[0] + MarkHttp;
+	look += "Content-Length: " + STR::int2string(msg->length) + MarkHttp;
+	look += "Last-Modified: " + msg->last_modified + MarkHttp;
+	look += "Vary: " + msg->vary + MarkHttp;
+	look += "Set-Cookie: " + STR::int2string(msg->cookie.num) + '|'+msg->cookie.history + MarkHttp;
+	look += "Server: " + msg->server + MarkHttp;
+	look += "Accept-Ranges: " + msg->accapt_ranges + MarkHttp;
+	look += MarkHttp;//head finish
+	look += msg->data;
 	return look;
 }
 //return all string in rmsg
 string Httpworker::look_rmsg(){
 	string Look;
-	string a;
-	a = STR::int2string(rmsg->no);
-	Look = rmsg->method + "\n" + rmsg->path + "\n" + a + "\n" ;
+	Look = rmsg->method + "\n" + rmsg->path + "\n" + rmsg->no + "\n" ;
 	Look += rmsg->host + "\n" + rmsg->user + "\n";
 	Look += rmsg->language + "\n" + rmsg->connect + "\n";
 	Look += rmsg->if_modified_since + "\n";
 	Look += STR::int2string(rmsg->cookie.num) + '|' + rmsg->cookie.history;
-	Look += rmsg->options + "\n";
 	Look += rmsg->data;
 	return Look;
 }
 
-bool Httpworker::setMsg(string rec){
+int Httpworker::setMsg(string rec){
 	vector<string> d;
 	rmsg = new HttpRMsg();
-	STR::Split(rec, &d, '\n');
-	if (d.size() < 11) return false;
-	rmsg->method = d[0];
-	rmsg->path = d[1];
-	rmsg->no = STR::string2int(d[2]);
-	//host
-	rmsg->host = d[3];
-	rmsg->user = d[4];
-	rmsg->language = d[5];
-	rmsg->connect = d[6];
-	rmsg->if_modified_since = d[7];
-	if(d[8]!="cookies")rmsg->cookie.num = STR::string2int(d[8]);
-	else rmsg->cookie.num = -1;
-	rmsg->options = d[9];
-	rmsg->data = d[10];
-	return true;
+	int i;
+	STR::Split(rec, &d, "\r\n");
+	rmsg->length = 0;
+	rmsg->setCode(d[0]);
+	for (i = 1; i < d.size(); i++){
+		if (d[i] == "") break;
+		else rmsg->findHead(d[i]);
+	}
+	int len;
+	len = rmsg->path.length();
+	rmsg->path = rmsg->path.substr(1, len - 1);
+	if (rmsg->length == 0) return -1;
+	rmsg->data = "";
+	i++;
+	for (; i < d.size(); i++){
+		rmsg->data += (d[i] + "\r\n");
+	}
+	len = rmsg->data.length();
+	rmsg->data = rmsg->data.substr(0, len - 2);
+	return rmsg->length - len + 2;
 }
 
+string Httpworker::getMsg(){
+	check();
+	string look;
+	look = msg->no + ' ' + msg->code + ' ' + msg->word + MarkHttp;
+	look += "Date: " + msg->date + MarkHttp;
+	look += "Content-Type: " + msg->type[0] + MarkHttp;
+	look += "Content-Length: " + STR::int2string(msg->length) + MarkHttp;
+	look += "Connect: " + msg->connect + MarkHttp;
+	look += "Last-Modified: " + msg->last_modified + MarkHttp;
+	look += "Vary: " + msg->vary + MarkHttp;
+	//look += "Set-Cookie: " + STR::int2string(msg->cookie.num) + '|' + msg->cookie.history + MarkHttp;
+	look += "Server: " + msg->server + MarkHttp;
+	look += "Accept-Ranges: " + msg->accapt_ranges + MarkHttp;
+	look += MarkHttp;//head finish
+	look += msg->data;
+	return look;
+}
 
 /*
 //request
@@ -197,27 +217,25 @@ string data;
 void Httpworker::GET(){
 	// not exist
 	if (!Tools::FIO::Exist(rmsg->path)){
-		msg->code = 404;
+		msg->code = "404";
 		msg->word = (*word)[msg->code];
 		return;
 	}
 	// web cache
-	if (rmsg->if_modified_since != "null"){
+	if (rmsg->if_modified_since != ""){
 		//condtional get
-		string d = STR::Clearstr(msg->last_modified, ' ');
-		d = d.substr(0, d.length() - 1);
-		if (d == rmsg->if_modified_since){
-			msg->code = 304;
+		if (msg->last_modified == rmsg->if_modified_since){
+			msg->code = "304";
 			msg->word = (*word)[msg->code];
 			msg->length = FIO::file_size(rmsg->path);
 			return;
 		}
 	}
 	// 200
-	msg->code = 200;
+	msg->code = "200";
 	msg->word = (*word)[msg->code];
-	msg->type = "html";
-	msg->data = FIO::ReadFile(rmsg->path, 1); //Tools::FIO::ReadFile(rmsg->path);
+	msg->type.push_back("html");
+	msg->data = FIO::ReadFullFile(rmsg->path); //Tools::FIO::ReadFile(rmsg->path);
 	return;
 }
 /**
@@ -237,13 +255,13 @@ use sender to send it out
 */
 void Httpworker::HEAD(){
 	if (!Tools::FIO::Exist(rmsg->path)){
-		msg->code = 404;
+		msg->code = "404";
 		msg->word = (*word)[msg->code];
 		return;
 	}
-	msg->code = 200;
+	msg->code = "200";
 	msg->word = (*word)[msg->code];
-	msg->type = "html";
+	msg->type.push_back("html");
 	msg->data = "path in serve: " + rmsg->path;
 }
 /**
@@ -261,13 +279,13 @@ void Httpworker::HEAD(){
 */
 void Httpworker::POST(){
 	if (!Tools::FIO::Exist(rmsg->path)){
-		msg->code = 404;
+		msg->code = "404";
 		msg->word = (*word)[msg->code];
 		return;
 	}
-	msg->code = 200;
+	msg->code = "200";
 	msg->word = (*word)[msg->code];
-	msg->data = FIO::ReadFile(rmsg->path, 1) +"\n"+ rmsg->data;
+	msg->data = FIO::ReadFullFile(rmsg->path) + rmsg->data;
 	FIO::SaveFile(rmsg->path, &msg->data);
 }
 /**
@@ -287,16 +305,16 @@ void Httpworker::POST(){
 */
 void Httpworker::PUT(){
 	if (Tools::FIO::Exist(rmsg->path)){
-		msg->code = 200;
+		msg->code = "200";
 		msg->word = (*word)[msg->code];
 		msg->data = "The page is corved.";
 		FIO::DelFile(rmsg->path);
 	}
 	else msg->data = "The page is created." ;
-	msg->code = 200;
+	msg->code = "200";
 	msg->word = (*word)[msg->code];
 	FIO::SaveFile(rmsg->path, &rmsg->data);
-	msg->type = "html";
+	msg->type.push_back("html");
 }
 /**
 *@brief DELETE some options of request methods
@@ -315,14 +333,14 @@ void Httpworker::PUT(){
 */
 void Httpworker::DELETEFILE(){
 	if (!Tools::FIO::Exist(rmsg->path)){
-		msg->code = 404;
+		msg->code = "404";
 		msg->word = (*word)[msg->code];
 		return;
 	}
-	msg->code = 200;
+	msg->code = "200";
 	msg->word = (*word)[msg->code];
 	FIO::DelFile(rmsg->path);
-	msg->type = "html";
+	msg->type.push_back("html");
 	msg->data = "Successfully delete";
 }
 /**
@@ -337,9 +355,9 @@ void Httpworker::DELETEFILE(){
 * 2 return "GET HEAD POST PUT DELETE OPTIONS TRACE CONNECT"as Msg
 */
 void Httpworker::OPTIONS(){
-	msg->code = 200;
+	msg->code = "200";
 	msg->word = (*word)[msg->code];
-	msg->type = "html";
+	msg->type.push_back("html");
 	msg->data = "";
 	msg->data += "GET : ";
 	msg->data += "Retrieve a simple request URL identifying the resources.";
@@ -379,9 +397,9 @@ void Httpworker::OPTIONS(){
 *Web服务器反馈Http请求和其头标的请求,Map it to 7
 */
 void Httpworker::TRACE_HTTP(){
-	msg->code = 200;
+	msg->code = "200";
 	msg->word = (*word)[msg->code];
-	msg->type = "html";
+	msg->type.push_back("html");
 	//msg->data =  "0"; get all cookies
 }
 /**
@@ -395,18 +413,18 @@ void Httpworker::TRACE_HTTP(){
 *and it doesn't has a function now
 */
 void Httpworker::CONNECT(){
-	msg->code = 200;
+	msg->code = "200";
 	msg->word = (*word)[msg->code];
-	msg->type = "html";
+	msg->type.push_back("html");
 	msg->data = "The request from client has been received";
 }
 
 void Httpworker::BAD_RES(){
-	msg->code = 400;
+	msg->code = "400";
 	msg->word = (*word)[msg->code];
 }
 
 void Httpworker::ERROR_HTTP(){
-	msg->code = -1;
+	msg->code = "-1";
 	msg->word = (*word)[msg->code];
 }

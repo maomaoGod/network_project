@@ -9,12 +9,11 @@ using namespace Tools;
 using namespace std;
 
 /**/
-typedef unsigned short version;
-typedef unsigned int http_error_code;
-typedef unsigned int http_code;
+typedef string version;
+typedef string http_code;
 typedef map<string, int> checkarg;
 typedef string IP;
-
+#define MarkHttp "\r\n"
 
 struct Httpcookie{
 	int num;
@@ -75,32 +74,76 @@ struct Httpcookie{
 
 struct HttpMsg{
 	//request
-	string method;
-	string path;
-	version no;
+	struct{
+		string method;
+	    string path;
+	    version no;
+	};
 	//host
-	string host;
-	string user;
-	string language;
-	string connect;
-	string if_modified_since;
+	struct{
+		string host;
+	    string user;
+		int length;
+	    string language;
+	    string connect;
+	    string if_modified_since;
+		string accept;
+		string accept_enconding;
+	};
 	Httpcookie cookie;
-	string options;
 	string data;
 };
 
 struct HttpRMsg{
-	version no;
-	http_code code;
-	string word;
-	string connect;
-	string date;
-	string server;
-	string last_modified;
-	int length;
-	string type;
+	struct{
+		version no;
+	    http_code code;
+	    string word;
+	};
+	struct{
+		string connect;
+	    string date;
+	    string server;
+	    string last_modified;
+	    int length;
+	    vector<string> type;
+		string vary;
+		string accapt_ranges;
+	};
 	Httpcookie cookie;
 	string data;
+	void setCode(string msg){
+		vector<string> d;
+		STR::Split(msg, &d, ' ');
+		no = d[0];
+		code = d[1];
+		word = d[2];
+	}
+	void findHead(string msg){
+		vector<string> d;
+		STR::Split(msg, &d, ": ");
+		if (d.size() < 2) return;
+		if (d[0] == "Date") 
+			date = d[1];
+		else if (d[0] == "Content-Type"){
+			type.push_back(d[1]);
+		}
+		else if (d[0] == "Content-Length") 
+			length = STR::string2int(d[1]);
+		else if (d[0] == "Last-Modified")
+			last_modified = d[1];
+		else if (d[0] == "Connection")
+			connect = d[1];
+		else if (d[0] == "Vary")
+			vary = d[1];
+		else if (d[0] == "Set-Cookie"){
+			cookie.history = d[1];//set cookie
+		}
+		else if (d[0] == "Server")
+			server = d[1];
+		else if (d[0] == "Accept-Ranges")
+			accapt_ranges = d[1];
+	}
 };
 
 
@@ -109,15 +152,13 @@ class Httpworker
 public:
 	Httpworker();
 	~Httpworker();
-	http_error_code div(string Msg, char split);
+	int div(string Msg, char split);
 	void Make();
-	http_error_code analy();
+	int analy();
 
-	bool setMsg(string rec);
+	int setMsg(string rec);
+	string getMsg();
 
-	string getMsg(){
-		return look_msg();
-	}
 	string gethost(){
 		return host;
 	}
@@ -137,7 +178,23 @@ public:
 		}
 		return true;
 	}
-	
+	void setdata(string msg){
+		rmsg->data = msg;
+	}
+	string getdata(){
+		return rmsg->data;
+	}
+
+	void setPort(int port){
+		Port = port;
+	}
+	int getPort(){
+		if (Port < 1024){
+			Port = 80;
+		}
+		return Port;
+	}
+
 	string look_msg();
 	string look_rmsg();
 
@@ -150,5 +207,6 @@ private:
 	string host;
 	IP ip;
 	vector<string> data;
+	int Port;
 };
 

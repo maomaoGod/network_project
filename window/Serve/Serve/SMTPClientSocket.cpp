@@ -33,7 +33,7 @@ void SMTPClientSocket::OnReceive(int nErrorCode)
 	if (nErrorCode == 0){
 		CString result, back;
 		memset(Buffer, 0, sizeof(Buffer));
-		Receive(Buffer, MAXLEN);//来自客户端%d的消息: myclient[this],
+		Receive(Buffer, BUFSIZE);//来自客户端%d的消息: myclient[this],
 		result.Format(_T("%s"), Buffer);
 		PrintView(result);
 		app.CMD_Dispatch(STR::CS2S(result));

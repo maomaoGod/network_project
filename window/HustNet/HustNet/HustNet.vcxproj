@@ -106,10 +106,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CmdView.h" />
-    <ClInclude Include="CmyAsyncSocket.h" />
-    <ClInclude Include="Cmysocket.h" />
-    <ClInclude Include="ComSocket.h" />
     <ClInclude Include="DNSworker.h" />
+    <ClInclude Include="FtpDataSocket.h" />
+    <ClInclude Include="FtpTranSocket.h" />
+    <ClInclude Include="Ftpworker.h" />
     <ClInclude Include="Httpworker.h" />
     <ClInclude Include="HustNet.h" />
     <ClInclude Include="HustNetDoc.h" />
@@ -129,10 +129,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CmdView.cpp" />
-    <ClCompile Include="CmyAsyncSocket.cpp" />
-    <ClCompile Include="Cmysocket.cpp" />
-    <ClCompile Include="ComSocket.cpp" />
     <ClCompile Include="DNSworker.cpp" />
+    <ClCompile Include="FtpDataSocket.cpp" />
+    <ClCompile Include="FtpTranSocket.cpp" />
+    <ClCompile Include="Ftpworker.cpp" />
     <ClCompile Include="Httpworker.cpp" />
     <ClCompile Include="HustNet.cpp" />
     <ClCompile Include="HustNetDoc.cpp" />

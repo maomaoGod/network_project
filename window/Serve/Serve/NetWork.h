@@ -24,7 +24,6 @@
 /**@brief Not Receive Data*/
 #define NO_REV_DATA 2
 /**@brief Port*/
-#define PORT 6500
 /**@brief Return the Message OK*/
 #define MSG_OK 200
 /**@brief Return the Message Created*/
@@ -37,14 +36,6 @@
 #define SOCKET_ERROR -1
 using namespace Tools; ///<using the namespace Tools
 typedef unsigned char Byte;
-/*
-struct sockaddr_in
-{
-	short sin_family;//Addressfamily一般来说AF_INET（地址族）PF_INET（协议族）
-	unsigned short sin_port;//Portnumber(必须要采用网络数据格式,普通数字可以用htons()函数转换成网络数据格式的数字)
-	struct in_addr sin_addr;//Internetaddress
-	unsigned char sin_zero[8];//Samesizeasstructsockaddr没有实际意义,只是为了　跟SOCKADDR结构在内存中对齐
-};*/
 
 namespace NetWork{
 
@@ -424,6 +415,7 @@ namespace NetWork{
 		}
 
 	};
+
 
 #ifndef SMTP
 #define SMTP_PORT 8000
