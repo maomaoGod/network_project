@@ -2,6 +2,7 @@
 #include "UserCmd.h"
 #include "Tools.h"
 #include "UICtrl.h"
+#include "Cmysocket.h"
 #include "NetHtml.h"
 #include "NetWork.h"
 using namespace Tools;
@@ -164,3 +165,16 @@ void UserCmd::cleanlog(CString e){
 }
 
 
+void UserCmd::mytest(CString e){
+	CString sed;
+	TakeOverCmd(_T("Test>"));
+	TCHAR S[100] = { 0 };
+	CmySocket mysock;
+	mysock.Connect(_T("10.12.56.148"), 6500);
+	while ((sed = GetLine()).Compare(_T("exit")) != 0){
+		mysock.Send(sed, sed.GetLength()*sizeof(TCHAR));
+		mysock.Receive(S, 100);
+		PrintRp(S);
+		memset(S, 0, 100 * sizeof(TCHAR));
+	}
+}

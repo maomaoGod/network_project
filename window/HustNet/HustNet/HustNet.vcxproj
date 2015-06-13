@@ -105,7 +105,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Serve\Serve\CmyAsyncSocket.h" />
     <ClInclude Include="CmdView.h" />
+    <ClInclude Include="Cmysocket.h" />
+    <ClInclude Include="ComSocket.h" />
     <ClInclude Include="DNSworker.h" />
     <ClInclude Include="FtpDataSocket.h" />
     <ClInclude Include="FtpTranSocket.h" />
@@ -128,7 +131,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Serve\Serve\CmyAsyncSocket.cpp" />
     <ClCompile Include="CmdView.cpp" />
+    <ClCompile Include="Cmysocket.cpp" />
+    <ClCompile Include="ComSocket.cpp" />
     <ClCompile Include="DNSworker.cpp" />
     <ClCompile Include="FtpDataSocket.cpp" />
     <ClCompile Include="FtpTranSocket.cpp" />

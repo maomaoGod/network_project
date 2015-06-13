@@ -75,7 +75,6 @@ void HttpClientSocket::OnReceive(int nErrorCode)
 	CAsyncSocket::OnReceive(nErrorCode);
 }
 
-
 void HttpClientSocket::OnSend(int nErrorCode)
 {
 	// TODO:  在此添加专用代码和/或调用基类

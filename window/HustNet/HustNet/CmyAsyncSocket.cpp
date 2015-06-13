@@ -22,8 +22,9 @@ CmyAsyncSocket::CmyAsyncSocket()
 		AfxMessageBox(_T("初始化读队列失败"));
 		return;
 	}
-	sockstate = INIT_FLAG;
-	Pthread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewGetSockEventThread, (LPVOID) this, NULL, NULL);
+	sockstate =  INIT_FLAG;
+	readstate =  READBEGIN;
+	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewGetSockEventThread, (LPVOID)this, NULL, NULL);
 	flag = true;
 }
 
@@ -88,6 +89,7 @@ bool   CmyAsyncSocket::InitalReadQueue(regstruct &myreg)
 	DuplicateHandle(SH, pReadQueue->Head, CH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);///<初始化读节点初值
 	if (pReadQueue->Cur == NULL)
 		return PrintLog(_T("读队列节点初始化失败"), false);
+	pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node)); 
 	ReleaseSemaphore(Wsemaphore, 1, NULL);
 	return true;
 }
@@ -107,39 +109,40 @@ DWORD WINAPI CmyAsyncSocket::NewGetSockEventThread(LPVOID lParam)
 void CmyAsyncSocket::GetSockEvent()
 {
 	while (state)
-	{
-		PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));///<获取Cur映射内存块
+	{   ///<pCur指向已读的最后一个节点
 		while (pCur->Next == NULL) ///<永久等待数据到来
 			Sleep(100);
-		HANDLE Next;
-		DuplicateHandle(SH, pCur->Next, CH, &Next, NULL, true, DUPLICATE_SAME_ACCESS);
+		CloseHandle(pReadQueue->Cur);
+		pReadQueue->Cur = NULL;///未读的第一个节点
+		DuplicateHandle(SH, pCur->Next, CH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
 		UnmapViewOfFile(pCur);
-
-		PN pNode = (PN)MapViewOfFile(Next, FILE_MAP_WRITE, 0, 0, sizeof(Node));
-		switch (pNode->FuncID){
+		pCur = NULL;
+		pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));///<映射未读的第一个节点
+		switch (pCur->FuncID){
 		case SOCKSENDTO: 
-		case SOCKSEND: OnReceive(true); break;
-		case SOCKCONNECT: OnAccept(true); break;
+		case SOCKSEND: OnReceive(true); readstate = READBEGIN;  break;
+		case SOCKCONNECT: OnConnect(true); break;
 		case SOCKCLOSE: OnClose(true); break;
+		case SOCKACCEPT: memcpy(csrcip, pCur->srcip, 20);  ///<保存原数据IP,端口信息
+			                            memcpy(cdstip, pCur->dstip, 20);
+										csrcport = pCur->srcport;
+										cdstport = pCur->dstport;
+			                            OnAccept(true);
 		default:  break;
 		}
-		UnmapViewOfFile(pNode);
-		CloseHandle(Next);
-		RemoveRead();
+		pReadQueue->cid++;  ///<已读完成，已读节点数+1 
 	}
 }
 
 void   CmyAsyncSocket::RemoveRead()
 {
-	HANDLE Next;
-	PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));//获取Cur映射内存块
-	while (pCur->Next == NULL);
-	DuplicateHandle(SH, pCur->Next, CH, &Next, NULL, true, DUPLICATE_SAME_ACCESS);
-	UnmapViewOfFile(pCur);
+	if (pCur->Next == NULL) return;
 	CloseHandle(pReadQueue->Cur);
 	pReadQueue->Cur = NULL;
-	DuplicateHandle(CH, Next, CH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
-	pReadQueue->cid++;
+	DuplicateHandle(SH, pCur->Next, CH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
+	UnmapViewOfFile(pCur);
+	pCur = NULL;
+	pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));
 }
 
 /**
@@ -207,61 +210,43 @@ int CmyAsyncSocket::SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTS
 * 创建新的共享内存区，并将数据部分拷贝到共享内存。将节点添加到写队列后程序返回，数据发送过程交给下面几层完成
 */
 
-int    CmyAsyncSocket::ReceiveFrom(void* lpBuf, int nBufLen, CString& rSocketAddress, UINT& rSocketPort, int nFlags)
+/*int    CmyAsyncSocket::ReceiveFrom(void* lpBuf, int nBufLen, CString& rSocketAddress, UINT& rSocketPort, int nFlags)
 {
+
 	if (sockstate != INIT_FLAG&&sockstate != UDP_FLAG) {
 		LastError = SOCK_NOT_UDP;
 		return 0;
 	}
 	sockstate = UDP_FLAG;
-	if (done){
-		PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));//获取Cur映射内存块
-		while (pCur->Next == NULL) //永久等待数据到来
-			Sleep(100);
-		CloseHandle(pReadQueue->Cur);//释放Cur
-		pReadQueue = NULL;
-		DuplicateHandle(SH, pCur->Next, CH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
-		UnmapViewOfFile(pCur);
-		pReadQueue->cid++;
-		PN pNode = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));
-		if (pNode->FuncID == SOCKCLOSE){
-			char2Tchar(rSocketAddress, pNode->srcip, 20);
-			rSocketPort = pNode->srcport;
-			return 0;
-		}
-		else if (pNode->FuncID != SOCKSEND)
-			RemoveRead();
 
-		memcpy(srcip, pNode->srcip, 20);
-		srcport = pNode->srcport;
-
-		HANDLE HData;
-		DuplicateHandle(SH, pNode->Data, CH, &HData, NULL, true, DUPLICATE_SAME_ACCESS);
-		pReadData = (char *)MapViewOfFile(HData, FILE_MAP_WRITE, 0, 0, pNode->DataLen);
-		CloseHandle(HData);
-		DataLen = pNode->DataLen;
-		ReadDataLen = 0;
-		UnmapViewOfFile(pNode);
-		done = false;
+	if (readstate == READBEGIN){///<新的数据节点
+		return RcvBegin(lpBuf, nBufLen);
 	}
-	if (!done){
-		char2Tchar(rSocketAddress, srcip, 20);
-		rSocketPort = srcport;
-
-		if (DataLen - ReadDataLen < nBufLen){       ///<
+	else if (readstate == READMID){///<上次节点数据未读完
+		if (DataLen - ReadDataLen < nBufLen){       ///<数据一次可以接受完成
 			memcpy(lpBuf, pReadData + ReadDataLen, DataLen - ReadDataLen);
 			UnmapViewOfFile(pReadData);
 			pReadQueue->cid++;
-			done = true;
+			readstate = READFIN;
 			return DataLen - ReadDataLen;
 		}
-		else {
+		else {                                                 ///<数据长度过大
 			memcpy(lpBuf, pReadData, nBufLen);
 			ReadDataLen += nBufLen;
+			readstate = READMID;
 			return nBufLen;
 		}
 	}
-}
+	else {
+		PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));
+		while (pCur->Next == NULL);
+		CloseHandle(pReadQueue->Cur);
+		pReadQueue->Cur = NULL;
+		DuplicateHandle(SH, pCur->Next, CH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
+		UnmapViewOfFile(pCur);
+		return RcvBegin(lpBuf, nBufLen);
+	}
+}*/
 
 /**
 * @author ACM2012
@@ -320,52 +305,72 @@ void   CmyAsyncSocket::OnReceive(int nErrorCode)
 */
 int  CmyAsyncSocket::Receive(void* lpBuf, int nBufLen)
 {
-	if (sockstate != INIT_FLAG) {
+	if (sockstate != INIT_FLAG&&sockstate!=TCP_FLAG) {
 		LastError = SOCK_NOT_TCP;
 		return 0;
 	}
-	sockstate = TCP_FLAG;
-	if (done){
-		PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));//获取Cur映射内存块
-		while (pCur->Next == NULL) //永久等待数据到来
-			Sleep(100);
-		CloseHandle(pReadQueue->Cur);//释放Cur
-		pReadQueue = NULL;
-		DuplicateHandle(SH, pCur->Next, CH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
-		UnmapViewOfFile(pCur);
-		pReadQueue->cid++;
-		PN pNode = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));
-		if (pNode->FuncID == SOCKCLOSE){
-			return 0;
-		}
-		else if (pNode->FuncID != SOCKSEND)
-			RemoveRead();
 
-		HANDLE HData;
-		DuplicateHandle(SH, pNode->Data, CH, &HData, NULL, true, DUPLICATE_SAME_ACCESS);
-		pReadData = (char *)MapViewOfFile(HData, FILE_MAP_WRITE, 0, 0, pNode->DataLen);
-		CloseHandle(HData);
-		DataLen = pNode->DataLen;
-		ReadDataLen = 0;
-		UnmapViewOfFile(pNode);
-		done = false;
+	sockstate = TCP_FLAG; 
+
+	if (readstate==READBEGIN){///<新的数据节点
+		return RcvBegin(lpBuf, nBufLen);
 	}
-	if (!done){
-		if (DataLen - ReadDataLen < nBufLen){       ///<
+	else if (readstate == READMID){ ///<上次节点数据未读完
+
+		if (DataLen - ReadDataLen < nBufLen){       ///<数据一次可以接受完成
 			memcpy(lpBuf, pReadData + ReadDataLen, DataLen - ReadDataLen);
 			UnmapViewOfFile(pReadData);
 			pReadQueue->cid++;
-			done = true;
+			readstate = READFIN;
 			return DataLen - ReadDataLen;
 		}
-		else {
+		else {                                                 ///<数据长度过大
 			memcpy(lpBuf, pReadData, nBufLen);
 			ReadDataLen += nBufLen;
+			readstate = READMID;
 			return nBufLen;
 		}
+
+	}
+	else {  ///<READFIN只会出现在循环收数据时的情形
+		while (pCur->Next == NULL) Sleep(100);
+		RemoveRead();  ///<移除前一个已读节点
+		return RcvBegin(lpBuf, nBufLen);
 	}
 }
 
+
+int  CmyAsyncSocket::RcvBegin(void* lpBuf, int nBufLen)///<当收到一个新的数据节点
+{
+	PN pNode = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));
+	if (pNode->FuncID == SOCKCLOSE){
+		LastError = SOCKCLOSE;
+		return 0;  ///<收到连接关闭，返回0
+	}
+	else if (pNode->FuncID != SOCKSEND)///<收到错误数据，返回0
+		return 0;
+
+	HANDLE HData;
+	DuplicateHandle(SH, pNode->Data, CH, &HData, NULL, true, DUPLICATE_SAME_ACCESS);
+	pReadData = (char *)MapViewOfFile(HData, FILE_MAP_WRITE, 0, 0, pNode->DataLen);
+	CloseHandle(HData);
+	DataLen = pNode->DataLen;
+	ReadDataLen = 0;
+	UnmapViewOfFile(pNode);
+
+	if (DataLen - ReadDataLen < nBufLen){       ///<数据一次可以接受完成
+		memcpy(lpBuf, pReadData + ReadDataLen, DataLen - ReadDataLen);
+		UnmapViewOfFile(pReadData);
+		readstate = READFIN;
+		return DataLen - ReadDataLen;
+	}
+	else {                                                 ///<数据长度过大
+		memcpy(lpBuf, pReadData, nBufLen);
+		ReadDataLen += nBufLen;
+		readstate = READMID;
+		return nBufLen;
+	}
+}
 /**
 * @author ACM2012
 * @param [in] nErrorCode错误码
@@ -435,7 +440,7 @@ void   CmyAsyncSocket::OnSend(int nErrorCode)
 */
 int CmyAsyncSocket::Send(const void* lpBuf, int nBufLen) //发送数据
 {
-	if (sockstate != INIT_FLAG&&sockstate != TCP_FLAG){
+	if (sockstate != INIT_FLAG && sockstate != TCP_FLAG){
 		LastError = SOCK_NOT_TCP;
 		return 0;
 	}
@@ -482,17 +487,11 @@ bool  CmyAsyncSocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 
 bool CmyAsyncSocket::WaitForSockEvent(unsigned int SOCKEVENT)
 {
-	HANDLE Next;
 	bool rvalue;
-	PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));///<获取Cur映射内存块
 	while (pCur->Next == NULL) ///<永久等待数据到来
 		Sleep(100);
-	DuplicateHandle(SH, pCur->Next, CH, &Next, NULL, true, DUPLICATE_SAME_ACCESS);
-	UnmapViewOfFile(pCur);
-	PN pNode = (PN)MapViewOfFile(Next, FILE_MAP_WRITE, 0, 0, sizeof(Node));///<获取Cur映射内存块
-
-	rvalue = (pNode->FuncID == SOCKEVENT) ? true : false;///<查看是否是目的事件，若是,返回true,否则返回false
-	UnmapViewOfFile(pNode);
-	RemoveRead();
+	RemoveRead();///<pCur指向下一个节点
+	rvalue = (pCur->FuncID == SOCKEVENT) ? true : false;///<查看是否是目的事件，若是,返回true,否则返回false
+	pReadQueue->cid++;
 	return rvalue;
 }

@@ -10,12 +10,13 @@ private:
 	HANDLE    ReadQueue, WriteQueue;
 	HANDLE    SH, CH;
 	HANDLE    Pthread;
-	bool state;
+	PN   pCur;
+	bool state = true;
 	Manager   *pReadQueue, *pWriteQueue;
 private:
 	bool    flag;          //创建是否成功标志
 	int      LastError;   //错误代号
-	bool   done = true;
+	enum  {READBEGIN,READMID,READFIN} readstate;
 	char  *pReadData;
 	unsigned int ReadDataLen, DataLen;
 private:
@@ -24,6 +25,7 @@ private:
 	void   RemoveRead();
 	bool   AddToTail(HANDLE NewNode);
 	bool  WaitForSockEvent(unsigned int SOCKEVENT);
+	int     RcvBegin(void* lpBuf, int nBufLen);
 	static DWORD WINAPI NewGetSockEventThread(LPVOID);
 	void   GetSockEvent();
 public:

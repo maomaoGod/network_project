@@ -239,7 +239,6 @@ LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //网络层打包数据发送
 	return false;
 }
 
-
 LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //链路层打包数据发送出去接口
 {
 	static int seq = 0;

@@ -1,63 +1,66 @@
 #pragma once
-#include "Serve.h"
+#include "ComSocket.h"
 
-class CmyAsyncSocket
+class  CmyAsyncSocket : public CComSocket
 {
 public:
-	ObjEvent    myEvent;
-	bool flag;
-	int SockMark;
-public:
-	/** 构造函数
-	*/
 	CmyAsyncSocket();
-	/** 析构函数
-	*/
 	~CmyAsyncSocket();
-	/** Tcp发数据
-	*/
+private:
+	HANDLE    ReadQueue, WriteQueue;
+	HANDLE    SH, CH;
+	HANDLE    Pthread;
+	PN   pCur;
+	bool state = true;
+	Manager   *pReadQueue, *pWriteQueue;
+private:
+	bool    flag;          //创建是否成功标志
+	int      LastError;   //错误代号
+	enum  {READBEGIN,READMID,READFIN} readstate;
+	char  *pReadData;
+	unsigned int ReadDataLen, DataLen;
+private:
+	bool  InitalWriteQueue(regstruct &);
+	bool  InitalReadQueue(regstruct &);
+	void   RemoveRead();
+	bool   AddToTail(HANDLE NewNode);
+	bool  WaitForSockEvent(unsigned int SOCKEVENT);
+	int     RcvBegin(void* lpBuf, int nBufLen);
+	static DWORD WINAPI NewGetSockEventThread(LPVOID);
+	void   GetSockEvent();
 public:
-
-	bool InitalEvent(regstruct *myreg);
-	int Send(const void* lpBuf, int nBufLen);
-	/** Udp发数据
-	*/
-	int SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTSTR lpszHostAddress);
-	/** 接收数据
-	*/
-	int Receive(void* lpBuf, int nBufLen);
-	/** 建立TCP连接
-	*/
-	bool  Connect(LPCTSTR lpszHostAddress, UINT nHostPort);
-	/** 监听连接请求
-	*/
 	bool Listen();
-	/** 创建socket
-	*/
+
+	int   SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTSTR lpszHostAddress);
+
+	int   ReceiveFrom(void* lpBuf, int nBufLen, CString& rSocketAddress, UINT& rSocketPort, int nFlags = 0);
+
+	bool Bind(UINT nSocketPort);
+
 	bool Create();
 
 	bool Create(UINT nHostPort);
-	/**  消息来临时接收
-	*/
+
+	int    Receive(void* lpBuf, int nBufLen);
+
+	bool  Accept(CmyAsyncSocket& rConnectedSocket);
+
+	void  Close();
+
+	int    Send(const void* lpBuf, int nBufLen);
+
+	bool  Connect(LPCTSTR lpszHostAddress, UINT nHostPort);
+
 	virtual void  OnReceive(int nErrorCode);
 
 	virtual void  OnAccept(int nErrorCode);
 
-	virtual void  OnClose(int nErrorCode);
+	virtual  void  OnClose(int nErrorCode);
 
-	void Close();
+	virtual void  OnSend(int nErrorCode);
 
-	void  Accept(CmyAsyncSocket& rConnectedSocket);
+	virtual void  OnConnect(int nErrorCode);
 
-	bool Bind(UINT nSocketPort);
-
-	void  char2Tchar(LPSTR src, LPCTSTR dst,int maxlen);
-
-	void  Tchar2char(LPCTSTR src, LPSTR dst);
-
-	void GetSockMark(regstruct *preg, regstruct *myreg);
-
-	static DWORD WINAPI NewThread(LPVOID lParam);
-
-	void ReadSock();
+	int GetLastError();
 };
+

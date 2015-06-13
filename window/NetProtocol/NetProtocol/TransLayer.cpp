@@ -306,13 +306,13 @@ ctrl_receive:
 			// opts和data一同进行检验
 			unsigned opts_data_len = global_receive_ip_msg.datelen-20;
 
-			// 检验和
-			if (!tcpcheck(opts_data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, opts_data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
-			{
-				// 舍弃报文
-				global_TCP_receive_flag = false;
-				goto ctrl_close;
-			}
+			////////// 检验和
+			////////if (!tcpcheck(opts_data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, opts_data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
+			////////{
+			////////	// 舍弃报文
+			////////	global_TCP_receive_flag = false;
+			////////	goto ctrl_close;
+			////////}
 			
 			// 处理数据，需要反过来！！！
 			unsigned int dst_ip = global_receive_ip_msg.sip;
@@ -558,7 +558,7 @@ ctrl_receive:
 
 						// 更新ack
 						tcp->send_ack_needed = true;
-						tcp->next_send_ack = tcp->last_read+1;
+						tcp->next_send_ack = new_tcp_msg.tcp_seq_number + data_len;
 					}
 					else
 					{
@@ -703,7 +703,7 @@ ctrl_close:
 					int datalen = new_send - single_tcp->wait_for_send;
 					new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
 					new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
-					new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
+					new_tcp_msg.tcp_seq_number = single_tcp->wait_for_send;	//seq_number can be deleted?
 					new_tcp_msg.tcp_ack_number = single_tcp->send_ack_needed ? single_tcp->next_send_ack : 0;
 					new_tcp_msg.tcp_hdr_length = 5;
 					new_tcp_msg.tcp_reserved = 0;
@@ -723,6 +723,7 @@ ctrl_close:
 
 					single_tcp->wait_for_send = new_send;
 					single_tcp->wait_for_fill_msg++;
+					single_tcp->send_ack_needed = false;
 				}
 
 				// 向上交付报文
@@ -818,6 +819,7 @@ ctrl_close:
 				++(single_tcp->wait_for_fill);
 				++(single_tcp->wait_for_ack);
 				++(single_tcp->wait_for_send);
+				single_tcp->send_ack_needed = false;
 
 				// 通知应用层Accept事件
 				// 填入送往应用层的结构中
@@ -867,6 +869,7 @@ ctrl_close:
 				++(single_tcp->wait_for_fill);
 				++(single_tcp->wait_for_ack);
 				++(single_tcp->wait_for_send);
+				single_tcp->send_ack_needed = false;
 
 				// 通知应用层可以分配资源了
 				// 填入送往应用层的结构中
@@ -982,6 +985,7 @@ ctrl_close:
 				++(single_tcp->wait_for_fill);
 				++(single_tcp->wait_for_ack);
 				++(single_tcp->wait_for_send);
+				single_tcp->send_ack_needed = false;
 
 				if (single_tcp->connect_status == LINK_FINISHED)
 				{

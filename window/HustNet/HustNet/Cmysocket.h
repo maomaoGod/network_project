@@ -9,17 +9,21 @@ public:
 private:
 	HANDLE   ReadQueue,WriteQueue;
 	HANDLE   SH, CH;
+	PN pCur;
 	Manager   *pReadQueue, *pWriteQueue;
 private:
 	bool    flag;           //创建是否成功标志
 	int      LastError;   //错误代号
 	bool   done=true;
 	char  *pReadData;
+	void   destorysock();
 	unsigned int ReadDataLen,DataLen;
+	enum  { READBEGIN, READMID, READFIN } readstate;
 private:
 	bool  InitalWriteQueue(regstruct &);
 	bool  InitalReadQueue(regstruct &);
 	void   RemoveRead();
+	int    RcvBegin(void* lpBuf, int nBufLen);
 	bool   AddToTail(HANDLE NewNode);
 	bool  WaitForSockEvent(unsigned int SOCKEVENT);
 public:
