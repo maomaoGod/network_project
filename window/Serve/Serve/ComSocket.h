@@ -11,12 +11,12 @@
 #define  SOCKACCEPT               208
 
 
-
-#define SOCK_NOT_UDP           1000
-#define SOCK_NOT_TCP            1001
-#define SOCK_NOT_LISTEN       1002
-#define SOCK_IS_CLOSED         1003
-#define SOCK_LS_FAILED          1004
+#define SOCK_WRONG              1000
+#define SOCK_NOT_UDP            1001
+#define SOCK_NOT_TCP             1002
+#define SOCK_NOT_LISTEN        1003
+#define SOCK_IS_CLOSED         1004
+#define SOCK_LS_FAILED           1005
 /**
 * @author ACM2012
 * @note   读写链表管理结构，管理结构为进程共享结构,实现多进程对同一链表的管理。

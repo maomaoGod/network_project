@@ -5,11 +5,13 @@
 
 CTestServeSocket::CTestServeSocket()
 {
+
 }
 
 
 CTestServeSocket::~CTestServeSocket()
 {
+
 }
 
 void CTestServeSocket::OnAccept(int nErrorCode)

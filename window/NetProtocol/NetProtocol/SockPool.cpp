@@ -380,7 +380,6 @@ void    SockPool::SendToApp(void *psock)
 	SockMark2REvent[SockMark]->SetEvent();
 }
 
-
 /**
 * @author ACM2012
 * @param [in] SockMark 套接字唯一标示符

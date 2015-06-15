@@ -16,8 +16,8 @@ CmyTestSocket::~CmyTestSocket()
 
 void  CmyTestSocket::OnReceive(int nErrorCode)
 {
-	TCHAR S[100];
-	Receive(S, 100);
-	Send(S, 10);
+	TCHAR S[10000] = { 0 };
+	Receive(S, 2000);
+	Send(S, 2000);
 	PrintView(S);
 }

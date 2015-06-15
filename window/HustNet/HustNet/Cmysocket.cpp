@@ -313,12 +313,13 @@ int  CmySocket::Receive(void* lpBuf, int nBufLen)
    if (DataLen - ReadDataLen < nBufLen){       ///<应用层缓冲区足够大
 			memcpy(lpBuf, pReadData + ReadDataLen, DataLen - ReadDataLen);
 			UnmapViewOfFile(pReadData);
+			ReadDataLen = 0;
 			pReadQueue->cid++;
 			done = true;
 			return DataLen - ReadDataLen;
 		}
 		else {
-			memcpy(lpBuf, pReadData, nBufLen);
+			memcpy(lpBuf, pReadData+ReadDataLen, nBufLen);
 			ReadDataLen += nBufLen;
 			done = false;
 			return nBufLen;
