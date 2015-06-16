@@ -644,6 +644,9 @@ ctrl_receive:
 						}
 					}
 				}
+
+				// 发送ACK，以后会改
+				Temp_Send_ACK(tcp);
 			}
 
 			// 有什么用？ERROR....EDITING Needed
@@ -1491,4 +1494,31 @@ void _SR() //选择重传
 		}
 
 	}
+}
+
+void Temp_Send_ACK(struct tcplist *single_tcp)
+{
+	// 构造ACK报文段
+	struct tcp_message new_tcp_msg;
+	new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
+	new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
+	new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
+	new_tcp_msg.tcp_ack_number = single_tcp->next_send_ack;
+	new_tcp_msg.tcp_hdr_length = 5;
+	new_tcp_msg.tcp_reserved = 0;
+	new_tcp_msg.tcp_urg = 0;
+	new_tcp_msg.tcp_ack = 1;
+	new_tcp_msg.tcp_psh = 0;
+	new_tcp_msg.tcp_rst = 0;
+	new_tcp_msg.tcp_syn = 0;
+	new_tcp_msg.tcp_fin = 0;
+	new_tcp_msg.tcp_rcv_window = single_tcp->rcvd_wind;
+	new_tcp_msg.tcp_urg_ptr = NULL;
+	//new_tcp_msg.tcp_opts_and_app_data = NULL;	// whatever
+	new_tcp_msg.tcp_checksum = tcpmakesum(0, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 0, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
+			
+	// 不走TCP_send()，不加入TCP报文结构和报文缓冲，因为其中未记录SYN
+	TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 1);
+
+	single_tcp->send_ack_needed = false;
 }

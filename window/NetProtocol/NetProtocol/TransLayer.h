@@ -181,3 +181,5 @@ void SR_send(struct sockstruct data_from_applayer);
 void SR_receive(struct Msg data_from_netlayer);
 
 void _SR();
+
+void Temp_Send_ACK(struct tcplist *single_tcp);
