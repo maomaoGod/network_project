@@ -171,7 +171,7 @@ void UserCmd::mytest(CString e){
 	TakeOverCmd(_T("Test>"));
 	TCHAR S[100] = { 0 };
 	CmySocket mysock;
-	mysock.Connect(_T("172.16.162.1"), 6500);
+	mysock.Connect(_T("172.21.127.1"), 6500);
 	while ((sed = GetLine()).Compare(_T("exit")) != 0){
 		mysock.Send(sed, sed.GetLength()*sizeof(TCHAR));
 		count = 0;

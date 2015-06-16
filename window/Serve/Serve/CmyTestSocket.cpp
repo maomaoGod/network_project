@@ -17,7 +17,13 @@ CmyTestSocket::~CmyTestSocket()
 void  CmyTestSocket::OnReceive(int nErrorCode)
 {
 	TCHAR S[10000] = { 0 };
-	Receive(S, 2000);
+	/*CString mystr;
+	int count = 0;
+	while (count < 2000){
+		count += Receive(S, 10000);
+		mystr += S;
+	}*/
+	Receive(S,2000);
 	Send(S, 2000);
 	PrintView(S);
 }

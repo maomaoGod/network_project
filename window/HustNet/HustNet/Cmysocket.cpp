@@ -309,11 +309,9 @@ int  CmySocket::Receive(void* lpBuf, int nBufLen)
 		DataLen = pCur->DataLen;
 		ReadDataLen = 0;
 	}
-
    if (DataLen - ReadDataLen < nBufLen){       ///<应用层缓冲区足够大
 			memcpy(lpBuf, pReadData + ReadDataLen, DataLen - ReadDataLen);
 			UnmapViewOfFile(pReadData);
-			ReadDataLen = 0;
 			pReadQueue->cid++;
 			done = true;
 			return DataLen - ReadDataLen;
