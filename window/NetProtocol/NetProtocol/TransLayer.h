@@ -39,6 +39,7 @@ using namespace std;
 #define LINK_CONNECT_DESTROYING 13
 #define LINK_WAIT_FOR_DESACK 14
 #define LINK_CONNECT_LOSE 15
+#define wnd_SR 100			//小于等于SEND_STRUCT_SIZE/2即可
 
 struct tcpmsg_send
 {
@@ -108,6 +109,21 @@ struct gobackn
 	int last_send_msg;    //当前缓冲区中将要发送的最后一个报文的下标
 };
 
+struct SR_message
+{
+	int time;
+	struct sockstruct send_buf[SEND_STRUCT_SIZE];	//发送缓冲区
+	struct Msg rcv_buf[SEND_STRUCT_SIZE]; 	//接收缓冲区
+	int rcv_wnd;		//接收窗口第一个下标
+	int send_wnd;		//发送窗口第一个下标
+	int last_send_msg;	//上一个发送的报文
+	int last_waitforsend_msg;	//上一个待发送的报文
+	int last_rcv_msg;	//上一个接收的报文
+	int state_send[SEND_STRUCT_SIZE];	//确认标记
+	int state_rcv[SEND_STRUCT_SIZE];
+
+};
+
 bool createNodeList();
 
 bool addNode(tcplist* tcp_list);
@@ -159,3 +175,9 @@ void sandw_send(struct sockstruct data_from_applayer);
 void sandw_receive(struct Msg data_from_netlayer);
 
 void stop_wait();
+
+void SR_send(struct sockstruct data_from_applayer);
+
+void SR_receive(struct Msg data_from_netlayer);
+
+void _SR();

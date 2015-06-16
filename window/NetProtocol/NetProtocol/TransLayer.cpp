@@ -41,6 +41,12 @@ struct Msg global_receive_ip_msg_sandw;
 
 bool global_sandw_sendtoIP_flag;
 
+bool global_SR_send_flag;		//SR发送信号
+bool global_SR_receive_flag;	//SR接收信号
+bool global_SR_send2IP_flag;	//SR目标IP发送信号
+
+struct sockstruct global_send_sockstruct_SR;
+struct Msg global_receive_ip_msg_SR;
 
 bool listening_flag[MAX_PORT];
 
@@ -1273,8 +1279,8 @@ void stop_wait()   //停止等待
 			if (new_tcp_msg.tcp_ack == 0 || global_receive_ip_msg_sandw.datelen > 20)  //如果收到的不是一个应答报文，而是别人发过来的一个报文的话，要发一个ack过去
 			{
 				struct tcp_message new_tcp_message;
-				new_tcp_message.tcp_src_port = new_tcp_msg.tcp_src_port;
-				new_tcp_message.tcp_dst_port = new_tcp_msg.tcp_dst_port;
+				new_tcp_message.tcp_src_port = new_tcp_msg.tcp_dst_port;   //ack的源端口号和目的端口号与收到的报文相反
+				new_tcp_message.tcp_dst_port = new_tcp_msg.tcp_src_port;
 				new_tcp_message.tcp_seq_number = 0;
 				new_tcp_message.tcp_ack_number = new_tcp_msg.tcp_seq_number;
 				new_tcp_message.tcp_hdr_length = 5;
@@ -1289,14 +1295,14 @@ void stop_wait()   //停止等待
 				new_tcp_msg.tcp_urg_ptr = NULL;
 				new_tcp_msg.tcp_checksum = 0;
 
-				TCP_Send2IP(new_tcp_message, new_tcp_message.tcp_src_port, new_tcp_message.tcp_dst_port, 20);
+				TCP_Send2IP(new_tcp_message, global_receive_ip_msg_sandw.dip, global_receive_ip_msg_sandw.sip, 20);
 
 			}
 
 			/*将接收到的报文封装发给上层APP*/
 			struct sockstruct new_sockstruct;
-			new_sockstruct.dstport = new_tcp_msg.tcp_dst_port;
-			new_sockstruct.srcport = new_tcp_msg.tcp_src_port;
+			new_sockstruct.dstport = new_tcp_msg.tcp_src_port;
+			new_sockstruct.srcport = new_tcp_msg.tcp_dst_port;
 			new_sockstruct.funcID = SOCKSEND;
 			new_sockstruct.datalength = global_receive_ip_msg_sandw.datelen - 20;
 			IP_uint2chars(new_sockstruct.srcip, new_tcp_msg.tcp_src_port);
@@ -1339,7 +1345,8 @@ void stop_wait()   //停止等待
 				int datalen = 20 + new_sandw.send_buf[new_sandw.last_send_msg].datalength;
 				new_tcp_message.tcp_checksum = tcpmakesum(datalen, new_tcp_message.tcp_src_port, new_tcp_message.tcp_dst_port, datalen % 2, (u16 *)&(new_tcp_message.tcp_opts_and_app_data));
 
-				TCP_Send2IP(new_tcp_message, new_tcp_message.tcp_src_port, new_tcp_message.tcp_dst_port, datalen);
+				//将该报文发送到IP层
+				TCP_Send2IP(new_tcp_message, IP_chars2uint(new_sandw.send_buf[new_sandw.last_send_msg].srcip), IP_chars2uint(new_sandw.send_buf[new_sandw.last_send_msg].dstip), datalen);
 
 				new_sandw.last_send = new_tcp_message;    //记录这次发送出去的报文，为之后超时重传做基础
 				new_sandw.time = GetTickCount();           //重新记录发送时间
@@ -1349,6 +1356,139 @@ void stop_wait()   //停止等待
 		}
 
 		//超时重传new_sandw.last_send
+
+	}
+}
+
+
+
+//以下为选择重传，报文交付给上层和传递给下层的部分都没写
+
+struct SR_message new_SR;
+
+
+void SR_send(struct sockstruct data_from_applayer)
+{
+	while (global_SR_send_flag);
+	global_send_sockstruct_SR = data_from_applayer;
+	global_SR_send_flag = true;
+	while (global_SR_send_flag);
+}
+
+void SR_receive(struct Msg data_from_netlayer)
+{
+	while (global_SR_receive_flag);
+	global_receive_ip_msg_SR = data_from_netlayer;
+	global_SR_receive_flag = true;
+	while (global_SR_receive_flag);
+}
+
+void _SR() //选择重传
+{
+	srand(time(0));//超时未考虑
+	global_SR_send_flag = global_SR_receive_flag = false;
+	global_SR_send2IP_flag = true;
+	new_SR.time = 0;
+	new_SR.rcv_wnd = 0;
+	new_SR.send_wnd = 0;
+	new_SR.last_send_msg = 0;
+	new_SR.last_rcv_msg = 0;
+	for (int i = 0; i < SEND_STRUCT_SIZE; i++)
+	{
+		new_SR.state_send[i] = 0;
+		new_SR.state_rcv[i] = 0;
+	}
+
+	for (;;)
+	{
+		if (global_SR_send_flag)
+		{
+			new_SR.send_buf[new_SR.last_waitforsend_msg] = global_send_sockstruct_SR;
+			new_SR.last_waitforsend_msg++;
+			global_SR_send_flag = false;
+		}
+
+		if (global_SR_receive_flag)
+		{
+			struct tcp_message new_tcp_msg;
+			memcpy(&new_tcp_msg, global_receive_ip_msg_SR.data, global_receive_ip_msg_SR.datelen);
+
+			unsigned opts_data_len = global_receive_ip_msg_SR.datelen - 20;
+
+			// 检验和
+			if (!tcpcheck(opts_data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, opts_data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
+			{
+				// 舍弃报文
+				global_SR_receive_flag = false;
+				break;
+			}
+
+			if (new_tcp_msg.tcp_ack)
+			{
+				if (new_tcp_msg.tcp_ack_number >= new_SR.send_wnd && new_tcp_msg.tcp_ack_number < new_SR.send_wnd + wnd_SR)
+				{
+					new_SR.state_send[new_tcp_msg.tcp_ack_number] = 1;
+				}
+			}
+			else
+			{
+				if (new_tcp_msg.tcp_seq_number >= new_SR.rcv_wnd && new_tcp_msg.tcp_seq_number < new_SR.rcv_wnd + wnd_SR)
+				{
+					if (new_SR.state_rcv[new_tcp_msg.tcp_seq_number] == 0)
+					{
+						new_SR.rcv_buf[new_SR.last_rcv_msg] = global_receive_ip_msg_SR;
+						new_SR.last_rcv_msg++;
+						new_SR.state_rcv[new_tcp_msg.tcp_seq_number] = 1;
+						struct tcp_message new_tcp_message;
+						new_tcp_message.tcp_src_port = new_SR.send_buf[new_SR.last_send_msg - 1].dstport;
+						new_tcp_message.tcp_dst_port = new_SR.send_buf[new_SR.last_send_msg - 1].srcport;
+						new_tcp_message.tcp_ack_number = new_SR.last_send_msg - 1;
+						new_tcp_message.tcp_ack = 1;
+					}
+				}
+				else if (new_tcp_msg.tcp_seq_number >= new_SR.rcv_wnd - wnd_SR && new_tcp_msg.tcp_seq_number < new_SR.rcv_wnd)
+				{
+					struct tcp_message new_tcp_message;
+					new_tcp_message.tcp_src_port = new_SR.send_buf[new_SR.last_send_msg - 1].dstport;
+					new_tcp_message.tcp_dst_port = new_SR.send_buf[new_SR.last_send_msg - 1].srcport;
+					new_tcp_message.tcp_ack_number = new_SR.last_send_msg - 1;
+					new_tcp_message.tcp_ack = 1;
+				}
+			}
+		}
+
+
+		if (new_SR.state_send[new_SR.send_wnd + 1] == 1)
+		{
+			new_SR.send_wnd++;
+		}
+
+		if (new_SR.last_send_msg < new_SR.send_wnd + wnd_SR)
+		{
+			global_SR_send2IP_flag = true;
+			new_SR.last_send_msg++;
+		}
+
+		if (new_SR.state_rcv[new_SR.rcv_wnd + 1] == 1)
+		{
+			new_SR.rcv_wnd++;
+			//交付new_SR.rcv_buf[rcv_wnd]中的报文。。
+		}
+
+		if (global_SR_send2IP_flag)
+		{
+			struct tcp_message new_tcp_message;
+			new_tcp_message.tcp_src_port = new_SR.send_buf[new_SR.last_send_msg - 1].srcport;
+			new_tcp_message.tcp_dst_port = new_SR.send_buf[new_SR.last_send_msg - 1].dstport;
+			new_tcp_message.tcp_hdr_length = 5;
+			new_tcp_message.tcp_seq_number = new_SR.last_send_msg - 1;
+			memcpy(new_tcp_message.tcp_opts_and_app_data, new_SR.send_buf[new_SR.last_send_msg - 1].data, new_SR.send_buf[new_SR.last_send_msg - 1].datalength);
+			int datalen = 20 + new_SR.send_buf[new_SR.last_send_msg - 1].datalength;
+			new_tcp_message.tcp_checksum = tcpmakesum(datalen, new_tcp_message.tcp_src_port, new_tcp_message.tcp_dst_port, datalen % 2, (u16*)&(new_tcp_message.tcp_opts_and_app_data));
+
+			new_SR.time = GetTickCount();
+			global_SR_send2IP_flag = false;
+		}
 
 	}
 }
