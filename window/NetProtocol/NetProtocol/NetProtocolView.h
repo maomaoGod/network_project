@@ -44,7 +44,6 @@ protected:
 protected:
 	DECLARE_MESSAGE_MAP()
 private:
-	unsigned socknum=0;
 	unsigned appnum=0;
 	unsigned uploadrate=0;
 	unsigned downloadrate=0;

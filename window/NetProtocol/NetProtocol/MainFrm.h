@@ -22,6 +22,7 @@ public:
 public:
 
 public:
+	int connsocknum;
 	CMyIP ip;
 	my_linker  linker;
 	SockPool   m_sockpool;
@@ -57,5 +58,5 @@ public:
 	afx_msg LRESULT OnIP2Link(WPARAM, LPARAM);
 	afx_msg LRESULT OnLinkSend(WPARAM, LPARAM);
 	afx_msg LRESULT OnAppSend(WPARAM, LPARAM);
-	afx_msg LRESULT SockStateUpdate(WPARAM, LPARAM);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

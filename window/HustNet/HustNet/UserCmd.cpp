@@ -175,10 +175,11 @@ void UserCmd::mytest(CString e){
 	while ((sed = GetLine()).Compare(_T("exit")) != 0){
 		mysock.Send(sed, sed.GetLength()*sizeof(TCHAR));
 		count = 0;
-		while (count < 2000){
+		while (count < 1024) {
 			count+=mysock.Receive(S, 100);
 			PrintRp(S);
 			memset(S, 0, 100 * sizeof(TCHAR));
 		}
 	}
+	mysock.Close();
 }

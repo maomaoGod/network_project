@@ -373,12 +373,11 @@ void   CmySocket::OnClose(int nErrorCode)
 */
 void CmySocket::Close()
 {
-
-	HANDLE NewNode = PackNode(SOCKCLOSE);
+/*	HANDLE NewNode = PackNode(SOCKCLOSE);
 	AddToTail(NewNode);
 	CloseHandle(NewNode);
 	WaitForSockEvent(SOCKCLOSE);
-	DestroySock( );
+	DestroySock( );*/
 }
 
 /**

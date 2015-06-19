@@ -107,6 +107,7 @@ public:
 	~SockPool();
 public:
 	void   SendToApp(void *);
+	int     sockconnum;
 private:	
 	int nPort=0;
 	map <portin, unsigned int> PortIn2ScokMark;

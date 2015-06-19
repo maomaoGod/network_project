@@ -9,6 +9,7 @@
 */
 SockPool::SockPool()
 {
+	sockconnum = 0;
 	Wsemaphore = CreateSemaphore(NULL, 1, 100, _T("NetProtocolWsemaphore"));//创建信号量P
 	Rsemaphore  = CreateSemaphore(NULL, 0, 100,  _T("NetProtocolRsemaphore"));//创建信号量C
 	Dsemaphore  = CreateSemaphore(NULL, 0, 100,  _T("NetProtocolDsemaphore"));//创建信号量S
@@ -103,9 +104,10 @@ void SockPool::ReadSock(HANDLE CH,unsigned int SockMark,HANDLE ReadQueue,PM pRea
 	HANDLE HData=NULL;
 	portin myportsrc;
 	while (SockMark2ReadState[SockMark]) {
-
-		if (pCur->Next == NULL)
+		if (pCur->Next == NULL){
+			Sleep(100);
 			continue;
+		}
 		CloseHandle(pReadQueue->Cur);//释放Cur
 		DuplicateHandle(CH, pCur->Next, SH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
 		UnmapViewOfFile(pCur);
@@ -165,8 +167,10 @@ void SockPool::ReadSock(HANDLE CH,unsigned int SockMark,HANDLE ReadQueue,PM pRea
 		UnmapViewOfFile(pNode);
 		pReadQueue->cid++;
 	}
-	SockMark2WriteState.erase(SockMark);
-	UnmapViewOfFile(ReadQueue);
+	UnmapViewOfFile(pCur);
+	SockMark2ReadState.erase(SockMark);
+	SockMark2REvent.erase(SockMark);
+	UnmapViewOfFile(pReadQueue);
 	CloseHandle(ReadQueue);
 }
 
@@ -212,7 +216,8 @@ void   SockPool::SockDataToNode(PN pNode, unsigned int SockMark)
 */
 void SockPool::WriteSock(HANDLE CH,unsigned int SockMark, HANDLE WriteQueue, PM pWriteQueue)
 {
-	
+	bool closeflag=false;
+	int   readnum;
 	while (SockMark2WriteState[SockMark]){		
 	    HANDLE NewNode = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(Node), NULL);
 		PN pNode = (PN)MapViewOfFile(NewNode, FILE_MAP_WRITE, 0, 0, sizeof(Node));
@@ -221,15 +226,27 @@ void SockPool::WriteSock(HANDLE CH,unsigned int SockMark, HANDLE WriteQueue, PM 
 
 		ClearNode(pWriteQueue);
 		SockDataToNode(pNode, SockMark);
+		if (pNode->FuncID == SOCKCLOSE){
+			closeflag = true;
+			readnum = pWriteQueue->cid;
+		}
 		UnmapViewOfFile(pNode);
 
 		SockMark2WEvent[SockMark]->SetEvent();
 		AddToTail(pWriteQueue,NewNode);
 		CloseHandle(NewNode);
+		if (closeflag)
+			break;
 	}
-	SockMark2WriteState.erase(SockMark);
+	while (pWriteQueue->cid < readnum + 1); ///<readnum+1表示收到套接字收到CLOSE
+	ClearNode(pWriteQueue);
+	CloseHandle(pWriteQueue->Head);
+	CloseHandle(pWriteQueue->Tail);
 	UnmapViewOfFile(pWriteQueue);
 	CloseHandle(WriteQueue);
+	SockMark2ReadState[SockMark] = false;
+	SockMark2WriteState.erase(SockMark);
+	SockMark2WEvent.erase(SockMark);
 }
 
 /**
@@ -304,7 +321,7 @@ void SockPool::Connect()
 			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewWriteThread, (LPVOID)&wPara, NULL, NULL);
 			ReleaseSemaphore(Rsemaphore, 1, NULL);
 
-			AfxGetApp()->m_pMainWnd->SendMessage(SOCKSTATEUPDATE, 1);
+			sockconnum++;
 		}
 }
 
@@ -385,7 +402,7 @@ void    SockPool::SendToApp(void *psock)
 * @param [in] SockMark 套接字唯一标示符
 * @note    注销套接字时调用此函数，释放分配给套接字的资源
 */
-bool   SockPool::CloseSock(unsigned int SockMark)
+/*bool   SockPool::CloseSock(unsigned int SockMark)
 {
 	Port2SockMark.erase(SockMark2Port[SockMark]);
 	SockMark2Port.erase(SockMark);
@@ -402,4 +419,4 @@ bool   SockPool::CloseSock(unsigned int SockMark)
 	SockMark2ReadState.erase(SockMark);
 	SockMark2WriteThread.erase(SockMark);
 	return true;
-}
+}*/

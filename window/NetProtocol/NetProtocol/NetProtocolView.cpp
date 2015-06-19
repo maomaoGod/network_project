@@ -89,11 +89,7 @@ CNetProtocolDoc* CNetProtocolView::GetDocument() const // 非调试版本是内联的
 LRESULT CNetProtocolView::SockStateUpdate(WPARAM wparam, LPARAM lparam)
 {
 	TCHAR Buf[10];
-	if (wparam == 1)
-		socknum++;
-	else
-		socknum--;
-	_itot_s(socknum, Buf, 10);
+	_itot_s((int)wparam, Buf, 10);
 	GetDlgItem(IDC_SOCKNUM)->SetWindowText(Buf);
 	return 0;
 }

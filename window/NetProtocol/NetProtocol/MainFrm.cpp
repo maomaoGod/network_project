@@ -29,7 +29,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(TRANSTOIP, OnTrans2IP)
 	ON_MESSAGE(IPTOLINK, OnIP2Link)
 	ON_MESSAGE(LINKSEND, OnLinkSend)
-	ON_MESSAGE(SOCKSTATEUPDATE, SockStateUpdate)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -49,6 +49,7 @@ DWORD WINAPI NewTcpControlThread(LPVOID)
 
 CMainFrame::CMainFrame()
 {
+	connsocknum = 0;
 	 CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewTcpControlThread, NULL, NULL, NULL);
 }
 
@@ -73,6 +74,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
 	// TODO:  如果不需要可停靠工具栏，则删除这三行
+	SetTimer(1000, 1000, NULL);
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);
@@ -278,9 +280,12 @@ LRESULT CMainFrame::OnAppSend(WPARAM wparam, LPARAM lparam)
 	return 0;
 }
 
-LRESULT CMainFrame::SockStateUpdate(WPARAM wparam, LPARAM lparam)
+void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 {
-	GetActiveView()->SendMessage(SOCKSTATEUPDATE, wparam);
-	return 0;
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	if (connsocknum != m_sockpool.sockconnum){
+		connsocknum = m_sockpool.sockconnum;
+		GetActiveView()->SendMessage(SOCKSTATEUPDATE, connsocknum);
+	}
+	CFrameWnd::OnTimer(nIDEvent);
 }
-

@@ -16,14 +16,17 @@ CmyTestSocket::~CmyTestSocket()
 
 void  CmyTestSocket::OnReceive(int nErrorCode)
 {
-	TCHAR S[10000] = { 0 };
-	/*CString mystr;
-	int count = 0;
-	while (count < 2000){
-		count += Receive(S, 10000);
+	TCHAR S[1024] = { 0 };
+	CString mystr;
+	int count = 0,rest=1026;
+	while (count < 1026){
+		memset(S, 0, 1024 * sizeof(TCHAR));
+		count += Receive(S, rest);
+		rest = rest - count;
 		mystr += S;
-	}*/
-	Receive(S,2000);
-	Send(S, 2000);
-	PrintView(S);
+	}
+	Send(mystr, 1024);
+	mystr += "12345\r\n";
+	PrintView(mystr);
+	this->Close();
 }

@@ -324,6 +324,7 @@ int  CmyAsyncSocket::Receive(void* lpBuf, int nBufLen)
 			readstate = READFIN;
 			return DataLen - ReadDataLen;
 		}
+
 		else {                                                 ///<数据长度过大
 			memcpy(lpBuf, pReadData, nBufLen);
 			ReadDataLen += nBufLen;
@@ -399,6 +400,7 @@ bool CmyAsyncSocket::Accept(CmyAsyncSocket& rConnectedSocket)
 	memcpy(rConnectedSocket.dstip, csrcip, 20);
 	rConnectedSocket.dstport = csrcport;
 	CloseHandle(NewNode);//Close LocalHandle
+	return true;
 }
 
 /**
@@ -413,14 +415,22 @@ void   CmyAsyncSocket::OnClose(int nErrorCode)
 
 /**
 * @author ACM2012
-* @note  该函数发送关闭套接字报文
+* @note  该函数发送关闭套接字报文,
 */
 void CmyAsyncSocket::Close()
 {
-	HANDLE NewNode = PackNode(SOCKCLOSE);
+  /*HANDLE NewNode = PackNode(SOCKCLOSE);
 	AddToTail(NewNode);
 	CloseHandle(NewNode);
-	sockstate = CLOSE_FLAG;
+	WaitForSockEvent(SOCKCLOSE);
+	state = false;
+	CloseHandle(CH);
+	CloseHandle(SH);
+	UnmapViewOfFile(pCur);
+	UnmapViewOfFile(pWriteQueue);
+	UnmapViewOfFile(pReadQueue);
+	CloseHandle(WriteQueue);
+	CloseHandle(ReadQueue);*/
 }
 
 /**

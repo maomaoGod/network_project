@@ -482,6 +482,14 @@ ctrl_receive:
 			{
 				int data_len = global_receive_ip_msg.datelen-4*new_tcp_msg.tcp_hdr_length;
 				int opts_offset = 4*new_tcp_msg.tcp_hdr_length-20;
+
+				// Temp----------------------------------------------------------------
+				if (data_len == 0)
+				{
+					goto ctrl_ack;
+				}
+				// Temp----------------------------------------------------------------
+
 				if (tcp->last_rcvd > new_tcp_msg.tcp_seq_number)
 				{
 					// 可能是之前未收到的报文，或者是重复收到的报文
@@ -600,6 +608,7 @@ ctrl_receive:
 				// 更新对方的接收窗口
 				tcp->rcvd_wind = new_tcp_msg.tcp_rcv_window;
 
+ctrl_ack:
 				// ack字段是否有效
 				if (new_tcp_msg.tcp_ack != 0)
 				{
@@ -646,7 +655,7 @@ ctrl_receive:
 				}
 
 				// 发送ACK，以后会改
-				Temp_Send_ACK(tcp);
+				//Temp_Send_ACK(tcp); Dead Lock!!!!
 			}
 
 			// 有什么用？ERROR....EDITING Needed
@@ -733,6 +742,11 @@ ctrl_close:
 					single_tcp->wait_for_send = new_send;
 					single_tcp->wait_for_fill_msg++;
 					single_tcp->send_ack_needed = false;
+				}
+
+				if (single_tcp->send_ack_needed)
+				{
+					Temp_Send_ACK(single_tcp);
 				}
 
 				// 向上交付报文
@@ -1517,8 +1531,8 @@ void Temp_Send_ACK(struct tcplist *single_tcp)
 	//new_tcp_msg.tcp_opts_and_app_data = NULL;	// whatever
 	new_tcp_msg.tcp_checksum = tcpmakesum(0, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 0, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
 			
-	// 不走TCP_send()，不加入TCP报文结构和报文缓冲，因为其中未记录SYN
-	TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 1);
+	// 不走TCP_send()，不加入TCP报文结构和报文缓冲，因为其中未记录ACK
+	TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 0);
 
 	single_tcp->send_ack_needed = false;
 }
