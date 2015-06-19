@@ -16,7 +16,7 @@ private:
 	int      LastError;   //´íÎó´úºÅ
 	bool   done=true;
 	char  *pReadData;
-	void   DestroySock();
+	void  DestroySock();
 	unsigned int ReadDataLen,DataLen;
 	enum  { READBEGIN, READMID, READFIN } readstate;
 private:

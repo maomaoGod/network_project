@@ -120,14 +120,14 @@ void CmyAsyncSocket::GetSockEvent()
 		pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));///<Ó³ÉäÎ´¶ÁµÄµÚÒ»¸ö½Úµã
 		switch (pCur->FuncID){
 		case SOCKSENDTO: 
-		case SOCKSEND: OnReceive(true); readstate = READBEGIN;  break;
-		case SOCKCONNECT: OnConnect(true); break;
-		case SOCKCLOSE: OnClose(true); break;
+		case SOCKSEND: OnReceive(0); readstate = READBEGIN;  break;
+		case SOCKCONNECT: OnConnect(0); break;
+		case SOCKCLOSE: OnClose(0); break;
 		case SOCKACCEPT: memcpy(csrcip, pCur->srcip, 20);  ///<±£´æÔ­Êý¾ÝIP,¶Ë¿ÚÐÅÏ¢
 			                            memcpy(cdstip, pCur->dstip, 20);
 										csrcport = pCur->srcport;
 										cdstport = pCur->dstport;
-			                            OnAccept(true);
+			                            OnAccept(0);
 		default:  break;
 		}
 		pReadQueue->cid++;  ///<ÒÑ¶ÁÍê³É£¬ÒÑ¶Á½ÚµãÊý+1 
@@ -317,7 +317,7 @@ int  CmyAsyncSocket::Receive(void* lpBuf, int nBufLen)
 	}
 	else if (readstate == READMID){ ///<ÉÏ´Î½ÚµãÊý¾ÝÎ´¶ÁÍê
 
-		if (DataLen - ReadDataLen < nBufLen){       ///<Êý¾ÝÒ»´Î¿ÉÒÔ½ÓÊÜÍê³É
+		if (DataLen - ReadDataLen <= nBufLen){       ///<Êý¾ÝÒ»´Î¿ÉÒÔ½ÓÊÜÍê³É
 			memcpy(lpBuf, pReadData + ReadDataLen, DataLen - ReadDataLen);
 			UnmapViewOfFile(pReadData);
 			pReadQueue->cid++;
@@ -359,7 +359,7 @@ int  CmyAsyncSocket::RcvBegin(void* lpBuf, int nBufLen)///<µ±ÊÕµ½Ò»¸öÐÂµÄÊý¾Ý½Úµ
 	ReadDataLen = 0;
 	UnmapViewOfFile(pNode);
 
-	if (DataLen - ReadDataLen < nBufLen){       ///<Êý¾ÝÒ»´Î¿ÉÒÔ½ÓÊÜÍê³É
+	if (DataLen - ReadDataLen <= nBufLen){       ///<Êý¾ÝÒ»´Î¿ÉÒÔ½ÓÊÜÍê³É
 		memcpy(lpBuf, pReadData + ReadDataLen, DataLen - ReadDataLen);
 		UnmapViewOfFile(pReadData);
 		readstate = READFIN;
@@ -419,10 +419,10 @@ void   CmyAsyncSocket::OnClose(int nErrorCode)
 */
 void CmyAsyncSocket::Close()
 {
-  /*HANDLE NewNode = PackNode(SOCKCLOSE);
+  HANDLE NewNode = PackNode(SOCKCLOSE);
 	AddToTail(NewNode);
 	CloseHandle(NewNode);
-	WaitForSockEvent(SOCKCLOSE);
+	/*WaitForSockEvent(SOCKCLOSE);
 	state = false;
 	CloseHandle(CH);
 	CloseHandle(SH);

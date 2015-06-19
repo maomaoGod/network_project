@@ -70,7 +70,7 @@ protected:
 public:
 	 static HANDLE  MFile,Wsemaphore, Rsemaphore, Dsemaphore;  //注册文件和同步信号量
 	 static regstruct *preg;                                      
-	 void        GetSockMark(unsigned int &sockmark,regstruct &myreg);///<填充节点函数，根据不同的参数填充节点
+	 void        GetSockMark(unsigned int &sockmark,regstruct &myreg);
 	 HANDLE PackNode(unsigned int function);
 	 HANDLE PackNode(unsigned int function, UINT nSocketPort);
 	 HANDLE PackNode(unsigned int function, const void* lpBuf, int nBufLen);

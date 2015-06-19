@@ -9,7 +9,6 @@ public:
 private:
 	HANDLE    ReadQueue, WriteQueue;
 	HANDLE    SH, CH;
-	HANDLE    Pthread;
 	PN   pCur;
 	bool state = true;
 	Manager   *pReadQueue, *pWriteQueue;

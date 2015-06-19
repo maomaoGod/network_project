@@ -753,20 +753,20 @@ ctrl_close:
 				if (single_tcp->last_rcvd > single_tcp->last_read)
 				{
 					// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖÐ
-					struct sockstruct new_sockstruct;
-					new_sockstruct.dstport = single_tcp->tcp_src_port;
-					new_sockstruct.srcport = single_tcp->tcp_dst_port;
-					new_sockstruct.funcID = SOCKSEND;
-					new_sockstruct.datalength = single_tcp->last_rcvd - single_tcp->last_read;
-					IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_dst_ip);
-					IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_src_ip);
+					struct sockstruct *new_sockstruct = new sockstruct();
+					new_sockstruct->dstport = single_tcp->tcp_src_port;
+					new_sockstruct->srcport = single_tcp->tcp_dst_port;
+					new_sockstruct->funcID = SOCKSEND;
+					new_sockstruct->datalength = single_tcp->last_rcvd - single_tcp->last_read;
+					IP_uint2chars(new_sockstruct->srcip, single_tcp->tcp_dst_ip);
+					IP_uint2chars(new_sockstruct->dstip, single_tcp->tcp_src_ip);
 					// ---------ÓÉsocketÊÍ·Å£¬Õâ¸öÐ´·¨ËÆºõ²»Ì«¹æ·¶--------------------------------
-					new_sockstruct.data = (char *)malloc(new_sockstruct.datalength*sizeof(char));
+					new_sockstruct->data = (char *)malloc(new_sockstruct->datalength*sizeof(char));
 					// ---------ÓÉsocketÊÍ·Å£¬Õâ¸öÐ´·¨ËÆºõ²»Ì«¹æ·¶--------------------------------
-					memcpy(new_sockstruct.data, single_tcp->tcp_buf_rcvd+single_tcp->last_read+1, new_sockstruct.datalength);
+					memcpy(new_sockstruct->data, single_tcp->tcp_buf_rcvd+single_tcp->last_read+1, new_sockstruct->datalength);
 
 					// ËÍÍùÓ¦ÓÃ²ã
-					AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct);
+					AfxGetApp()->m_pMainWnd->PostMessage(APPSEND, (WPARAM)new_sockstruct);
 
 					single_tcp->last_read = single_tcp->last_rcvd;
 					// ±ê¼ÇÒÑ¾­ÉÏ½»£¨Õâ¸öËÆºõ²»ÐèÒª£¿¿´Ñù×Ó¿ÉÒÔ°Ñhandin×Ö¶ÎÉ¾µô£©
@@ -846,17 +846,17 @@ ctrl_close:
 
 				// Í¨ÖªÓ¦ÓÃ²ãAcceptÊÂ¼þ
 				// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖÐ
-				struct sockstruct new_sockstruct;
-				new_sockstruct.dstport = new_tcp_msg.tcp_src_port;
-				new_sockstruct.srcport = new_tcp_msg.tcp_dst_port;
-				new_sockstruct.funcID = SOCKACCEPT;
-				new_sockstruct.datalength = 0;
-				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_dst_ip);
-				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_src_ip);
-				new_sockstruct.data = NULL;
+				struct sockstruct *new_sockstruct = new sockstruct();
+				new_sockstruct->dstport = new_tcp_msg.tcp_src_port;
+				new_sockstruct->srcport = new_tcp_msg.tcp_dst_port;
+				new_sockstruct->funcID = SOCKACCEPT;
+				new_sockstruct->datalength = 0;
+				IP_uint2chars(new_sockstruct->srcip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct->dstip, single_tcp->tcp_src_ip);
+				new_sockstruct->data = NULL;
 
 				// ËÍÍùÓ¦ÓÃ²ã
-				AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct);
+				AfxGetApp()->m_pMainWnd->PostMessage(APPSEND, (WPARAM)new_sockstruct);
 			}
 
 			// ·¢ËÍSYNACK£¬µÚÈý´ÎÎÕÊÖ
@@ -896,17 +896,17 @@ ctrl_close:
 
 				// Í¨ÖªÓ¦ÓÃ²ã¿ÉÒÔ·ÖÅä×ÊÔ´ÁË
 				// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖÐ
-				struct sockstruct new_sockstruct;
-				new_sockstruct.dstport = new_tcp_msg.tcp_src_port;
-				new_sockstruct.srcport = new_tcp_msg.tcp_dst_port;
-				new_sockstruct.funcID = SOCKCONNECT;
-				new_sockstruct.datalength = 0;
-				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_dst_ip);
-				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_src_ip);
-				new_sockstruct.data = NULL;
+				struct sockstruct *new_sockstruct = new sockstruct();
+				new_sockstruct->dstport = new_tcp_msg.tcp_src_port;
+				new_sockstruct->srcport = new_tcp_msg.tcp_dst_port;
+				new_sockstruct->funcID = SOCKCONNECT;
+				new_sockstruct->datalength = 0;
+				IP_uint2chars(new_sockstruct->srcip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct->dstip, single_tcp->tcp_src_ip);
+				new_sockstruct->data = NULL;
 
 				// ËÍÍùÓ¦ÓÃ²ã
-				AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct);
+				AfxGetApp()->m_pMainWnd->PostMessage(APPSEND, (WPARAM)new_sockstruct);
 			}
 
 			// Í¨ÖªÓ¦ÓÃ²ã·ÖÅä×ÊÔ´
@@ -916,17 +916,17 @@ ctrl_close:
 				single_tcp->connect_status = LINK_CONNECT_BIDIR;
 
 				// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖÐ
-				struct sockstruct new_sockstruct;
-				new_sockstruct.dstport = single_tcp->tcp_src_port;
-				new_sockstruct.srcport = single_tcp->tcp_dst_port;
-				new_sockstruct.funcID = SOCKCONNECT;
-				new_sockstruct.datalength = 0;
-				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_dst_ip);
-				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_src_ip);
-				new_sockstruct.data = NULL;
+				struct sockstruct *new_sockstruct=new sockstruct();
+				new_sockstruct->dstport = single_tcp->tcp_src_port;
+				new_sockstruct->srcport = single_tcp->tcp_dst_port;
+				new_sockstruct->funcID = SOCKCONNECT;
+				new_sockstruct->datalength = 0;
+				IP_uint2chars(new_sockstruct->srcip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct->dstip, single_tcp->tcp_src_ip);
+				new_sockstruct->data = NULL;
 
 				// ËÍÍùÓ¦ÓÃ²ã
-				AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct);
+				AfxGetApp()->m_pMainWnd->PostMessage(APPSEND, (WPARAM)new_sockstruct);
 			}
 
 			// ¹Ø±Õ±¾·½Á¬½Ó£¬·¢ËÍFIN
@@ -1030,17 +1030,17 @@ ctrl_close:
 			if (single_tcp->connect_status == LINK_CONNECT_LOSE)
 			{
 				// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖÐ
-				struct sockstruct new_sockstruct;
-				new_sockstruct.dstport = single_tcp->tcp_src_port;
-				new_sockstruct.srcport = single_tcp->tcp_dst_port;
-				new_sockstruct.funcID = SOCKCLOSE;
-				new_sockstruct.datalength = 0;
-				IP_uint2chars(new_sockstruct.srcip, single_tcp->tcp_dst_ip);
-				IP_uint2chars(new_sockstruct.dstip, single_tcp->tcp_src_ip);
-				new_sockstruct.data = NULL;
+				struct sockstruct *new_sockstruct = new sockstruct();
+				new_sockstruct->dstport = single_tcp->tcp_src_port;
+				new_sockstruct->srcport = single_tcp->tcp_dst_port;
+				new_sockstruct->funcID = SOCKCLOSE;
+				new_sockstruct->datalength = 0;
+				IP_uint2chars(new_sockstruct->srcip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct->dstip, single_tcp->tcp_src_ip);
+				new_sockstruct->data = NULL;
 
 				// ËÍÍùÓ¦ÓÃ²ã
-				AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct);
+				AfxGetApp()->m_pMainWnd->PostMessage(APPSEND, (WPARAM)new_sockstruct);
 
 				// Ïú»ÙTCPÁ¬½Ó
 				deleteNode(single_tcp);
@@ -1114,17 +1114,17 @@ float getSampleRTT(int sendtime, int gettime)		//Íù·µÊ±ÑÓµÄ¹À¼ÆÓë³¬Ê±£¬·µ»Ø³¬Ê±Ê
 
 void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int src_ip, unsigned int dst_ip, unsigned int data_len)
 {
-	struct Msg new_ip_msg;
-	new_ip_msg.sip = src_ip;
-	new_ip_msg.dip = dst_ip;
-	new_ip_msg.ih_sport = send_tcp_message.tcp_src_port;
-	new_ip_msg.ih_dport = send_tcp_message.tcp_dst_port;
-	new_ip_msg.datelen = data_len+4*send_tcp_message.tcp_hdr_length;
-	memcpy(new_ip_msg.data, &send_tcp_message, new_ip_msg.datelen);
-	new_ip_msg.protocol = PROTOCOL_TCP;	// 6 for TCP
+	struct Msg *new_ip_msg = new Msg();
+	new_ip_msg->sip = src_ip;
+	new_ip_msg->dip = dst_ip;
+	new_ip_msg->ih_sport = send_tcp_message.tcp_src_port;
+	new_ip_msg->ih_dport = send_tcp_message.tcp_dst_port;
+	new_ip_msg->datelen = data_len+4*send_tcp_message.tcp_hdr_length;
+	memcpy(new_ip_msg->data, &send_tcp_message, new_ip_msg->datelen);
+	new_ip_msg->protocol = PROTOCOL_TCP;	// 6 for TCP
 
 	// ·¢ÍùÍøÂç²ã
-	AfxGetApp()->m_pMainWnd->SendMessage(IPTOLINK, (WPARAM)&new_ip_msg);
+	AfxGetApp()->m_pMainWnd->PostMessage(IPTOLINK, (WPARAM)new_ip_msg);
 }
 
 void UDP_Send2IP(struct sockstruct data_from_applayer, unsigned int src_ip, unsigned int dst_ip, unsigned int data_len)
@@ -1141,17 +1141,17 @@ void UDP_Send2IP(struct sockstruct data_from_applayer, unsigned int src_ip, unsi
 	new_udp_msg.udp_checksum = udpmakesum((u16)data_len, (u16)src_port, (u16)dst_port, data_len % 2, (u16 *)&(new_udp_msg.udp_app_data));
 
 	// UDPÎÞÓµÈû¿ØÖÆ
-	struct Msg new_ip_msg;
-	new_ip_msg.sip = src_ip;
-	new_ip_msg.dip = dst_ip;
-	new_ip_msg.ih_sport = src_port;
-	new_ip_msg.ih_dport = dst_port;
-	new_ip_msg.datelen = new_udp_msg.udp_msg_length;
-	memcpy(new_ip_msg.data, &new_udp_msg, new_ip_msg.datelen);
-	new_ip_msg.protocol = PROTOCOL_UDP;	// 17 for UDP
+	struct Msg *new_ip_msg = new Msg();
+	new_ip_msg->sip = src_ip;
+	new_ip_msg->dip = dst_ip;
+	new_ip_msg->ih_sport = src_port;
+	new_ip_msg->ih_dport = dst_port;
+	new_ip_msg->datelen = new_udp_msg.udp_msg_length;
+	memcpy(new_ip_msg->data, &new_udp_msg, new_ip_msg->datelen);
+	new_ip_msg->protocol = PROTOCOL_UDP;	// 17 for UDP
 
 	// ·¢ÍùÍøÂç²ã
-	AfxGetApp()->m_pMainWnd->SendMessage(IPTOLINK, (WPARAM)&new_ip_msg);
+	AfxGetApp()->m_pMainWnd->PostMessage(IPTOLINK, (WPARAM)new_ip_msg);
 }
 
 bool rcvd_msg_existed(struct tcplist *tcp, unsigned int seq_number)
@@ -1317,20 +1317,20 @@ void stop_wait()   //Í£Ö¹µÈ´ý
 			}
 
 			/*½«½ÓÊÕµ½µÄ±¨ÎÄ·â×°·¢¸øÉÏ²ãAPP*/
-			struct sockstruct new_sockstruct;
-			new_sockstruct.dstport = new_tcp_msg.tcp_src_port;
-			new_sockstruct.srcport = new_tcp_msg.tcp_dst_port;
-			new_sockstruct.funcID = SOCKSEND;
-			new_sockstruct.datalength = global_receive_ip_msg_sandw.datelen - 20;
-			IP_uint2chars(new_sockstruct.srcip, new_tcp_msg.tcp_src_port);
-			IP_uint2chars(new_sockstruct.dstip, new_tcp_msg.tcp_dst_port);
+			struct sockstruct *new_sockstruct = new sockstruct();
+			new_sockstruct->dstport = new_tcp_msg.tcp_src_port;
+			new_sockstruct->srcport = new_tcp_msg.tcp_dst_port;
+			new_sockstruct->funcID = SOCKSEND;
+			new_sockstruct->datalength = global_receive_ip_msg_sandw.datelen - 20;
+			IP_uint2chars(new_sockstruct->srcip, new_tcp_msg.tcp_src_port);
+			IP_uint2chars(new_sockstruct->dstip, new_tcp_msg.tcp_dst_port);
 			// ---------ÓÉsocketÊÍ·Å£¬Õâ¸öÐ´·¨ËÆºõ²»Ì«¹æ·¶--------------------------------
-			new_sockstruct.data = (char *)malloc(new_sockstruct.datalength*sizeof(char));
+			new_sockstruct->data = (char *)malloc(new_sockstruct->datalength*sizeof(char));
 			// ---------ÓÉsocketÊÍ·Å£¬Õâ¸öÐ´·¨ËÆºõ²»Ì«¹æ·¶--------------------------------
-			memcpy(new_sockstruct.data, new_tcp_msg.tcp_opts_and_app_data, new_sockstruct.datalength);
+			memcpy(new_sockstruct->data, new_tcp_msg.tcp_opts_and_app_data, new_sockstruct->datalength);
 
 			// ËÍÍùÓ¦ÓÃ²ã	
-			AfxGetApp()->m_pMainWnd->SendMessage(APPSEND, (WPARAM)&new_sockstruct);
+			AfxGetApp()->m_pMainWnd->PostMessage(APPSEND, (WPARAM)new_sockstruct);
 
 
 

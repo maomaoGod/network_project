@@ -309,8 +309,7 @@ int  CmySocket::Receive(void* lpBuf, int nBufLen)
 		DataLen = pCur->DataLen;
 		ReadDataLen = 0;
 	}
-
-   if (DataLen - ReadDataLen < nBufLen){       ///<应用层缓冲区足够大
+   if (DataLen - ReadDataLen <= nBufLen){       ///<应用层缓冲区足够大
 			memcpy(lpBuf, pReadData + ReadDataLen, DataLen - ReadDataLen);
 			UnmapViewOfFile(pReadData);
 			pReadQueue->cid++;
@@ -318,7 +317,7 @@ int  CmySocket::Receive(void* lpBuf, int nBufLen)
 			return DataLen - ReadDataLen;
 		}
 		else {
-			memcpy(lpBuf, pReadData, nBufLen);
+			memcpy(lpBuf, pReadData+ReadDataLen, nBufLen);
 			ReadDataLen += nBufLen;
 			done = false;
 			return nBufLen;
@@ -374,12 +373,11 @@ void   CmySocket::OnClose(int nErrorCode)
 */
 void CmySocket::Close()
 {
-
 	HANDLE NewNode = PackNode(SOCKCLOSE);
 	AddToTail(NewNode);
 	CloseHandle(NewNode);
-	WaitForSockEvent(SOCKCLOSE);
-	DestroySock( );
+	/*WaitForSockEvent(SOCKCLOSE);
+	DestroySock( );*/
 }
 
 /**
@@ -473,4 +471,9 @@ void   CmySocket::DestroySock()
 	CloseHandle(pWriteQueue->Head);
 	UnmapViewOfFile(pWriteQueue);
 	CloseHandle(WriteQueue);
+}
+
+int     CmySocket::GetLastError()
+{
+	return LastError;
 }
