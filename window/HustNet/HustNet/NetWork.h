@@ -17,6 +17,7 @@
 #include "Httpworker.h"
 #include "Ftpworker.h"
 #include "FtpDataSocket.h"
+#include "CmySocket.h"
 //#import "dll/JHttp.dll"
 
 #define HTTP_PORT 6500
@@ -85,10 +86,10 @@ namespace NetWork{
 				default: PrintLog(_T("Error Code"));
 				}
 			}
-			if (!Finish()) { PrintLog(_T("Delete CSocket failed\n")); }
+			if (!Finish()) { PrintLog(_T("Delete mySocket failed\n")); }
 		}
 		bool Finish(){
-			csocket.Close();
+			mySocket.Close();
 			return true;
 		}
 	private:
@@ -97,7 +98,7 @@ namespace NetWork{
 		int No;	
 		CString Obj;///< CString Msg*/
 		CString CNo, TNo;
-		CSocket csocket;
+		CmySocket mySocket;
 		CString strIP;///< IP*/
 		TCHAR szRecValue[1024];
 		void init(){
@@ -114,37 +115,37 @@ namespace NetWork{
 			memset(szRecValue, 0, sizeof(szRecValue));
 			/**brief send message to the server*/
 			PrintLog(_T("连接服务器成功"));
-			csocket.Send(Msg, Msg.GetLength()*sizeof(TCHAR));
-			csocket.Receive((void *)szRecValue, 1024);
+			mySocket.Send(Msg, Msg.GetLength()*sizeof(TCHAR));
+			mySocket.Receive((void *)szRecValue, 1024);
 			rev.Format(_T("%s"), szRecValue);
 			PrintRp(rev);
 		}
 		void ConnMsg(CString Msg){
 			AfxSocketInit();
 			strIP.Format(_T("%s"), _T("127.0.0.1"));
-			if (!csocket.Create())
+			if (!mySocket.Create())
 			{
 				CString error;
-				error.Format(_T("创建失败:%d"), csocket.GetLastError());
+				error.Format(_T("创建失败:%d"), mySocket.GetLastError());
 				PrintLog(error);
 				return;
 			}
 			/**@brief 转换需要连接的端口内容类型*/
 			PrintLog(_T("套接字创建成功"));
 			/**@brief 连接指定的地址和端口*/
-			if (csocket.Connect(strIP, 6500))
+			if (mySocket.Connect(strIP, 6500))
 			{
 				CString rev;
 				memset(szRecValue, 0, sizeof(szRecValue));
 				/**brief send message to the server*/
 				PrintLog(_T("连接服务器成功"));
-				csocket.Send(Msg, Msg.GetLength()*sizeof(TCHAR));
-				csocket.Receive((void *)szRecValue, 1024);
+				mySocket.Send(Msg, Msg.GetLength()*sizeof(TCHAR));
+				mySocket.Receive((void *)szRecValue, 1024);
 				rev.Format(_T("%s"), szRecValue);
 			}
 			else{
 				CString error;
-				error.Format(_T("创建失败:%d"), csocket.GetLastError());
+				error.Format(_T("创建失败:%d"), mySocket.GetLastError());
 				PrintLog(error);
 			}
 		}
@@ -165,7 +166,7 @@ namespace NetWork{
 		void Begin(){
 			CString mystr;
 			TakeOverCmd(_T("Myftp>"));
-			aSocket = new CSocket();
+			aSocket = new CmySocket();
 			//create a Socket
 			if (!aSocket->Create()){
 				CString error;
@@ -173,7 +174,7 @@ namespace NetWork{
 				PrintLog(error);
 				return;
 			}
-			//take over the cmd
+			//take over the cmd get 172.21.127.1/html/360.html
 			while ((mystr = GetLine()).Compare(_T("exit")) != 0){
 				CleanRp(NULL);
 				PrintLog(_T("Accept ") + mystr);
@@ -246,7 +247,7 @@ namespace NetWork{
 						}
 						else{
 							//wait for us to send a data auto;
-							bSocket = new CSocket();
+							bSocket = new CmySocket();
 							bSocket->Create();
 							bSocket->Connect(STR::S2CS(ftpworker->getIP()), data_port);
 							TCHAR buf[1024];
@@ -281,7 +282,7 @@ namespace NetWork{
 				if (error_code){
 					//send data and rec data
 					//it may be open last time
-					bSocket = new CSocket();
+					bSocket = new CmySocket();
 					bSocket->Close();
 					delete bSocket;
 				}*/
@@ -293,8 +294,8 @@ namespace NetWork{
 	private:
 		FtpDataSocket *dataworker;
 		Ftpworker *ftpworker;
-		CSocket *aSocket;
-		CSocket *bSocket;
+		CmySocket *aSocket;
+		CmySocket *bSocket;
 		CString IP;
 		CString Path;
 		CString rev;
@@ -398,7 +399,7 @@ namespace NetWork{
 					PrintLog(_T("argc error"));
 					continue;
 				}
-				aSocket = new CSocket();
+				aSocket = new CmySocket();
 			    if (!aSocket->Create()){
 					CString error;
 				    error.Format(_T("创建失败:%d"), aSocket->GetLastError());
@@ -410,7 +411,7 @@ namespace NetWork{
 					return;
 				}
 				Rev();
-				aSocket->Close();
+			   aSocket->Close();
 				delete aSocket;
 			}
 		}
@@ -441,7 +442,7 @@ namespace NetWork{
 					CString error;
 					error.Format(_T("连接服务器失败:%d"), aSocket->GetLastError());
 					PrintLog(error);
-					return false;
+					return false;//get 172.21.127.1/html/360.html
 				}
 			}
 			else{
@@ -474,6 +475,7 @@ namespace NetWork{
 		void Rev(){
 			string html = "";
 			char buf[BUFSIZE + 1];
+
 			while (true){
 				memset(buf, 0, sizeof(buf));
 				aSocket->Receive(buf, BUFSIZE);
@@ -482,7 +484,7 @@ namespace NetWork{
 				if (html.find("\r\n\r\n")) break;
 			}
 			int xpos = html.find("\r\n\r\n");
-			PrintRp(STR::S2CS(html.substr(0,xpos-1)));
+			PrintRp(STR::S2CS(html.substr(0,xpos)));
 			int len = httpworker->setMsg(html);
 			if (len > 0){//no data;
 				html = httpworker->getdata();
@@ -506,7 +508,7 @@ namespace NetWork{
 	private:
 		Httpworker *httpworker;
 		DNSworker *dnsworker;
-		CSocket *aSocket;
+		CmySocket *aSocket;
 		CString rev;
 		TCHAR szRecValue[1024];
 	};
@@ -519,7 +521,7 @@ dnsworker = new DNSworker();
 dnsworker->Make(httpworker->gethost());
 string dnsmsg = dnsworker->getMsg();
 CString temp = STR::S2CS(dnsmsg);
-udp = new CSocket();
+udp = new CmySocket();
 udp->Create( SOCK_DGRAM);
 CString dns_host_ip = STR::S2CS(DNSworker::getdefault_dfs());
 udp->SendToEx(temp, sizeof(TCHAR)*temp.GetLength(), dns_port, dns_host_ip);
@@ -549,7 +551,7 @@ dnsworker = new DNSworker();
 dnsworker->Make(httpworker->gethost());
 string dnsmsg = dnsworker->getMsg();
 CString temp = STR::S2CS(dnsmsg);
-udp = new CSocket();
+udp = new CmySocket();
 udp->Create();
 CString dns_host_ip = STR::S2CS(DNSworker::getdefault_dfs());
 if (!udp->Connect(dns_host_ip, dns_port)){ PrintRp(_T("dns server can't be access")); continue; };

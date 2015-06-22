@@ -2,10 +2,11 @@
 
 // HttpClientSocket ÃüÁîÄ¿±ê
 #include "Tools.h"
+#include "CmyAsyncSocket.h"
 
 using namespace Tools;
 
-class HttpClientSocket : public CAsyncSocket
+class HttpClientSocket : public CmyAsyncSocket
 {
 public:
 	HttpClientSocket();

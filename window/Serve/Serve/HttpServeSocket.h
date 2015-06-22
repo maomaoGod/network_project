@@ -1,9 +1,9 @@
 #pragma once
-
+#include  "CmyAsyncSocket.h"
 // HttpServeSocket ÃüÁîÄ¿±ê
 
 
-class HttpServeSocket : public CAsyncSocket
+class HttpServeSocket : public CmyAsyncSocket
 {
 public:
 	HttpServeSocket();

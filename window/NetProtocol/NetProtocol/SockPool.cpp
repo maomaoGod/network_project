@@ -146,7 +146,10 @@ void SockPool::ReadSock(HANDLE CH,unsigned int SockMark,HANDLE ReadQueue,PM pRea
 			    AppData.dstport = pNode->dstport;
 			    AppData.srcport = SockMark2Port[SockMark];
 				AppData.function = pNode->FuncID;
-				AfxGetApp()->m_pMainWnd->SendMessage(TRANSTOIP, (WPARAM)&AppData, (LPARAM)pNode->FuncID);
+				if (pNode->FuncID == SOCKCLOSE)
+					sockconnum--;
+				if (pNode->FuncID==SOCKCONNECT)
+				    AfxGetApp()->m_pMainWnd->SendMessage(TRANSTOIP, (WPARAM)&AppData, (LPARAM)pNode->FuncID);
 				break;
 		case SOCKLISTEN:
 			     AppData.srcport = SockMark2Port[SockMark];
@@ -226,19 +229,12 @@ void SockPool::WriteSock(HANDLE CH,unsigned int SockMark, HANDLE WriteQueue, PM 
 
 		ClearNode(pWriteQueue);
 		SockDataToNode(pNode, SockMark);
-		if (pNode->FuncID == SOCKCLOSE){
-			closeflag = true;
-			readnum = pWriteQueue->cid;
-		}
 		UnmapViewOfFile(pNode);
 
 		SockMark2WEvent[SockMark]->SetEvent();
 		AddToTail(pWriteQueue,NewNode);
 		CloseHandle(NewNode);
-		if (closeflag)
-			break;
 	}
-	while (pWriteQueue->cid < readnum + 1); ///<readnum+1表示收到套接字收到CLOSE
 	ClearNode(pWriteQueue);
 	CloseHandle(pWriteQueue->Head);
 	CloseHandle(pWriteQueue->Tail);
@@ -395,6 +391,7 @@ void    SockPool::SendToApp(void *psock)
 	WaitForSingleObject(*SockMark2WEvent[SockMark],INFINITE);
 	memcpy(SockMark2SockStruct[SockMark], pmysock, sizeof(transstruct));
 	SockMark2REvent[SockMark]->SetEvent();
+	delete psock;
 }
 
 /**
