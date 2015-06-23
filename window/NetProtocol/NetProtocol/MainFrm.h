@@ -23,7 +23,7 @@ public:
 
 public:
 	int connsocknum;
-	CMyIP ip;
+	CMyIP IP;
 	my_linker  linker;
 	SockPool   m_sockpool;
 	// ÖØÐ´
