@@ -7,6 +7,8 @@
 #include "string.h"
 #include "Tools.h"
 #include "pcap.h"
+#include "windows.h"
+#include "time.h"
 
 int sockcount = 0;
 
@@ -155,7 +157,6 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊı
 	return 0;
 }
 
-
 LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´«Êä²ãµÄ½Ó¿Ú
 { //
 	///< ¸ù¾İÁ´Â·²ã·¢ËÍµÄÊı¾İ½øĞĞ°şÀëµÃµ½±¨ÎÄ³¤¶ÈÒÔ¼°Æ«ÒÆ, ±È½ÏÆ«ÒÆÁ¿ÊÇ·ñµÈÓÚ±¨ÎÄ³¤¶È
@@ -163,9 +164,28 @@ LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´
 	///< ÈôÊÇÔòÊı¾İ³É¹¦½ÓÊÕ ½øĞĞÉÙÁ¿µÄ¼ìÑéºÍ¼ì²é, ÈôÃ»ÓĞ´íÎó
 	///< Ôò½«IP_msg½á¹¹°şÀë³öMsg½á¹¹
 
-	if (!ip.IP2Trans(wparam, lparam))
-		return true;
-	return false;
+	ip_message *Routest = (struct ip_message*)wparam;
+	if (Routest->ih_ident == data_info)
+	{
+		if (!IP.IP2Trans(wparam, lparam))
+			return true;
+		else
+		{
+			AfxMessageBox(_T("ÍøÂç²ã´«Êä¸ø´«Êä²ãÊı¾İ°ü³öÏÖÎÊÌâ.\n"));
+			return false;
+		}
+	}
+	else
+	{
+		if (!IP.RecvMsg(wparam, lparam))
+			return true;
+		else
+		{
+			AfxMessageBox(_T("ÍøÂç²ã½ÓÊÕÂ·ÓÉĞÅÏ¢³öÏÖÎÊÌâ.\n"));
+			return false;
+		}
+	}
+
 }
 
 LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊı¾İÍøÂç²ãµÄ½Ó¿Ú
@@ -229,17 +249,63 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊı¾İ·¢Ë
 	return 0;
 }
 
-
 LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊı¾İ·¢ËÍµ½Á´Â·²ã½Ó¿Ú
 {
 	///< ½«ÔËÊä²ãËÍÀ´µÄMsg½á¹¹ºÍIPµØÖ·²åÈëµ½IP_msg½á¹¹ÖĞ,
 	///< Èç¹ûĞÅÏ¢³¬¹ıÈİÁ¿¾Í½øĞĞ·ÖÆ¬´¦Àí, 
 	///< µ÷ÓÃÁ´Â·²ãµÄ·¢ËÍº¯ÊıÈç¹û·¢ËÍÊ§°Ü return FALSE;
 	///< ·ñÔò return TRUE;
-	if (!ip.IP2Link(wparam, lparam))
-		return true;
-	return false;
+	clock_t t1 = clock(), t2;
+	if (end_connect == 1)
+	{
+		if (!IP.IP2Link(wparam, lparam))
+			return true;
+		else
+		{
+			AfxMessageBox(_T("ÍøÂç²ã´«Êä¸øÁ´Â·Êı¾İ°ü³öÏÖÎÊÌâ.\n"));
+			return false;
+		}
+	}
+	else
+	{
+		ip_message *Routest = new ip_message;
+		Routest = (struct ip_message *)wparam;
+
+		if (Routest->ih_ident == data_info)                             
+		{
+			if (!IP.IP2Link(wparam, lparam))
+				return true;
+			else
+			{
+				AfxMessageBox(_T("ÍøÂç²ã´«Êä¸øÁ´Â·Êı¾İ°ü³öÏÖÎÊÌâ.\n"));
+				return false;
+			}
+		}
+		else{
+			if (!IP.SendMsg(wparam, lparam))
+				return true;
+			else
+			{
+				AfxMessageBox(_T("ÍøÂç²ã·¢ËÍÂ·ÓÉĞÅÏ¢³öÏÖÎÊÌâ.\n"));
+				return false;
+			}
+		}
+	}
+
+	if (t1 - t2 ==15)
+	{
+		if (!IP.SendMsg(wparam, lparam))
+			return true;
+		else
+		{
+			AfxMessageBox(_T("ÍøÂç²ã·¢ËÍÂ·ÓÉĞÅÏ¢³öÏÖÎÊÌâ.\n"));
+			return false;
+		}
+	}
+	t2 = t1;
+	///< Èç¹ûÔÚÂ·ÓÉÀïÃæ¾ÍÓ¦¸ÃÃ¿¸ô15s·¢ËÍÒ»´ÎÂ·ÓÉĞÅÏ¢
 }
+
 
 LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊı¾İ·¢ËÍ³öÈ¥½Ó¿Ú
 {
