@@ -58,7 +58,7 @@ struct prostruct   //进程间通信结构体
 typedef unsigned char Byte;
 typedef unsigned short Ushort;
 typedef int Bool;
-#define MSS 1480
+#define ipMSS 1480
 
 /**
 *@class <ip_message>
@@ -84,7 +84,7 @@ struct ip_message //定义IP数据报文
 
 	unsigned ih_saddr : 32;		            ///< 32位源IP
 	unsigned ih_daddr : 32;		            ///< 32位目的IP
-	char data[MSS];
+	char data[ipMSS];
 	bool operator == (const ip_message &it) const
 	{
 		if (ih_version != it.ih_version) return false;
@@ -159,10 +159,11 @@ struct Route_info{
 	int did;
 };
 
+
 #define iIP	3232241409       ///<对应内部局域网的IP
 #define oIP 3232241409       ///<对应外部广域网的IP
-#define Routing_select 1     ///<定义选路算法, 1表示LS算法, 0表示DV算法
-#define end_connect 1        ///<定义客户端还是路由器, 1表示客户端, 0表示路由器 
+//#define Routing_select 1     ///<定义选路算法, 1表示LS算法, 0表示DV算法
+//#define end_connect 1        ///<定义客户端还是路由器, 1表示客户端, 0表示路由器 
 #define data_info  1         ///<定义数据信息还是路由信息, 1表示数据信息, 0表示路由信息
 #define IPN	6                ///<定义节点的个数
 #define MAX 0x3f3f3f3f    

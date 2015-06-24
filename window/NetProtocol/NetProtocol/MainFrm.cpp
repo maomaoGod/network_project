@@ -20,6 +20,9 @@ int sockcount = 0;
 extern void PrintView(CString e);
 // CMainFrame
 
+int Routing_select = 1;
+int end_connect = 1;
+
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
@@ -32,6 +35,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(IPTOLINK, OnIP2Link)
 	ON_MESSAGE(LINKSEND, OnLinkSend)
 	ON_WM_TIMER()
+	ON_COMMAND(ID_CLIENT, &CMainFrame::OnClient)
+	ON_COMMAND(ID_ROUTE, &CMainFrame::OnRoute)
+	ON_COMMAND(ID_OSPF, &CMainFrame::OnOspf)
+	ON_COMMAND(ID_RIP, &CMainFrame::OnRip)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -311,9 +318,9 @@ LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊý¾Ý·¢Ë
 {
 	static int seq = 0;
 	struct IP_Msg *datagram = (struct IP_Msg *)wparam;
-	unsigned int Src_IP = (*datagram).iphdr->ih_saddr;
-	unsigned int Des_IP = (*datagram).iphdr->ih_daddr;
-
+	unsigned int Src_IP = datagram->ih_saddr;
+	unsigned int Des_IP = datagram->ih_daddr;
+	unsigned short len = datagram->ih_len;
 	if (Des_IP != getIP())
 	{
 		while (true)
@@ -327,10 +334,10 @@ LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊý¾Ý·¢Ë
 	{
 		for (int i = 0; i < 3; ++i) linker.mac_des[i] = linker.mac_src[i];
 	}
-
+	//}
 
 	//for (int i = 0; i < 3; ++i) linker.mac_des[i] = linker.mac_src[i];
-	if ((linker.send_by_frame(datagram, linker.adapterHandle, seq)) == 0)
+	if ((linker.send_by_frame(datagram, linker.adapterHandle, seq, len)) == 0)
 	{
 		seq += 1;
 		seq = seq % 100;
@@ -354,4 +361,49 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 		GetActiveView()->SendMessage(SOCKSTATEUPDATE, connsocknum);
 	}
 	CFrameWnd::OnTimer(nIDEvent);
+}
+
+
+void CMainFrame::OnClient()
+{
+	// TODO:  ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌÐò´úÂë
+	end_connect = 1;
+	GetMenu()->GetSubMenu(0)->CheckMenuItem(ID_CLIENT, MF_BYCOMMAND | MF_CHECKED);
+	GetMenu()->GetSubMenu(0)->CheckMenuItem(ID_ROUTE, MF_BYCOMMAND | MF_UNCHECKED);
+}
+
+
+void CMainFrame::OnRoute()
+{
+	// TODO:  ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌÐò´úÂë
+	end_connect = 0;
+	GetMenu()->GetSubMenu(0)->CheckMenuItem(ID_ROUTE, MF_BYCOMMAND | MF_CHECKED);
+	GetMenu()->GetSubMenu(0)->CheckMenuItem(ID_CLIENT, MF_BYCOMMAND | MF_UNCHECKED);
+}
+
+
+void CMainFrame::OnOspf()
+{
+	// TODO:  ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌÐò´úÂë
+	Routing_select = 1;
+	GetMenu()->GetSubMenu(0)->CheckMenuItem(ID_OSPF, MF_BYCOMMAND | MF_CHECKED);
+	GetMenu()->GetSubMenu(0)->CheckMenuItem(ID_RIP, MF_BYCOMMAND | MF_UNCHECKED);
+}
+
+
+void CMainFrame::OnRip()
+{
+	// TODO:  ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌÐò´úÂë
+	Routing_select = 0;
+	GetMenu()->GetSubMenu(0)->CheckMenuItem(ID_RIP, MF_BYCOMMAND | MF_CHECKED);
+	GetMenu()->GetSubMenu(0)->CheckMenuItem(ID_OSPF, MF_BYCOMMAND | MF_UNCHECKED);
+}
+
+
+BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
+{
+	// TODO:  ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	GetMenu()->GetSubMenu(0)->CheckMenuItem(ID_CLIENT, MF_BYCOMMAND | MF_CHECKED);
+	GetMenu()->GetSubMenu(0)->CheckMenuItem(ID_OSPF, MF_BYCOMMAND | MF_CHECKED);
+	return CFrameWnd::OnCreateClient(lpcs, pContext);
 }

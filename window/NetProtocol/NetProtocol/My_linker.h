@@ -10,23 +10,6 @@
 #define MAC_ADDR_SIZE 3
 typedef unsigned char Byte;
 
-struct Frame_data{
-	struct _iphdr IP;                  // 网络层传来的IP
-	Byte data[FRAMESIZE];                    // 网络层数据
-	bool operator == (const Frame_data &it) const
-	{
-		if (IP != it.IP) return false;
-		for (int i = 0; i < FRAMESIZE; ++i)
-		if (data[i] != it.data[i])
-			return false;
-		return true;
-	}
-	bool operator != (const  Frame_data &it) const
-	{
-		return !((*this) == it);
-	}
-};
-
 struct Frame{
 	unsigned short MAC_des[MAC_ADDR_SIZE];           // MAC_dst MAC目标地址
 	unsigned short MAC_src[MAC_ADDR_SIZE];           // MAC_src MAC源地址
@@ -34,7 +17,7 @@ struct Frame{
 	unsigned short datagram_num;         // 数据报序号
 	unsigned short seq;                  // 帧序号
 	unsigned short length;               // 当前帧数据的长度
-	struct Frame_data frame_data;        // 帧数据结构
+	Byte data[FRAMESIZE];                    // 网络层数据
 	unsigned short CRC;
 	bool operator == (const Frame &it) const
 	{
@@ -47,7 +30,8 @@ struct Frame{
 		if (datagram_num != it.datagram_num) return false;
 		if (seq != it.seq) return false;
 		if (length != it.length) return false;
-		if (frame_data != it.frame_data) return false;
+		for (int i = 0; i < length;++i)
+			if (data[i] != it.data[i]) return false;
 		return true;
 	}
 	bool operator != (const Frame &it) const
@@ -77,11 +61,11 @@ private:
 	};
 
 	static const int maxlength = 100000;
-	IP_Msg *ip_msg;
+	char **msg;						 //数据报
 	Data_Segment *buffer;
 	int bp;
 	int **data_pointer;
-	int *left;					 //每个数据报还剩多少帧
+	int *left;						 //每个数据报还剩多少帧
 	void get_adapter();
 
 public:
@@ -96,7 +80,7 @@ public:
 	unsigned short transmac[table_size][3];
 	my_linker()
 	{
-		ip_msg = new IP_Msg[maxlength];
+		msg = new char*[maxlength];
 		buffer = new Data_Segment[maxlength];
 		bp = 0;
 		data_pointer = new int*[maxlength];
@@ -104,7 +88,7 @@ public:
 		for (int i = 0; i < maxlength; ++i)
 		{
 			data_pointer[i] = NULL;
-			ip_msg->iphdr = NULL;
+			msg[i] = NULL;
 		}
 		get_adapter();
 		if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewPackThread, (LPVOID) this, NULL, NULL))
@@ -112,7 +96,12 @@ public:
 	}
 	~my_linker()
 	{
-		delete[] ip_msg;
+		for (int i = 0; i < maxlength; ++i)
+			if (msg[i]!=NULL)
+			{
+				delete[] msg[i];
+			}
+		delete[] msg;
 		delete[] buffer;
 		for (int i = 0; i < maxlength; ++i)
 			delete[] data_pointer[i];
@@ -121,7 +110,7 @@ public:
 	}
 	inline void initialize()
 	{
-		ip_msg = new IP_Msg[maxlength];
+		msg = new char*[maxlength];
 		buffer = new Data_Segment[maxlength];
 		bp = 0;
 		data_pointer = new int*[maxlength];
@@ -129,12 +118,12 @@ public:
 		for (int i = 0; i < maxlength; ++i)
 		{
 			data_pointer[i] = NULL;
-			ip_msg->iphdr = NULL;
+			msg[i] = NULL;
 		}
 		get_adapter();
 	}
-	IP_Msg * combine(const u_char *);
-	int send_by_frame(IP_Msg *, pcap_t *, unsigned short);
+	char * combine(const u_char *);
+	int send_by_frame(IP_Msg *, pcap_t *, unsigned short, unsigned short);
 	void GetSelfMac(char*, unsigned short *);
 	u_char* BuildArpPacket(unsigned short *, unsigned int, unsigned int);
 	bool check(const u_char *);

@@ -322,9 +322,9 @@ ctrl_receive:
 			
 			// 处理数据，需要反过来！！！
 			unsigned int dst_ip = global_receive_ip_msg.sip;
-			unsigned short dst_port = global_receive_ip_msg.ih_sport;
+			unsigned short dst_port = new_tcp_msg.tcp_src_port;
 			unsigned int src_ip = global_receive_ip_msg.dip;
-			unsigned short src_port = global_receive_ip_msg.ih_dport;
+			unsigned short src_port = new_tcp_msg.tcp_dst_port;
 
 			// 根据四元组找到TCP连接链表中的对应表
 			struct tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);

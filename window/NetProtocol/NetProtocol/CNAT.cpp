@@ -1,6 +1,8 @@
 #include"stdafx.h"
 #include"CNAT.h"
 
+extern int Routing_select;
+extern int end_connect;
 
 CNAT::CNAT()
 {

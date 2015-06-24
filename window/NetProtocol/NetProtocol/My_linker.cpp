@@ -3,7 +3,6 @@
 #include "my_linker.h"
 #include "NetProtocol.h"
 
-typedef _iphdr IP_HEADER;
 
 void my_linker::get_adapter()
 {
@@ -112,15 +111,15 @@ void my_linker::get_adapter()
 }
 
 int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
-	unsigned short i)
+	unsigned short i,unsigned short len)
 {
 	int K = 0;
 	srand(time(0));
 	unsigned short seq = 0;
-	unsigned short total_seq = ((*data_gram).iphdr->ih_len + FRAMESIZE - 1) / FRAMESIZE;
+	unsigned short total_seq = (len + FRAMESIZE - 1) / FRAMESIZE;
 	unsigned short copy_size;
-	unsigned short left_size = (*data_gram).iphdr->ih_len;
-	Byte *temp = (Byte *)&((*data_gram).data);
+	unsigned short left_size = len;
+	Byte *temp = (Byte *)(data_gram->data);
 	u_char *packet; //待发送的数据封包
 	struct pcap_pkthdr * packetHeader;
 	const u_char       * packetData;
@@ -138,14 +137,13 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
 		frame.MAC_src[2] = mac_src[2];
 		frame.total_seq_num = total_seq + 0xcccc;
 		frame.seq = seq + 0xcccc;
-		memcpy(&(frame.frame_data.IP), (*data_gram).iphdr, IP_SIZE);
 		frame.datagram_num = i;
 		copy_size = min(FRAMESIZE, left_size);
-		memcpy(frame.frame_data.data, temp, copy_size);
+		memcpy(frame.data, temp, copy_size);
 		frame.length = copy_size;
 		temp += copy_size;
 		if (copy_size < FRAMESIZE){
-			memset(frame.frame_data.data + copy_size, 0, FRAMESIZE - copy_size);
+			memset(frame.data + copy_size, 0, FRAMESIZE - copy_size);
 		}
 		left_size -= copy_size;
 
@@ -199,14 +197,10 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
 }
 
 
-IP_Msg * my_linker::combine(const u_char * packetData)
+char * my_linker::combine(const u_char * packetData)
 {
 
 	Frame &Receive = *((Frame *)packetData);
-
-	Frame_data *fdp;
-
-	Frame_data frame_data;
 
 	for (int i = 0; i < 3; ++i)
 	{
@@ -221,8 +215,6 @@ IP_Msg * my_linker::combine(const u_char * packetData)
 	}
 
 	//puts("fuck");
-
-	frame_data = Receive.frame_data;
 
 	Receive.seq -= 0xcccc;
 	Receive.total_seq_num -= 0xcccc;
@@ -240,12 +232,11 @@ IP_Msg * my_linker::combine(const u_char * packetData)
 
 		left[id] = tot;
 
-		ip_msg[id].iphdr = new IP_HEADER;
-		*(ip_msg[id].iphdr) = frame_data.IP;
+		msg[id] = new char[1500];
 
 		buffer[bp].length = len;
 		for (int i = 0; i < len; ++i)
-			buffer[bp].data[i] = frame_data.data[i];
+			buffer[bp].data[i] = Receive.data[i];
 
 		data_pointer[id][seq] = bp++;
 
@@ -257,19 +248,19 @@ IP_Msg * my_linker::combine(const u_char * packetData)
 			{
 				int ptr = data_pointer[id][i];
 				for (int j = 0; j < buffer[ptr].length; ++j)
-					ip_msg[id].data[data_len++] = (char)buffer[ptr].data[j];
+					msg[id][data_len++] = (char)buffer[ptr].data[j];
 			}
 			delete[] data_pointer[id];
 			data_pointer[id] = NULL;
-			ip_msg[id].data[data_len] = 0;
-			return ip_msg + id;
+			msg[id][data_len] = 0;
+			return msg[id];
 		}
 	}
 	else if (data_pointer[id][seq] == -1)					//未收到过这一个帧
 	{
 		buffer[bp].length = len;
 		for (int i = 0; i < len; ++i)
-			buffer[bp].data[i] = frame_data.data[i];
+			buffer[bp].data[i] = Receive.data[i];
 
 		data_pointer[id][seq] = bp++;
 
@@ -281,12 +272,12 @@ IP_Msg * my_linker::combine(const u_char * packetData)
 			{
 				int ptr = data_pointer[id][i];
 				for (int j = 0; j < buffer[ptr].length; ++j)
-					ip_msg[id].data[data_len++] = (char)buffer[ptr].data[j];
+					msg[id][data_len++] = (char)buffer[ptr].data[j];
 			}
 			delete[] data_pointer[id];
 			data_pointer[id] = NULL;
-			ip_msg[id].data[data_len] = 0;
-			return ip_msg + id;
+			msg[id][data_len] = 0;
+			return msg[id];
 		}
 	}
 	return NULL;
@@ -347,14 +338,7 @@ bool my_linker::check(const u_char * packetData)
 	Broadcast_frame frame = *((Broadcast_frame *)packetData);
 	if (frame.type == 0x0806 && frame.MAC_des[0] == 0xFFFF && frame.MAC_des[0] == 0xFFFF && frame.MAC_des[0] == 0xFFFF
 		&& frame.IP_dst==getIP())
-	{
-		unsigned int tmp = getIP();
-		if (tmp != frame.IP_dst)
-		{
-			puts("");
-		}
 		return true;
-	}
 	return false;
 }
 
@@ -599,7 +583,6 @@ inline unsigned int my_linker::getIP()
 DWORD WINAPI my_linker::NewPackThread(LPVOID lParam)
 {
 	my_linker *pthis = (my_linker *)lParam;
-	while (AfxGetApp()->m_pMainWnd == NULL);
 	pthis->packcap();
 	return 0;
 }
@@ -643,11 +626,10 @@ void my_linker::packcap()
 void my_linker::Link2IP(WPARAM wparam)
 {
 	const u_char * packetData = (const u_char *)wparam;
-	IP_Msg * ip_msg;
-	ip_msg = combine(packetData);
-	if (ip_msg != NULL)
+	char * msg;
+	msg = combine(packetData);
+	if (msg != NULL)
 	{
-		AfxGetApp()->m_pMainWnd->SendMessage(IPTOTRANS, (WPARAM)ip_msg);
-		delete ip_msg->iphdr;
+		AfxGetApp()->m_pMainWnd->SendMessage(IPTOTRANS, (WPARAM)msg);
 	}
 }

@@ -59,4 +59,9 @@ public:
 	afx_msg LRESULT OnLinkSend(WPARAM, LPARAM);
 	afx_msg LRESULT OnAppSend(WPARAM, LPARAM);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnClient();
+	afx_msg void OnRoute();
+	afx_msg void OnOspf();
+	afx_msg void OnRip();
+	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 };

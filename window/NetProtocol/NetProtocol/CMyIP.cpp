@@ -12,6 +12,10 @@
 #include "TransLayer.h"
 #include "TransLayerTools.h"
 
+extern int Routing_select;
+extern int end_connect;
+
+
 /******************************************************
 *
 *			  222.20.101.215
@@ -159,18 +163,18 @@ BOOL CMyIP::IP2Link(WPARAM wparam, LPARAM lparam)
 		MyIP->ih_daddr = IP_data->dip;                              
 		
 		NetoLink->ih_saddr = IP_data->sip;
-		NetoLink->ih_daddr = iIP;
+		NetoLink->ih_daddr = IP_data->dip;
 
-		while (IP_data->datelen - 8 * offset > MSS)
+		while (IP_data->datelen - 8 * offset > ipMSS)
 		{
 			MyIP->ih_flags = 1;
 			MyIP->ih_offset = offset;
-			offset = offset + MSS / 8;
-			MyIP->ih_data_len = MSS + 20;
-			memcpy(MyIP->data, IP_data->data, MSS);
+			offset = offset + ipMSS / 8;
+			MyIP->ih_data_len = ipMSS + 20;
+			memcpy(MyIP->data, IP_data->data, ipMSS);
 			MyIP->ip_checksum = iphdrmakesum(MyIP);
 			NetoLink->data = (char *)MyIP;
-			NetoLink->ih_len = MSS + 20;
+			NetoLink->ih_len = ipMSS + 20;
 			(AfxGetApp()->m_pMainWnd)->SendMessage(LINKSEND, (WPARAM)NetoLink, lparam);
 		}
 
@@ -271,6 +275,8 @@ Bool CMyIP::IP2Trans(WPARAM wparam, LPARAM lparam)
 	///< 若发现分片缺失或者检验和出错则 return FALSE;
 	///< 若是则数据成功接收 进行少量的检验和检查, 若没有错误
 	///< 则将IP_msg结构剥离出Msg结构
+	static int count;
+	TCHAR buf[10];
 	if (end_connect)
 	{
 		int ident = 1;
@@ -285,10 +291,11 @@ Bool CMyIP::IP2Trans(WPARAM wparam, LPARAM lparam)
 			if (MyIP->ih_offset * 8 == _offset)
 			{
 				if (MyIP->ih_flags){
-					memcpy(local_IP_data->data + _offset, MyIP->data, MSS);
-					_offset = _offset + MSS;
+					memcpy(local_IP_data->data + _offset, MyIP->data, ipMSS);
+					_offset = _offset + ipMSS;
 				}
 				else{
+					_itot_s(count++, buf, 10);
 					memcpy(local_IP_data->data + _offset, MyIP->data, MyIP->ih_data_len - 20 - _offset);
 					_offset = 0;
 					local_IP_data->sip = MyIP->ih_saddr;
@@ -389,7 +396,7 @@ BOOL CMyIP::SendMsg(WPARAM wparam, LPARAM lparam)
 		MyIP->ih_version = 4;
 		MyIP->ip_hdr_length = 20;
 		MyIP->ih_sever = 0;
-		MyIP->ih_data_len = MSS + 20;
+		MyIP->ih_data_len = ipMSS + 20;
 
 		MyIP->ih_ident = 0;
 		MyIP->ih_flags = 0;
@@ -416,12 +423,12 @@ BOOL CMyIP::SendMsg(WPARAM wparam, LPARAM lparam)
 	}
 	*/
 	MyIP = new ip_message;
-	memcpy(MyIP->data, info, MSS);
+	memcpy(MyIP->data, info, ipMSS);
 
 	MyIP->ih_version = 4;
 	MyIP->ip_hdr_length = 20;
 	MyIP->ih_sever = 0;
-	MyIP->ih_data_len = MSS + 20;
+	MyIP->ih_data_len = ipMSS + 20;
 
 	MyIP->ih_ident = 0;
 	MyIP->ih_flags = 0;
@@ -434,7 +441,7 @@ BOOL CMyIP::SendMsg(WPARAM wparam, LPARAM lparam)
 	MyIP->ih_saddr = sip;
 
 	NetoLink->ih_saddr = sip;
-	NetoLink->ih_len = MSS + 20;
+	NetoLink->ih_len = ipMSS + 20;
 
 	int m = IP2Num(sip);
 	for (int i = 0; i < info->edgenum; i++)

@@ -9,6 +9,11 @@
 #include "stdafx.h"
 #include "CRouting.h"
 
+
+extern int Routing_select;
+extern int end_connect;
+
+
 /**
 * @author ACM2012
 * @param
