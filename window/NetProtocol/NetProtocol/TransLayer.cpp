@@ -480,7 +480,7 @@ ctrl_receive:
 			// 不是TCP控制信息，是一般报文
 			else
 			{
-				tcp->receive_time = GetTickCount();
+				//tcp->receive_time = GetTickCount();
 
 				int data_len = global_receive_ip_msg.datelen-4*new_tcp_msg.tcp_hdr_length;
 				int opts_offset = 4*new_tcp_msg.tcp_hdr_length-20;

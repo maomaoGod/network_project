@@ -343,7 +343,6 @@ LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊý¾Ý·¢Ë
 		for (int i = 0; i < 3; ++i) linker.mac_des[i] = linker.mac_src[i];
 	}
 	//}
-
 	//for (int i = 0; i < 3; ++i) linker.mac_des[i] = linker.mac_src[i];
 	if ((linker.send_by_frame(datagram, linker.adapterHandle, seq, len)) == 0)
 	{
