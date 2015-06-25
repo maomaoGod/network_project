@@ -329,7 +329,9 @@ ctrl_receive:
 			// 根据四元组找到TCP连接链表中的对应表
 			struct tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);
 
-			// 被第一次握手
+			tcp->receive_time = GetTickCount();
+
+			// 被第一次握手 
 			if (new_tcp_msg.tcp_syn == 1 && new_tcp_msg.tcp_ack == 0)
 			{
 				if (!check_listening(src_port))
@@ -480,6 +482,8 @@ ctrl_receive:
 			// 不是TCP控制信息，是一般报文
 			else
 			{
+
+
 				int data_len = global_receive_ip_msg.datelen-4*new_tcp_msg.tcp_hdr_length;
 				int opts_offset = 4*new_tcp_msg.tcp_hdr_length-20;
 
@@ -1535,4 +1539,60 @@ void Temp_Send_ACK(struct tcplist *single_tcp)
 	TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 0);
 
 	single_tcp->send_ack_needed = false;
+}
+
+
+
+
+void time_over()
+{
+	for (;;)
+	{
+		struct tcplist *single_tcp = head->next;
+		while (single_tcp != NULL)
+		{
+			int temp_msg_num;  
+			//检查所有tcp上已发送但未确认的那些报文是否超时
+			for (temp_msg_num = single_tcp->wait_for_ack_msg; temp_msg_num < single_tcp->wait_for_fill_msg; temp_msg_num++)
+			{
+				if (GetTickCount() - single_tcp->tcp_msg_send[temp_msg_num].time > RTT)
+				{
+					//超时拥塞控制
+					single_tcp->threshold = single_tcp->cong_wind / 2;
+					single_tcp->cong_wind = MSS;
+					single_tcp->tcp_msg_send[temp_msg_num].time = GetTickCount();
+					//下面为超时重传已发送但未确认的第一个报文
+					struct tcp_message new_tcp_msg;
+					new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
+					new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
+					new_tcp_msg.tcp_seq_number = single_tcp->wait_for_ack;	//seq_number can be deleted?
+					new_tcp_msg.tcp_ack_number = single_tcp->send_ack_needed ? single_tcp->next_send_ack : 0;
+					new_tcp_msg.tcp_hdr_length = 5;
+					new_tcp_msg.tcp_reserved = 0;
+					new_tcp_msg.tcp_urg = 0;
+					new_tcp_msg.tcp_ack = single_tcp->send_ack_needed ? 1 : 0;
+					new_tcp_msg.tcp_psh = 0;
+					new_tcp_msg.tcp_rst = 0;
+					new_tcp_msg.tcp_syn = 0;
+					new_tcp_msg.tcp_fin = 0;
+					new_tcp_msg.tcp_rcv_window = single_tcp->rcvd_wind;
+					new_tcp_msg.tcp_urg_ptr = NULL;
+					memcpy(new_tcp_msg.tcp_opts_and_app_data, &single_tcp->tcp_buf_send[single_tcp->wait_for_ack], single_tcp->tcp_msg_send[temp_msg_num].datalen);
+					new_tcp_msg.tcp_checksum = tcpmakesum(single_tcp->tcp_msg_send[temp_msg_num].datalen, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, single_tcp->tcp_msg_send[temp_msg_num].datalen % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
+
+					// 送往网络层
+					TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, single_tcp->tcp_msg_send[temp_msg_num].datalen);
+				}
+			}
+                 
+			if (single_tcp->send_ack_needed)
+			{
+				if (GetTickCount() - single_tcp->receive_time > 500)
+				{
+					Temp_Send_ACK(single_tcp);
+				}
+			}
+				single_tcp = single_tcp->next;
+		}
+	}
 }

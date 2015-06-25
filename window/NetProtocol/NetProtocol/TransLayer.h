@@ -88,6 +88,7 @@ struct tcplist
 	int cong_status;	// 拥塞控制状态
 	int tcp_established_syn_seq;	// 对方发来的syn所在报文编号
 	int connect_status;	// TCP连接状态
+	int receive_time; //当前收到的最后一个报文的时间
 };
 
 struct stopandwait
@@ -183,3 +184,5 @@ void SR_receive(struct Msg data_from_netlayer);
 void _SR();
 
 void Temp_Send_ACK(struct tcplist *single_tcp);
+
+void time_over();
