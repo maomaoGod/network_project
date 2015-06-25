@@ -212,6 +212,14 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 	unsigned int src_ip = getIP();
 	unsigned int data_len = data_from_applayer.datalength;
 
+	IP_uint2chars(data_from_applayer.srcip, src_ip);
+	// ×ª»»IP
+	if (dst_ip == IP_chars2uint("127.0.0.1"))
+	{
+		dst_ip = src_ip;
+		memcpy(data_from_applayer.dstip, data_from_applayer.srcip, 20);
+	}
+
 	// »ñÈ¡Function ID
 	int funcID = data_from_applayer.funcID;
 

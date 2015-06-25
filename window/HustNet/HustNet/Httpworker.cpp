@@ -1,12 +1,29 @@
+/**
+*@file
+*@brief Http协议客户端的实现
+*@author ACM2012
+*@date 2015/06/06
+*@version 1.1
+*@note
+* 实现http协议客户端的功能，实现cookie，
+* 设计请求报文和应答报文的结构，
+*/
 #include "stdafx.h"
 #include "Httpworker.h"
 #define Conntion 0
-
+/**
+*@brief Httpworker
+*@author  ACM2012
+*@return void
+*@note
+* Httpworker的构造函数的实现
+*/
 Httpworker::Httpworker()
 {
 	//nothing
 	srand(time(NULL));
 	alg = new checkarg();
+	///<Http协议的命令
 	(*alg)["get"] = (*alg)["GET"] = 2;
 	(*alg)["post"] = (*alg)["POST"] = 3;
 	(*alg)["put"] = (*alg)["PUT"] = 3;
@@ -16,11 +33,17 @@ Httpworker::Httpworker()
 	(*alg)["trace"] = (*alg)["TRACE"] = 2;
 	(*alg)["connect"] = (*alg)["CONNECT"] = 2;
 
-	//connect
+	///<connect
 	(*alg)["close"] = 0;
 	(*alg)["keep-alive"] = 1;
 }
-
+/**
+*@brief Httpworker
+*@author  ACM2012
+*@return void
+*@note
+* Httpworker的析构函数实现
+*/
 Httpworker::~Httpworker()
 {
 	delete msg;
@@ -29,13 +52,20 @@ Httpworker::~Httpworker()
 	host = "";
 	data.clear();
 }
-
+/**
+* @author ACM2012
+* @brief 分隔Message成多个部分
+* @param [in] <Msg> string型
+* @param [in] <split> char型
+* @return int型数据
+* @note
+*/
 int Httpworker::div(string Msg, char split){
 	data.clear();
 	if (Msg.size() == 0){
-		return -1;// none msg error
+		return -1;///< none msg error
 	}
-	//div
+	///<div
 	int i, j;
 	int len = Msg.length();
 	for (i = 0; i < len; i++){
@@ -49,7 +79,7 @@ int Httpworker::div(string Msg, char split){
 		return -1;
 	}
 	if(data.size() < (*alg)[data[0]]) 
-		return -1;// lost argc
+		return -1;///< lost argc
 	data[0] = STR::Upper(data[0]);
 	i = data[1].find('/');
 	this->host = data[1].substr(0, i);
@@ -58,23 +88,28 @@ int Httpworker::div(string Msg, char split){
 		data[1] = "/";
 	}
 	else data[1] = data[1].substr(i);
-	return 1;//return success 
+	return 1;///<return success 
 }
-
+/**
+* @author ACM2012
+* @brief 定义报文字段的属性
+* @return 无
+* @note
+*/
 void Httpworker::Make(){
-	if(msg) delete msg;
-	msg = new HttpMsg();
-	msg->method = data[0];
-	msg->path = data[1];
-	msg->no = "HTTP/1.1";
-	msg->host = this->host;
-	msg->user = "HUST ACM2012 Virtual Terminal - v1.0";
-	msg->language = "zh-CN";
-	msg->connect = "close";
-	msg->accept = "text/html";
-	msg->accept_enconding = "gzip,deflate,sdch";
+	if(msg) delete msg; ///<如果存在msg，删除它
+	msg = new HttpMsg();///<更新msg
+	msg->method = data[0];///<msg的方法为data[0]，即命令
+	msg->path = data[1];///< msg的路径为data[1]
+	msg->no = "HTTP/1.1";///<版本号为HTTP/1.1
+	msg->host = this->host;///<主机为本地主机
+	msg->user = "HUST ACM2012 Virtual Terminal - v1.0";///<msg的用户为HUST ACM2012 Virtual Terminal - v1.0
+	msg->language = "zh-CN";///<默认设置语言为zh-CN
+	msg->connect = "close";///<默认连接为close
+	msg->accept = "text/html";///<默认接收文件为text/html格式
+	msg->accept_enconding = "gzip,deflate,sdch";///<默认编码方式为gzip,deflate,sdch
 	string path;
-	int len = msg->path.length();
+	int len = msg->path.length();///<msg的长度
 	if (msg->path[len - 1] == '/') 
 		path = "cache/" + msg->path + "index.html";
 	else path = "cache/" + msg->path;
@@ -96,23 +131,28 @@ void Httpworker::Make(){
 		msg->data += data[i];
 	msg->length = msg->data.length();
 }
-
+/**
+* @author ACM2012
+* @brief http协议命令相应码的分析
+* @return int型数据
+* @note
+*/
 int Httpworker::analy(){
 	if (rmsg->no != msg->no){
-		return -1;// no version
+		return -1;///<no version
 	}
-	//not much analy 
-	//web cache is right
+	///<not much analy 
+	///<web cache is right
 	string path;
 	int len = msg->path.length();
 	if (msg->path[len-1]=='/') 
 		path = "cache/" + msg->path+"index.html";
-	else path = "cache" + msg->path;
+	else path = "cache/" + msg->path;
 	if (rmsg->code == "304"){
 		rmsg->data = FIO::ReadFullFile(path);
 	}
 	else if (rmsg->code == "200" && (msg->method=="get"||msg->method=="GET")){
-		//new cache page
+		///<new cache page
 		if (FIO::Exist(path)){
 			FIO::DelFile(path);
 			FIO::DelFile(path + ".cache");
@@ -120,10 +160,15 @@ int Httpworker::analy(){
 		FIO::SaveFile(path, &rmsg->data);
 		FIO::SaveFile(path + ".cache", &rmsg->last_modified);
 	}
-	//rmsg->cookie.create_host(ip);
-	return 1;//success
+	///<rmsg->cookie.create_host(ip);
+	return 1;///<success
 }
-
+/**
+* @author ACM2012
+* @brief 监听应答报文
+* @return string型数据
+* @note
+*/
 string Httpworker::look_rmsg(){
 	string look;
 	string a, b, c;
@@ -133,7 +178,14 @@ string Httpworker::look_rmsg(){
 	look += rmsg->type[0] + "\n" + "cookie\n" + rmsg->data;
 	return look;
 }
-//return all string in rmsg
+
+/**
+* @brief 监听请求报文
+* @author ACM2012
+* @return CString
+* @note
+* return all string in msg
+*/
 string Httpworker::look_msg(){
 	string Look;
 	string a;
@@ -141,7 +193,6 @@ string Httpworker::look_msg(){
 	Look += "host: "+msg->host + "\n" +" User-Agent: " +msg->user + "\n";
 	Look += msg->language + "\n" + msg->connect + "\n";
 	Look += msg->if_modified_since + "\n";
-	//;
 	if (msg->cookie.num){
 		Look += STR::int2string(msg->cookie.num) + '\n';
 	}
@@ -149,7 +200,13 @@ string Httpworker::look_msg(){
 	Look += msg->data;
 	return Look;
 }
-
+/**
+* @brief 显示应答报文
+* @author ACM2012
+* @return CString
+* @note
+* 应答报文应该包括Version、Error_code、Date、Last_modified、Type、Data
+*/
 CString Httpworker::show_rmsg(){
 	CString look = _T("\r\n");
 	string a, b, c;
@@ -162,13 +219,19 @@ CString Httpworker::show_rmsg(){
 	look +=  _T("Data : ") + STR::S2CS(rmsg->data) + _T("\r\n");
 	return look;
 }
-
+/**
+* @brief 设置请求报文
+* @author ACM2012
+* @return int型数据
+* @note
+* 应答报文应该包括Version、Error_code、Date、Last_modified、Type、Data
+*/
 int Httpworker::setMsg(string rec){
 	vector<string> d;
 	STR::Split(rec, &d, "\r\n");
 	rmsg = new HttpRMsg();
 	int i;
-	//the begining must be exist
+	///<the begining must be exist
 	rmsg->length = 0;
 	rmsg->setCode(d[0]);
 	for (i = 1; i < d.size(); i++){
@@ -185,7 +248,13 @@ int Httpworker::setMsg(string rec){
 	rmsg->data = rmsg->data.substr(0, len-2);
 	return rmsg->length - len +2;
 }
-
+/**
+* @brief 获取请求报文
+* @author ACM2012
+* @return string型数据
+* @note
+* 请求报文的结构字段详细描述
+*/
 string Httpworker::getMsg(){
 	string look = "";
 	look += (msg->method + ' '+msg->path+' '+msg->no) + MarkHttp;
@@ -206,7 +275,7 @@ string Httpworker::getMsg(){
 	if(getPort()!= 80)
 		look += "User-Agent: "+msg->user+MarkHttp;
 	look += MarkHttp;
-	//data
+	///<data
 	look += msg->data;
 	return look;
 }

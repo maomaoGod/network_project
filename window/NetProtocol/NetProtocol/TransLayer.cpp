@@ -329,8 +329,6 @@ ctrl_receive:
 			// 根据四元组找到TCP连接链表中的对应表
 			struct tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);
 
-			tcp->receive_time = GetTickCount();
-
 			// 被第一次握手 
 			if (new_tcp_msg.tcp_syn == 1 && new_tcp_msg.tcp_ack == 0)
 			{
@@ -482,7 +480,7 @@ ctrl_receive:
 			// 不是TCP控制信息，是一般报文
 			else
 			{
-
+				tcp->receive_time = GetTickCount();
 
 				int data_len = global_receive_ip_msg.datelen-4*new_tcp_msg.tcp_hdr_length;
 				int opts_offset = 4*new_tcp_msg.tcp_hdr_length-20;

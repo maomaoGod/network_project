@@ -2,6 +2,13 @@
 
 #include <map>
 using namespace std;
+/**
+*@class  <SockPool>
+*@brief  套接字管理类
+*@author ACM2012
+*@note
+*套接字管理模块,管理所有套接字注册和命令处理,并提供协议栈和套接字的连接接口，实现数据在应用程序和协议栈程序的进程通信
+*/
 
 #define  TRANSTOIP             WM_USER+1000
 #define  IPTOLINK                 WM_USER+1001
@@ -122,25 +129,42 @@ private:
 	map  <unsigned int, HANDLE> SockMark2ReadThread;
 	map <unsigned int, HANDLE> SockMark2WriteThread;
  private:
+	 /** @brief 套接字注册同步信号量*/
 	HANDLE Wsemaphore, Rsemaphore, Dsemaphore;
+	/** @brief 套接字文件句柄*/
 	HANDLE MFile;
 	HANDLE SH;
 	regstruct *preg;
 private:
+	/** @brief 套接字注册线程*/
 	static DWORD WINAPI NewConnThread(LPVOID lParam);
+	/** @brief 套接字读队列线程 */
 	static DWORD WINAPI NewReadThread(LPVOID lParam);
+	/** @brief 套接字写队列线程 */
 	static DWORD WINAPI NewWriteThread(LPVOID lParam);
+	/** @brief  初始化读队列*/
 	bool   InitalReadQueue(HANDLE, PM &, HANDLE &);
+	/** @brief 初始化写队列 */
 	bool   InitalWriteQueue(HANDLE,PM &);
+	/** @brief 异常输出函数*/
 	bool   PrintLog(LPCTSTR, bool);
+	/** @brief 清除写队列中已被读取节点 */
 	void   ClearNode(PM &pWriteQueue);
+	/** @brief 添加节点到写队列尾部 */
 	bool   AddToTail(PM &,HANDLE);
+	/** @brief  套接字注册链接处理函数 */
 	void   Connect();
+	/** @brief 初始化读写线程参数函数 */
 	void   InitalThreadPara(Para &,HANDLE,HANDLE,PM,unsigned int);
+	/** @brief  传输层数据转化为队列节点结构*/
 	void   SockDataToNode(PN, unsigned int);
+	/** @brief 套接字分配资源*/
 	void   AllocResource(unsigned int SockMark);
+	/** @brief 读队列线程处理函数 */
 	void   ReadSock(HANDLE,unsigned int,HANDLE, PM);
+	/** @brief 写队列线程处理函数 */
 	void   WriteSock(HANDLE,unsigned int,HANDLE, PM);
+	/** @brief 套接字关闭函数*/
 	bool  CloseSock(unsigned int);
 	bool  state = true;
 };

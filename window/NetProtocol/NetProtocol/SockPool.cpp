@@ -304,18 +304,18 @@ void SockPool::Connect()
 	        HANDLE CH,ReadQueue, WriteQueue;
 			struct Para rPara, wPara;
 
-			AllocResource(preg->SockMark);
+			AllocResource(preg->SockMark);///<为套接字分配资源
 
 			ReadQueue = OpenFileMapping(FILE_MAP_WRITE, FALSE, preg->WriteQueueName);
-			InitalReadQueue(ReadQueue,pReadQueue,CH);
+			InitalReadQueue(ReadQueue,pReadQueue,CH);///<初始化读队列
 			WriteQueue = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(Manager), preg->ReadQueueName);
-			InitalWriteQueue(WriteQueue, pWriteQueue);
+			InitalWriteQueue(WriteQueue, pWriteQueue);///<初始化写队列
 
 			InitalThreadPara(rPara, CH, ReadQueue, pReadQueue, preg->SockMark);
 			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewReadThread, (LPVOID)&rPara, NULL, NULL);
 			InitalThreadPara(wPara, CH, WriteQueue, pWriteQueue, preg->SockMark);
 			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewWriteThread, (LPVOID)&wPara, NULL, NULL);
-			ReleaseSemaphore(Rsemaphore, 1, NULL);
+			ReleaseSemaphore(Rsemaphore, 1, NULL);///<释放读信号量
 
 			sockconnum++;
 		}
@@ -333,7 +333,7 @@ bool   SockPool::InitalReadQueue(HANDLE ReadQueue, PM &pReadQueue, HANDLE &CH)
 {
 	pReadQueue = (PM)MapViewOfFile(ReadQueue, FILE_MAP_WRITE, 0, 0, sizeof(Manager));///<映射读队列控制块到本地
 	pReadQueue->reader = _getpid();
-	CH = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pReadQueue->writer);
+	CH = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pReadQueue->writer);///<获取进程句柄（权限控制）
 	DuplicateHandle(CH, pReadQueue->Head, SH, &pReadQueue->Cur, NULL, true, DUPLICATE_SAME_ACCESS);
 	if (pReadQueue->Cur == NULL)
 		return PrintLog(_T("读队列节点初始化失败"),false);
@@ -381,14 +381,14 @@ void    SockPool::SendToApp(void *psock)
 	portin        tempsrc;
 	unsigned short nPort;
 	transstruct *pmysock = (transstruct *)psock;
-	memcpy(tempsrc.srcip, pmysock->srcip, 20); //根据源端口源地址目的端口找到通信端口
+	memcpy(tempsrc.srcip, pmysock->srcip, 20); ///<根据源端口源地址目的端口找到通信端口
 	tempsrc.srcport = pmysock->srcport;
-	tempsrc.dstport = pmysock->dstport;
+	tempsrc.dstport = pmysock->dstport;  ///<映射到真正连接的
 	nPort = (PortIn2ScokMark.find(tempsrc) == PortIn2ScokMark.end()) ? pmysock->dstport : SockMark2Port[PortIn2ScokMark[tempsrc]];
 	if (Port2SockMark.find(nPort) == Port2SockMark.end())
 		return;
-	unsigned int SockMark = Port2SockMark[nPort];
-	WaitForSingleObject(*SockMark2WEvent[SockMark],INFINITE);
+	unsigned int SockMark = Port2SockMark[nPort];///<获取目标端口的套接字标志
+	WaitForSingleObject(*SockMark2WEvent[SockMark],INFINITE);///
 	memcpy(SockMark2SockStruct[SockMark], pmysock, sizeof(transstruct));
 	SockMark2REvent[SockMark]->SetEvent();
 	delete psock;
