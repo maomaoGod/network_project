@@ -13,84 +13,83 @@
  * @brief make the sum of udp datagram
 *
  */
-u16 udpmakesum(u16 len_udp, u16 src_port,u16 dest_port, bool padding, u16 *buff)
+u16 udpmakesum(u16 len_udp, u16 src_port, u16 dest_port, bool padding, u16 *buff)
 {
-    u16 prot_udp=17;
-    u16 padd=0;
-    u16 word16;
-    u32 sum;
-    int i;
-    ///< Find out if the length of data is even or odd number. If odd,
-    ///< add a padding byte = 0 at the end of packet
-    if ((padding&1)==1){
-        padd=1;
-        buff[len_udp]=0;
-    }
-    ///<initialize sum to zero
-    sum = 0;
-    ///< make 16 bit words out of every two adjacent 8 bit words and
-    ///< calculate the sum of all 16 bit words
-    for (i=0; i<len_udp+padd; i=i+2){
-        word16 = ((buff[i]<<8)&0xFF00)+(buff[i+1]&0xFF);
-        sum = sum + (unsigned long)word16;
-    }
-    ///< add the UDP pseudo header which contains the IP source and destinationn addresses
-    word16 = ((src_port<<8)&0xFF00)+(dest_port&0xFF);
-    sum = sum+word16;
+	u16 prot_udp = 17;
+	u16 padd = 0;
+	u16 word16;
+	u32 sum;
+	int i;
+	///< Find out if the length of data is even or odd number. If odd,
+	///< add a padding byte = 0 at the end of packet
+	if ((padding & 1) == 1){
+		padd = 1;
+		buff[len_udp] = 0;
+	}
+	///<initialize sum to zero
+	sum = 0;
+	///< make 16 bit words out of every two adjacent 8 bit words and
+	///< calculate the sum of all 16 bit words
+	for (i = 0; i<len_udp + padd; i = i + 2){
+		word16 = ((buff[i] << 8) & 0xFF00) + (buff[i + 1] & 0xFF);
+		sum = sum + (unsigned long)word16;
+	}
+	///< add the UDP pseudo header which contains the IP source and destinationn addresses
+	///word16 = ((src_port<<8)&0xFF00)+(dest_port&0xFF);
+	///sum = sum+word16;
 
-    ///< the protocol number and the length of the UDP packet
-    sum = sum + prot_udp + len_udp;
+	///< the protocol number and the length of the UDP packet
+	///sum = sum + prot_udp + len_udp;
 
-    ///< keep only the last 16 bits of the 32 bit calculated sum and add the carries
-        while (sum>>16)
-        {
-        sum = (sum & 0xFFFF)+(sum >> 16);
-        }
-    ///< Take the one's complement of sum
-    sum = ~sum;
-    return ((u16) sum);
+	///< keep only the last 16 bits of the 32 bit calculated sum and add the carries
+	///    while (sum>>16)
+	///    {
+	///    sum = (sum & 0xFFFF)+(sum >> 16); }
+///< Take the one's complement of sum
+       sum = ~sum;
+       return ((u16)sum);
 }
 
 /** @tcpmakesum
- * @brief make the sum of tcp datagram
+* @brief make the sum of tcp datagram
 *
- */
-u16 tcpmakesum(u16 len_tcp, u16 src_port,u16 dest_port, bool padding, u16 *buff)
+*/
+u16 tcpmakesum(u16 len_tcp, u16 src_port, u16 dest_port, bool padding, u16 *buff)
 {
-    u16 prot_tcp=6;
-    u16 padd=0;
-    u16 word16;
-    u32 sum;
-    int i;
-    ///< Find out if the length of data is even or odd number. If odd,
-    ///< add a padding byte = 0 at the end of packet
-    if ((padding&1)==1){
-        padd=1;
-        buff[len_tcp]=0;
-    }
-    ///<initialize sum to zero
-    sum = 0;
-    ///< make 16 bit words out of every two adjacent 8 bit words and
-    ///< calculate the sum of all 16 vit words
-    for (i=0;i<len_tcp+padd;i=i+2){
-        word16 =((buff[i]<<8)&0xFF00)+(buff[i+1]&0xFF);
-        sum = sum + (unsigned long)word16;
-    }
-    ///< add the TCP pseudo header which contains:
-    ///< the IP source and destinationn addresses,
-    word16 = ((src_port<<8)&0xFF00)+(dest_port&0xFF);
-    sum = sum+word16;
+	u16 prot_tcp = 6;
+	u16 padd = 0;
+	u16 word16;
+	u32 sum;
+	int i;
+	///< Find out if the length of data is even or odd number. If odd,
+	///< add a padding byte = 0 at the end of packet
+	if ((padding & 1) == 1){
+		padd = 1;
+		buff[len_tcp] = 0;
+	}
+	///<initialize sum to zero
+	sum = 0;
+	///< make 16 bit words out of every two adjacent 8 bit words and
+	///< calculate the sum of all 16 vit words
+	for (i = 0; i<len_tcp + padd; i = i + 2){
+		word16 = ((buff[i] << 8) & 0xFF00) + (buff[i + 1] & 0xFF);
+		sum = sum + (unsigned long)word16;
+	}
+	///< add the TCP pseudo header which contains:
+	///< the IP source and destinationn addresses,
+	///word16 = ((src_port<<8)&0xFF00)+(dest_port&0xFF);
+	///sum = sum+word16;
 
-    ///< the protocol number and the length of the TCP packet
-    sum = sum + prot_tcp + len_tcp;
+	///< the protocol number and the length of the TCP packet
+	///sum = sum + prot_tcp + len_tcp;
 
-    ///< keep only the last 16 bits of the 32 bit calculated sum and add the carries
-        while (sum>>16)
-        sum = (sum & 0xFFFF)+(sum >> 16);
+	///< keep only the last 16 bits of the 32 bit calculated sum and add the carries
+	///    while (sum>>16)
+	///    sum = (sum & 0xFFFF)+(sum >> 16);
 
-    ///< Take the one's complement of sum
-    sum = ~sum;
-    return ((u16) sum);
+	///< Take the one's complement of sum
+	sum = ~sum;
+	return ((u16)sum);
 }
 
 /** @udpcheck
