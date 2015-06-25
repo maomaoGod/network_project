@@ -107,7 +107,7 @@ int Httpworker::analy(){
 	int len = msg->path.length();
 	if (msg->path[len-1]=='/') 
 		path = "cache/" + msg->path+"index.html";
-	else path = "cache/" + msg->path;
+	else path = "cache" + msg->path;
 	if (rmsg->code == "304"){
 		rmsg->data = FIO::ReadFullFile(path);
 	}

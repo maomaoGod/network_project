@@ -6,6 +6,9 @@
 #include "MainFrm.h"
 #include "NetSet.h"
 #include "UIctrl.h"
+#include <sys/stat.h>
+#include <sys/types.h>   
+#include <io.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -45,6 +48,16 @@ CMainFrame::CMainFrame()
 	/**
 	*TODO:  在此添加成员初始化代码
 	*/
+	if (_access("cache", 0) == 0){
+		if (_access("cache/html",0)==0)
+			;
+		else 
+			CreateDirectory(_T("cache/html"), NULL);
+	}
+	else{
+		CreateDirectory(_T("cache"), NULL);
+		CreateDirectory(_T("cache/html"), NULL);
+	}
 	flag = false;
 }
 
