@@ -6,19 +6,19 @@
 
 void my_linker::get_adapter()
 {
-	pcap_if_t * allAdapters;//ÊÊÅäÆ÷ÁĞ±í
+	pcap_if_t * allAdapters;//é€‚é…å™¨åˆ—è¡¨
 
-	pcap_t           * adapterHandle;//ÊÊÅäÆ÷¾ä±ú
+	pcap_t           * adapterHandle;//é€‚é…å™¨å¥æŸ„
 
 	pcap_if_t * adapter;
 
-	char errorBuffer[PCAP_ERRBUF_SIZE];//´íÎóĞÅÏ¢»º³åÇø
+	char errorBuffer[PCAP_ERRBUF_SIZE];//é”™è¯¯ä¿¡æ¯ç¼“å†²åŒº
 
 	if (pcap_findalldevs_ex(PCAP_SRC_IF_STRING, NULL,
 
 		&allAdapters, errorBuffer) == -1)
 
-	{//¼ìË÷»úÆ÷Á¬½ÓµÄËùÓĞÍøÂçÊÊÅäÆ÷
+	{//æ£€ç´¢æœºå™¨è¿æ¥çš„æ‰€æœ‰ç½‘ç»œé€‚é…å™¨
 
 		fprintf(stderr, "Error in pcap_findalldevs_ex function: %s\n", errorBuffer);
 
@@ -28,7 +28,7 @@ void my_linker::get_adapter()
 
 	if (allAdapters == NULL)
 
-	{//²»´æÔÚÈÎºÎÊÊÅäÆ÷
+	{//ä¸å­˜åœ¨ä»»ä½•é€‚é…å™¨
 
 		printf("\nNo adapters found! Make sure WinPcap is installed.\n");
 
@@ -49,7 +49,7 @@ void my_linker::get_adapter()
 
 	printf("\n");
 
-	//Ñ¡ÔñÒª²¶»ñÊı¾İ°üµÄÊÊÅäÆ÷
+	//é€‰æ‹©è¦æ•è·æ•°æ®åŒ…çš„é€‚é…å™¨
 
 	adapter = allAdapters;
 
@@ -69,7 +69,7 @@ void my_linker::get_adapter()
 		adapter = adapter->next;
 		if (adapter == NULL) adapter = allAdapters;
 	}
-	// ´ò¿ªÖ¸¶¨ÊÊÅäÆ÷
+	// æ‰“å¼€æŒ‡å®šé€‚é…å™¨
 
 	adapterHandle = pcap_open(adapter->name, // name of the adapter
 
@@ -93,38 +93,46 @@ void my_linker::get_adapter()
 
 	if (adapterHandle == NULL)
 
-	{//Ö¸¶¨ÊÊÅäÆ÷´ò¿ªÊ§°Ü
+	{//æŒ‡å®šé€‚é…å™¨æ‰“å¼€å¤±è´¥
 
 		fprintf(stderr, "\nUnable to open the adapter\n", adapter->name);
 
-		// ÊÍ·ÅÊÊÅäÆ÷ÁĞ±í
+		// é‡Šæ”¾é€‚é…å™¨åˆ—è¡¨
 
 		pcap_freealldevs(allAdapters);
 
 		return ;
 
 	}
-	pcap_freealldevs(allAdapters);//ÊÍ·ÅÊÊÅäÆ÷ÁĞ±í
+	pcap_freealldevs(allAdapters);//é‡Šæ”¾é€‚é…å™¨åˆ—è¡¨
 
 	this->adapterHandle = adapterHandle;
 
 }
 
+/**
+* @author ACM2012
+* @return è¿”å›æœ¬æ¬¡å‘é€æ˜¯å¦æˆåŠŸ
+* @note
+* å®ç°æ•°æ®æŠ¥çš„æ‹†å¸§å¹¶å‘é€
+* @remarks
+*/
 int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
 	unsigned short i,unsigned short len)
 {
-	int K = 0;
+	int K = 0;/**@brief æ•°æ®æŠ¥åºå·ï¼Œç”¨äºæ¥æ”¶ç«¯è£…å¸§*/
 	srand(time(0));
-	unsigned short seq = 0;
-	unsigned short total_seq = (len + FRAMESIZE - 1) / FRAMESIZE;
-	unsigned short copy_size;
-	unsigned short left_size = len;
+	unsigned short seq = 0;/**@brief å¸§åºå·*/
+	unsigned short total_seq = (len + FRAMESIZE - 1) / FRAMESIZE;/**@brief æ•°æ®æŠ¥æ‹†åˆ†æˆå¸§çš„æ€»ä¸ªæ•°*/
+	unsigned short copy_size;/**@brief å¸§å¤§å°*/
+	unsigned short left_size = len;/**@brief æ•°æ®æŠ¥å‰©ä½™æ•°æ®é‡çš„å¤§å°*/
 	Byte *temp = (Byte *)(data_gram->data);
-	u_char *packet; //´ı·¢ËÍµÄÊı¾İ·â°ü
+	u_char *packet; //å¾…å‘é€çš„æ•°æ®å°åŒ…
 	struct pcap_pkthdr * packetHeader;
 	const u_char       * packetData;
 	int retValue;
-
+	
+	/**@brief å½“æ•°æ®æŠ¥è¿˜æœ‰å‰©ä½™çš„å­—èŠ‚æ²¡æœ‰å‘é€æ—¶ï¼Œåˆ™è¿›å…¥å¾ªç¯ä½“*/
 	while (left_size > 0)
 	{
 		struct Frame frame;
@@ -150,7 +158,7 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
 		packet = (u_char *)(&frame);
 		tempCRC = crc16(packet, (char *)&frame.CRC - (char *)&frame);
 		frame.CRC = tempCRC << 8 | tempCRC >> 8;
-		//·¢ËÍÖ¡
+		//å‘é€å¸§
 		bool ck = false;
 		while (!ck)
 		{
@@ -224,7 +232,7 @@ char * my_linker::combine(const u_char * packetData)
 	int len = Receive.length;
 	int seq = Receive.seq;
 
-	if (data_pointer[Receive.datagram_num] == NULL)					//µÚÒ»´ÎÊÕµ½¸ÃĞòºÅµÄÊı¾İ±¨
+	if (data_pointer[Receive.datagram_num] == NULL)					//ç¬¬ä¸€æ¬¡æ”¶åˆ°è¯¥åºå·çš„æ•°æ®æŠ¥
 	{
 
 		data_pointer[id] = new int[tot];
@@ -240,7 +248,7 @@ char * my_linker::combine(const u_char * packetData)
 
 		data_pointer[id][seq] = bp++;
 
-		if (--left[id] == 0)									//Êı¾İ±¨½ÓÊÕÍê³É
+		if (--left[id] == 0)									//æ•°æ®æŠ¥æ¥æ”¶å®Œæˆ
 		{
 			puts("Finish!");
 			int data_len = 0;
@@ -256,7 +264,7 @@ char * my_linker::combine(const u_char * packetData)
 			return msg[id];
 		}
 	}
-	else if (data_pointer[id][seq] == -1)					//Î´ÊÕµ½¹ıÕâÒ»¸öÖ¡
+	else if (data_pointer[id][seq] == -1)					//æœªæ”¶åˆ°è¿‡è¿™ä¸€ä¸ªå¸§
 	{
 		buffer[bp].length = len;
 		for (int i = 0; i < len; ++i)
@@ -264,7 +272,7 @@ char * my_linker::combine(const u_char * packetData)
 
 		data_pointer[id][seq] = bp++;
 
-		if (--left[id] == 0)									//Êı¾İ±¨½ÓÊÕÍê³É
+		if (--left[id] == 0)									//æ•°æ®æŠ¥æ¥æ”¶å®Œæˆ
 		{
 			puts("Finish!");
 			int data_len = 0;
@@ -283,8 +291,8 @@ char * my_linker::combine(const u_char * packetData)
 	return NULL;
 }
 
-//»ñµÃÍø¿¨µÄMACµØÖ·
-//pDevName Íø¿¨µÄÉè±¸Ãû³Æ
+//è·å¾—ç½‘å¡çš„MACåœ°å€
+//pDevName ç½‘å¡çš„è®¾å¤‡åç§°
 void my_linker::GetSelfMac(char* pDevName, unsigned short *mac_src){
 	static unsigned short mac[3];
 	memset(mac, 0, sizeof(mac));
@@ -314,10 +322,10 @@ void my_linker::GetSelfMac(char* pDevName, unsigned short *mac_src){
 }
 
 /*
-* ·â×°ARPÇëÇó°ü
-* source_mac Ô´MACµØÖ·
-* srcIP Ô´IP
-* destIP Ä¿µÄIP
+* å°è£…ARPè¯·æ±‚åŒ…
+* source_mac æºMACåœ°å€
+* srcIP æºIP
+* destIP ç›®çš„IP
 */
 u_char* my_linker::BuildArpPacket(unsigned short *source_mac,
 	unsigned int srcIP, unsigned int destIP)
@@ -433,7 +441,7 @@ int my_linker::pppEncode(unsigned char * buf, int len)
 			*po = PPP_FRAME_ESC;
 			po++;
 			olen++;
-			/* Òì»òµÚ6Î»*/
+			/* å¼‚æˆ–ç¬¬6ä½*/
 			*po = *pi ^ PPP_FRAME_ENC;
 		}
 		else
@@ -474,11 +482,11 @@ int my_linker::pppDecode(unsigned char * buf, int len)
 		if (*pi == PPP_FRAME_ESC)
 		{
 
-			/* Ìø¹ı×ªÒå×Ö½Ú */
+			/* è·³è¿‡è½¬ä¹‰å­—èŠ‚ */
 			pi++;
 			olen--;
 
-			/*Òì»òµÚ6Î»*/
+			/*å¼‚æˆ–ç¬¬6ä½*/
 			*po = *pi ^ PPP_FRAME_ENC;
 		}
 		else
@@ -496,7 +504,7 @@ int my_linker::pppDecode(unsigned char * buf, int len)
 
 void my_linker::send_broadcast(pcap_t  *adapterHandle, unsigned int src_IP, unsigned int dst_IP)
 {
-	//¹ã²¥»ñÈ¡MACµØÖ·
+	//å¹¿æ’­è·å–MACåœ°å€
 	if (pcap_sendpacket(adapterHandle,
 		BuildArpPacket(mac_src, src_IP, dst_IP),
 		sizeof(struct Broadcast_frame)
@@ -508,7 +516,7 @@ void my_linker::send_broadcast(pcap_t  *adapterHandle, unsigned int src_IP, unsi
 
 bool my_linker::get_mac(pcap_t  *adapterHandle)
 {
-	//½ÓÊÕ¹ã²¥µÄÊı¾İ±¨
+	//æ¥æ”¶å¹¿æ’­çš„æ•°æ®æŠ¥
 	struct pcap_pkthdr * packetHeader;
 	const u_char       * packetData;
 	struct  Broadcast_frame* t;
@@ -555,13 +563,13 @@ inline unsigned int my_linker::getIP()
 		{
 			if ((hostinfo = gethostbyname(name)) != NULL)
 			{
-				// ÕâĞ©¾ÍÊÇ»ñµÃIPµÄº¯Êı
+				// è¿™äº›å°±æ˜¯è·å¾—IPçš„å‡½æ•°
 				ip = inet_ntoa(*(struct in_addr *)*hostinfo->h_addr_list);
 			}
 		}
 		WSACleanup();
 	}
-	// ½«ip´Ó×Ö·û´®×ªÎªunsigned int
+	// å°†ipä»å­—ç¬¦ä¸²è½¬ä¸ºunsigned int
 	unsigned int ip_number = 0;
 	unsigned int ip_seg_number = 0;
 	for (int i = 0; i < 15 && ip[i]; ++i)
