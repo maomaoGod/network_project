@@ -191,53 +191,63 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
 	return 0;/**@brief 发送成功，返回0*/
 }
 
-
+/**
+* @author ACM2012
+* @return 返回指向数据报的指针，用于将该数据报提交给网络层。若数据报未拼接完成，返回NULL指针。
+* @note
+* 该模块实现判断帧是否合法，以及把帧组装成数据报。帧结构参照以太网标准帧结构。
+* @remarks
+*/
 char * my_linker::combine(const u_char * packetData)
 {
 
-	Frame &Receive = *((Frame *)packetData);
-
+	Frame &Receive = *((Frame *)packetData);/**@brief 收到的帧*/
+	
+	/**@brief 判断接收到的帧的MAC源地址与目的地址是否正确，若不正确，返回NULL。*/
 	for (int i = 0; i < 3; ++i)
 	{
 		if (Receive.MAC_des[i] != mac_src[i]) return NULL;
 		if (Receive.MAC_src[i] != mac_des[i]) return NULL;
 	}
-
+	
+	/**@brief CRC检验收到的帧是否出错，若出错，返回NULL。*/
 	if (checkCrc16((unsigned char *)packetData, (char *)&Receive.CRC - (char *)&Receive + 2) != 0)
 	{
-		puts("fuck!!!");
 		return NULL;
 	}
 
 	//puts("fuck");
-
+	
+	/**@brief 发送方会将帧序号和帧的总数加上0xcccc，这里减去。*/
 	Receive.seq -= 0xcccc;
 	Receive.total_seq_num -= 0xcccc;
 
-	int id = Receive.datagram_num;
-	int tot = Receive.total_seq_num;
-	int len = Receive.length;
-	int seq = Receive.seq;
+	int id = Receive.datagram_num;/**@brief 数据报编号*/
+	int tot = Receive.total_seq_num;/**@brief 该数据报包含的帧的总数*/
+	int len = Receive.length;/**@brief 收到的数据的长度*/
+	int seq = Receive.seq;/**@brief 帧的编号*/
 
-	if (data_pointer[Receive.datagram_num] == NULL)					//第一次收到该序号的数据报
+	if (data_pointer[Receive.datagram_num] == NULL)/**@brief 第一次收到该序号的数据报*/
 	{
 
-		data_pointer[id] = new int[tot];
-		for (int i = 0; i < tot; ++i) data_pointer[id][i] = -1;
+		data_pointer[id] = new int[tot];/**@brief 对该数据报的数据指针分配空间*/
+		for (int i = 0; i < tot; ++i) data_pointer[id][i] = -1;/**@brief 对数据指针赋初值*/
 
-		left[id] = tot;
+		left[id] = tot;/**@brief 还未收到的帧的数目*/
 
-		msg[id] = new char[1500];
-
+		msg[id] = new char[1500];/**@brief 对该数据报分配空间*/
+		
+		/**@brief bp是指向缓冲区的指针，这里把收到的数据暂时放在第bp个缓冲区并记录长度*/
 		buffer[bp].length = len;
 		for (int i = 0; i < len; ++i)
 			buffer[bp].data[i] = Receive.data[i];
 
-		data_pointer[id][seq] = bp++;
-
-		if (--left[id] == 0)									//数据报接收完成
+		data_pointer[id][seq] = bp++;/**@brief 数据指针指向这个缓冲区*/
+		
+		/**@brief 还未收到的帧的数目为0，数据报接收完成*/
+		if (--left[id] == 0)
 		{
-			puts("Finish!");
+			/**@brief 将该数据报的数据指针指向的各个缓冲区的数据拼接成完整的数据报。*/
 			int data_len = 0;
 			for (int i = 0; i < tot; ++i)
 			{
@@ -245,23 +255,26 @@ char * my_linker::combine(const u_char * packetData)
 				for (int j = 0; j < buffer[ptr].length; ++j)
 					msg[id][data_len++] = (char)buffer[ptr].data[j];
 			}
-			delete[] data_pointer[id];
+			
+			delete[] data_pointer[id];/**@brief 删除分配过的存储空间*/
 			data_pointer[id] = NULL;
 			msg[id][data_len] = 0;
-			return msg[id];
+			return msg[id];/**@brief 返回指向该数据报的指针*/
 		}
 	}
-	else if (data_pointer[id][seq] == -1)					//未收到过这一个帧
+	else if (data_pointer[id][seq] == -1)/**@brief 收到过该序号的数据报，但未收到过这个帧*/
 	{
+		/**@brief bp是指向缓冲区的指针，这里把收到的数据暂时放在第bp个缓冲区并记录长度*/
 		buffer[bp].length = len;
 		for (int i = 0; i < len; ++i)
 			buffer[bp].data[i] = Receive.data[i];
 
-		data_pointer[id][seq] = bp++;
-
-		if (--left[id] == 0)									//数据报接收完成
+		data_pointer[id][seq] = bp++;/**@brief 数据指针指向这个缓冲区*/
+		
+		/**@brief 还未收到的帧的数目为0，数据报接收完成*/
+		if (--left[id] == 0)
 		{
-			puts("Finish!");
+			/**@brief 将该数据报的数据指针指向的各个缓冲区的数据拼接成完整的数据报。*/
 			int data_len = 0;
 			for (int i = 0; i < tot; ++i)
 			{
@@ -269,10 +282,11 @@ char * my_linker::combine(const u_char * packetData)
 				for (int j = 0; j < buffer[ptr].length; ++j)
 					msg[id][data_len++] = (char)buffer[ptr].data[j];
 			}
-			delete[] data_pointer[id];
+			
+			delete[] data_pointer[id];/**@brief 删除分配过的存储空间*/
 			data_pointer[id] = NULL;
 			msg[id][data_len] = 0;
-			return msg[id];
+			return msg[id];/**@brief 返回指向该数据报的指针*/
 		}
 	}
 	return NULL;
@@ -328,6 +342,13 @@ u_char* my_linker::BuildArpPacket(unsigned short *source_mac,
 	return (u_char *)&broad_frame;
 }
 
+/**
+* @author ACM2012
+* @return 若这个帧是广播帧，返回true，否则返回false。
+* @note
+* 该模块是接收方用于判断接收的帧是否是广播帧的模块。
+* @remarks
+*/
 bool my_linker::check(const u_char * packetData)
 {
 	Broadcast_frame frame = *((Broadcast_frame *)packetData);
@@ -632,12 +653,22 @@ DWORD WINAPI my_linker::NewPackThread(LPVOID lParam)
 	return 0;
 }
 
+/**
+* @author ACM2012
+* @return 无返回值。
+* @note
+* 该模块是接收方用于接收的模块，这个模块将单独在一个线程上运行，会不断使用pcap_next_ex方法捕捉帧，
+* 每捕捉到一个帧，会判断这个帧是否为广播帧，若为广播帧，向发送方回复广播帧告知MAC地址，否则调用
+* combine方法判断并合并这个帧。
+* @remarks
+*/
 void my_linker::packcap()
 {
 	struct pcap_pkthdr * packetHeader;
 	const u_char       * packetData;
 	int retValue;
-
+	
+	/**@brief 重复接收帧*/
 	while ((retValue = pcap_next_ex(adapterHandle,
 
 		&packetHeader,
@@ -645,12 +676,14 @@ void my_linker::packcap()
 		&packetData)) >= 0)
 
 	{
-		if (retValue == 0) continue;
-		if (sizeof(Broadcast_frame) > packetHeader->len) continue;
+		if (retValue == 0) continue;/**@brief 收到的包是无效的，继续循环*/
+		if (sizeof(Broadcast_frame) > packetHeader->len) continue;/**@brief 收到的包的长度小于广播帧的长度，继续循环*/
 
-		if (check(packetData))
+		if (check(packetData))/**@brief 判断是否为广播帧*/
 		{
 			Broadcast_frame r_frame = *((Broadcast_frame *)packetData), s_frame;
+			
+			/**@brief 发送响应的广播帧，告知发送方自己的MAC地址*/
 			for (int i = 0; i < 3; ++i)
 			{
 				mac_des[i] = s_frame.MAC_des[i] = r_frame.MAC_src[i];
@@ -664,7 +697,7 @@ void my_linker::packcap()
 				(const u_char *)&s_frame,
 				sizeof(s_frame));
 		}
-		else AfxGetApp()->m_pMainWnd->SendMessage(LINKTOIP, (WPARAM)packetData);
+		else AfxGetApp()->m_pMainWnd->SendMessage(LINKTOIP, (WPARAM)packetData);/**@brief 不是广播帧，用发消息的机制调用combine方法*/
 	}
 }
 
