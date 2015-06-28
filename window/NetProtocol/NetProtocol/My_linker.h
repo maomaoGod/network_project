@@ -20,15 +20,24 @@
 typedef unsigned char Byte;
 
 struct Frame{
-	unsigned short MAC_des[MAC_ADDR_SIZE];           // MAC_dst MAC目标地址
-	unsigned short MAC_src[MAC_ADDR_SIZE];           // MAC_src MAC源地址
-	unsigned short total_seq_num;        // 帧的总个数
-	unsigned short datagram_num;         // 数据报序号
-	unsigned short seq;                  // 帧序号
-	unsigned short length;               // 当前帧数据的长度
-	Byte data[FRAMESIZE];                    // 网络层数据
-	unsigned short CRC;
-	bool operator == (const Frame &it) const
+	unsigned short MAC_des[MAC_ADDR_SIZE];           /**@brief MAC_dst MAC目标地址*/ 
+	unsigned short MAC_src[MAC_ADDR_SIZE];           /**@brief MAC_src MAC源地址*/ 
+	unsigned short total_seq_num;                    /**@brief 帧的总个数*/
+	unsigned short datagram_num;                     /**@brief 数据报序号*/
+	unsigned short seq;                              /**@brief 帧序号 */
+	unsigned short length;                           /**@brief 当前帧数据的长度 */
+	Byte data[FRAMESIZE];                            /**@brief 网络层数据 */
+	unsigned short CRC;                              /**@brief CRC16生成结果 */
+	
+	/**
+	*@brief 链路层帧验证
+	*@author ACM2012
+	*@note
+	* 用户输入一个帧，由于这两个帧是结构体，进行比较时不能直接比较，
+	* 这里重定义了等号表示，来进行帧结构是否相等的比较
+	* 
+	*/
+	bool operator == (const Frame &it) const         
 	{
 		for (int i = 0; i < 3; ++i)
 		{
@@ -43,19 +52,34 @@ struct Frame{
 			if (data[i] != it.data[i]) return false;
 		return true;
 	}
+	
+	/**
+	*@brief 链路层帧不等验证
+	*@author ACM2012
+	*@note
+	* 用户输入一个帧，由于这两个帧是结构体，进行比较时不能直接比较，
+	* 这里重定义了等号表示，来进行帧结构是否不相等的比较
+	* 
+	*/
 	bool operator != (const Frame &it) const
 	{
 		return !((*this) == it);
 	}
 };
 
+/**
+*@brief 帧结构定义
+*@author ACM2012
+*@note
+* 此处是帧结构的帧头的定义
+*/
 struct Broadcast_frame
 {
-	unsigned short MAC_des[3];           // MAC_dst MAC目标地址
-	unsigned short MAC_src[3];           // MAC_src MAC源地址
-	unsigned short type;
-	unsigned int IP_dst;				 // 目标IP地址
-	unsigned int IP_src;				 // 源IP地址
+	unsigned short MAC_des[3];           /**@brief MAC_dst MAC目标地址*/
+	unsigned short MAC_src[3];           /**@brief MAC_src MAC源地址*/
+	unsigned short type;                /**@brief 类型定义 */
+	unsigned int IP_dst;				 /**@brief 目标IP地址*/
+	unsigned int IP_src;				 /**@brief 源IP地址*/
 	unsigned short CRC;
 };
 
