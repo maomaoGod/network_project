@@ -178,6 +178,7 @@ public:
 	}
 	char * combine(const u_char *);
 	int send_by_frame(IP_Msg *, pcap_t *, unsigned short, unsigned short);
+	int CSMA_CD_send(IP_Msg *, pcap_t *, unsigned short, unsigned short);
 	void GetSelfMac(char*, unsigned short *);
 	int ArpGetMacFromIp(pcap_t *adhandle, const char *ip_addr, unsigned char *ip_mac);
 
