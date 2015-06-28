@@ -83,6 +83,27 @@ struct Broadcast_frame
 	unsigned short CRC;
 };
 
+//帧头部结构体，共14字节
+struct EthernetHeader
+{
+    u_char DestMAC[6];    //目的MAC地址 6字节
+    u_char SourMAC[6];   //源MAC地址 6字节
+    u_short EthType;         //上一层协议类型，如0x0800代表上一层是IP协议，0x0806为arp  2字节
+};
+
+//28字节ARP帧结构
+struct Arpheader {
+	unsigned short HardwareType; //硬件类型
+	unsigned short ProtocolType; //协议类型
+	unsigned char HardwareAddLen; //硬件地址长度
+	unsigned char ProtocolAddLen; //协议地址长度
+	unsigned short OperationField; //操作字段
+	unsigned char SourceMacAdd[6]; //源mac地址
+	unsigned long SourceIpAdd; //源ip地址
+	unsigned char DestMacAdd[6]; //目的mac地址
+	unsigned long DestIpAdd; //目的ip地址
+};
+
 class my_linker
 {
 private:
@@ -158,6 +179,8 @@ public:
 	char * combine(const u_char *);
 	int send_by_frame(IP_Msg *, pcap_t *, unsigned short, unsigned short);
 	void GetSelfMac(char*, unsigned short *);
+	int ArpGetMacFromIp(pcap_t *adhandle, const char *ip_addr, unsigned char *ip_mac);
+
 	u_char* BuildArpPacket(unsigned short *, unsigned int, unsigned int);
 	bool check(const u_char *);
 	unsigned short crc16(unsigned char *, int);
