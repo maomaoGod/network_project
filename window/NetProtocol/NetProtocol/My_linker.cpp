@@ -427,12 +427,20 @@ unsigned short my_linker::checkCrc16(unsigned char *ptr, int len)
 	}
 	return crc;
 }
-
+/**
+* @author ACM2012
+* @return 返回值指示编码后的ppp数据帧长度
+* @note
+* 该模块将实现ppp数据帧的编码
+* 采用比特填充来完成
+* @remarks
+*/
 int my_linker::pppEncode(unsigned char * buf, int len)
 {
 	const unsigned short PPP_FRAME_FLAG = 0x7e;
 	const unsigned short PPP_FRAME_ESC = 0x7d;
 	const unsigned short PPP_FRAME_ENC = 0x20;
+	/**@brief 定义标志字符，转义字符和编码字符*/
 	const unsigned short BUF_LEN = 1500;
 	unsigned char * pi, *po;
 	int i, olen;
@@ -442,7 +450,7 @@ int my_linker::pppEncode(unsigned char * buf, int len)
 	{
 		return -1;
 	}
-
+        /**@brief 检查要编码的字符长度，按最坏情况，一个字符会编码成两个字符，所以这里只能编码最大缓冲区长度一半*/
 	memset(obuf, 0, BUF_LEN);
 	pi = buf;
 	po = obuf;
@@ -457,13 +465,14 @@ int my_linker::pppEncode(unsigned char * buf, int len)
 			*po = PPP_FRAME_ESC;
 			po++;
 			olen++;
-			/* 异或第6位*/
 			*po = *pi ^ PPP_FRAME_ENC;
 		}
+		/**@brief 遇到标志字符，转义字符和小于0x20的控制字符，都要进行编码。方法就是在其前面插入一个转义字符0x7d，然后对其第6位取补码*/
 		else
 		{
 			*po = *pi;
 		}
+		/**@brief 其他字符，不做任何修改*/
 		pi++;
 		po++;
 	}
@@ -471,13 +480,22 @@ int my_linker::pppEncode(unsigned char * buf, int len)
 	memcpy(buf, obuf, olen);
 
 	return olen;
+	/**@brief 修改缓冲区，返回编码后的字符长度*/
 }
-
+/**
+* @author ACM2012
+* @return 返回值指示解码后的ppp数据帧长度
+* @note
+* 该模块将实现ppp数据帧的解码
+* 是编码函数的逆运算
+* @remarks
+*/
 int my_linker::pppDecode(unsigned char * buf, int len)
 {
 	const unsigned short PPP_FRAME_FLAG = 0x7e;
 	const unsigned short PPP_FRAME_ESC = 0x7d;
 	const unsigned short PPP_FRAME_ENC = 0x20;
+	/**@brief 定义标志字符，转义字符和编码字符*/
 	const unsigned short BUF_LEN = 1500;
 	unsigned char * pi, *po;
 	int i, olen;
@@ -487,7 +505,7 @@ int my_linker::pppDecode(unsigned char * buf, int len)
 	{
 		return -1;
 	}
-
+	/**@brief 检查要解码的字符长度*/
 	memset(obuf, 0, BUF_LEN);
 	pi = buf;
 	po = obuf;
@@ -505,10 +523,12 @@ int my_linker::pppDecode(unsigned char * buf, int len)
 			/*异或第6位*/
 			*po = *pi ^ PPP_FRAME_ENC;
 		}
+		/**@brief 解码的主要实现，遇到转义字符，将其跳过，对紧接其后的字符的第6位去补码*/
 		else
 		{
 			*po = *pi;
 		}
+		/**@brief 其他字符，不做处理*/
 		pi++;
 		po++;
 	}
@@ -516,6 +536,7 @@ int my_linker::pppDecode(unsigned char * buf, int len)
 	memcpy(buf, obuf, olen);
 
 	return olen;
+	/**@brief 修改缓冲区，返回解码后的字符长度*/
 }
 
 void my_linker::send_broadcast(pcap_t  *adapterHandle, unsigned int src_IP, unsigned int dst_IP)
