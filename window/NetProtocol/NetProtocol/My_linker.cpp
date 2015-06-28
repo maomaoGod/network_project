@@ -193,6 +193,100 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
 
 /**
 * @author ACM2012
+* @return 返回值指示本次发送是否成功，返回值为0表示本次发送成功，返回值为1表示本次发送失败
+* @note
+* 该模块在发送端的基础上加上了碰撞检测的方法，每发出一个帧，会把它收回来查看，如果发现这个帧
+* 与原来的帧不一致，表明发生了碰撞。如果已经发生了k次碰撞，将会随机等待[0,2^min(k,10)-1]乘以
+* 比特时间，再重复以上发帧的过程，直到发帧成功。
+* 由于pcap已经拥有碰撞检测的功能，这个模块并没有被调用。
+* @remarks
+*/
+int my_linker::CSMA_CD_send(struct IP_Msg *data_gram, pcap_t * adapterHandle,
+	unsigned short i, unsigned short len)
+{
+	int K = 0;
+	srand(time(0));
+	unsigned short seq = 0;
+	unsigned short total_seq = (len + FRAMESIZE - 1) / FRAMESIZE;
+	unsigned short copy_size;
+	unsigned short left_size = len;
+	Byte *temp = (Byte *)(data_gram->data);
+	u_char *packet; //待发送的数据封包
+	struct pcap_pkthdr * packetHeader;
+	const u_char       * packetData;
+	int retValue;
+
+	while (left_size > 0)
+	{
+		struct Frame frame;
+		unsigned short tempCRC;
+		frame.MAC_des[0] = mac_des[0];
+		frame.MAC_des[1] = mac_des[1];
+		frame.MAC_des[2] = mac_des[2];
+		frame.MAC_src[0] = mac_src[0];
+		frame.MAC_src[1] = mac_src[1];
+		frame.MAC_src[2] = mac_src[2];
+		frame.total_seq_num = total_seq + 0xcccc;
+		frame.seq = seq + 0xcccc;
+		frame.datagram_num = i;
+		copy_size = min(FRAMESIZE, left_size);
+		memcpy(frame.data, temp, copy_size);
+		frame.length = copy_size;
+		temp += copy_size;
+		if (copy_size < FRAMESIZE){
+			memset(frame.data + copy_size, 0, FRAMESIZE - copy_size);
+		}
+		left_size -= copy_size;
+
+		packet = (u_char *)(&frame);
+		tempCRC = crc16(packet, (char *)&frame.CRC - (char *)&frame);
+		frame.CRC = tempCRC << 8 | tempCRC >> 8;
+		//发送帧
+		bool ck = false;
+		while (!ck)
+		{
+			int wait = rand() % (1 << K), bg = clock();
+			while (clock() - bg < wait);
+			if (pcap_sendpacket(adapterHandle,
+				packet,
+				sizeof(frame)
+				) != 0)
+			{
+				fprintf(stderr, "\nError sending the packet: \n", pcap_geterr(adapterHandle));
+				return -1;
+			}
+			else
+			{
+				ck = false;
+				bg = clock();
+				while ((retValue = pcap_next_ex(adapterHandle, &packetHeader, &packetData)) >= 0)
+				{
+					if (clock() - bg > 5000) break;
+					if (retValue == 0)
+					continue;
+					else
+					{
+						if (packetHeader->len < sizeof(Frame)) continue;
+						Frame t = *((Frame *)packetData);
+						if (t == frame)
+						{
+							ck = true;
+							break;
+						}
+					}
+				}
+				if (!ck) K = min(K + 1, 10);
+				printf("send frame %d successfully!: size %d bytes\n", seq, sizeof(frame));
+				seq += 1;
+				break;
+			}
+		}
+	}
+	return 0;
+}
+
+/**
+* @author ACM2012
 * @return 返回指向数据报的指针，用于将该数据报提交给网络层。若数据报未拼接完成，返回NULL指针。
 * @note
 * 该模块实现判断帧是否合法，以及把帧组装成数据报。帧结构参照以太网标准帧结构。
