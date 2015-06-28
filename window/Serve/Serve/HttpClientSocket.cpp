@@ -1,5 +1,12 @@
-// HttpClientSocket.cpp : 实现文件
-//
+
+/**
+*@file
+*@brief To achieve the function of server socket
+*@author ACM1201
+*@date 2015/04/19
+*@version 1.1
+*@note
+*/
 #pragma once
 
 #include "stdafx.h"
@@ -15,17 +22,27 @@ extern void PrintView(CString e);
 extern map <HttpClientSocket *, int> myclient;
 // HttpClientSocket
 
-HttpClientSocket::HttpClientSocket()
+HttpClientSocket::HttpClientSocket()/**@brief HttpClientSocket构造函数 */
 {
 }
 
-HttpClientSocket::~HttpClientSocket()
+HttpClientSocket::~HttpClientSocket()/**@brief  HttpClientSocket析构函数 */
 {
 }
-
-
-// HttpClientSocket 成员函数
-
+/**
+* @brief
+* @param [in] <nErrorCode> int型
+* @author ACM2012
+* @return 无
+* @note
+* HttpClientSocket 成员函数,添加专用代码和/或调用基类
+* 服务器端接收客户端的数据信息，在这里我们采用固定buf来存数据。
+* 先为将要存数据的数组设置一个默认值BUFSIZE，
+* 如果数据长度不大于BUFSIZE，则只需要一个buf[BUFSIZE]数组即可；
+* 如果数据长度大于BUF，则数据的前BUFSIZE大小的字符存入第一个buf数组中，
+* 声明一个新的buf[BUFSIZE]的数组，用来存余下的数据，
+* 直到所有的数据都能被存入数组中。
+*/
 void HttpClientSocket::OnReceive(int nErrorCode)
 {
 	Httpworker *httpworker = new Httpworker();
@@ -74,7 +91,15 @@ void HttpClientSocket::OnReceive(int nErrorCode)
 	PrintView(log);
 	CmyAsyncSocket::OnReceive(nErrorCode);
 }
-
+/**
+* @brief
+* @param [in] <nErrorCode> int型
+* @author ACM2012
+* @return 无
+* @note
+* HttpClientSocket 成员函数 OnSend函数
+* 发送网页数据
+*/
 void HttpClientSocket::OnSend(int nErrorCode)
 {
 	// TODO:  在此添加专用代码和/或调用基类
@@ -83,7 +108,15 @@ void HttpClientSocket::OnSend(int nErrorCode)
 	//Send(back, back.GetLength()*sizeof(TCHAR));
 	CmyAsyncSocket::OnSend(nErrorCode);
 }
-
+/**
+* @brief
+* @param [in] <nErrorCode> int型
+* @author ACM2012
+* @return 无
+* @note
+* HttpClientSocket 成员函数 OnClose函数
+* 断开连接
+*/
 void HttpClientSocket::OnClose(int nErrorCode)
 {
 	// TODO:  在此添加专用代码和/或调用基类

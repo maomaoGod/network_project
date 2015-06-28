@@ -1,12 +1,9 @@
-// HttpServeSocket.cpp : 实现文件
-//
 /**@file
  *@brief To achieve the function of server socket
- *@author xinYao,jinxiaFang
+ *@author ACM1201
  *@date 2015/04/19
- *@version XXXXXX
+ *@version 1.1
  *@note
- *XXXXXXX
  */
 #pragma once
 
@@ -23,11 +20,11 @@ map <HttpClientSocket *,int> myclient;
 
 // HttpServeSocket
 
-HttpServeSocket::HttpServeSocket()
+HttpServeSocket::HttpServeSocket()/**@brief HttpServeSocket构造函数 */
 {
 }
 
-HttpServeSocket::~HttpServeSocket()
+HttpServeSocket::~HttpServeSocket()/**@brief  HttpServeSocket析构函数 */
 {
 }
 
@@ -35,6 +32,14 @@ HttpServeSocket::~HttpServeSocket()
 // HttpServeSocket 成员函数
 
 
+/**
+* @brief
+* @param [in] <nErrorCode> int型
+* @author ACM2012
+* @return 无
+* @note
+* HttpServeSocket 成员函数,添加专用代码和/或调用基类
+*/
 void HttpServeSocket::OnAccept(int nErrorCode)
 {
 	// TODO:  在此添加专用代码和/或调用基类

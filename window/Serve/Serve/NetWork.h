@@ -49,6 +49,15 @@ namespace NetWork{
 #define QUIT_EXIT 303
 #define Rev_OK 320
 
+	/**
+	*@class AppLayerFtp NetWork.h "Serve/AppLayerFtp.h"
+	*@brief Ftp协议客户端的实现
+	*@author ACM2012
+	*@date 2015/06/06
+	*@version 1.1
+	*@note
+	* 实现Ftp协议服务器的功能，实现文件传输
+	*/
 	class AppLayerFtp{
 		class people{
 		public:
@@ -67,21 +76,60 @@ namespace NetWork{
 			//delete &Function;
 		}
 
+		/**
+		* @brief
+		* @param [in] <RevData> string型
+		* @author ACM2012
+		* @return 无
+		* @note
+		*  获取数据，并且以空格分隔数据
+		*/
 		void GetData(string RevData){
 			STR::Split(RevData, &data, ' ');
 		}
+		/**
+		* @brief
+		* @author ACM2012
+		* @return string型数据，
+		* @note
+		*  获取命令
+		*/
 		string GetCMD(){
 			return data[0];
 		}
+
+		/**
+		* @brief
+		* @author ACM2012
+		* @return int型数据
+		* @note
+		*  获取相应代码
+		*/
 		int GetCode(){
 			return ErrorCode;
 		}
+
+		/**
+		* @brief
+		* @author ACM2012
+		* @return string型数据
+		* @note
+		*  获取应答报文
+		*/
 		string GetResMsg(){
 			return RespondMsg;
 		}
-		//, vector<string> args
+		//,vector<string> args
+		/**
+		* @brief
+		* @param [in] <CMD> string型
+		* @author ACM2012
+		* @return 无
+		* @note
+		*  处理命令
+		*/
 		void DealWith(string CMD){
-			/**@brief DON'T HAVE THIS CMD return BADxxx */
+			/**@brief DON'T HAVE THIS CMD return BAD_REQUEST*/
 			if (Function.find(CMD) == Function.end()){
 				ErrorCode = BAD_REQUEST;
 				return;
@@ -108,9 +156,9 @@ namespace NetWork{
 		vector<string> data;
 		int ErrorCode;
 		string RespondMsg;
-		//CMD ＋ user + pass
+		///<CMD ＋ user + pass
 		void SIGNIN(vector<string> data){//char path[1024];
-			if (Sign_in != NULL) delete Sign_in;//over it
+			if (Sign_in != NULL) delete Sign_in;///<更新
 			Sign_in = new people();
 			Sign_in->name = data[1];
 			Sign_in->path = "ftp/" + data[1] + '_' + data[2];
@@ -147,6 +195,14 @@ namespace NetWork{
 				return;
 			}
 		}
+		/**
+		* @brief
+		* @param [in] <data> vector<string>型
+		* @author ACM2012
+		* @return 无
+		* @note
+		* 退出登录
+		*/
 		void QUIT(vector<string> data){
 			delete Sign_in;
 			Sign_in = NULL;
@@ -154,6 +210,14 @@ namespace NetWork{
 			RespondMsg = "Sign Out!";
 			return;
 		}
+		/**
+		* @brief
+		* @param [in] <data> vector<string>型
+		* @author ACM2012
+		* @return 无
+		* @note
+		* 退出登录
+		*/
 		void CD(vector<string> data){
 			struct _finddata_t files;
 			int File_Handle;
@@ -177,6 +241,14 @@ namespace NetWork{
 			_findclose(File_Handle);
 			return;
 		}
+		/**
+		* @brief
+		* @param [in] <data> vector<string>型
+		* @author ACM2012
+		* @return 无
+		* @note
+		* 插入一个指定的目录
+		*/
 		void MKDIR(vector<string> data){
 				//char filename[100], filename2[105];
 			 struct _finddata_t files;
@@ -208,7 +280,15 @@ namespace NetWork{
 			} while (0 == _findnext(File_Handle, &files));
 			_findclose(File_Handle);
 			return;
-		}
+		};
+			/**
+			* @brief
+			* @param [in] <data> vector<string>型
+			* @author ACM2012
+			* @return 无
+			* @note
+			* 删除文件
+			*/
 		void DELETEFILE(vector<string> data){
 			//find file
 			RespondMsg += "File" + data[1] + " have been DELETE";
@@ -237,6 +317,14 @@ namespace NetWork{
 			fclose(fp);
 			DeleteFile(STR::String2LPCWSTR(data[1]));
 		}
+		/**
+		* @brief
+		* @param [in] <data> vector<string>型
+		* @author ACM2012
+		* @return 无
+		* @note
+		* 上传文件
+		*/
 		void UPLOAD(vector<string> data){
 			//find files
 			RespondMsg += "UPLOAD :";
@@ -265,6 +353,14 @@ namespace NetWork{
 			return;
 
 		}
+		/**
+		* @brief
+		* @param [in] <data> vector<string>型
+		* @author ACM2012
+		* @return 无
+		* @note
+		* 下载文件
+		*/
 		void DOWNLOAD(vector<string> data){
 			RespondMsg = "";
 			string *temp;
@@ -296,6 +392,14 @@ namespace NetWork{
 			}
 			fclose(fp);
 		}
+		/**
+		* @brief
+		* @param [in] <data> vector<string>型
+		* @author ACM2012
+		* @return 无
+		* @note
+		* 插入用户
+		*/
 		void ADDUSER(vector<string> data){
 			struct _finddata_t files;
 			FILE* fp;
@@ -330,6 +434,14 @@ namespace NetWork{
 				RespondMsg += "/r/n";
 			}
 		}
+		/**
+		* @brief
+		* @param [in] <data> vector<string>型
+		* @author ACM2012
+		* @return 无
+		* @note
+		* 删除用户
+		*/
 		void DELUSER(vector<string> data){
 			int status;
 			string filename;
@@ -355,6 +467,14 @@ namespace NetWork{
 				RespondMsg += "\r\n";
 			}
 		}
+		/**
+		* @brief
+		* @param [in] <data> vector<string>型
+		* @author ACM2012
+		* @return 无
+		* @note
+		* 帮助文件
+		*/
 	 	void HELP(vector<string> data){
 			RespondMsg = "HELPMSG : \r\n";
 			ErrorCode = OP_OK;
@@ -400,7 +520,14 @@ namespace NetWork{
 			//The Method has been documented but is not currently implented ,reserved for channel processing 
 
 		}
-		
+		/**
+		* @brief
+		* @param [in] <data> vector<string>型
+		* @author ACM2012
+		* @return 无
+		* @note
+		* Ftp协议初始化
+		*/
 		void Ftp_init(){
 			Function["SIGNIN"] = Function["signin"] = &AppLayerFtp::SIGNIN;
 			Function["QUIT"] = Function["quit"] = &AppLayerFtp::QUIT;
@@ -428,9 +555,22 @@ namespace NetWork{
 #define RECEIVE_CMD 0
 #define RECEIVE_MAIL 1
 #endif
+	/**
+	*@class SMTP NetWork.h "HustNet/NetWork.h"
+	*@brief How the SMTP protocol works
+	*@author  ACM2012
+	*@note
+	* Smtp协议的实现，邮件传输协议的设计
+	*/
 	class SMTP
 	{
 	public:
+		/**
+		* @brief DNSworker构造函数
+		* @author ACM2012
+		* @return 无
+		* @note
+		*/
 		SMTP()
 		{
 			memset(&M_re, 0, sizeof(M_re));
@@ -439,16 +579,43 @@ namespace NetWork{
 			ErrorCode = 0;
 			RespondMsg = "";
 		}
+		/**
+		* @brief DNSworker析构函数
+		* @author ACM2012
+		* @return 无
+		* @note
+		*/
 		~SMTP()
 		{}
+		/**
+		* @brief 获取响应代码
+		* @author ACM2012
+		* @return 无
+		* @note
+		*/
 		int GetCode()
 		{
 			return ErrorCode;
 		}
+		/**
+		* @brief 获取请求报文
+		* @author ACM2012
+		* @return string型数据
+		* @note
+		*/
 		string GetMsg()
 		{
 			return RespondMsg;
 		}
+		/**
+		* @brief 命令调度
+		* @author ACM2012
+		* @return 无
+		* @note
+		*  SMTP协议里的命令有：
+		* auth , noop，help，data，quit，mail，rcpt，rset
+		* 如果不是上述8种，则返回“Unknown Command”
+		*/
 		void CMD_Dispatch(string MSG)
 		{
 			this->MSG = MSG;
@@ -493,6 +660,12 @@ namespace NetWork{
 		vector<string> Split_msg;
 		int state;
 		int Sign_in;
+		/**
+		* @brief 邮件的结构
+		* @author ACM2012
+		* @note
+		* 结构包括收件人、发件人、邮件内容
+		*/
 		struct Mail
 		{
 			string to;
@@ -500,12 +673,24 @@ namespace NetWork{
 			string content;
 		}M_re;
 	private:
+		/**
+		* @brief 重新发送邮件
+		* @author ACM2012
+		* @return 无
+		* @note
+		*/
 		void rset()
 		{
 			memset(&M_re, 0, sizeof(M_re));
 			ErrorCode = OK;
 			RespondMsg = "Clear the data\r\n";
 		}
+		/**
+		* @brief 登录邮件系统
+		* @author ACM2012
+		* @return 无
+		* @note
+		*/
 		void auth()
 		{
 			if (Sign_in)
@@ -527,12 +712,24 @@ namespace NetWork{
 			}
 			return;
 		}
+		/**
+		* @brief 输入空白
+		* @author ACM2012
+		* @return 无
+		* @note
+		*/
 		void noop()
 		{
 			ErrorCode = OK;
 			RespondMsg = "OK!\r\n";
 			return;
 		}
+		/**
+		* @brief 帮助文件的实现
+		* @author ACM2012
+		* @return 无
+		* @note
+		*/
 		void help()
 		{
 			ErrorCode = OK;
@@ -548,6 +745,12 @@ namespace NetWork{
 			RespondMsg += "\tquit<CRLF>\r\n";
 			return;
 		}
+		/**
+		* @brief 输入数据内容的实现
+		* @author ACM2012
+		* @return 无
+		* @note
+		*/
 		void data()
 		{
 			if (Sign_in == 0)
@@ -592,6 +795,12 @@ namespace NetWork{
 			}
 
 		}
+		/**
+		* @brief 收件人
+		* @author ACM2012
+		* @return 无
+		* @note
+		*/
 		void to()
 		{
 			if (Sign_in == 0)
@@ -618,6 +827,12 @@ namespace NetWork{
 			RespondMsg += "> ok!\r\n";
 			return;
 		}
+		/**
+		* @brief 发件人
+		* @author ACM2012
+		* @return 无
+		* @note
+		*/
 		void from()
 		{
 			if (Sign_in == 0)
@@ -644,7 +859,12 @@ namespace NetWork{
 			RespondMsg += "> ok!\r\n";
 			return;
 		}
-
+		/**
+		* @brief 退出登录的实现
+		* @author ACM2012
+		* @return 无
+		* @note
+		*/
 		void quit()
 		{
 			Sign_in = NULL;

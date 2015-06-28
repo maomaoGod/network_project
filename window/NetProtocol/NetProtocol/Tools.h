@@ -7,15 +7,6 @@
 #include <mapi.h>
 #include "afxinet.h"
 
-extern void PrintLog(CString);
-extern void PrintRp(CString);
-extern void CleanLog();
-extern void CleanRp();
-extern void SetRp(CString);
-extern void TakeOverCmd(CString e);
-extern void SetHint(CString e);
-extern CString GetLine();
-
 using namespace std;
 
 namespace Tools{

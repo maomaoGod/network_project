@@ -88,6 +88,7 @@ struct tcplist
 	int cong_status;	// 拥塞控制状态
 	int tcp_established_syn_seq;	// 对方发来的syn所在报文编号
 	int connect_status;	// TCP连接状态
+	int receive_time;
 };
 
 struct stopandwait

@@ -59,6 +59,8 @@ DWORD WINAPI NewTcpControlThread(LPVOID)
 CMainFrame::CMainFrame()
 {
 	connsocknum = 0;
+	mac_flag = 0;
+	CurIP = 0;
 	 CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewTcpControlThread, NULL, NULL, NULL);
 }
 
@@ -212,8 +214,16 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 	unsigned int src_ip = getIP();
 	unsigned int data_len = data_from_applayer.datalength;
 
+	IP_uint2chars(data_from_applayer.srcip, src_ip);
+	// ×ª»»IP
+	if (dst_ip == IP_chars2uint("127.0.0.1"))
+	{
+		dst_ip = src_ip;
+		memcpy(data_from_applayer.dstip, data_from_applayer.srcip, 20);
+	}
 	// »ñÈ¡Function ID
 	int funcID = data_from_applayer.funcID;
+	
 
 	// ÅÐ¶ÏÊÇUDP»¹ÊÇTCP
 	// UDP
@@ -323,10 +333,16 @@ LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊý¾Ý·¢Ë
 	unsigned short len = datagram->ih_len;
 	if (Des_IP != getIP())
 	{
+		if (CurIP == Des_IP)
+			goto next;
 		while (true)
 		{
 			linker.send_broadcast(linker.adapterHandle, Src_IP, Des_IP);
-			if (linker.get_mac(linker.adapterHandle)) break;
+			if (linker.get_mac(linker.adapterHandle)){
+				mac_flag = 1; 
+				CurIP = Des_IP;
+				break;
+			}
 			Sleep(200);
 		}
 	}
@@ -335,7 +351,7 @@ LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊý¾Ý·¢Ë
 		for (int i = 0; i < 3; ++i) linker.mac_des[i] = linker.mac_src[i];
 	}
 	//}
-
+next:
 	//for (int i = 0; i < 3; ++i) linker.mac_des[i] = linker.mac_src[i];
 	if ((linker.send_by_frame(datagram, linker.adapterHandle, seq, len)) == 0)
 	{

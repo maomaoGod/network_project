@@ -1,14 +1,31 @@
+/**
+*@file
+*@brief Http协议客户端的实现
+*@author ACM2012
+*@date 2015/06/06
+*@version 1.1
+*@note
+* 实现http协议客户端的功能，实现cookie，
+* 设计请求报文和应答报文的结构，
+*/
 #include "stdafx.h"
 #include "Httpworker.h"
 
 #define Conntion 0
-
+/**
+*@brief Httpworker
+*@author  ACM2012
+*@return void
+*@note
+* Httpworker的构造函数的实现
+*/
 Httpworker::Httpworker()
 {
 	//nothing
 	alg = new checkarg();
 	fun = new map<string, DealWithFunciton>();
 	word = new resword();
+	///<Http协议的命令
 	(*alg)["get"] = (*alg)["GET"] = 2;
 	(*alg)["post"] = (*alg)["POST"] = 3;
 	(*alg)["put"] = (*alg)["PUT"] = 3;
@@ -18,11 +35,11 @@ Httpworker::Httpworker()
 	(*alg)["trace"] = (*alg)["TRACE"] = 2;
 	(*alg)["connect"] = (*alg)["CONNECT"] = 2;
 
-	//connect
+	///<connect
 	(*alg)["close"] = 0;
 	(*alg)["keep-alive"] = 1;
 
-	//set fun
+	///<set fun
 	(*fun)["GET"] = (*fun)["get"] = &Httpworker::GET;
 	(*fun)["HEAD"] = (*fun)["head"] = &Httpworker::HEAD;
 	(*fun)["POST"] = (*fun)["post"] = &Httpworker::POST;
@@ -31,9 +48,9 @@ Httpworker::Httpworker()
 	(*fun)["OPTIONS"] = (*fun)["options"] = &Httpworker::OPTIONS;
 	(*fun)["TRACE"] = (*fun)["trace"] = &Httpworker::TRACE_HTTP;
 	(*fun)["CONNECT"] = (*fun)["connect"] = &Httpworker::CONNECT;
-	//bad res
+	///<bad res
 	(*fun)["BAD"] = (*fun)["bad"] = &Httpworker::BAD_RES;
-	//int error
+	///<int error
 	(*fun)["ERROR"] = (*fun)["error"] = &Httpworker::ERROR_HTTP;
 
 	(*word)["200"] = "OK";
@@ -44,7 +61,13 @@ Httpworker::Httpworker()
 	(*word)["505"] = "HTTP VERSION NOT SUPPORTED";
 	(*word)["-1"] = "Server crashed";
 }
-
+/**
+*@brief Httpworker
+*@author  ACM2012
+*@return void
+*@note
+* Httpworker的析构函数实现
+*/
 Httpworker::~Httpworker()
 {
 	delete msg;
@@ -54,7 +77,12 @@ Httpworker::~Httpworker()
 	delete word;
 	host = "";
 }
-
+/**
+* @author ACM2012
+* @brief 定义报文字段的属性
+* @return 无
+* @note
+*/
 void Httpworker::Make(){
 	if (fun->find(rmsg->method) == fun->end()){
 		(this->*(*fun)["bad"])();//args
@@ -68,7 +96,12 @@ void Httpworker::Make(){
 		return;
 	}
 }
-
+/**
+* @author ACM2012
+* @brief http协议命令相应码的分析
+* @return int型数据
+* @note
+*/
 int Httpworker::analy(){
 	//set msg;
 	msg = new HttpMsg();
@@ -98,7 +131,12 @@ int Httpworker::analy(){
 	}*/
 	return 1;//success
 }
-
+/**
+* @brief 检查报文结构字段
+* @author ACM2012
+* @return 无
+* @note
+*/
 void Httpworker::check(){
 	if (msg->type.size()==0) msg->type.push_back("text/html");
 	if (FIO::Exist(rmsg->path)&&msg->last_modified=="")
@@ -106,7 +144,13 @@ void Httpworker::check(){
 	if (msg->last_modified == "") msg->last_modified = "";
 	msg->length = msg->data.length();
 }
-
+/**
+* @brief 显示应答报文
+* @author ACM2012
+* @return CString
+* @note
+* 应答报文应该包括Version、Error_code、Date、Last_modified、Type、Data
+*/
 CString Httpworker::show_rmsg(){
 	CString look = _T("\r\n");
 	look += _T("Method : ") + STR::S2CS(rmsg->method) + _T("\r\n");
@@ -121,7 +165,12 @@ CString Httpworker::show_rmsg(){
     return look;
 }
 
-//return all string in msg
+/**
+* @author ACM2012
+* @brief 监听请求报文
+* @return string型数据
+* @note
+*/
 string Httpworker::look_msg(){
 	check();
 	string look;
@@ -138,7 +187,12 @@ string Httpworker::look_msg(){
 	look += msg->data;
 	return look;
 }
-//return all string in rmsg
+/**
+* @author ACM2012
+* @brief 监听应答报文
+* @return string型数据
+* @note
+*/
 string Httpworker::look_rmsg(){
 	string Look;
 	Look = rmsg->method + "\n" + rmsg->path + "\n" + rmsg->no + "\n" ;
@@ -149,7 +203,13 @@ string Httpworker::look_rmsg(){
 	Look += rmsg->data;
 	return Look;
 }
-
+/**
+* @brief 设置请求报文
+* @author ACM2012
+* @return int型数据
+* @note
+* 应答报文应该包括Version、Error_code、Date、Last_modified、Type、Data
+*/
 int Httpworker::setMsg(string rec){
 	vector<string> d;
 	rmsg = new HttpRMsg();
@@ -174,7 +234,13 @@ int Httpworker::setMsg(string rec){
 	rmsg->data = rmsg->data.substr(0, len - 2);
 	return rmsg->length - len + 2;
 }
-
+/**
+* @brief 获取请求报文
+* @author ACM2012
+* @return string型数据
+* @note
+* 请求报文的结构字段详细描述
+*/
 string Httpworker::getMsg(){
 	check();
 	string look;
@@ -221,9 +287,9 @@ void Httpworker::GET(){
 		msg->word = (*word)[msg->code];
 		return;
 	}
-	// web cache
+	///<web cache
 	if (rmsg->if_modified_since != ""){
-		//condtional get
+		///<condtional get
 		if (msg->last_modified == rmsg->if_modified_since){
 			msg->code = "304";
 			msg->word = (*word)[msg->code];

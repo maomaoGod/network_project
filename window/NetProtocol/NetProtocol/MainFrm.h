@@ -30,6 +30,8 @@ public:
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	HWND PPwnd;
+	int mac_flag;
+	unsigned int CurIP;
 	// й╣ож
 public:
 	virtual ~CMainFrame();

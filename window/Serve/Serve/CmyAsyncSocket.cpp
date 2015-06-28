@@ -210,7 +210,7 @@ int CmyAsyncSocket::SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTS
 * 创建新的共享内存区，并将数据部分拷贝到共享内存。将节点添加到写队列后程序返回，数据发送过程交给下面几层完成
 */
 
-/*int    CmyAsyncSocket::ReceiveFrom(void* lpBuf, int nBufLen, CString& rSocketAddress, UINT& rSocketPort, int nFlags)
+int    CmyAsyncSocket::ReceiveFrom(void* lpBuf, int nBufLen, CString& rSocketAddress, UINT& rSocketPort, int nFlags)
 {
 
 	if (sockstate != INIT_FLAG&&sockstate != UDP_FLAG) {
@@ -246,7 +246,7 @@ int CmyAsyncSocket::SendTo(const void* lpBuf, int nBufLen, UINT nHostPort, LPCTS
 		UnmapViewOfFile(pCur);
 		return RcvBegin(lpBuf, nBufLen);
 	}
-}*/
+}
 
 /**
 * @author ACM2012
