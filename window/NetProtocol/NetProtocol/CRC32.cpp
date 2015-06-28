@@ -1,13 +1,12 @@
-// //////////////////////////////////////////////////////////
-// Crc32.cpp
-// Nifty piece of code for crc32 fasssstt
-//
-//  Julien Desprez (2014)
-// 
-//  Support weird endianess 
-
-// g++ -o Crc32 Crc32.cpp -O3 -march=native -mtune=native
-
+/**
+*@file
+*@brief CRC32算法实现
+*@author ACM2012
+*@date 2015/06/06
+*@version 1.1
+*@note
+* 实现了快速CRC32算法，将结果进行了缓存
+*/
 #include <stdlib.h>
 
 // define endianess and some integer data types
@@ -41,11 +40,16 @@ static inline uint32_t swap(uint32_t x)
 #endif
 }
 
-/// forward declaration, table is at the end of this file
+/**@brief CRC32缓存表 */
 extern const uint32_t Crc32Lookup[8][256]; // extern is needed to keep compiler happey
 
 
-/// compute CRC32 (bitwise algorithm)
+/**
+*@brief crc计算函数
+*@author ACM2012
+*@note
+* 计算crc32的值
+*/
 uint32_t crc32_bitwise(const void* data, size_t length, uint32_t previousCrc32 = 0)
 {
   uint32_t crc = ~previousCrc32; // same as previousCrc32 ^ 0xFFFFFFFF
