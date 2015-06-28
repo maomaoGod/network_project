@@ -112,9 +112,13 @@ void my_linker::get_adapter()
 
 /**
 * @author ACM2012
-* @return 返回本次发送是否成功
+* @return 返回值指示本次发送是否成功，返回值为0表示本次发送成功，返回值为1表示本次发送失败
 * @note
-* 实现数据报的拆帧并发送
+* 该模块将实现数据报的拆帧工作和发送工作，帧结构参照以太网标准帧结构。发送帧基于Winpcap提供的
+* 接口pcap_sendpacket(adapterHandle, // the adapter handle
+		      packet, 	     // the packet
+		      sizeof(frame)  // the length of the packet
+* 拆帧完成后逐一调用上述函数进行发送
 * @remarks
 */
 int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
@@ -125,18 +129,20 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
 	unsigned short seq = 0;/**@brief 帧序号*/
 	unsigned short total_seq = (len + FRAMESIZE - 1) / FRAMESIZE;/**@brief 数据报拆分成帧的总个数*/
 	unsigned short copy_size;/**@brief 帧大小*/
-	unsigned short left_size = len;/**@brief 数据报剩余数据量的大小*/
-	Byte *temp = (Byte *)(data_gram->data);
-	u_char *packet; //待发送的数据封包
-	struct pcap_pkthdr * packetHeader;
-	const u_char       * packetData;
-	int retValue;
+	unsigned short left_size = len;/**@brief len为网络层传给链路层的参数，表示网络层要发送总数据的大小。
+				       /**left_size表示在发送过程中数据报剩余数据量的大小*/
+	Byte *temp = (Byte *)(data_gram->data);/**@brief temp设置为指向待发送数据*/
+	u_char *packet;/**@brief 数据报剩余数据量的大小*/
+	struct pcap_pkthdr * packetHeader;/**@brief 指向包头的指针*/
+	const u_char       * packetData;/**@brief 指向待发送数据的指针*/
+	int retValue;/**@brief 指示网络适配器是否可用，若可用，则改值将会被设置为0，否则将会被设置为1*/
 	
 	/**@brief 当数据报还有剩余的字节没有发送时，则进入循环体*/
 	while (left_size > 0)
 	{
-		struct Frame frame;
-		unsigned short tempCRC;
+		struct Frame frame;/**@brief 声明一个待发送帧结构，但尚未填充数据*/
+		unsigned short tempCRC;/**@brief 声明一个CRC冗余检测变量，但尚未计算出其值*/
+		/**@brief 填充目的MAC地址和源MAC地址，均为6字节*/
 		frame.MAC_des[0] = mac_des[0];
 		frame.MAC_des[1] = mac_des[1];
 		frame.MAC_des[2] = mac_des[2];
@@ -145,28 +151,30 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
 		frame.MAC_src[2] = mac_src[2];
 		frame.total_seq_num = total_seq + 0xcccc;
 		frame.seq = seq + 0xcccc;
+		/**@brief 为当前待发送的帧结构填充序号字段i，用于接收端按序接收*/
 		frame.datagram_num = i;
+		/**@brief 填充帧结构数据字段的大小，由于最后一个帧往往不能填充满帧数据字段，因此进行以下min操作*/
 		copy_size = min(FRAMESIZE, left_size);
+		/**@brief 从网络层数据区复制数据到帧结构中*/
 		memcpy(frame.data, temp, copy_size);
-		frame.length = copy_size;
-		temp += copy_size;
+		frame.length = copy_size;/**@brief 填充帧结构数据长度字段*/
+		temp += copy_size;/**@brief 网络层数据报数据字段指针后移，指向下一个待发送数据区*/
 		if (copy_size < FRAMESIZE){
 			memset(frame.data + copy_size, 0, FRAMESIZE - copy_size);
 		}
-		left_size -= copy_size;
+		left_size -= copy_size;/**@brief 剩余待发送的数据字段长度减少*/
 
-		packet = (u_char *)(&frame);
-		tempCRC = crc16(packet, (char *)&frame.CRC - (char *)&frame);
+		packet = (u_char *)(&frame);/**@brief 待发送数据区指针指向待发送帧结构首地址*/
+		tempCRC = crc16(packet, (char *)&frame.CRC - (char *)&frame);/**@brief 计算CRC的值*/
 		frame.CRC = tempCRC << 8 | tempCRC >> 8;
-		//发送帧
 		bool ck = false;
 		while (!ck)
 		{
 			int wait = rand() % (1 << K), bg = clock();
-			//while (clock() - bg < wait * 10);
-			if (pcap_sendpacket(adapterHandle, // the adapter handle
-				packet, // the packet
-				sizeof(frame) // the length of the packet
+			/**@brief 调用pcap_sendpacket发送当前帧结构，成功返回0*/
+			if (pcap_sendpacket(adapterHandle,/**@brief 适配器指针*/ 
+				packet, /**@brief 待发送帧*/
+				sizeof(frame) /**@brief 发送数据的总子节数*/
 				) != 0)
 			{
 				fprintf(stderr, "\nError sending the packet: \n", pcap_geterr(adapterHandle));
@@ -174,34 +182,13 @@ int my_linker::send_by_frame(struct IP_Msg *data_gram, pcap_t * adapterHandle,
 			}
 			else
 			{
-				/*
-				ck = false;
-				bg = clock();
-				while ((retValue = pcap_next_ex(adapterHandle, &packetHeader, &packetData)) >= 0)
-				{
-					if (clock() - bg > 5000) break;
-					if (retValue == 0)
-						continue;
-					else
-					{
-						if (packetHeader->len < sizeof(Frame)) continue;
-						Frame t = *((Frame *)packetData);
-						if (t == frame)
-						{
-							ck = true;
-							break;
-						}
-					}
-				}
-				if (!ck) K = min(K + 1, 10);
-				*/
 				printf("send frame %d successfully!: size %d bytes\n", seq, sizeof(frame));	
-				seq += 1;
+				seq += 1;/**@brief 改帧结构发送成功，帧序号自动加1，准备在下一次循环中赋值给帧序号*/
 				break;
 			}
 		}
 	}
-	return 0;
+	return 0;/**@brief 发送成功，返回0*/
 }
 
 
