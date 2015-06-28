@@ -1,3 +1,12 @@
+/**
+*@file
+*@brief 链路层协议
+*@author ACM2012
+*@date 2015/06/06
+*@version 1.1
+*@note
+* 实现链路层的基本功能，包括以太网的碰撞协议，arp协议，arp缓存栈，发送接收模块，ppp协议等。同时实现了多种链路层容错检验算法。
+*/
 #pragma once
 #include "pcap.h"
 #include "NetProtocol.h"
@@ -11,13 +20,13 @@
 typedef unsigned char Byte;
 
 struct Frame{
-	unsigned short MAC_des[MAC_ADDR_SIZE];           // MAC_dst MACĿ���ַ
-	unsigned short MAC_src[MAC_ADDR_SIZE];           // MAC_src MACԴ��ַ
-	unsigned short total_seq_num;        // ֡���ܸ���
-	unsigned short datagram_num;         // ���ݱ����
-	unsigned short seq;                  // ֡���
-	unsigned short length;               // ��ǰ֡���ݵĳ���
-	Byte data[FRAMESIZE];                    // ���������
+	unsigned short MAC_des[MAC_ADDR_SIZE];           // MAC_dst MAC目标地址
+	unsigned short MAC_src[MAC_ADDR_SIZE];           // MAC_src MAC源地址
+	unsigned short total_seq_num;        // 帧的总个数
+	unsigned short datagram_num;         // 数据报序号
+	unsigned short seq;                  // 帧序号
+	unsigned short length;               // 当前帧数据的长度
+	Byte data[FRAMESIZE];                    // 网络层数据
 	unsigned short CRC;
 	bool operator == (const Frame &it) const
 	{
@@ -42,11 +51,11 @@ struct Frame{
 
 struct Broadcast_frame
 {
-	unsigned short MAC_des[3];           // MAC_dst MACĿ���ַ
-	unsigned short MAC_src[3];           // MAC_src MACԴ��ַ
+	unsigned short MAC_des[3];           // MAC_dst MAC目标地址
+	unsigned short MAC_src[3];           // MAC_src MAC源地址
 	unsigned short type;
-	unsigned int IP_dst;				 // Ŀ��IP��ַ
-	unsigned int IP_src;				 // ԴIP��ַ
+	unsigned int IP_dst;				 // 目标IP地址
+	unsigned int IP_src;				 // 源IP地址
 	unsigned short CRC;
 };
 
@@ -61,19 +70,19 @@ private:
 	};
 
 	static const int maxlength = 100000;
-	char **msg;						 //���ݱ�
+	char **msg;						 //数据报
 	Data_Segment *buffer;
 	int bp;
 	int **data_pointer;
-	int *left;						 //ÿ�����ݱ���ʣ����֡
+	int *left;						 //每个数据报还剩多少帧
 	void get_adapter();
 
 public:
 
-	//����MAC��ַ
+	//本机MAC地址
 	unsigned short mac_src[3];
 
-	//Ŀ��MAC��ַ
+	//目的MAC地址
 	unsigned short mac_des[3];
 	pcap_t * adapterHandle;
 	unsigned int transIP[table_size];
@@ -92,7 +101,7 @@ public:
 		}
 		get_adapter();
 		if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewPackThread, (LPVOID) this, NULL, NULL))
-			AfxMessageBox(_T("����ץ���߳�ʧ�ܣ�"));
+			AfxMessageBox(_T("创建抓包线程失败！"));
 	}
 	~my_linker()
 	{
