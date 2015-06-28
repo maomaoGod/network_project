@@ -641,3 +641,59 @@ void my_linker::Link2IP(WPARAM wparam)
 		AfxGetApp()->m_pMainWnd->SendMessage(IPTOTRANS, (WPARAM)msg);
 	}
 }
+
+int my_linker::ArpGetMacFromIp(pcap_t *adhandle, const char *ip_addr, unsigned char *ip_mac)
+{
+	unsigned char sendbuf[42]; //arp包结构大小
+	int i = -1;
+	int res;
+	EthernetHeader eh; //以太网帧头
+	Arpheader ah;  //ARP帧头
+	struct pcap_pkthdr * pkt_header;
+	const u_char * pkt_data;
+	//将已开辟内存空间 eh.dest_mac_add 的首 6个字节的值设为值 0xff。
+	memset(eh.DestMAC, 0xff, 6); //目的地址为全为广播地址
+	memset(eh.SourMAC, 0x0f, 6);
+	memset(ah.DestMacAdd, 0x0f, 6);
+	memset(ah.SourceMacAdd, 0x00, 6);
+	//htons将一个无符号短整型的主机数值转换为网络字节顺序
+	eh.EthType = htons(ETH_ARP);
+	ah.HardwareType = htons(ARP_HARDWARE);
+	ah.ProtocolType = htons(ETH_IP);
+	ah.HardwareAddLen = 6;
+	ah.ProtocolAddLen = 4;
+	ah.SourceIpAdd = inet_addr("192.168.1.111"); //随便设的请求方ip
+	ah.OperationField = htons(ARP_REQUEST);
+	ah.DestIpAdd = inet_addr("192.168.1.1");
+	memset(sendbuf, 0, sizeof(sendbuf));
+	memcpy(sendbuf, &eh, sizeof(eh));
+	memcpy(sendbuf + sizeof(eh), &ah, sizeof(ah));
+	printf("%s", sendbuf);
+	if (pcap_sendpacket(adhandle, sendbuf, 42) == 0) {
+		printf("\nPacketSend succeed\n");
+	}
+	else {
+		printf("PacketSendPacket in getmine Error: %d\n", GetLastError());
+		return 0;
+	}
+	//从interface或离线记录文件获取一个报文
+	//pcap_next_ex(pcap_t* p,struct pcap_pkthdr** pkt_header,const u_char** pkt_data)
+	while ((res = pcap_next_ex(adhandle, &pkt_header, &pkt_data)) >= 0) {
+		if (*(unsigned short *)(pkt_data + 12) == htons(ETH_ARP)
+			&& *(unsigned short*)(pkt_data + 20) == htons(ARP_REPLY)
+			&& *(unsigned long*)(pkt_data + 38)
+			== inet_addr("192.168.1.111")) {
+			for (i = 0; i < 6; i++) {
+				ip_mac[i] = *(unsigned char *)(pkt_data + 22 + i);
+			}
+			printf("获取自己主机的MAC地址成功!\n");
+			break;
+		}
+	}
+	if (i == 6) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
