@@ -350,6 +350,26 @@ bool my_linker::check(const u_char * packetData)
 	return false;
 }
 
+/**
+* @author ACM2012
+* @param ptr: 指向帧内容的指针
+*        len: 帧长度
+* @return 返回计算得到的CRC16结果
+* @note
+* 该方法计算给定帧的CRC16结果，符合标准CRC16CCITT要求，同时CRC16也是以太网使用的CRC结构之一。
+*   名称       生成多项式             简记式*  标准引用
+*   CRC-4       x4+x+1                  3         ITU G.704
+*   CRC-8       x8+x5+x4+1              0x31                   
+*   CRC-8       x8+x2+x1+1              0x07                   
+*   CRC-8       x8+x6+x4+x3+x2+x1       0x5E
+*   CRC-12      x12+x11+x3+x+1          80F
+*   CRC-16      x16+x15+x2+1            8005      IBM SDLC
+*   CRC16-CCITT x16+x12+x5+1            1021      ISO HDLC, ITU X.25, V.34/V.41/V.42, PPP-FCS
+*   CRC-32      x32+x26+x23+...+x2+x+1 04C11DB7 ZIP, RAR, IEEE 802 LAN/FDDI, IEEE 1394, PPP-FCS
+*   CRC-32c     x32+x28+x27+...+x8+x6+1 1EDC6F41 SCTP
+* @remarks
+*/
+
 unsigned short my_linker::crc16(unsigned char* ptr, int len)
 {
 	unsigned short crc = 0x0000;
@@ -388,6 +408,15 @@ unsigned short my_linker::crc16(unsigned char* ptr, int len)
 	}
 	return crc;
 }
+
+/**
+* @author ACM2012
+* @param ptr: 指向帧内容的指针
+*        len: 帧长度
+* @return 返回0证明正确，返回其他结果证明错误
+* @note
+* 该方法对帧加上CRC结果进行求解，如果返回是0则正确，返回其他值则错误。
+*/
 
 unsigned short my_linker::checkCrc16(unsigned char *ptr, int len)
 {
