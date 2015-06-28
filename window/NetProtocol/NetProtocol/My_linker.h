@@ -185,8 +185,8 @@ public:
 	bool check(const u_char *);
 	unsigned short crc16(unsigned char *, int);
 	unsigned short checkCrc16(unsigned char *, int);
-	int pppEncode(unsigned char * buf, int len);
-	int pppDecode(unsigned char * buf, int len);
+	int pppEncode(unsigned char * buf, int len);/**@brief ppp数据帧编码函数*/ 
+	int pppDecode(unsigned char * buf, int len);/**@brief ppp数据帧解码函数*/ 
 	void send_broadcast(pcap_t  *adapterHandle, unsigned int src_IP, unsigned int dst_IP);
 	bool get_mac(pcap_t  *adapterHandle);
 	bool transtable(unsigned int IP);
