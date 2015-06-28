@@ -151,7 +151,7 @@ private:
 	/** @brief 清除写队列中已被读取节点 */
 	void   ClearNode(PM &pWriteQueue);
 	/** @brief 添加节点到写队列尾部 */
-	bool   AddToTail(PM &, HANDLE);
+   bool   AddToTail(PM &, HANDLE);
 	/** @brief  套接字注册链接处理函数 */
 	void   Connect();
 	/** @brief 初始化读写线程参数函数 */
@@ -161,9 +161,9 @@ private:
 	/** @brief 套接字分配资源*/
 	void   AllocResource(unsigned int SockMark);
 	/** @brief 读队列线程处理函数 */
-	void   ReadSock(HANDLE, unsigned int, HANDLE, PM);
+	void   ReadSock(HANDLE,unsigned int,HANDLE, PM);
 	/** @brief 写队列线程处理函数 */
-	void   WriteSock(HANDLE, unsigned int, HANDLE, PM);
+	void   WriteSock(HANDLE,unsigned int,HANDLE, PM);
 	/** @brief 套接字关闭函数*/
 	bool  CloseSock(unsigned int);
 	bool  state = true;

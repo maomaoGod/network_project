@@ -50,11 +50,11 @@ bool  SockPool::AddToTail(PM &pWriteQueue, HANDLE NewNode)
 	UnmapViewOfFile(LastNode);
 	CloseHandle(pWriteQueue->Tail);
 	pWriteQueue->Tail = NULL;///<添加节点到队列尾
-	DuplicateHandle(SH, NewNode, SH, &pWriteQueue->Tail, NULL, true, DUPLICATE_SAME_ACCESS);
+	DuplicateHandle(SH,NewNode, SH, &pWriteQueue->Tail, NULL, true, DUPLICATE_SAME_ACCESS);
 	PN phead = (PN)MapViewOfFile(pWriteQueue->Head, FILE_MAP_WRITE, 0, 0, sizeof(Node));
 	PN ptail = (PN)MapViewOfFile(pWriteQueue->Tail, FILE_MAP_WRITE, 0, 0, sizeof(Node));
 	if (pWriteQueue->Tail == NULL)
-		return PrintLog(_T("添加节点到写队列失败"), false);
+		return PrintLog(_T("添加节点到写队列失败"),false);
 	return true;
 }
 
@@ -74,7 +74,7 @@ void   SockPool::ClearNode(PM &pWriteQueue)
 		CloseHandle(temp->Next);
 		CloseHandle(temp->Data);///<关闭动态分配的共享内存句柄
 		UnmapViewOfFile(temp);///<关闭节点文件本地映射
-		pWriteQueue->hid++;
+		pWriteQueue->hid++;  
 	}
 }
 
@@ -131,15 +131,15 @@ void SockPool::ReadSock(HANDLE CH, unsigned int SockMark, HANDLE ReadQueue, PM p
 			break;
 		case SOCKSEND:
 		case SOCKSENDTO: ///<发送数据
-			memcpy(AppData.dstip, pNode->dstip, 20);
-			AppData.dstport = pNode->dstport;
-			AppData.datalength = pNode->DataLen;///<填充源端口
-			AppData.srcport = (Port2PortOut.find(SockMark2Port[SockMark]) == Port2PortOut.end()) ? SockMark2Port[SockMark] : Port2PortOut[SockMark2Port[SockMark]];
-			AppData.function = pNode->FuncID;
-			DuplicateHandle(CH, pNode->Data, SH, &HData, NULL, true, DUPLICATE_SAME_ACCESS);
-			AppData.data = (char *)MapViewOfFile(HData, FILE_MAP_WRITE, 0, 0, pNode->DataLen);
-			AfxGetApp()->m_pMainWnd->SendMessage(TRANSTOIP, (WPARAM)&AppData, (LPARAM)pNode->FuncID);
-			break;
+			    memcpy(AppData.dstip, pNode->dstip,20);
+			    AppData.dstport = pNode->dstport;
+			    AppData.datalength = pNode->DataLen;///<填充源端口
+				AppData.srcport = (Port2PortOut.find(SockMark2Port[SockMark]) == Port2PortOut.end()) ? SockMark2Port[SockMark] : Port2PortOut[SockMark2Port[SockMark]];
+				AppData.function = pNode->FuncID;
+				DuplicateHandle(CH,pNode->Data, SH, &HData, NULL, true, DUPLICATE_SAME_ACCESS);
+			    AppData.data = (char *) MapViewOfFile(HData, FILE_MAP_WRITE, 0, 0, pNode->DataLen);
+				AfxGetApp()->m_pMainWnd->SendMessage(TRANSTOIP, (WPARAM)&AppData, (LPARAM)pNode->FuncID);
+				break;
 		case SOCKCONNECT:
 		case SOCKCLOSE:
 			memcpy(AppData.dstip, pNode->dstip, 20);
@@ -187,7 +187,7 @@ DWORD WINAPI SockPool::NewWriteThread(LPVOID lParam)
 {
 	struct Para *mypara = (struct Para *)lParam;
 	SockPool *pthis = (SockPool *)mypara->pthis;
-	pthis->WriteSock(mypara->CH, mypara->SockMark, mypara->Queue, mypara->pQueue);///<线程调用类函数
+	pthis->WriteSock(mypara->CH,mypara->SockMark, mypara->Queue, mypara->pQueue);///<线程调用类函数
 	return 0;
 }
 
@@ -224,15 +224,14 @@ void SockPool::WriteSock(HANDLE CH, unsigned int SockMark, HANDLE WriteQueue, PM
 	while (SockMark2WriteState[SockMark]){
 		HANDLE NewNode = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(Node), NULL);
 		PN pNode = (PN)MapViewOfFile(NewNode, FILE_MAP_WRITE, 0, 0, sizeof(Node));
-
-		WaitForSingleObject(*SockMark2REvent[SockMark], INFINITE);///<等待传输层数据到来
+        WaitForSingleObject(*SockMark2REvent[SockMark], INFINITE);///<等待传输层数据到来
 
 		ClearNode(pWriteQueue);
 		SockDataToNode(pNode, SockMark);
 		UnmapViewOfFile(pNode);
 
 		SockMark2WEvent[SockMark]->SetEvent();
-		AddToTail(pWriteQueue, NewNode);///<添加数据到写队列
+		AddToTail(pWriteQueue,NewNode);///<添加数据到写队列
 		CloseHandle(NewNode);
 	}
 	ClearNode(pWriteQueue);///<释放写队列资源
@@ -298,27 +297,27 @@ void  SockPool::InitalThreadPara(Para &mypara, HANDLE CH, HANDLE Queue, PM pQueu
 */
 void SockPool::Connect()
 {
-	while (state){
-		WaitForSingleObject(Dsemaphore, INFINITE);//等待应用程序请求连接
-		PM pReadQueue, pWriteQueue;
-		HANDLE CH, ReadQueue, WriteQueue;
-		struct Para rPara, wPara;
+		while (state){
+			WaitForSingleObject(Dsemaphore, INFINITE);//等待应用程序请求连接
+			PM pReadQueue, pWriteQueue;
+	        HANDLE CH,ReadQueue, WriteQueue;
+			struct Para rPara, wPara;
 
-		AllocResource(preg->SockMark);///<为套接字分配资源
+			AllocResource(preg->SockMark);///<为套接字分配资源
 
-		ReadQueue = OpenFileMapping(FILE_MAP_WRITE, FALSE, preg->WriteQueueName);
-		InitalReadQueue(ReadQueue, pReadQueue, CH);///<初始化读队列
-		WriteQueue = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(Manager), preg->ReadQueueName);
-		InitalWriteQueue(WriteQueue, pWriteQueue);///<初始化写队列
+			ReadQueue = OpenFileMapping(FILE_MAP_WRITE, FALSE, preg->WriteQueueName);
+			InitalReadQueue(ReadQueue,pReadQueue,CH);///<初始化读队列
+			WriteQueue = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(Manager), preg->ReadQueueName);
+			InitalWriteQueue(WriteQueue, pWriteQueue);///<初始化写队列
 
-		InitalThreadPara(rPara, CH, ReadQueue, pReadQueue, preg->SockMark);
-		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewReadThread, (LPVOID)&rPara, NULL, NULL);
-		InitalThreadPara(wPara, CH, WriteQueue, pWriteQueue, preg->SockMark);
-		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewWriteThread, (LPVOID)&wPara, NULL, NULL);
-		ReleaseSemaphore(Rsemaphore, 1, NULL);///<释放读信号量
+			InitalThreadPara(rPara, CH, ReadQueue, pReadQueue, preg->SockMark);
+			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewReadThread, (LPVOID)&rPara, NULL, NULL);
+			InitalThreadPara(wPara, CH, WriteQueue, pWriteQueue, preg->SockMark);
+			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewWriteThread, (LPVOID)&wPara, NULL, NULL);
+			ReleaseSemaphore(Rsemaphore, 1, NULL);///<释放读信号量
 
-		sockconnum++;
-	}
+			sockconnum++;
+		}
 }
 
 

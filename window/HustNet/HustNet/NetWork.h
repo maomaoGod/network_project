@@ -495,13 +495,17 @@ namespace NetWork{
 			if (len > 0){//no data;
 				html = httpworker->getdata();
 				int count;
+				TCHAR Counter[10];
 				while (true){
 					if (len == 0) break;
 					memset(buf, 0, sizeof(buf));
 					count = aSocket->Receive(buf, BUFSIZE);
 					buf[BUFSIZE] = '\0';
+				//	PrintRp(STR::S2CS(buf));
 					html += (*new string(buf));
 					len -= count;
+					//_itot_s(len, Counter, 10);
+					//AfxMessageBox(Counter);
 				}
 				httpworker->setdata(html);
 			}

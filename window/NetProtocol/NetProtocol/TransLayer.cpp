@@ -329,7 +329,7 @@ ctrl_receive:
 			// 根据四元组找到TCP连接链表中的对应表
 			struct tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);
 
-			// 被第一次握手
+			// 被第一次握手 
 			if (new_tcp_msg.tcp_syn == 1 && new_tcp_msg.tcp_ack == 0)
 			{
 				if (!check_listening(src_port))
@@ -480,6 +480,8 @@ ctrl_receive:
 			// 不是TCP控制信息，是一般报文
 			else
 			{
+				//tcp->receive_time = GetTickCount();
+
 				int data_len = global_receive_ip_msg.datelen-4*new_tcp_msg.tcp_hdr_length;
 				int opts_offset = 4*new_tcp_msg.tcp_hdr_length-20;
 
@@ -1558,8 +1560,8 @@ void time_over()
 					struct tcp_message new_tcp_msg;
 					new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
 					new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
-					new_tcp_msg.tcp_seq_number = single_tcp->wait_for_ack; // q_number can be deleted ?
-						new_tcp_msg.tcp_ack_number = single_tcp->send_ack_needed ? single_tcp->next_send_ack : 0;
+					new_tcp_msg.tcp_seq_number = single_tcp->wait_for_ack;	//seq_number can be deleted?
+					new_tcp_msg.tcp_ack_number = single_tcp->send_ack_needed ? single_tcp->next_send_ack : 0;
 					new_tcp_msg.tcp_hdr_length = 5;
 					new_tcp_msg.tcp_reserved = 0;
 					new_tcp_msg.tcp_urg = 0;
@@ -1577,7 +1579,6 @@ void time_over()
 					TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, single_tcp->tcp_msg_send[temp_msg_num].datalen);
 				}
 			}
-
 			if (single_tcp->send_ack_needed)
 			{
 				if (GetTickCount() - single_tcp->receive_time > 500)

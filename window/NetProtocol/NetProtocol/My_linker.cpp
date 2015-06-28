@@ -615,7 +615,7 @@ void my_linker::packcap()
 			s_frame.IP_dst = r_frame.IP_src;
 			s_frame.IP_src = r_frame.IP_dst;
 			Sleep(200);
-			pcap_sendpacket(adapterHandle,
+			pcap_sendpacket(adapterHandle, 
 				(const u_char *)&s_frame,
 				sizeof(s_frame));
 		}
