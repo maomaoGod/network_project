@@ -3,7 +3,13 @@
 #include "my_linker.h"
 #include "NetProtocol.h"
 
-
+/**
+* @author ACM2012
+* @return 无返回值
+* @note
+* 获得可以工作的适配器，该函数在my_linker类的构造函数里调用
+* @remarks
+*/
 void my_linker::get_adapter()
 {
 	pcap_if_t * allAdapters;//适配器列表
@@ -666,6 +672,18 @@ void my_linker::send_broadcast(pcap_t  *adapterHandle, unsigned int src_IP, unsi
 	}
 }
 
+/**
+* @author ACM2012
+* @return 返回值指示是否获取MAC地址是否成功
+* @note
+* 该函数在发送广播帧之后不断循环调用，直到其返回值为true为止，返回值为true表示
+* 获取了广播帧的回复帧并获得了目标主机相应适配器地MAC地址，一旦获得了目标主机的
+* MAC地址，就可以退出循环并开始发送网络层传来的数据报文。
+* 
+* 在不断抓包判断是否包含目的主机的MAC地址时，需要先判断是否为广播帧的回复帧，若是，
+* 则提取出相应目的主机MAC地址字段。
+* @remarks
+*/
 bool my_linker::get_mac(pcap_t  *adapterHandle)
 {
 	//接收广播的数据报
