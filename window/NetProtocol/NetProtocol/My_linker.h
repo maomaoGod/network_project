@@ -244,6 +244,6 @@ public:
 	bool transtable(unsigned int IP);
 	void packcap();/**@brief 循环接收帧的函数*/ 
 	void Link2IP(WPARAM wparam);/**@brief 调用combine合并帧并提交上一层的模块*/ 
-	static DWORD WINAPI NewPackThread(LPVOID lParam);
+	static DWORD WINAPI NewPackThread(LPVOID lParam);/**@brief 一个线程，在构造函数中调用，它将用于执行packcap方法*/
 	unsigned int getIP();/**@brief 获取IP地址*/ 
 };
