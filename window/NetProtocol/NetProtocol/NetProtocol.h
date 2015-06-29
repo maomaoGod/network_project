@@ -58,7 +58,7 @@ struct prostruct   //进程间通信结构体
 typedef unsigned char Byte;
 typedef unsigned short Ushort;
 typedef int Bool;
-#define ipMSS 1480
+#define ipMSS 1480                ///< 定义IP数据报最大的分片大小1480
 
 /**
 *@class <ip_message>
@@ -107,6 +107,12 @@ struct ip_message //定义IP数据报文
 	}
 };
 
+/**
+*@class <Msg>
+*@author ACM2012
+*@note
+*	定义传输层传给网络层的结构
+*/
 struct Msg{                     ///<数据
 	unsigned int ih_sport;		///< 32位源端口号
 	unsigned int ih_dport;		///< 32位目的端口号
@@ -117,6 +123,12 @@ struct Msg{                     ///<数据
 	unsigned int protocol;		///< 上层协议类型
 };
 
+/**
+*@class <IP_Msg>
+*@author ACM2012
+*@note
+*	定义网络层传给链路层的结构
+*/
 struct IP_Msg{
 	unsigned int ih_saddr;		///< 32位源IP
 	unsigned int ih_daddr;		///< 32位目的IP
@@ -127,11 +139,22 @@ struct IP_Msg{
 #define maxnum 100				///<定义最大的节点数
 #define maxint 999999			///<定义最长的节点间距离
 
-//需要添加一个这样的结构，然后把边的个数和每个边的初始节点u,v,长度cost建立一个Edge结构
+/**
+*@class <Edge>
+*@author ACM2012
+*@note
+*	需要添加一个这样的结构，然后把边的个数和每个边的初始节点u,v,长度cost建立一个Edge结构
+*/
 struct Edge{
 	int u, v;
 };
 
+/**
+*@class <common_data>
+*@author ACM2012
+*@note
+*	定义LS算法路由信息和DV算法路由信息的共同结构
+*/
 struct common_data{
 	int node;				 ///< 节点个数
 	int sid;				 ///< 源节点
@@ -140,17 +163,35 @@ struct common_data{
 	int pre[maxnum];		 ///< 记录当前点的前一个结点
 };
 
+/**
+*@class <LS_data>
+*@author ACM2012
+*@note
+*	定义LS算法路由信息结构
+*/
 struct LS_data{
 	common_data LsData;
 	int c[maxnum][maxnum];   ///< 记录图的两点间路径长度
 };
 
+/**
+*@class <DV_data>
+*@author ACM2012
+*@note
+*	定义DV算法路由信息结构
+*/
 struct DV_data{
 	common_data DvData;
 	int edgenum;			 ///< 边数
 	Edge E[maxnum];			 ///< 边结构数组
 };
 
+/**
+*@class <Route_info>
+*@author ACM2012
+*@note
+*	定义路由信息结构
+*/
 struct Route_info{
 	Edge E[maxnum];
 	int node;
@@ -169,7 +210,12 @@ struct Route_info{
 #define MAX 0x3f3f3f3f    
 #define N 1010
 
-///< NAT转换表
+/**
+*@class <NAT_translation_table>
+*@author ACM2012
+*@note
+*	定义NAT转换表
+*/
 struct NAT_translation_table
 {
 	unsigned int WAN_IP;			 ///<  外网IP
@@ -179,7 +225,12 @@ struct NAT_translation_table
 	struct NAT_translation_table* next_p;
 };
 
-///< NAT协议输入
+/**
+*@class <In_NAT>
+*@author ACM2012
+*@note
+*	定义NAT协议需要输入信息的结构
+*/
 struct In_NAT{
 	unsigned int SIP;			///<  外网IP
 	unsigned short Sport;        ///<  外网端口

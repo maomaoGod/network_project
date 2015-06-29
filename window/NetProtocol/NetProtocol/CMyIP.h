@@ -23,18 +23,18 @@ class CMyIP
 {
 public:
 	Msg *IP_data;		  ///< 定义IP报文数据
-	ip_message *MyIP;
-	IP_Msg *NetoLink;		  ///< 定义IP报文
+	ip_message *MyIP;     ///< 定义IP数据报格式
+	IP_Msg *NetoLink;     ///< 定义IP报文
 	int _offset;		  ///< 定义偏移量
 	Route_info *info;     ///< 路由信息结构
 	LS_data *LsData;	  ///< LS算法的输入结构
 	DV_data *DvData;      ///< DV算法的输入结构
-	unsigned int sip;
+	unsigned int sip;    
 	unsigned int dip;
 
 public:
-	CRouting Route;
-	CNAT     InToOut;
+	CRouting Route;       ///< 调用路由选择协议
+	CNAT     InToOut;     ///< 调用NAT协议
 
 public:
 	/** @brief CMyIP类的构造函数 */
@@ -47,7 +47,7 @@ public:
 	BOOL IP2Link(WPARAM wparam, LPARAM lparam);
 	/** @brief 从链路层得到用于选路的信息 */
 	BOOL RecvMsg(WPARAM wparam, LPARAM lparam);
-	/** @brief 用于发送选路的信息 */
+	/** @brief 用于发送用于选路的信息 */
 	BOOL SendMsg(WPARAM wparam, LPARAM lparam);
 	/** @brief 从数组的下标得到对应的IP */
 	unsigned int Num2IP(int num);

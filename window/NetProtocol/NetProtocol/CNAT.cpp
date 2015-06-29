@@ -1,20 +1,36 @@
 #include"stdafx.h"
 #include"CNAT.h"
 
-extern int Routing_select;
-extern int end_connect;
-
+/**
+* @author ACM2012
+* @param
+* @exception
+* @return 无
+* @note CNAT类的构造函数
+*/
 CNAT::CNAT()
 {
 	p = NULL;
 	initial_IP = oIP;
 }
 
+/**
+* @author ACM2012
+* @param
+* @exception
+* @return 无
+* @note CNAT类的析构函数
+*/
 CNAT::~CNAT()
 {
 }
 
-
+/**
+* @author ACM2012
+* @param [in] 输入NAT的结构
+* @return 返回更新后NAT结构
+* @note 函数功能:主要是内部IP与端口对应起来
+*/
 In_NAT* CNAT::NAT(In_NAT* Nat)
 {
 	NAT_translation_table* p1 = new NAT_translation_table;

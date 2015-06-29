@@ -1,7 +1,7 @@
 /**@file
 *@brief
 *@author ACM2012
-*@date 2015.4.18
+*@date 2015.6.18
 *@version <0.1>
 *@note
 *定义CMyIP类的文件
@@ -12,8 +12,8 @@
 #include "TransLayer.h"
 #include "TransLayerTools.h"
 
-extern int Routing_select;
-extern int end_connect;
+extern int Routing_select;	///<路由选择算法选择, 1选择LS算法
+extern int end_connect;		///<定义客户端还是路由器, 1表示客户端, 0表示路由器 
 
 
 /******************************************************
@@ -30,7 +30,7 @@ extern int end_connect;
 ********************************************************/
 
 /*192.168.191.2, 192.168.191.3, 192.168.191.4, 192.168.191.5, 192.168.191.8 */
-unsigned int IpNum[IPN] = { 0, 3232241409, 3232241411, 3232241414, 3232241415, 3232284420 };
+unsigned int IpNum[IPN] = { 0, 3232241409, 3232241411, 3232241414, 3232241415, 3232284420 };     ///< 查找各路由器的IP,并设计连接情况
 /**
 * @author ACM2012
 * @param
@@ -45,10 +45,10 @@ CMyIP::CMyIP()
 	_offset = 0;
 	sip = IpNum[1];
 	dip = IpNum[5];
-	info = new Route_info;
-	LsData = new LS_data;
-	DvData = new DV_data;
-	if (Routing_select)
+	info = new Route_info;               ///<定义路由信息
+	LsData = new LS_data;				 ///<定义LS算法的路由信息	
+	DvData = new DV_data;				 ///<定义DV算法的路由信息
+	if (Routing_select)					 ///<设置路由器连接情况
 	{
 		info->edgenum = 2;
 		info->node = 3;
@@ -131,16 +131,13 @@ CMyIP::~CMyIP()
 
 /**
 * @author ACM2012
-* @param [in] wparam表示传输层传过来的数据包结构指针, lparam表示传输层传过来的参数.
+* @param [in] wparam表示传输层传过来的数据包结构指针, lparam表示传输层传过来的参数为空.
 * @return 返回FALSE说明发送到链路层的消息失败，返回TRUE说明发送成功
-* @note 函数功能主要是将Msg结构和IP地址等信息分片组装成IP_msg发送给链路层
+* @note 函数功能:若为端系统则将Msg结构和IP地址等信息分片组装成IP_msg发送给链路层,
+*                若为路由器需要先进行路由选路然后将Msg结构和IP地址等信息分片组装成IP_msg发送给链路层.
 */
 BOOL CMyIP::IP2Link(WPARAM wparam, LPARAM lparam)
 {
-	///< 将运输层送来的Msg结构和IP地址插入到IP_msg结构中,
-	///< 如果信息超过容量就进行分片处理, 
-	///< 调用链路层的发送函数如果发送失败 return FALSE;
-	///< 否则 return TRUE;
 	if (end_connect)
 	{
 		int offset = 0, ident = 0;
@@ -267,14 +264,11 @@ BOOL CMyIP::IP2Link(WPARAM wparam, LPARAM lparam)
 * @author ACM2012
 * @param [in] wparam表示传输层传过来的数据包结构指针, lparam表示传输层传过来的参数.
 * @return 返回FALSE说明没有发送成功，返回TRUE说明发送成功
-* @note 函数功能主要是链路层发送过来的信息分解成Msg结构, 发送给运输层
+* @note 函数功能:如果是端系统则将链路层发送过来的信息分解成Msg结构, 发送给运输层
+*				 如果是路由器则将链路层发送过来的信息直接唤醒IP2Link
 */
 Bool CMyIP::IP2Trans(WPARAM wparam, LPARAM lparam)
 {
-	///< 根据链路层发送的数据进行剥离得到报文长度以及偏移, 比较偏移量是否等于报文长度
-	///< 若发现分片缺失或者检验和出错则 return FALSE;
-	///< 若是则数据成功接收 进行少量的检验和检查, 若没有错误
-	///< 则将IP_msg结构剥离出Msg结构
 	static int count;
 	TCHAR buf[10];
 	if (end_connect)
@@ -371,7 +365,7 @@ BOOL CMyIP::RecvMsg(WPARAM wparam, LPARAM lparam)
 * @author ACM2012
 * @param [in] wparam表示自己封装的数据包结构指针, lparam表示若干参数.
 * @return 返回0说明发送成功，其他说明发送失败
-* @note 函数功能选路的数据的选路算法得到下一个目的IP
+* @note 函数功能向周围路由器发送路由信息
 */
 BOOL CMyIP::SendMsg(WPARAM wparam, LPARAM lparam)
 {
@@ -492,7 +486,12 @@ BOOL CMyIP::IP2Num(unsigned int IP)
 	return 0;
 }
 
-/** @brief 计算IP数据报的首部检验和 */
+/**
+* @author ACM2012
+* @param [in] ip数据报首部
+* @return 首部检验和
+* @note 函数功能主要是从IP计算IP数据报的首部检验和
+*/
 unsigned short CMyIP::iphdrmakesum(ip_message *ip)
 {
 	unsigned int sum = 0;
@@ -508,7 +507,12 @@ unsigned short CMyIP::iphdrmakesum(ip_message *ip)
 	return sum;
 }
 
-/** @brief 从路由信息结构中提取到LS_data信息结构 */
+/**
+* @author ACM2012
+* @param [in] info路由信息结构, LsData LS算法路由信息结构
+* @return void
+* @note 函数功能主要是从从路由信息结构中提取到LS_data信息结构
+*/
 void CMyIP::Route2LS(Route_info *info, LS_data *LsData)  
 {
 	LsData->LsData.node = info->node;
@@ -529,6 +533,12 @@ void CMyIP::Route2LS(Route_info *info, LS_data *LsData)
 	}
 }
 
+/**
+* @author ACM2012
+* @param [in] info路由信息结构, DvData Dv算法路由信息结构
+* @return void
+* @note 函数功能主要是从从路由信息结构中提取到DV_data信息结构
+*/
 /** @brief 从路由信息结构中提取到DV_data信息结构 */
 void CMyIP::Route2DV(Route_info *info, DV_data *DvData)
 {
@@ -539,81 +549,3 @@ void CMyIP::Route2DV(Route_info *info, DV_data *DvData)
 		DvData->E[i] = info->E[i];
 	DvData->edgenum = info->edgenum;
 }
-
-/*
-BOOL CMyIP::IP2Link(WPARAM wparam, LPARAM lparam)
-{
-	///< 将运输层送来的Msg结构和IP地址插入到IP_msg结构中,
-	///< 如果信息超过容量就进行分片处理, 
-	///< 调用链路层的发送函数如果发送失败 return FALSE;
-	///< 否则 return TRUE;
-	MyIP = new IP_Msg;
-	int offset = 0, ident = 0;
-	ident++;
-	IP_data = (struct Msg*)wparam;
-	while (IP_data->datelen - 8 * offset > MAXSIZE)
-	{
-		IP_HEADER.ih_protl = IP_data->protocol;
-		IP_HEADER.ih_saddr = IP_data->sip;
-		IP_HEADER.ih_daddr = IP_data->dip;
-		IP_HEADER.ih_flags = 1;
-		IP_HEADER.ih_ident = ident;
-		IP_HEADER.ih_offset = offset;
-		IP_HEADER.ih_len = strlen(IP_data->data);
-		offset = offset + MAXSIZE / 8;
-		IP_HEADER.ih_version = 4;
-		IP_HEADER.ih_sport = IP_data->ih_sport;
-		IP_HEADER.ih_dport = IP_data->ih_dport;
-		MyIP->iphdr = &IP_HEADER;
-		memcpy(MyIP->data, IP_data->data, MAXSIZE);
-		(AfxGetApp()->m_pMainWnd)->SendMessage(LINKSEND, (WPARAM)MyIP, lparam);
-	}
-	IP_HEADER.ih_protl = IP_data->protocol;
-	IP_HEADER.ih_saddr = IP_data->sip;
-	IP_HEADER.ih_daddr = IP_data->dip;
-	IP_HEADER.ih_flags = 0;
-	IP_HEADER.ih_ident = ident;
-	IP_HEADER.ih_offset = offset;
-	IP_HEADER.ih_len = IP_data->datelen;
-	IP_HEADER.ih_version = 4;
-	IP_HEADER.ih_sport = IP_data->ih_sport;
-	IP_HEADER.ih_dport = IP_data->ih_dport;
-	MyIP->iphdr = &IP_HEADER;
-	memcpy(MyIP->data, IP_data->data, IP_data->datelen - 8 * offset);
-	(AfxGetApp()->m_pMainWnd)->SendMessage(LINKSEND, (WPARAM)MyIP, lparam);
-	return 0;
-}
-
-Bool CMyIP::IP2Trans(WPARAM wparam, LPARAM lparam)
-{
-	///< 根据链路层发送的数据进行剥离得到报文长度以及偏移, 比较偏移量是否等于报文长度
-	///< 若发现分片缺失或者检验和出错则 return FALSE;
-	///< 若是则数据成功接收 进行少量的检验和检查, 若没有错误
-	///< 则将IP_msg结构剥离出Msg结构
-	int ident = 1;
-	MyIP = (struct IP_Msg*)wparam;
-	struct Msg *local_IP_data= new Msg;
-	if (MyIP->iphdr->ih_ident == ident)
-	{
-		if (MyIP->iphdr->ih_offset * 8 == _offset)
-		{
-			if (MyIP->iphdr->ih_flags){
-				memcpy(local_IP_data->data + _offset, MyIP->data, MAXSIZE);
-				_offset = _offset + MAXSIZE;
-			}
-			else{
-				memcpy(local_IP_data->data + _offset, MyIP->data, MyIP->iphdr->ih_len - _offset);
-				_offset = 0;
-				local_IP_data->sip = MyIP->iphdr->ih_saddr;
-				local_IP_data->dip = MyIP->iphdr->ih_daddr;
-				local_IP_data->ih_sport = MyIP->iphdr->ih_sport;
-				local_IP_data->ih_dport = MyIP->iphdr->ih_dport;
-				local_IP_data->protocol = MyIP->iphdr->ih_protl;
-				local_IP_data->datelen = MyIP->iphdr->ih_len;
-				(AfxGetApp()->m_pMainWnd)->SendMessage(TRANSTOAPP, (WPARAM)local_IP_data, lparam);
-			}
-		}
-	}
-	return 0;
-}
-*/

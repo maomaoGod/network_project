@@ -10,8 +10,8 @@
 #include "CRouting.h"
 
 
-extern int Routing_select;
-extern int end_connect;
+extern int Routing_select;	///<路由选择算法选择, 1选择LS算法
+extern int end_connect;		///<定义客户端还是路由器, 1表示客户端, 0表示路由器 
 
 
 /**
@@ -32,7 +32,7 @@ CRouting::CRouting()
 * @param
 * @return 无
 * @note
-* CMyIP类的析构函数
+* CRouting类的析构函数
 * @remarks
 */
 CRouting::~CRouting()
@@ -64,17 +64,17 @@ BOOL CRouting::searchPath(int *pre, int v, int u)
 
 /**
 * @author ACM2012
-* @param [in] 初始节点, 目的节点, 当前节点到源节点的最短路径长度, 当前节点的前一个节点, 记录图的两节点间路径长度
+* @param [in] 初始节点, 初始节点, 当前节点到源节点的最短路径长度, 当前节点的前一个节点, 记录图的两节点间路径长度
 * @return 无
 * @note 全局搜索最优的下一个节点
 */
 void CRouting::Dijkstra(int n, int v, int *dist, int *pre, int c[maxnum][maxnum])
 {
-	bool s[maxnum];    // 判断是否已存入该点到S集合中
+	bool s[maxnum];    ///< 判断是否已存入该点到S集合中
 	for (int i = 1; i <= n; ++i)
 	{
 		dist[i] = c[v][i];
-		s[i] = 0;     // 初始都未用过该点
+		s[i] = 0;     ///< 初始都未用过该点
 		if (dist[i] == maxint)
 			pre[i] = 0;
 		else
@@ -83,22 +83,22 @@ void CRouting::Dijkstra(int n, int v, int *dist, int *pre, int c[maxnum][maxnum]
 	dist[v] = 0;
 	s[v] = 1;
 
-	// 依次将未放入S集合的结点中，取dist[]最小值的结点，放入结合S中
-	// 一旦S包含了所有V中顶点，dist就记录了从源点到所有其他顶点之间的最短路径长度
+	///< 依次将未放入S集合的结点中，取dist[]最小值的结点，放入结合S中
+	///< 一旦S包含了所有V中顶点，dist就记录了从源点到所有其他顶点之间的最短路径长度
 	for (int i = 2; i <= n; ++i)
 	{
 		int tmp = maxint;
 		int u = v;
-		// 找出当前未使用的点j的dist[j]最小值
+		///< 找出当前未使用的点j的dist[j]最小值
 		for (int j = 1; j <= n; ++j)
 		if ((!s[j]) && dist[j]<tmp)
 		{
-			u = j;              // u保存当前邻接点中距离最小的点的号码
+			u = j;              ///< u保存当前邻接点中距离最小的点的号码
 			tmp = dist[j];
 		}
-		s[u] = 1;    // 表示u点已存入S集合中
+		s[u] = 1;    ///< 表示u点已存入S集合中
 
-		// 更新dist
+		///< 更新dist
 		for (int j = 1; j <= n; ++j)
 		if ((!s[j]) && c[u][j]<maxint)
 		{
@@ -112,13 +112,24 @@ void CRouting::Dijkstra(int n, int v, int *dist, int *pre, int c[maxnum][maxnum]
 	}
 }
 
+/**
+* @author ACM2012
+* @param [in] LS算法的路由信息结构
+* @return 无
+* @note 全局搜索最优的下一个节点
+*/
 BOOL CRouting::LS(LS_data *LSdata)
 {
 	Dijkstra(LSdata->LsData.node, LSdata->LsData.sid, LSdata->LsData.dist, LSdata->LsData.pre, LSdata->c);
 	return searchPath(LSdata->LsData.pre, LSdata->LsData.sid, LSdata->LsData.did);
 }
 
-//n为节点数，edge为边数，v为初始节点，dist为初始节点到各个节点的距离, pre为前节点序列
+/**
+* @author ACM2012
+* @param [in] 节点数, 边数, 初始节点, 当前节点到源节点的最短路径长度, 当前节点的前一个节点, 记录图中所有的边
+* @return 无
+* @note 全局搜索最优的下一个节点
+*/
 void CRouting::Bellman_Ford(int n, int edgenum, int v, int *dist, int *pre, Edge edge[N])
 {
 	pre[v] = v;
@@ -133,6 +144,12 @@ void CRouting::Bellman_Ford(int n, int edgenum, int v, int *dist, int *pre, Edge
 		}
 }
 
+/**
+* @author ACM2012
+* @param [in] DV算法的路由信息结构
+* @return 无
+* @note 全局搜索最优的下一个节点
+*/
 BOOL CRouting::DV(DV_data *DVdata)
 {
 	Bellman_Ford(DVdata->DvData.node, DVdata->edgenum, DVdata->DvData.sid, DVdata->DvData.dist, DVdata->DvData.pre, DVdata->E);
