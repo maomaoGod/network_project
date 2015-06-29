@@ -48,6 +48,14 @@ struct prostruct   //进程间通信结构体
 // CServeApp:
 // 有关此类的实现，请参阅 Serve.cpp
 //
+
+/**
+*@class  <CServeApp>
+*@brief  服务器应用程序类，主要完成应用程序的初始化和释放工作
+*@author ACM2012
+*@note  服务器应用程序类，主要完成应用程序的初始化和释放工作
+*/
+
 class CServeApp : public CWinApp
 {
 public:

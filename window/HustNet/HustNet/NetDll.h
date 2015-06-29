@@ -9,12 +9,8 @@
 /**
 *@class <NetDll>
 *@brief   加载动态链接库类
-*@note
-*用于动态加载动态链接库
-*/
-
-/**
-*NetDll主要实现动态加载动态链接库的功能。NetDll提供两种动态加载链接库的方式，第一种方式可以通过路径加载；\n
+*@author ACM2012
+*@note  NetDll主要实现动态加载动态链接库的功能。NetDll提供两种动态加载链接库的方式，第一种方式可以通过路径加载；\n
 *第二种方式可以通过打开对话框选择指定的动态链接库文件进行加载；类中含有一个实例句柄，当加载完成时实例句柄\n
 *将被指向指定的动态链接库；NetDll提供GetFun函数导出动态链接库中的指定函数接口，程序通过接口访问动态链接库\n
 *中的函数。
@@ -27,7 +23,10 @@ public:
 private:
     HINSTANCE Hinst;
 public:
+	/**@brief 打开动态链接库*/
 	void OpenDll();
+	/**@brief 通过窗体加载动态链接库*/
 	BOOL LoadDll(LPCTSTR path);
+	/**@brief 获取函数指针*/
 	FARPROC GetFun(LPCSTR);
 };

@@ -99,8 +99,10 @@ BOOL RespondView::PreCreateWindow(CREATESTRUCT& cs)
 }
 
 /**
-*屏蔽鼠标单击\n
-*本函数在鼠标单击时触发，函数通过单击选中文本可以修改相应的文本，本函数屏蔽该消息，防止修改响应历史
+* @author ACM2012
+* @param point 鼠标点击点坐标
+* @note  屏蔽鼠标单击本函数在鼠标单击时触发，函数通过单击选中文本可以修改相应的文本，
+*本函数屏蔽该消息，防止修改日志历史
 */
 void RespondView::OnLButtonDown(UINT nFlags, CPoint point)
 {
@@ -112,8 +114,10 @@ void RespondView::OnLButtonDown(UINT nFlags, CPoint point)
 }
 
 /**
-*屏蔽鼠标双击\n
-*本函数在鼠标双击时触发，函数通过双击选中文本可以修改相应的文本，本函数屏蔽该消息，防止修改响应历史
+*@author ACM2012
+*@param point 鼠标点击点坐标
+*@note 本函数在鼠标双击时触发，屏蔽鼠标双击，函数通过双击选中文本可以修改相应的文本，
+*本函数屏蔽该消息，防止修改响应历史
 */
 void RespondView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
@@ -125,8 +129,9 @@ void RespondView::OnLButtonDblClk(UINT nFlags, CPoint point)
 }
 
 /**
-*屏蔽按键输入\n
-*本函数在非系统键被按下时触发。RespondView仅显示日志历史，通过屏蔽按键消息使得不允许用户直接输入改变响应历史
+*@author ACM2012
+*@note 屏蔽按键输入本函数在非系统键被按下时触发。LogView仅显示日志历史，通过
+*屏蔽按键消息使得不允许用户直接输入改变日志历史
 */
 void RespondView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
@@ -138,10 +143,11 @@ void RespondView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 }
 
 /**
-*在RespondView打印一行文字输出\n
-*函数在窗口接收到PRINT消息时被触发。需要打印的字符串参数为wparam，函数自动添加记录标号\n
-*，自动添加换行符，并将输入焦点设置为尾部，实现滚动条随着字体的增加而向下移动
-* @param  wparam  需要打印的字符串  
+*@author ACM2012
+*@param  wparam  需要打印的字符串  \n
+*@note 在LogView打印一行文字输出函数在窗口接收到PRINT消息时被触发。需要打印的字符串参数
+*为wparam，函数自动添加记录标号自动添加换行符，并将输入焦点设置为尾部，实现滚动条随着字体
+*的增加而向下移动
 */
 
 LRESULT RespondView::Print(WPARAM wparam, LPARAM lparam)
@@ -156,9 +162,11 @@ LRESULT RespondView::Print(WPARAM wparam, LPARAM lparam)
 }
 
 /**
-*清空日志窗口\n
-*函数在LogView接收到CLEAN消息时被触发。函数清空日志记录，并重置日志标号，\n
-*同时设置焦点，以使得滚动条回到起始位置，保证滚动条和文本的一致*/
+*@author ACM2012
+*@param  wparam  需要打印的字符串  \n
+*@note*清空日志窗口函数在LogView接收到CLEAN消息时被触发。函数清空日志记录，
+*并重置日志标号，同时设置焦点，以使得滚动条回到起始位置，保证滚动条和文本的一致
+*/
 LRESULT RespondView::Clean(WPARAM wparam, LPARAM lparam)
 {
 	Res.Empty();
@@ -170,10 +178,10 @@ LRESULT RespondView::Clean(WPARAM wparam, LPARAM lparam)
 }
 
 /**
-*设置响应窗口内容\n
-*函数在RespondView接收到SETTEXT消息时被触发。函数清空日志窗口，\n
-*并将窗口设置为指定的字符串内容。
-* @param  wparam  设置的窗口内容字符串
+*@author ACM2012
+*@param  wparam  设置的文本类容
+*@note 在RespondView打印一行文字输出函数在窗口接收到SETTEXT消息时被触发
+*的增加而向下移动
 */
 LRESULT RespondView::SetText(WPARAM wparam, LPARAM lparam)
 {

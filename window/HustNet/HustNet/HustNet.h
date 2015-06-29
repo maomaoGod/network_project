@@ -41,6 +41,13 @@ struct  CMD{
 *有关此类的实现，请参阅 HustNet.cpp
 */
 
+/**
+* @class <HustNet>
+* @brief    网络实验平台应用程序类
+* @author ACM2012
+* @note   本程序对生成的该类未作修改
+*/
+
 class CHustNetApp : public CWinApp
 {
 public:

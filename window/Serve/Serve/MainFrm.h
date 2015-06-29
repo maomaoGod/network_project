@@ -3,6 +3,13 @@
 //
 #pragma once
 
+/**
+*@class  <CMainFrame>
+*@brief   程序框架窗口类, 主要完成界面的显示控制,
+*@author ACM2012
+*@note 程序框架窗口类，主要负责界面的显示和控制。
+*/
+
 class CMainFrame : public CFrameWnd
 {
 	
@@ -35,8 +42,9 @@ protected:  // 控件条嵌入成员
 
 // 生成的消息映射函数
 protected:
+	/**@brief 主窗体被创建时函数被触发*/
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg LRESULT Register(WPARAM, LPARAM);
+	//afx_msg LRESULT Register(WPARAM, LPARAM);
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg LRESULT DNSADDRAdd(WPARAM, LPARAM);

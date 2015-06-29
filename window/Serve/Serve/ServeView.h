@@ -10,6 +10,12 @@
 #include "DnsSocket.h"
 #pragma once
 
+/**
+*@class  <CServeView>
+*@brief   程序界面窗口类，主要负责显示用户界面，更新界面数据
+*@author ACM2012
+*@note  程序界面窗口类，主要负责显示用户界面，更新界面数据。本程序主要负责在界面输出的响应文本
+*/
 class CServeView : public CEditView
 {
 protected: // 仅从序列化创建

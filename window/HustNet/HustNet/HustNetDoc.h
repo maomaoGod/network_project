@@ -8,6 +8,12 @@
 
 #pragma once
 
+/**
+*@author ACM2012
+*@param e 设置CmdView的命令提示语
+*@note 
+*/
+
 
 class CHustNetDoc : public CDocument
 {

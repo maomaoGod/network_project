@@ -5,6 +5,12 @@
 
 #pragma once
 
+/**
+*@class  <CNetProtocolDoc>
+*@brief   程序文档类，处理程序的主要数据
+*@author ACM2012
+*@note  本程序并未使用
+*/
 
 class CNetProtocolDoc : public CDocument
 {

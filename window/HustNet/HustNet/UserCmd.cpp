@@ -20,11 +20,11 @@ UserCmd::~UserCmd()
 }
 
 /**
-*通过动态链接库实现加法运算\n
-*函数通过动态链接库实现加法运算。函数首先对算数公式进行解析，获取两个加数，\n
-*然后从动态链接库中加载加法函数，并调用该函数进行计算，将公式和计算结果打印到\n
-*RespondView窗口
+* @author ACM2012
 * @param e  运算公式字符串
+* @note  通过动态链接库实现加法运算函数通过动态链接库实现加法运算。函数首先对算
+*数公式进行解析，获取两个加数，然后从动态链接库中加载加法函数，并调用该函数进行
+*计算，将公式和计算结果打印到RespondView窗口
 */
 void UserCmd::Compute(CString e){
 	int pos;
@@ -52,12 +52,14 @@ void UserCmd::Compute(CString e){
 		PrintRp(mystr);
 }*/
 
-/**
-*实现和服务器的TCP通信\n
+/*
+* @author ACM2012
+* @note  实现和服务器的TCP通信\n
 *函数实现和服务器的通信，客户端发送数据到服务器，服务器响应并返回响应报文。\n
 *函数首先接管cmd,通过调用CSocket和服务器建立连接，绑定端口固定为6500。\n
 *获取一行输入，发送该字符串到服务器，并接收从服务返回的信息，并打印到RespondView\n
-*窗口；若获取的输入为exit，则函数跳出循环，并关闭连接*/
+*窗口；若获取的输入为exit，则函数跳出循环，并关闭连接
+*/
 void  UserCmd::Connect(CString e){
 	AfxSocketInit();
 	/**
@@ -106,7 +108,10 @@ void  UserCmd::Connect(CString e){
 	}
 	aSocket.Close();
 }
-
+/*
+* @author ACM2012
+* @note Http协议入口
+*/
 void UserCmd::Http(CString e)
 {
 	//HttpSend Http;
@@ -114,20 +119,25 @@ void UserCmd::Http(CString e)
 	AppLayerHttp html;
 	html.Begin();
 }
-
+/*
+* @author ACM2012
+* @note ftp协议入口
+*/
 void UserCmd::Ftp(CString e){
 	FTPApp myftp;
 	myftp.Begin();
 }
+
 void UserCmd::Chat(CString e){
 	ChatWork chat;
 	chat.Begin();
 }
 
-/**
-* 函数通过路径加载Dll\n
-* 函数通过动态链接库路径尝试加载指定位置的动态链接库，若加载失败，将失败信息打印到状态输出窗口
+/*
+* @author ACM2012
 * @param 动态链接库路径
+* @note * 函数通过路径加载Dll\n
+* 函数通过动态链接库路径尝试加载指定位置的动态链接库，若加载失败，将失败信息打印到状态输出窗口
 */
 void UserCmd::SetDll(CString e){
 	if (mydll.LoadDll(e) == FALSE){
@@ -136,10 +146,10 @@ void UserCmd::SetDll(CString e){
 	}
 }
 
-/**
-*函数通过url获取网页html的字符流\n
-*函数通过url获取网页html的字符流，并将其显示到响应输出窗口
+/*
+* @author ACM2012
 * @param url  请求网页html的统一资源定义符
+* @note 函数通过url获取网页html的字符流函数通过url获取网页html的字符流，并将其显示到响应输出窗口
 */
 
 #include "Httpworker.h"
@@ -150,15 +160,17 @@ void UserCmd::GetHtml(CString url){
 	SetRp(html);
 }
 
-/**
-*清空响应窗口
+/*
+* @author ACM2012
+* @note 清空响应窗口
 */
 void UserCmd::cleanrp(CString e){
 	CleanRp(NULL);
 }
 
-/**
-*清空状态窗口
+/*
+* @author ACM2012
+* @note 清空日志窗口
 */
 void UserCmd::cleanlog(CString e){
     CleanLog(NULL);

@@ -238,6 +238,13 @@ struct In_NAT{
 	unsigned short Dport;        ///<  内网端口
 };
 
+/**
+*@class  <CNetProtocolApp>
+*@brief  协议栈应用程序类
+*@author ACM2012
+*@note 本程序为MFC向导生成类，主要完成应用程序的初始化工作
+*/
+
 class CNetProtocolApp : public CWinApp
 {
 public:

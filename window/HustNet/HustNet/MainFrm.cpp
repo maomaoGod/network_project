@@ -1,6 +1,7 @@
 /**
 *MainFrm.cpp : CMainFrame 类的实现
 */
+
 #include "stdafx.h"
 #include "HustNet.h"
 #include "MainFrm.h"
@@ -95,10 +96,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 /**
-*调整框体类的属性
+*@brief 调整框体类的属性
 *@param cs  窗体属性结构体
-*@note 函数在窗体即将创建时被触发。通过窗体属性结构体的引用，函数设置框架\n
-*@note 的高度和宽度分别为屏幕分辨率的3/4和5/8，并保证窗口的显示位置正好居中
+*@note 函数在窗体即将创建时被触发。通过窗体属性结构体的引用，函数设置框架
+*的高度和宽度分别为屏幕分辨率的3/4和5/8，并保证窗口的显示位置正好居中
 */
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
@@ -139,13 +140,15 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 
 /**
-*CMainFrame 消息处理程序\n
-*实现窗口分割\n
+*@author ACM2012
+*@note实现窗口分割\n
 *函数在框架类创建客户区时被触发。函数通过CSplitterWnd对客户区进行分割，首先使用\n
 *CSplitterWnd将框架客户区分为两部分，分割的结果将1个客户区分为1*2的两个窗格，右侧\n
 *窗格为响应窗口RespondView窗口区；然后再使用CSplitterWnd将左侧(0,0)窗格划分为2*1两\n
 *个窗格,上侧窗格为CmdView窗口区，下侧窗格为LogView窗口区。分割完成后将对应的View\n
-*动态创建到指定窗格*/
+*动态创建到指定窗格
+*/
+
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 {
 	/**
@@ -153,21 +156,11 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	*/
 	CRect rect;
 	GetClientRect(&rect);
-	//m_spliter.Create(this, 2, 2, CSize(10, 10), pContext);
-	/**
-	*@brief 使用分割工具将客户区分为1*2窗格
-	*/
 	BOOL bCreateSplit = m_splitter.CreateStatic(this, 1, 2);
-	/**
-	*@brief  将左侧窗格分为2*1窗格
-	*/
 	if (!s_splitter.CreateStatic(&m_splitter, 2, 1, WS_CHILD | WS_VISIBLE, m_splitter.IdFromRowCol(0, 0)))
 	{
 		return FALSE;
 	}
-	/**
-	*@brief 动态创建对应试图到指定窗格
-	*/
 	s_splitter.CreateView(0, 0, RUNTIME_CLASS(CmdView), CSize(rect.Width() / 2, rect.Height() / 2), pContext);
 	s_splitter.CreateView(1, 0, RUNTIME_CLASS(LogView), CSize(rect.Width() / 2, rect.Height() / 4), pContext);
 	m_splitter.CreateView(0, 1, RUNTIME_CLASS(RespondView), CSize(rect.Width() / 2, rect.Height()), pContext);
@@ -181,14 +174,16 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	prespond = DYNAMIC_DOWNCAST(RespondView, pwnd);
 	flag = true;
 	return bCreateSplit;
-	//return CFrameWnd::OnCreateClient(lpcs, pContext);
 }
 
 /**
-*框体变化时动态调整窗格大小\n
-*函数在框体大小发生变化时被触发。函数根据窗体的变化重新调整子窗格的大小，\n
-*调整的规则为左侧窗格的宽度为整个客户区大小的1/3，右侧为2/3；左侧两个小窗格\n
-*的高度均为客户区高度的1/2。所有窗格的高和宽均不得小于50像素，否则系统隐藏窗格*/
+*@author ACM2012
+*@note 框体变化时动态调整窗格大小函数在框体大小发生变化时被触发。函数根据窗体的变化
+*重新调整子窗格的大小，调整的规则为左侧窗格的宽度为整个客户区大小的1/3，右侧为2/3；
+*左侧两个小窗格的高度均为客户区高度的1/2。所有窗格的高和宽均不得小于50像素，否则系统
+*隐藏窗格
+*/
+
 void CMainFrame::OnSize(UINT nType, int cx, int cy)
 {
 	CFrameWnd::OnSize(nType, cx, cy);
@@ -218,30 +213,21 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 
 
 /**
-*@param  wparam 标明消息需要发送的目的窗口标号
-*@param  lparam  消息传送给目的窗口的参数
-*@note 函数在接收到DISPATCH消息时函数被触发。函数根据wparam确定消息要被发送的目的窗口，\n
-*@note 并解析lparam中的内容，lparam指向一个CMD结构体，该结构体第一个元素为要发送给目的窗\n
-*@note 口的消息ID，第二个参数为要发送给目的窗口的参数args
+*@author ACM2012
+*@param  wparam 标明消息需要发送的目的窗口标号   lparam  消息传送给目的窗口的参数
+*@note 函数在接收到DISPATCH消息时函数被触发。函数根据wparam确定消息要被发送的目的窗口，
+*并解析lparam中的内容，lparam指向一个CMD结构体，该结构体第一个元素为要发送给目的窗
+*口的消息ID，第二个参数为要发送给目的窗口的参数args
 */
 LRESULT CMainFrame::Dispatch(WPARAM wparam, LPARAM lparam)
 {
 	int CMD_ID;
 	void *CMD_PARA1, *CMD_PARA2;
-	/**
-	*@brief 解析消息参数
-	*/
 	CMD_ID = ((CMD *)lparam)->ID;
 	CMD_PARA1 = ((CMD *)lparam)->para1;
 	CMD_PARA2 = ((CMD *)lparam)->para2;
-	/**
-	*@brief 判断消息传递的目的窗口
-	*/
 	switch (wparam)
 	{
-		/**
-		*@brief 消息转发到目的窗口
-		*/
 	case CMDVIEW: 
 		pcmd->SendMessage(CMD_ID, (WPARAM)CMD_PARA1, (LPARAM)CMD_PARA2);
 		break;
@@ -256,7 +242,10 @@ LRESULT CMainFrame::Dispatch(WPARAM wparam, LPARAM lparam)
 	return 0;
 }
 
-//close 
+/**
+*@author ACM2012
+*@note 窗体关闭程序,动态效果关闭主窗体
+*/
 void CMainFrame::OnClose()
 {
 	/**
@@ -276,7 +265,10 @@ void CMainFrame::OnClose()
 	return;
 }
 
-
+/**
+*@author ACM2012
+*@note 打开网络设置对话框
+*/
 void CMainFrame::OnNETSET()
 {
 	/**

@@ -1,10 +1,15 @@
 #pragma once
 #include "stdafx.h"
+
 /**
-*UICtrl主要实现了从界面的输入输出功能，为UserCmd类中自定义程序提供输入输出接口。自定义程序通过调用UICtrl的全局函数
-*实现在框架界面的输入输出，通过UICtrl可以打印文字到LogView,RespondView窗口，可以清空LogView和RespondView窗口内容，
-*可以在用户命令模式下从CmdView中获取一行输入。UICtrl提供接管CmdView窗口的功能，也可以设置命令提示语。UICtrl并不直
-*接操作窗口，而是通过向指定窗口发送命令的方式通知对应窗口完成。
+* @class <UICtrl>
+* @brief   界面控制类，通过向框架发送消息控制界面的显示
+* @author ACM2012
+* @note   UICtrl主要实现了从界面的输入输出功能，为UserCmd类中自定义程序提供输入输出接口。
+*自定义程序通过调用UICtrl的全局函数实现在框架界面的输入输出，通过UICtrl可以打印文字到LogView,
+*RespondView窗口，可以清空LogView和RespondView窗口内容，可以在用户命令模式下从CmdView中
+*获取一行输入。UICtrl提供接管CmdView窗口的功能，也可以设置命令提示语。UICtrl并不直接操作窗口，
+*而是通过向指定窗口发送命令的方式通知对应窗口完成。
 */
 typedef enum   { OLDLINE, NEWLINE }  LINESTATE;
 typedef enum   { THREAD_EXIT, THREAD_WAIT, THREAD_RUN }  STATE;
@@ -35,20 +40,18 @@ void CleanLog(CString e);
 */
 void SetRp(CString e);
 /**
-*Brief 设置CmdView的命令提示语
-*@param e 需要设置的命令提示语
+*@brief 设置CmdView的命令提示语
 */
 void SetHint(CString e);
 /**
 *@brief 设置CmdView的命令提示语，接管CmdView的输入
-*param e 需要设置的命令提示语
 */
 void TakeOverCmd(CString e);
 /**
 *@brief 从CmdView中获取一行输入
-*@retval null 不在用户命令模式
 */
 CString  GetLine();
 /**
-*@brief 通知主窗口命令已获取完成*/
+*@brief 通知主窗口命令已获取完成
+*/
 void EndInput();

@@ -2,10 +2,11 @@
 #include "ComSocket.h"
 
 /**
-*@class  <CmySocket>
-*@brief  自实现异步套接字
+*@class  <CmyAsyncSocket>
+*@brief  自实现异步套接字，实现传输层和应用层之间的通信
 *@author ACM2012
-*@note 本类和协议栈中的套接字池合作使用,完成对MFC提供的CAsyncSocket类的重写，实现套接字监听，数据收发，连接转交等功能
+*@note 本类和协议栈中的套接字池合作使用,完成对MFC提供的CAsyncSocket类的重写，实现套接字监听，
+* 数据收发，连接转交等功能
 */
 
 class  CmyAsyncSocket : public CComSocket
@@ -26,13 +27,21 @@ private:
 	char  *pReadData;
 	unsigned int ReadDataLen, DataLen;
 private:
+	/** @brief 初始化写队列环境*/
 	bool  InitalWriteQueue(regstruct &);
+	/** @brief  初始化读队列环境*/
 	bool  InitalReadQueue(regstruct &);
+	/** @brief  从从写队列中移除已读节点*/
 	void   RemoveRead();
+	/** @brief 加入数据到队列尾部*/
 	bool   AddToTail(HANDLE NewNode);
+	/** @brief 套接字等待套接字事件到来*/
 	bool  WaitForSockEvent(unsigned int SOCKEVENT);
+	/** @brief 开始从套接字中接收数据*/
 	int     RcvBegin(void* lpBuf, int nBufLen);
+	/** @brief 创建异步套接字线程*/
 	static DWORD WINAPI NewGetSockEventThread(LPVOID);
+	/** @brief 循环等待套接字时间到来*/
 	void   GetSockEvent();
 public:
 	/** @brief 套接字监听 */
