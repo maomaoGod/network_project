@@ -1,3 +1,9 @@
+/**@file
+*@brief tcp相关协议实现头文件
+*@author ACM2012
+*@date 2015/6/1
+*@version <0.1>
+*/
 #pragma once
 #include "stdafx.h"
 #include "Tools.h"
@@ -41,6 +47,14 @@ using namespace std;
 #define LINK_CONNECT_LOSE 15
 #define wnd_SR 100			//小于等于SEND_STRUCT_SIZE/2即可
 
+
+/**
+*@class <tcpmsg_send>
+*@brief 当前TCP下发送报文管理结构
+*@author ACM2012
+*@date 2015/6/1
+*@version <0.1>
+*/
 struct tcpmsg_send
 {
 	int time;
@@ -48,7 +62,13 @@ struct tcpmsg_send
 	//struct tcp_message tcpmessage;   //序号tcpmessage->tcp_seq_number
 	int seq_number;
 };
-
+/**
+*@class <tcpmsg_rcvd>
+*@brief 当前TCP下接收报文管理结构
+*@author ACM2012
+*@date 2015/6/1
+*@version <0.1>
+*/
 struct tcpmsg_rcvd
 {
 	int datalen;
@@ -56,7 +76,14 @@ struct tcpmsg_rcvd
 	bool handin;
 	//struct tcp_message tcpmessage;
 };
-
+/**
+*@class <tcplist>
+*@brief tcp连接链表
+*@author ACM2012
+*@date 2015/6/1
+*@version <0.1>
+*@note 记录所有TCP连接下的所需的相关变量，发送缓冲区，接收缓冲区等等
+*/
 struct tcplist
 {
 	struct tcplist *next;
@@ -90,7 +117,14 @@ struct tcplist
 	int connect_status;	// TCP连接状态
 	int receive_time; //当前收到的最后一个报文的时间
 };
-
+/**
+*@class <stopandwait>
+*@brief 停止等待协议结构
+*@author ACM2012
+*@date 2015/6/1
+*@version <0.1>
+*@note 记录发送报文的时间，发送缓冲区，以及上一个发送报文记录，方便发送和重传
+*/
 struct stopandwait
 {
 	int time;               //记录发送报文的时间
@@ -100,7 +134,14 @@ struct stopandwait
 	struct tcp_message last_send;   //上一个发送出去的报文
 	int last_ack;
 };
-
+/**
+*@class <gobackn>
+*@brief go-back-n协议结构
+*@author ACM2012
+*@date 2015/6/1
+*@version <0.1>
+*@note 记录发送报文的时间，发送缓冲区，发送窗口等，以便实现GO-BACK-N协议
+*/
 struct gobackn
 {
 	int time;               //记录发送报文的时间
@@ -109,7 +150,14 @@ struct gobackn
 	int nextseqnum;            
 	int last_send_msg;    //当前缓冲区中将要发送的最后一个报文的下标
 };
-
+/**
+*@class <SR_message>
+*@brief 选择重传协议结构
+*@author ACM2012
+*@date 2015/6/1
+*@version <0.1>
+*@note 存放发送和接受缓冲区，发送接收窗口，以及相关所需标记，以便选择重传
+*/
 struct SR_message
 {
 	int time;
