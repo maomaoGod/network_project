@@ -133,7 +133,14 @@ struct Arpheader {
 class my_linker
 {
 private:
-
+	
+	/**
+	*@class <CMlinker>
+	*@brief 数据片段
+	*@author ACM2012
+	*@note
+	*接收的帧会临时用这个结构体来保存。
+	*/
 	struct Data_Segment
 	{
 		Byte data[128];
@@ -141,23 +148,27 @@ private:
 	};
 
 	static const int maxlength = 100000;
-	char **msg;						 
-	Data_Segment *buffer;
-	int bp;
-	int **data_pointer;
-	int *left;						 
-	void get_adapter();
+	char **msg;/**@brief 数据报*/ 			 
+	Data_Segment *buffer;/**@brief 缓存*/ 
+	int bp;/**@brief 指向buffer的指针，表示这一位置可用*/ 
+	int **data_pointer;/**@brief 指针，表示每个数据报的每个帧指向的buffer中的位置*/ 
+	int *left;/**@brief 每个数据报还剩的帧的个数*/ 
+	void get_adapter();/**@brief 获取适配器的方法，私有*/ 
 
 public:
 
-	//本机MAC地址
-	unsigned short mac_src[3];
-
-	//目的MAC地址
-	unsigned short mac_des[3];
-	pcap_t * adapterHandle;
+	unsigned short mac_src[3];/**@brief 本机MAC地址*/ 
+	unsigned short mac_des[3];/**@brief 目的MAC地址*/ 
+	pcap_t * adapterHandle;/**@brief 适配器句柄*/ 
 	unsigned int transIP[table_size];
 	unsigned short transmac[table_size][3];
+	
+	/**
+	* @author ACM2012
+	* @note
+	* my_linker类的构造函数
+	* @remarks
+	*/
 	my_linker()
 	{
 		msg = new char*[maxlength];
@@ -174,6 +185,13 @@ public:
 		if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewPackThread, (LPVOID) this, NULL, NULL))
 			AfxMessageBox(_T("创建抓包线程失败！"));
 	}
+	
+	/**
+	* @author ACM2012
+	* @note
+	* my_linker类的析构函数
+	* @remarks
+	*/
 	~my_linker()
 	{
 		for (int i = 0; i < maxlength; ++i)
@@ -188,6 +206,13 @@ public:
 		delete[] data_pointer;
 		delete[] left;
 	}
+	
+	/**
+	* @author ACM2012
+	* @note
+	* my_linker类的初始化函数，同构造函数
+	* @remarks
+	*/
 	inline void initialize()
 	{
 		msg = new char*[maxlength];
@@ -204,12 +229,12 @@ public:
 	}
 	char * combine(const u_char *);/**@brief 接收端通过接收到的帧结构组装网络层数据报的函数*/ 
 	int send_by_frame(IP_Msg *, pcap_t *, unsigned short, unsigned short);/**@brief 发送网络层传来的数据报的函数*/ 
-	int CSMA_CD_send(IP_Msg *, pcap_t *, unsigned short, unsigned short);
+	int CSMA_CD_send(IP_Msg *, pcap_t *, unsigned short, unsigned short);/**@brief 发送帧，加上了碰撞检测*/ 
 	void GetSelfMac(char*, unsigned short *);/**@brief 获得自身MAC地址的函数*/ 
 	int ArpGetMacFromIp(pcap_t *adhandle, const char *ip_addr, unsigned char *ip_mac);
 
 	u_char* BuildArpPacket(unsigned short *, unsigned int, unsigned int);/**@brief 构造ARP包的函数*/ 
-	bool check(const u_char *);
+	bool check(const u_char *);/**@brief 构造ARP包的函数用于判断接收的帧是否是广播帧*/
 	unsigned short crc16(unsigned char *, int);/**@brief 计算CRC检验和的函数*/ 
 	unsigned short checkCrc16(unsigned char *, int);/**@brief 通过检验和检验接收的帧是否正确的函数*/ 
 	int pppEncode(unsigned char * buf, int len);/**@brief ppp数据帧编码函数*/ 
@@ -217,8 +242,8 @@ public:
 	void send_broadcast(pcap_t  *adapterHandle, unsigned int src_IP, unsigned int dst_IP);/**@brief 发送广播帧*/ 
 	bool get_mac(pcap_t  *adapterHandle);/**@brief 获取MAC地址*/ 
 	bool transtable(unsigned int IP);
-	void packcap();
-	void Link2IP(WPARAM wparam);
+	void packcap();/**@brief 循环接收帧的函数*/ 
+	void Link2IP(WPARAM wparam);/**@brief 调用combine合并帧并提交上一层的模块*/ 
 	static DWORD WINAPI NewPackThread(LPVOID lParam);
 	unsigned int getIP();/**@brief 获取IP地址*/ 
 };
