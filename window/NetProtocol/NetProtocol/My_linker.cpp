@@ -660,6 +660,13 @@ int my_linker::pppDecode(unsigned char * buf, int len)
 	/**@brief 修改缓冲区，返回解码后的字符长度*/
 }
 
+/**
+* @author ACM2012
+* @return 无返回值。
+* @note
+* 该模块用于发送广播帧。
+* @remarks
+*/
 void my_linker::send_broadcast(pcap_t  *adapterHandle, unsigned int src_IP, unsigned int dst_IP)
 {
 	//广播获取MAC地址
@@ -721,6 +728,13 @@ bool my_linker::transtable(unsigned int IP)
 	return false;
 }
 
+/**
+* @author ACM2012
+* @return 无返回值。
+* @note
+* 该模块用于获得IP，返回32位IP。
+* @remarks
+*/
 inline unsigned int my_linker::getIP()
 {
 	WSADATA wsaData;
@@ -758,6 +772,13 @@ inline unsigned int my_linker::getIP()
 	return ip_number;
 }
 
+/**
+* @author ACM2012
+* @return 返回0。
+* @note
+* 这是一个单独的线程，用于调用packcap。
+* @remarks
+*/
 DWORD WINAPI my_linker::NewPackThread(LPVOID lParam)
 {
 	my_linker *pthis = (my_linker *)lParam;
