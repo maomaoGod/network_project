@@ -834,6 +834,13 @@ void my_linker::packcap()
 	}
 }
 
+/**
+* @author ACM2012
+* @return 无返回值。
+* @note
+* 该模块调用combine方法合并帧，拼成数据报之后发消息给网络层，将数据报提交。
+* @remarks
+*/
 void my_linker::Link2IP(WPARAM wparam)
 {
 	const u_char * packetData = (const u_char *)wparam;
