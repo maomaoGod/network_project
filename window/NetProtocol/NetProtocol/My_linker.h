@@ -61,7 +61,7 @@ struct Frame{
 			if (MAC_des[i] != it.MAC_des[i]) return false;
 			if (MAC_src[i] != it.MAC_src[i]) return false;
 		}
-		if (total_seq_num != it.total_seq_num) return false;
+		if (total_seq_num != it.total_seq_num) return  false;
 		if (datagram_num != it.datagram_num) return false;
 		if (seq != it.seq) return false;
 		if (length != it.length) return false;
@@ -69,7 +69,7 @@ struct Frame{
 			if (data[i] != it.data[i]) return false;
 		return true;
 	}
-	
+
 	/**
 	*@brief 链路层帧不等验证
 	*@author ACM2012
