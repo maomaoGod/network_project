@@ -33,11 +33,8 @@ struct tcplist *global_close_tcp;
 
 struct stopandwait new_sandw;
 
-bool global_sandw_send_flag;
 struct sockstruct global_send_sockstruct_sandw;
 
-bool global_sandw_receive_flag;
-struct Msg global_receive_ip_msg_sandw;
 
 bool global_sandw_sendtoIP_flag;
 
@@ -229,7 +226,8 @@ void TCP_close(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip
 	while (global_TCP_close_flag);
 }
 
-void TCP_controller()
+
+void TCP_controller_()
 {
 	// 单线程总控的流程
 	// 初始化随机器
@@ -310,7 +308,7 @@ ctrl_receive:
 			memcpy(&new_tcp_msg, global_receive_ip_msg.data, global_receive_ip_msg.datelen);
 
 			// opts和data一同进行检验
-			unsigned opts_data_len = global_receive_ip_msg.datelen-20;
+			unsigned opts_data_len = global_receive_ip_msg.datelen - 20;
 
 			////////// 检验和
 			////////if (!tcpcheck(opts_data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, opts_data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
@@ -482,8 +480,8 @@ ctrl_receive:
 			{
 				//tcp->receive_time = GetTickCount();
 
-				int data_len = global_receive_ip_msg.datelen-4*new_tcp_msg.tcp_hdr_length;
-				int opts_offset = 4*new_tcp_msg.tcp_hdr_length-20;
+				int data_len = global_receive_ip_msg.datelen - 4 * new_tcp_msg.tcp_hdr_length;
+				int opts_offset = 4 * new_tcp_msg.tcp_hdr_length - 20;
 
 				// Temp----------------------------------------------------------------
 				if (data_len == 0)
@@ -687,6 +685,8 @@ ctrl_close:
 				// 关闭本方的tcp连接，但是仍然可以接收到对方的数据，可以发ack
 				global_close_tcp->connect_status = LINK_FINISHING;
 			}
+
+			global_TCP_close_flag = false;
 		}
 
 		//tcplist* single_tcp = head;
@@ -1054,6 +1054,8 @@ ctrl_close:
 	}
 }
 
+
+
 //int Count_ACK(int ACK_global)         //收到3次冗余ACK返回global_TCP_resend_flag的值
 //{
 //	if (ACK_Now != ACK_global) //New ID
@@ -1235,24 +1237,24 @@ void fill_new_tcplist(struct tcplist *new_tcp)
 
 void sandw_send(struct sockstruct data_from_applayer)   
 {
-	while (global_sandw_send_flag);
+	while (global_TCP_send_flag);
 	global_send_sockstruct_sandw = data_from_applayer;
-	global_sandw_send_flag = true;
-	while (global_sandw_send_flag);
+	global_TCP_send_flag = true;
+	while (global_TCP_send_flag);
 }
 
 void sandw_receive(struct Msg data_from_netlayer)
 {
-	while (global_sandw_receive_flag);
-	global_receive_ip_msg_sandw = data_from_netlayer;
-	global_sandw_receive_flag = true;
-	while (global_sandw_receive_flag);
+	while (global_TCP_receive_flag);
+	global_receive_ip_msg = data_from_netlayer;
+	global_TCP_receive_flag = true;
+	while (global_TCP_receive_flag);
 }
 
 void stop_wait()   //停止等待
 {
 	srand(time(0));
-	global_sandw_send_flag = global_sandw_receive_flag = global_sandw_sendtoIP_flag = false;
+	global_TCP_send_flag = global_TCP_receive_flag = global_sandw_sendtoIP_flag = false;
 	global_sandw_sendtoIP_flag = true;
 	new_sandw.time = 0;
 	new_sandw.last_waitforsend_msg = 0;
@@ -1261,26 +1263,26 @@ void stop_wait()   //停止等待
 	for (;;)
 	{
 
-		if (global_sandw_send_flag)   //如果收到应用层传下来的报文
+		if (global_TCP_send_flag)   //如果收到应用层传下来的报文
 		{
 			new_sandw.send_buf[new_sandw.last_waitforsend_msg] = global_send_sockstruct_sandw;  //将该报文放入发送缓冲区
 			new_sandw.last_waitforsend_msg++;
-			global_sandw_send_flag = false;
+			global_TCP_send_flag = false;
 		}
 
-		if (global_sandw_receive_flag)   //如果收到下层传上来的报文
+		if (global_TCP_receive_flag)   //如果收到下层传上来的报文
 		{
 			struct tcp_message new_tcp_msg;
-			memcpy(&new_tcp_msg, global_receive_ip_msg_sandw.data, global_receive_ip_msg_sandw.datelen);
+			memcpy(&new_tcp_msg, global_receive_ip_msg.data, global_receive_ip_msg.datelen);
 
 			// opts和data一同进行检验
-			unsigned opts_data_len = global_receive_ip_msg_sandw.datelen - 20;
+			unsigned opts_data_len = global_receive_ip_msg.datelen - 20;
 
 			// 检验和
 			if (!tcpcheck(opts_data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, opts_data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
 			{
 				// 舍弃报文
-				global_sandw_receive_flag = false;
+				global_TCP_receive_flag = false;
 				break;
 			}
 
@@ -1295,7 +1297,7 @@ void stop_wait()   //停止等待
 				//如果不是之前发送的那个报文的应答报文，就舍弃，不做处理
 			}
 
-			if (new_tcp_msg.tcp_ack == 0 || global_receive_ip_msg_sandw.datelen > 20)  //如果收到的不是一个应答报文，而是别人发过来的一个报文的话，要发一个ack过去
+			if (new_tcp_msg.tcp_ack == 0 || global_receive_ip_msg.datelen > 20)  //如果收到的不是一个应答报文，而是别人发过来的一个报文的话，要发一个ack过去
 			{
 				struct tcp_message new_tcp_message;
 				new_tcp_message.tcp_src_port = new_tcp_msg.tcp_dst_port;   //ack的源端口号和目的端口号与收到的报文相反
@@ -1314,7 +1316,7 @@ void stop_wait()   //停止等待
 				new_tcp_msg.tcp_urg_ptr = NULL;
 				new_tcp_msg.tcp_checksum = 0;
 
-				TCP_Send2IP(new_tcp_message, global_receive_ip_msg_sandw.dip, global_receive_ip_msg_sandw.sip, 20);
+				TCP_Send2IP(new_tcp_message, global_receive_ip_msg.dip, global_receive_ip_msg.sip, 20);
 
 			}
 
@@ -1323,7 +1325,7 @@ void stop_wait()   //停止等待
 			new_sockstruct->dstport = new_tcp_msg.tcp_src_port;
 			new_sockstruct->srcport = new_tcp_msg.tcp_dst_port;
 			new_sockstruct->funcID = SOCKSEND;
-			new_sockstruct->datalength = global_receive_ip_msg_sandw.datelen - 20;
+			new_sockstruct->datalength = global_receive_ip_msg.datelen - 20;
 			IP_uint2chars(new_sockstruct->srcip, new_tcp_msg.tcp_src_port);
 			IP_uint2chars(new_sockstruct->dstip, new_tcp_msg.tcp_dst_port);
 			// ---------由socket释放，这个写法似乎不太规范--------------------------------
@@ -1336,7 +1338,7 @@ void stop_wait()   //停止等待
 
 
 
-			global_sandw_receive_flag = false;
+			global_TCP_receive_flag = false;
 		}
 
 
@@ -1586,6 +1588,815 @@ void time_over()
 					Temp_Send_ACK(single_tcp);
 				}
 			}
+			single_tcp = single_tcp->next;
+		}
+	}
+}
+
+
+void TCP_controller()
+{
+	// 单线程总控的流程
+	// 初始化随机器
+	srand(time(0));
+	// 初始化TCP连接链表
+	createNodeList();
+	// 初始化TCP操作标志
+	global_TCP_new_flag = global_TCP_send_flag = global_TCP_resend_flag = global_TCP_receive_flag = global_TCP_close_flag = false;
+	// 初始化监听标志
+	memset(listening_flag, 0, sizeof(listening_flag));
+
+	// 控制流
+	for (;;)
+	{
+		// 是否需要新建一个TCP连接
+		if (global_TCP_new_flag)
+		{
+			struct tcplist *new_tcp = (tcplist *)malloc(sizeof(struct tcplist));
+
+			// 内存耗尽
+			if (new_tcp == NULL)
+			{
+				printf("Out of memory! Cannot setup a new TCP link!\n");
+				global_TCP_new_flag = false;
+				goto ctrl_send;
+			}
+
+			new_tcp->tcp_src_ip = global_new_src_ip;
+			new_tcp->tcp_dst_ip = global_new_dst_ip;
+			new_tcp->tcp_src_port = global_new_src_port;
+			new_tcp->tcp_dst_port = global_new_dst_port;
+			new_tcp->connect_status = global_new_status;
+			fill_new_tcplist(new_tcp);
+			addNode(new_tcp);
+			global_TCP_new_flag = false;
+		}
+
+		// 是否需要发送一个TCP报文，这里并不是真正的发送，而是加入待发送报文队列
+		// 等待合适时机向下递交
+ctrl_send:
+		if (global_TCP_send_flag)
+		{
+			//new_sandw.send_buf[new_sandw.last_waitforsend_msg] = global_send_sockstruct_sandw;  //将该报文放入发送缓冲区
+			//new_sandw.last_waitforsend_msg++;
+			//global_TCP_send_flag = false;
+
+			// 处理数据
+			//unsigned int src_ip = getIP();
+			//unsigned short src_port = global_send_sockstruct.srcport;
+			//unsigned int dst_ip = IP_chars2uint(global_send_sockstruct.dstip);
+			//unsigned short dst_port = global_send_sockstruct.dstport;	
+
+			// 根据四元组找到TCP连接链表中的对应表
+			struct tcplist *tcp = global_send_tcp;
+
+			// 发送缓冲区耗尽
+			int unack_size = tcp->wait_for_fill - tcp->wait_for_ack;
+			if (unack_size + global_send_sockstruct.datalength > SEND_BUFFER_SIZE)
+			{
+				printf("Out of send-buffer! Cannot send these data!\n");
+				global_TCP_send_flag = false;
+				goto ctrl_receive;
+			}
+
+			// 将要发数据填入发送缓冲
+			for (int i = 0; i < global_send_sockstruct.datalength; ++i)
+			{
+				tcp->tcp_buf_send[(i + tcp->wait_for_fill) % SEND_BUFFER_SIZE] = global_send_sockstruct.data[i];
+			}
+			// 更新待填充序号
+			tcp->wait_for_fill = tcp->wait_for_fill + global_send_sockstruct.datalength;
+			global_TCP_send_flag = false;
+		}
+
+		// 是否需要接收一个TCP报文，将网络层交付的报文填入接收缓存，等待合适
+		// 时机向上交付
+ctrl_receive:
+		if (global_TCP_receive_flag)
+		{
+			// 获取TCP报文段
+			struct tcp_message new_tcp_msg;
+			memcpy(&new_tcp_msg, global_receive_ip_msg.data, global_receive_ip_msg.datelen);
+
+			// opts和data一同进行检验
+			unsigned opts_data_len = global_receive_ip_msg.datelen - 20;
+
+			////////// 检验和
+			////////if (!tcpcheck(opts_data_len, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, opts_data_len % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data), new_tcp_msg.tcp_checksum))
+			////////{
+			////////	// 舍弃报文
+			////////	global_TCP_receive_flag = false;
+			////////	goto ctrl_close;
+			////////}
+
+			// 处理数据，需要反过来！！！
+			unsigned int dst_ip = global_receive_ip_msg.sip;
+			unsigned short dst_port = new_tcp_msg.tcp_src_port;
+			unsigned int src_ip = global_receive_ip_msg.dip;
+			unsigned short src_port = new_tcp_msg.tcp_dst_port;
+
+			// 根据四元组找到TCP连接链表中的对应表
+			struct tcplist *tcp = getNode(src_ip, src_port, dst_ip, dst_port);
+
+			// 被第一次握手 
+			if (new_tcp_msg.tcp_syn == 1 && new_tcp_msg.tcp_ack == 0)
+			{
+				if (!check_listening(src_port))
+				{
+					// 未监听，静默过滤
+					global_TCP_receive_flag = false;
+					goto ctrl_close;
+				}
+
+				struct tcplist *new_tcp = (tcplist *)malloc(sizeof(struct tcplist));
+
+				// 内存耗尽
+				if (new_tcp == NULL)
+				{
+					printf("Out of memory! Cannot setup a new TCP link!\n");
+					global_TCP_receive_flag = false;
+					goto ctrl_close;
+				}
+
+				new_tcp->tcp_src_ip = src_ip;
+				new_tcp->tcp_dst_ip = dst_ip;
+				new_tcp->tcp_src_port = src_port;
+				new_tcp->tcp_dst_port = dst_port;
+				new_tcp->connect_status = LINK_CONNECTED;
+				fill_new_tcplist(new_tcp);
+				addNode(new_tcp);
+
+				// 更新对方的seq_number系列
+				new_tcp->send_ack_needed = true;
+				new_tcp->next_send_ack = new_tcp_msg.tcp_seq_number + 1;
+				new_tcp->last_read = new_tcp->last_rcvd = new_tcp_msg.tcp_seq_number;
+			}
+
+			// 被第二次握手
+			else if (new_tcp_msg.tcp_syn == 1 && new_tcp_msg.tcp_ack == 1)
+			{
+				if (tcp == NULL)
+				{
+					// 伪造的第二次握手
+					printf("Under attack of fake shaking message!\n");
+					global_TCP_receive_flag = false;
+					goto ctrl_close;
+				}
+				else
+				{
+					// 确实在等待第二次握手
+					if (tcp->connect_status == LINK_WAIT_FOR_SYN)
+					{
+						tcp->connect_status = LINK_GOT_SYN;
+
+						// 更新对方的seq_number系列
+						tcp->send_ack_needed = true;
+						tcp->next_send_ack = new_tcp_msg.tcp_seq_number + 1;
+						tcp->last_read = tcp->last_rcvd = new_tcp_msg.tcp_seq_number;
+					}
+					// 不在等待第二次握手，静默（或其他处理方案？）
+					else
+					{
+						// do nothing
+					}
+				}
+			}
+
+			// 被第三次握手
+			else if (tcp != NULL && tcp->connect_status == LINK_WAIT_FOR_SYNACK && new_tcp_msg.tcp_ack == 1)
+			{
+				// 确实在等待第三次握手
+				tcp->connect_status = LINK_GOT_SYNACK;
+
+				// 更新对方的seq_number系列
+				tcp->send_ack_needed = false;
+				++(tcp->last_read);
+				++(tcp->last_rcvd);
+			}
+
+			// 收到FIN
+			else if (new_tcp_msg.tcp_fin == 1 && new_tcp_msg.tcp_ack == 0)
+			{
+				if (tcp == NULL)
+				{
+					// 伪造的断开连接，静默过滤
+				}
+				else
+				{
+					// 确实可以被FIN，本方未半开
+					if (tcp->connect_status == LINK_CONNECT_BIDIR)
+					{
+						// 状态变为本方半开
+						tcp->connect_status = LINK_FINISHED;
+
+						// 更新对方的seq_number系列
+						tcp->send_ack_needed = true;
+						tcp->next_send_ack = new_tcp_msg.tcp_seq_number + 1;
+						// 如果有数据未确认就不可以发送FIN，所以可以直接表示read过了
+						++(tcp->last_read);
+						++(tcp->last_rcvd);
+					}
+					// 确实在可以FIN，本方已半开
+					else if (tcp->connect_status == LINK_SELF_HALF_OPEN)
+					{
+						// 状态变为连接丢失
+						tcp->connect_status = LINK_CONNECT_DESTROYED;
+
+						// 更新对方的seq_number系列
+						tcp->send_ack_needed = true;
+						tcp->next_send_ack = new_tcp_msg.tcp_seq_number + 1;
+						// 如果有数据未确认就不可以发送FIN，所以可以直接表示read过了
+						++(tcp->last_read);
+						++(tcp->last_rcvd);
+					}
+					// 不在等待FINACK，静默（或其他处理方案？）
+					else
+					{
+						// do nothing
+					}
+				}
+			}
+
+			// 收到FINACK
+			else if (new_tcp_msg.tcp_fin == 1 && new_tcp_msg.tcp_ack == 1)
+			{
+				if (tcp == NULL)
+				{
+					// 伪造的断开连接，静默过滤
+				}
+				else
+				{
+					// 确实在等待FINACK，对方未半开
+					if (tcp->connect_status == LINK_WAIT_FOR_FINACK)
+					{
+						// 状态变为本方半开
+						tcp->connect_status = LINK_SELF_HALF_OPEN;
+					}
+					// 确实在等待FINACK，对方已半开
+					else if (tcp->connect_status == LINK_WAIT_FOR_DESACK)
+					{
+						// 状态变为连接丢失
+						tcp->connect_status = LINK_CONNECT_LOSE;
+					}
+					// 不在等待FINACK，静默（或其他处理方案？）
+					else
+					{
+						// do nothing
+					}
+				}
+			}
+
+			// 不是TCP控制信息，是一般报文
+			else
+			{
+				//tcp->receive_time = GetTickCount();
+
+				int data_len = global_receive_ip_msg.datelen - 4 * new_tcp_msg.tcp_hdr_length;
+				int opts_offset = 4 * new_tcp_msg.tcp_hdr_length - 20;
+
+				// Temp----------------------------------------------------------------
+				if (data_len == 0)
+				{
+					goto ctrl_ack;
+				}
+				// Temp----------------------------------------------------------------
+
+				if (tcp->last_rcvd > new_tcp_msg.tcp_seq_number)
+				{
+					// 可能是之前未收到的报文，或者是重复收到的报文，直接舍弃
+					global_TCP_receive_flag = false;
+					goto ctrl_close;
+				}
+				else
+				{
+					// 可能是正在期待的报文，也可能是跳步报文，需要缓存而不能交付
+					if (tcp->last_rcvd + 1 == new_tcp_msg.tcp_seq_number)
+					{
+						// 恰好是我们之前等待的，接收
+						// 将所接收数据直接上交
+						// 将接收到的报文封装发给上层APP
+						struct sockstruct *new_sockstruct = new sockstruct();
+						new_sockstruct->dstport = src_port;
+						new_sockstruct->srcport = dst_port;
+						new_sockstruct->funcID = SOCKSEND;
+						new_sockstruct->datalength = global_receive_ip_msg.datelen - 20;
+						IP_uint2chars(new_sockstruct->srcip, dst_ip);
+						IP_uint2chars(new_sockstruct->dstip, src_ip);
+						// ---------由socket释放，这个写法似乎不太规范--------------------------------
+						new_sockstruct->data = (char *)malloc(new_sockstruct->datalength*sizeof(char));
+						// ---------由socket释放，这个写法似乎不太规范--------------------------------
+						memcpy(new_sockstruct->data, new_tcp_msg.tcp_opts_and_app_data, new_sockstruct->datalength);
+
+						// 送往应用层	
+						AfxGetApp()->m_pMainWnd->PostMessage(APPSEND, (WPARAM)new_sockstruct);
+
+						//// 直接发送ACK
+						//struct tcp_message new_tcp_message;
+						//new_tcp_message.tcp_src_port = src_port;   // ack的源端口号和目的端口号与收到的报文相反，但前面已经反过来了
+						//new_tcp_message.tcp_dst_port = dst_port;
+						//new_tcp_message.tcp_seq_number = 0;
+						//new_tcp_message.tcp_ack_number = new_tcp_msg.tcp_seq_number + data_len;
+						//new_tcp_message.tcp_hdr_length = 5;
+						//new_tcp_msg.tcp_reserved = 0;
+						//new_tcp_msg.tcp_urg = 0;
+						//new_tcp_msg.tcp_ack = 1;
+						//new_tcp_msg.tcp_psh = 0;
+						//new_tcp_msg.tcp_rst = 0;
+						//new_tcp_msg.tcp_syn = 0;
+						//new_tcp_msg.tcp_fin = 0;
+						//new_tcp_msg.tcp_rcv_window = 0;
+						//new_tcp_msg.tcp_urg_ptr = NULL;
+						//new_tcp_msg.tcp_checksum = 0;
+
+						//TCP_Send2IP(new_tcp_message, src_ip, dst_ip, 20);		// 与上同理，不需再反过来
+
+						//// 无须再发送ack了
+						//tcp->send_ack_needed = false;
+
+						// 更新ACK信息
+						tcp->send_ack_needed = true;
+						tcp->next_send_ack = new_tcp_msg.tcp_seq_number + data_len;
+					}
+					else
+					{
+						// 不是我们之前等待的，是跳步报文，直接舍弃
+						global_TCP_receive_flag = false;
+						goto ctrl_close;
+					}
+				}
+
+				global_TCP_receive_flag = false;
+
+				// 更新对方的接收窗口
+				tcp->rcvd_wind = new_tcp_msg.tcp_rcv_window;
+
+ctrl_ack:
+				// ack字段是否有效
+				if (new_tcp_msg.tcp_ack != 0)
+				{
+					if (tcp->cong_status == CONG_SS)
+					{
+						tcp->cong_wind = tcp->cong_wind + MSS;
+						if (tcp->cong_wind > tcp->threshold)
+						{
+							tcp->cong_status = CONG_CA;
+						}
+					}
+					else if (tcp->cong_status == CONG_CA)
+					{
+						tcp->cong_wind = tcp->cong_wind + MSS*MSS / tcp->cong_wind;
+					}
+					// ack有效，判断是否是冗余或确认ack
+					if (new_tcp_msg.tcp_ack_number >= tcp->wait_for_ack)
+					{
+						// 累计确认ack
+						tcp->wait_for_ack = new_tcp_msg.tcp_ack_number;
+						//// 继续向后确认，防止该次ack是填补空隙（涉嫌混淆收发）
+						//tcp->wait_for_ack = next_ack_place(tcp, tcp->wait_for_ack);
+					}
+					else
+					{
+						// 冗余ack
+						if (new_tcp_msg.tcp_ack_number == tcp->last_rcvd_ack)
+						{
+							++(tcp->ack_count);
+							if (tcp->ack_count >= 3)
+							{
+								// 3次冗余ack，快速重传
+								// fast_re_send();
+								tcp->threshold = tcp->cong_wind / 2;
+								tcp->cong_wind = tcp->threshold;
+							}
+						}
+						else
+						{
+							tcp->last_rcvd_ack = new_tcp_msg.tcp_ack_number;
+							tcp->ack_count = 0;
+						}
+					}
+				}
+			}
+			global_TCP_receive_flag = false;
+		}
+
+		// 重传..有点问题？
+		if (global_TCP_resend_flag)
+		{
+		}
+
+			// 关闭TCP连接，如果双关闭则拆除
+ctrl_close:
+		if (global_TCP_close_flag)
+		{
+			// 双方都关闭就拆除TCP连接
+			if (global_close_tcp->connect_status = LINK_PEER_HALF_OPEN)
+			{
+				// 对方已经关闭
+				global_close_tcp->connect_status = LINK_CONNECT_DESTROYING;
+			}
+			else
+			{
+				// 关闭本方的tcp连接，但是仍然可以接收到对方的数据，可以发ack
+				global_close_tcp->connect_status = LINK_FINISHING;
+			}
+
+			global_TCP_close_flag = false;
+		}
+
+		//tcplist* single_tcp = head;
+		//while (single_tcp)         //实时检查每个TCP下当前正待响应的报文是否超时未响应
+		//{
+		//	if (GetTickCount() - single_tcp->tcp_msg_send[single_tcp->wait_for_ack_msg].time > RTT)
+		//	{
+		//		single_tcp->Threshold = single_tcp->cwnd / 2;
+		//		single_tcp->cwnd = MSS;
+		//		single_tcp->tcp_msg_send[single_tcp->wait_for_ack_msg].time = GetTickCount();
+		//		//sendtoip(single_tcp->tcp_msg_send[single_tcp->MSG_ACK].tcpmessage, single_tcp->IP, 第一个参数这个报文的长度);
+		//	}
+		//	single_tcp = single_tcp->next;
+		//}
+
+		// 遍历tcp管理链表，处理待处理的信息
+		//if (global_sandw_sendtoIP_flag)    //收到要从发送缓冲区取一个报文发送出去的信号
+		//{
+		//	if (new_sandw.last_waitforsend_msg > new_sandw.last_send_msg)  //如果缓冲区还有没有发送的报文
+		//	{
+		//		struct tcp_message new_tcp_message;
+		//		new_tcp_message.tcp_src_port = new_sandw.send_buf[new_sandw.last_send_msg].srcport;
+		//		new_tcp_message.tcp_dst_port = new_sandw.send_buf[new_sandw.last_send_msg].dstport;
+		//		new_tcp_message.tcp_seq_number = 1 - new_sandw.last_ack;
+		//		new_tcp_message.tcp_ack_number = 0;
+		//		new_tcp_message.tcp_hdr_length = 5;
+		//		new_tcp_message.tcp_reserved = 0;
+		//		new_tcp_message.tcp_urg = 0;
+		//		new_tcp_message.tcp_ack = 0;
+		//		new_tcp_message.tcp_psh = 0;
+		//		new_tcp_message.tcp_rst = 0;
+		//		new_tcp_message.tcp_syn = 0;
+		//		new_tcp_message.tcp_fin = 0;
+		//		new_tcp_message.tcp_rcv_window = 0;
+		//		new_tcp_message.tcp_urg_ptr = NULL;
+		//		memcpy(new_tcp_message.tcp_opts_and_app_data, new_sandw.send_buf[new_sandw.last_send_msg].data, new_sandw.send_buf[new_sandw.last_send_msg].datalength);
+
+		//		int datalen = 20 + new_sandw.send_buf[new_sandw.last_send_msg].datalength;
+		//		new_tcp_message.tcp_checksum = tcpmakesum(datalen, new_tcp_message.tcp_src_port, new_tcp_message.tcp_dst_port, datalen % 2, (u16 *)&(new_tcp_message.tcp_opts_and_app_data));
+
+		//		//将该报文发送到IP层
+		//		TCP_Send2IP(new_tcp_message, IP_chars2uint(new_sandw.send_buf[new_sandw.last_send_msg].srcip), IP_chars2uint(new_sandw.send_buf[new_sandw.last_send_msg].dstip), datalen);
+
+		//		new_sandw.last_send = new_tcp_message;    //记录这次发送出去的报文，为之后超时重传做基础
+		//		new_sandw.time = GetTickCount();           //重新记录发送时间
+		//		new_sandw.last_send_msg++;                //发送缓冲区中已经发送的报文下标加一
+		//	}
+		//	global_sandw_sendtoIP_flag = false;
+		//}
+
+		// 遍历tcp管理链表，处理待处理的信息
+		struct tcplist *single_tcp = head->next;	// fuck your mom
+		while (single_tcp != NULL)
+		{
+			if (single_tcp->connect_status == LINK_CONNECT_BIDIR || single_tcp->connect_status == LINK_PEER_HALF_OPEN)
+			{
+				// 向下递交报文段
+				while (min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS) - single_tcp->wait_for_ack <= min(single_tcp->cong_wind, single_tcp->rcvd_wind)
+					&& single_tcp->wait_for_fill > single_tcp->wait_for_send)
+				{
+					int new_send;
+					//new_send = min(single_tcp->wait_for_ack + min(single_tcp->cong_wind, single_tcp->rcvd_wind), min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS));
+					new_send = min(single_tcp->wait_for_fill, single_tcp->wait_for_send + MSS);
+					single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen = new_send - single_tcp->wait_for_send;
+					single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].time = GetTickCount();
+					single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].seq_number = single_tcp->wait_for_send;
+
+					struct tcp_message new_tcp_msg;
+					int datalen = new_send - single_tcp->wait_for_send;
+					new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
+					new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
+					new_tcp_msg.tcp_seq_number = single_tcp->wait_for_send;	//seq_number can be deleted?
+					new_tcp_msg.tcp_ack_number = single_tcp->send_ack_needed ? single_tcp->next_send_ack : 0;
+					new_tcp_msg.tcp_hdr_length = 5;
+					new_tcp_msg.tcp_reserved = 0;
+					new_tcp_msg.tcp_urg = 0;
+					new_tcp_msg.tcp_ack = single_tcp->send_ack_needed ? 1 : 0;
+					new_tcp_msg.tcp_psh = 0;
+					new_tcp_msg.tcp_rst = 0;
+					new_tcp_msg.tcp_syn = 0;
+					new_tcp_msg.tcp_fin = 0;
+					new_tcp_msg.tcp_rcv_window = single_tcp->rcvd_wind;
+					new_tcp_msg.tcp_urg_ptr = NULL;
+					memcpy(new_tcp_msg.tcp_opts_and_app_data, &single_tcp->tcp_buf_send[single_tcp->wait_for_send], single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
+					new_tcp_msg.tcp_checksum = tcpmakesum(datalen, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, datalen % 2, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
+
+					// 送往网络层
+					TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, single_tcp->tcp_msg_send[single_tcp->wait_for_fill_msg].datalen);
+
+					single_tcp->wait_for_send = new_send;
+					single_tcp->wait_for_fill_msg++;
+					single_tcp->send_ack_needed = false;
+				}
+
+				if (single_tcp->send_ack_needed)
+				{
+					Temp_Send_ACK(single_tcp);
+				}
+
+				//// 向上交付报文
+				//if (single_tcp->last_rcvd > single_tcp->last_read)
+				//{
+				//	// 填入送往应用层的结构中
+				//	struct sockstruct *new_sockstruct = new sockstruct();
+				//	new_sockstruct->dstport = single_tcp->tcp_src_port;
+				//	new_sockstruct->srcport = single_tcp->tcp_dst_port;
+				//	new_sockstruct->funcID = SOCKSEND;
+				//	new_sockstruct->datalength = single_tcp->last_rcvd - single_tcp->last_read;
+				//	IP_uint2chars(new_sockstruct->srcip, single_tcp->tcp_dst_ip);
+				//	IP_uint2chars(new_sockstruct->dstip, single_tcp->tcp_src_ip);
+				//	// ---------由socket释放，这个写法似乎不太规范--------------------------------
+				//	new_sockstruct->data = (char *)malloc(new_sockstruct->datalength*sizeof(char));
+				//	// ---------由socket释放，这个写法似乎不太规范--------------------------------
+				//	memcpy(new_sockstruct->data, single_tcp->tcp_buf_rcvd + single_tcp->last_read + 1, new_sockstruct->datalength);
+
+				//	// 送往应用层
+				//	AfxGetApp()->m_pMainWnd->PostMessage(APPSEND, (WPARAM)new_sockstruct);
+
+				//	single_tcp->last_read = single_tcp->last_rcvd;
+				//	// 标记已经上交（这个似乎不需要？看样子可以把handin字段删掉）
+				//	// 甚至整个tcpmsg_rcvd都没球的用吧！！！
+				//}
+			}
+
+			// 发送SYN，第一次握手
+			else if (single_tcp->connect_status == LINK_CONNECTING)
+			{
+				// 构造SYN报文段
+				struct tcp_message new_tcp_msg;
+				new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
+				new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
+				new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
+				new_tcp_msg.tcp_ack_number = 0;
+				new_tcp_msg.tcp_hdr_length = 5;
+				new_tcp_msg.tcp_reserved = 0;
+				new_tcp_msg.tcp_urg = 0;
+				new_tcp_msg.tcp_ack = 0;
+				new_tcp_msg.tcp_psh = 0;
+				new_tcp_msg.tcp_rst = 0;
+				new_tcp_msg.tcp_syn = 1;
+				new_tcp_msg.tcp_fin = 0;
+				new_tcp_msg.tcp_rcv_window = single_tcp->rcvd_wind;
+				new_tcp_msg.tcp_urg_ptr = NULL;
+				new_tcp_msg.tcp_opts_and_app_data[0] = 33;	// whatever
+				new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
+
+				// 不走TCP_send()，不加入TCP报文结构和报文缓冲，因为其中未记录SYN
+				TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 1);
+
+				// 改变tcp连接的状态，等待对方发来的syn报文
+				single_tcp->connect_status = LINK_WAIT_FOR_SYN;
+
+				// 更新缓冲区指针，装作从TCP_send发过数据的状态
+				++(single_tcp->seq_number);
+				++(single_tcp->wait_for_fill);
+				++(single_tcp->wait_for_ack);
+				++(single_tcp->wait_for_send);
+			}
+
+			// 发送SYN和ACK，第二次握手
+			else if (single_tcp->connect_status == LINK_CONNECTED)
+			{
+				// 构造ACK&SYN报文段
+				struct tcp_message new_tcp_msg;
+				new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
+				new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
+				new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
+				new_tcp_msg.tcp_ack_number = single_tcp->next_send_ack;
+				new_tcp_msg.tcp_hdr_length = 5;
+				new_tcp_msg.tcp_reserved = 0;
+				new_tcp_msg.tcp_urg = 0;
+				new_tcp_msg.tcp_ack = 1;
+				new_tcp_msg.tcp_psh = 0;
+				new_tcp_msg.tcp_rst = 0;
+				new_tcp_msg.tcp_syn = 1;
+				new_tcp_msg.tcp_fin = 0;
+				new_tcp_msg.tcp_rcv_window = single_tcp->rcvd_wind;
+				new_tcp_msg.tcp_urg_ptr = NULL;
+				new_tcp_msg.tcp_opts_and_app_data[0] = 33;	// whatever
+				new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
+
+				// 不走TCP_send()，不加入TCP报文结构和报文缓冲，因为其中未记录SYN
+				TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 1);
+
+				// 改变tcp连接的状态，等待对方发来的synack报文
+				single_tcp->connect_status = LINK_WAIT_FOR_SYNACK;
+
+				// 更新缓冲区指针，装作从TCP_send发过数据的状态
+				++(single_tcp->seq_number);
+				++(single_tcp->wait_for_fill);
+				++(single_tcp->wait_for_ack);
+				++(single_tcp->wait_for_send);
+				single_tcp->send_ack_needed = false;
+
+				// 通知应用层Accept事件
+				// 填入送往应用层的结构中
+				struct sockstruct *new_sockstruct = new sockstruct();
+				new_sockstruct->dstport = new_tcp_msg.tcp_src_port;
+				new_sockstruct->srcport = new_tcp_msg.tcp_dst_port;
+				new_sockstruct->funcID = SOCKACCEPT;
+				new_sockstruct->datalength = 0;
+				IP_uint2chars(new_sockstruct->srcip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct->dstip, single_tcp->tcp_src_ip);
+				new_sockstruct->data = NULL;
+
+				// 送往应用层
+				AfxGetApp()->m_pMainWnd->PostMessage(APPSEND, (WPARAM)new_sockstruct);
+			}
+
+			// 发送SYNACK，第三次握手
+			else if (single_tcp->connect_status == LINK_GOT_SYN)
+			{
+				// 构造SYNACK报文段
+				struct tcp_message new_tcp_msg;
+				new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
+				new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
+				new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
+				new_tcp_msg.tcp_ack_number = single_tcp->next_send_ack;
+				new_tcp_msg.tcp_hdr_length = 5;
+				new_tcp_msg.tcp_reserved = 0;
+				new_tcp_msg.tcp_urg = 0;
+				new_tcp_msg.tcp_ack = 1;
+				new_tcp_msg.tcp_psh = 0;
+				new_tcp_msg.tcp_rst = 0;
+				new_tcp_msg.tcp_syn = 0;
+				new_tcp_msg.tcp_fin = 0;
+				new_tcp_msg.tcp_rcv_window = single_tcp->rcvd_wind;
+				new_tcp_msg.tcp_urg_ptr = NULL;
+				new_tcp_msg.tcp_opts_and_app_data[0] = 33;	// whatever
+				new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
+
+				// 不走TCP_send()，不加入TCP报文结构和报文缓冲，因为其中未记录SYN
+				TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 1);
+
+				// 改变tcp连接的状态，已连接
+				single_tcp->connect_status = LINK_CONNECT_BIDIR;
+
+				// 更新缓冲区指针，装作从TCP_send发过数据的状态
+				++(single_tcp->seq_number);
+				++(single_tcp->wait_for_fill);
+				++(single_tcp->wait_for_ack);
+				++(single_tcp->wait_for_send);
+				single_tcp->send_ack_needed = false;
+
+				// 通知应用层可以分配资源了
+				// 填入送往应用层的结构中
+				struct sockstruct *new_sockstruct = new sockstruct();
+				new_sockstruct->dstport = new_tcp_msg.tcp_src_port;
+				new_sockstruct->srcport = new_tcp_msg.tcp_dst_port;
+				new_sockstruct->funcID = SOCKCONNECT;
+				new_sockstruct->datalength = 0;
+				IP_uint2chars(new_sockstruct->srcip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct->dstip, single_tcp->tcp_src_ip);
+				new_sockstruct->data = NULL;
+
+				// 送往应用层
+				AfxGetApp()->m_pMainWnd->PostMessage(APPSEND, (WPARAM)new_sockstruct);
+			}
+
+			// 通知应用层分配资源
+			else if (single_tcp->connect_status == LINK_GOT_SYNACK)
+			{
+				// 改变tcp连接的状态，已连接
+				single_tcp->connect_status = LINK_CONNECT_BIDIR;
+
+				// 填入送往应用层的结构中
+				struct sockstruct *new_sockstruct = new sockstruct();
+				new_sockstruct->dstport = single_tcp->tcp_src_port;
+				new_sockstruct->srcport = single_tcp->tcp_dst_port;
+				new_sockstruct->funcID = SOCKCONNECT;
+				new_sockstruct->datalength = 0;
+				IP_uint2chars(new_sockstruct->srcip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct->dstip, single_tcp->tcp_src_ip);
+				new_sockstruct->data = NULL;
+
+				// 送往应用层
+				AfxGetApp()->m_pMainWnd->PostMessage(APPSEND, (WPARAM)new_sockstruct);
+			}
+
+			// 关闭本方连接，发送FIN
+			else if (single_tcp->connect_status == LINK_FINISHING
+				|| single_tcp->connect_status == LINK_CONNECT_DESTROYING)
+			{
+				// 在发完数据并得到所有数据的确认之前不可以发送FIN
+				if (single_tcp->wait_for_ack == single_tcp->wait_for_fill)
+				{
+					// 构造FIN报文段
+					struct tcp_message new_tcp_msg;
+					new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
+					new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
+					new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
+					new_tcp_msg.tcp_ack_number = 0;
+					new_tcp_msg.tcp_hdr_length = 5;
+					new_tcp_msg.tcp_reserved = 0;
+					new_tcp_msg.tcp_urg = 0;
+					new_tcp_msg.tcp_ack = 0;
+					new_tcp_msg.tcp_psh = 0;
+					new_tcp_msg.tcp_rst = 0;
+					new_tcp_msg.tcp_syn = 0;
+					new_tcp_msg.tcp_fin = 1;
+					new_tcp_msg.tcp_rcv_window = single_tcp->rcvd_wind;
+					new_tcp_msg.tcp_urg_ptr = NULL;
+					new_tcp_msg.tcp_opts_and_app_data[0] = 21;	// whatever
+					new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
+
+					// 不走TCP_send()，不加入TCP报文结构和报文缓冲，因为其中未记录fin
+					TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 1);
+
+					// 更新缓冲区指针，装作从TCP_send发过数据的状态
+					++(single_tcp->seq_number);
+					++(single_tcp->wait_for_fill);
+					++(single_tcp->wait_for_ack);
+					++(single_tcp->wait_for_send);
+
+					if (single_tcp->connect_status == LINK_FINISHING)
+					{
+						// 改变tcp连接的状态，等待对方发来的finack报文
+						single_tcp->connect_status = LINK_WAIT_FOR_FINACK;
+					}
+					else //if (single_tcp->connect_status == LINK_CONNECT_DESTROYING)
+					{
+						// 改变tcp连接的状态，等待对方发来的finack报文
+						single_tcp->connect_status = LINK_WAIT_FOR_DESACK;
+					}
+				}
+			}
+
+			// 发送FIN的ACK
+			else if (single_tcp->connect_status == LINK_FINISHED
+				|| single_tcp->connect_status == LINK_CONNECT_DESTROYED)
+			{
+				// 构造ACK报文段
+				struct tcp_message new_tcp_msg;
+				new_tcp_msg.tcp_src_port = single_tcp->tcp_src_port;
+				new_tcp_msg.tcp_dst_port = single_tcp->tcp_dst_port;
+				new_tcp_msg.tcp_seq_number = single_tcp->seq_number;
+				new_tcp_msg.tcp_ack_number = single_tcp->next_send_ack;
+				new_tcp_msg.tcp_hdr_length = 5;
+				new_tcp_msg.tcp_reserved = 0;
+				new_tcp_msg.tcp_urg = 0;
+				new_tcp_msg.tcp_ack = 1;
+				new_tcp_msg.tcp_psh = 0;
+				new_tcp_msg.tcp_rst = 0;
+				new_tcp_msg.tcp_syn = 0;
+				new_tcp_msg.tcp_fin = 0;
+				new_tcp_msg.tcp_rcv_window = single_tcp->rcvd_wind;
+				new_tcp_msg.tcp_urg_ptr = NULL;
+				new_tcp_msg.tcp_opts_and_app_data[0] = 21;	// whatever
+				new_tcp_msg.tcp_checksum = tcpmakesum(1, new_tcp_msg.tcp_src_port, new_tcp_msg.tcp_dst_port, 1, (u16 *)&(new_tcp_msg.tcp_opts_and_app_data));
+
+				// 不走TCP_send()，不加入TCP报文结构和报文缓冲，因为其中未记录SYN
+				TCP_Send2IP(new_tcp_msg, single_tcp->tcp_src_ip, single_tcp->tcp_dst_ip, 1);
+
+				// 更新缓冲区指针，装作从TCP_send发过数据的状态
+				++(single_tcp->seq_number);
+				++(single_tcp->wait_for_fill);
+				++(single_tcp->wait_for_ack);
+				++(single_tcp->wait_for_send);
+				single_tcp->send_ack_needed = false;
+
+				if (single_tcp->connect_status == LINK_FINISHED)
+				{
+					// 改变tcp连接的状态，变为对方半开状态
+					single_tcp->connect_status = LINK_PEER_HALF_OPEN;
+				}
+				else if (single_tcp->connect_status == LINK_CONNECT_DESTROYED)
+				{
+					// 改变tcp连接的状态，变为双向断开
+					single_tcp->connect_status = LINK_CONNECT_LOSE;
+				}
+			}
+			else
+			{
+				// nothing
+			}
+
+			// 断开连接，一定要用if咯，不能接着用elseif
+			if (single_tcp->connect_status == LINK_CONNECT_LOSE)
+			{
+				// 填入送往应用层的结构中
+				struct sockstruct *new_sockstruct = new sockstruct();
+				new_sockstruct->dstport = single_tcp->tcp_src_port;
+				new_sockstruct->srcport = single_tcp->tcp_dst_port;
+				new_sockstruct->funcID = SOCKCLOSE;
+				new_sockstruct->datalength = 0;
+				IP_uint2chars(new_sockstruct->srcip, single_tcp->tcp_dst_ip);
+				IP_uint2chars(new_sockstruct->dstip, single_tcp->tcp_src_ip);
+				new_sockstruct->data = NULL;
+
+				// 送往应用层
+				AfxGetApp()->m_pMainWnd->PostMessage(APPSEND, (WPARAM)new_sockstruct);
+
+				// 销毁TCP连接
+				deleteNode(single_tcp);
+			}
+
 			single_tcp = single_tcp->next;
 		}
 	}
