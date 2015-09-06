@@ -1,12 +1,12 @@
 /**@file
-*@brief sending and receiving message from server
-*@author ACM2012
-*@date 2015/04/19
-*@version 0.1
-*@note
-*As to send message, the format is CMD + " " + PATH + " " + HOST
-*As to receive message, the format is FILE TYPE + " " + FILE LEN + " " + FILE CONTENT
-*/
+ *@brief sending and receiving message from server
+ *@author ACM2012
+ *@date 2015/04/19
+ *@version 0.1
+ *@note
+ *As to send message, the format is CMD + " " + PATH + " " + HOST
+ *As to receive message, the format is FILE TYPE + " " + FILE LEN + " " + FILE CONTENT
+ */
 
 #pragma once
 #include "stdafx.h"
@@ -14,10 +14,9 @@
 #include "Tools.h"
 #include "UICtrl.h"
 #include "DNSworker.h"
-#include "Httpworker.h"
+//#include "Httpworker.h"
 #include "Ftpworker.h"
 #include "FtpDataSocket.h"
-#include "CmySocket.h"
 //#import "dll/JHttp.dll"
 
 #define HTTP_PORT 6500
@@ -27,11 +26,12 @@ using namespace Tools;
 
 namespace NetWork{
 	/**
-	*@class ChatWork NetWork
-	*@brief Socket
-	*@author   ACM2012
-	*@note
-	*/
+	 *@class ChatWork NetWork
+	 *@brief Socket
+	 *@author   ACM2012
+	 *@note
+	 *XXXXXXXXX
+	 */
 	class ChatWork{
 	public:
 		ChatWork(){
@@ -58,9 +58,9 @@ namespace NetWork{
 				STR::CCarg(&cmd, mystr, _T(' '));
 				PrintLog(_T("Accept ") + cmd[0]);
 				switch (exp[cmd[0]]){
-					/**@brief keep*/
+                /**@brief keep*/
 				case 0: break;
-					/**@brief send*/
+                /**@brief send*/
 				case 1:
 					if (cmd.GetSize() < 2){
 						PrintLog(_T("Error code for no Msg"));
@@ -68,7 +68,7 @@ namespace NetWork{
 					}
 					SendMsg(cmd[1]);
 					break;
-					/**@brief link*/
+                /**@brief link*/
 				case 2: break;
 				case 3:
 					if (cmd.GetSize() < 2){
@@ -85,23 +85,23 @@ namespace NetWork{
 				default: PrintLog(_T("Error Code"));
 				}
 			}
-			if (!Finish()) { PrintLog(_T("Delete mySocket failed\n")); }
+			if (!Finish()) { PrintLog(_T("Delete CSocket failed\n")); }
 		}
 		bool Finish(){
-			mySocket.Close();
+			csocket.Close();
 			return true;
 		}
 	private:
 		map<CString, int> exp;
 		CString Name;
-		int No;
+		int No;	
 		CString Obj;///< CString Msg*/
 		CString CNo, TNo;
-		CmySocket mySocket;
+		CSocket csocket;
 		CString strIP;///< IP*/
 		TCHAR szRecValue[1024];
 		void init(){
-			/**@brief Send message to someone*/
+		    /**@brief Send message to someone*/
 			exp[_T("Send")] = exp[_T("send")] = 1;
 			/**@brief link to somebody*/
 			exp[_T("Link")] = exp[_T("link")] = 2;
@@ -114,37 +114,37 @@ namespace NetWork{
 			memset(szRecValue, 0, sizeof(szRecValue));
 			/**brief send message to the server*/
 			PrintLog(_T("连接服务器成功"));
-			mySocket.Send(Msg, Msg.GetLength()*sizeof(TCHAR));
-			mySocket.Receive((void *)szRecValue, 1024);
+			csocket.Send(Msg, Msg.GetLength()*sizeof(TCHAR));
+			csocket.Receive((void *)szRecValue, 1024);
 			rev.Format(_T("%s"), szRecValue);
 			PrintRp(rev);
 		}
 		void ConnMsg(CString Msg){
 			AfxSocketInit();
 			strIP.Format(_T("%s"), _T("127.0.0.1"));
-			if (!mySocket.Create())
+			if (!csocket.Create())
 			{
 				CString error;
-				error.Format(_T("创建失败:%d"), mySocket.GetLastError());
+				error.Format(_T("创建失败:%d"), csocket.GetLastError());
 				PrintLog(error);
 				return;
 			}
 			/**@brief 转换需要连接的端口内容类型*/
 			PrintLog(_T("套接字创建成功"));
 			/**@brief 连接指定的地址和端口*/
-			if (mySocket.Connect(strIP, 6500))
+			if (csocket.Connect(strIP, 6500))
 			{
 				CString rev;
 				memset(szRecValue, 0, sizeof(szRecValue));
 				/**brief send message to the server*/
 				PrintLog(_T("连接服务器成功"));
-				mySocket.Send(Msg, Msg.GetLength()*sizeof(TCHAR));
-				mySocket.Receive((void *)szRecValue, 1024);
+				csocket.Send(Msg, Msg.GetLength()*sizeof(TCHAR));
+				csocket.Receive((void *)szRecValue, 1024);
 				rev.Format(_T("%s"), szRecValue);
 			}
 			else{
 				CString error;
-				error.Format(_T("创建失败:%d"), mySocket.GetLastError());
+				error.Format(_T("创建失败:%d"), csocket.GetLastError());
 				PrintLog(error);
 			}
 		}
@@ -152,15 +152,7 @@ namespace NetWork{
 	};
 
 
-	/**
-	*@class FTPApp NetWork.h "HustNet/NetWork.h"
-	*@brief Ftp协议客户端的实现
-	*@author ACM2012
-	*@date 2015/06/06
-	*@version 1.1
-	*@note
-	* 实现Ftp协议客户端的功能，实现文件传输
-	*/
+	//take over the system
 	class FTPApp{
 	public:
 		FTPApp(){
@@ -173,15 +165,15 @@ namespace NetWork{
 		void Begin(){
 			CString mystr;
 			TakeOverCmd(_T("Myftp>"));
-			aSocket = new CmySocket();
-			///<create a Socket
+			aSocket = new CSocket();
+			//create a Socket
 			if (!aSocket->Create()){
 				CString error;
 				error.Format(_T("创建失败:%d"), aSocket->GetLastError());
 				PrintLog(error);
 				return;
 			}
-			///<take over the cmd get 172.21.127.1/html/360.html
+			//take over the cmd
 			while ((mystr = GetLine()).Compare(_T("exit")) != 0){
 				CleanRp(NULL);
 				PrintLog(_T("Accept ") + mystr);
@@ -189,13 +181,13 @@ namespace NetWork{
 					PrintRp(_T("argc miss"));
 					continue;
 				}
-				///<first conn
+				//first conn
 				int error_code = ftpworker->dealwith();
 				if (error_code < 0){
 					PrintRp(_T("NOP code or not set the SendWay"));
 					continue;
 				}
-				if (!error_code){///<dealwith
+				if (!error_code){//dealwith
 					if (aSocket->Connect(STR::S2CS(ftpworker->getIP()), ftp_port)){
 						aSocket->Receive((void *)szRecValue, 1024);
 						rev.Format(_T("来自服务器的消息:%s"), szRecValue);
@@ -210,32 +202,32 @@ namespace NetWork{
 						return;
 					}
 				}
-				///<not use connect cmd
+				//not use conn cmd
 				if (!ftpworker->connected){
 					PrintRp(_T("not connect!"));
 					ftpworker->connected = false;
 					continue;
 				}
-				///<send data and rev
-
+				//send data and rev
+				
 				if (error_code == 2){
 					if (ftpworker->getWay() < 0){
 						PrintRp(_T("not set you send style"));
 						continue;
 					}
 				}/*
-				 if (error_code == 3){
-				 //
-				 if (ftpworker->getWay() == 1){
-				 //set a port to listen
-				 dataworker = new FtpDataSocket();
-				 dataworker->Create(ftpworker->GetPort());
-				 dataworker->Listen();
-				 }
-				 else{
-				 //wait for us to send a data auto;
-				 }
-				 }*/
+				if (error_code == 3){
+					//
+					if (ftpworker->getWay() == 1){
+						//set a port to listen
+						dataworker = new FtpDataSocket();
+						dataworker->Create(ftpworker->GetPort());
+						dataworker->Listen();
+					}
+					else{
+						//wait for us to send a data auto;
+					}
+				}*/
 				if (error_code){
 					if (!Send()){
 						PrintLog(_T("Interrupt Error!"));
@@ -243,66 +235,66 @@ namespace NetWork{
 					}
 					Rev();
 					/*if (error_code == 2){
-					//use different way to tarns message
-					if (ftpworker->getWay() == 1){
-					//set a port to listen
-					dataworker->src_path = ftpworker->getSrc();
-					dataworker->des_path = ftpworker->getDes();
-					dataworker->style = ftpworker->getStyle();
-					dataworker->good = true;
-					//begin to send
-					}
-					else{
-					//wait for us to send a data auto;
-					bSocket = new CmySocket();
-					bSocket->Create();
-					bSocket->Connect(STR::S2CS(ftpworker->getIP()), data_port);
-					TCHAR buf[1024];
-					memset(buf, 0, sizeof(buf));
-					bSocket->Receive((void *)buf, 1024);
-					memset(buf, 0, sizeof(buf));
-					CString sendmsg=_T("null");
-					if (ftpworker->getStyle()){//download
-					bSocket->Send(sendmsg, sizeof(TCHAR)*sendmsg.GetLength());
-					CString rev;
-					CString temp;
-					while (bSocket->Receive((void *)buf, 1024)){
-					temp.Format(_T("%s"), buf);
-					rev += temp;
-					memset(buf, 0, 1024 * sizeof(TCHAR));
-					}
-					FIO::SaveFile(ftpworker->getDes(), &STR::CS2S(rev));
-					}
-					else{//upload
-					sendmsg = STR::S2CS(FIO::ReadFile(ftpworker->getSrc(),1));
-					bSocket->Send(sendmsg, sizeof(TCHAR)*sendmsg.GetLength());
-					bSocket->Receive((void *)buf, 1024);
-					}
-					bSocket->Close();
-					delete bSocket;
-					}
+						//use different way to tarns message
+						if (ftpworker->getWay() == 1){
+							//set a port to listen
+							dataworker->src_path = ftpworker->getSrc();
+							dataworker->des_path = ftpworker->getDes();
+							dataworker->style = ftpworker->getStyle();
+							dataworker->good = true;
+							//begin to send
+						}
+						else{
+							//wait for us to send a data auto;
+							bSocket = new CSocket();
+							bSocket->Create();
+							bSocket->Connect(STR::S2CS(ftpworker->getIP()), data_port);
+							TCHAR buf[1024];
+							memset(buf, 0, sizeof(buf));
+							bSocket->Receive((void *)buf, 1024);
+							memset(buf, 0, sizeof(buf));
+							CString sendmsg=_T("null");
+							if (ftpworker->getStyle()){//download
+								bSocket->Send(sendmsg, sizeof(TCHAR)*sendmsg.GetLength());
+								CString rev;
+								CString temp;
+								while (bSocket->Receive((void *)buf, 1024)){
+									temp.Format(_T("%s"), buf);
+									rev += temp;
+									memset(buf, 0, 1024 * sizeof(TCHAR));
+								}
+								FIO::SaveFile(ftpworker->getDes(), &STR::CS2S(rev));
+							}
+							else{//upload
+								sendmsg = STR::S2CS(FIO::ReadFile(ftpworker->getSrc(),1));
+								bSocket->Send(sendmsg, sizeof(TCHAR)*sendmsg.GetLength());
+								bSocket->Receive((void *)buf, 1024);
+							}
+							bSocket->Close();
+							delete bSocket;
+						}
 					}*/
 					ftpworker->Dealfile(error_code);
 				}
 				// according to different code to diff thing
 				/*
 				if (error_code){
-				//send data and rec data
-				//it may be open last time
-				bSocket = new CmySocket();
-				bSocket->Close();
-				delete bSocket;
+					//send data and rec data
+					//it may be open last time
+					bSocket = new CSocket();
+					bSocket->Close();
+					delete bSocket;
 				}*/
 			}
 			aSocket->Close();
 			delete aSocket;
 		}
-
+	
 	private:
 		FtpDataSocket *dataworker;
 		Ftpworker *ftpworker;
-		CmySocket *aSocket;
-		CmySocket *bSocket;
+		CSocket *aSocket;
+		CSocket *bSocket;
 		CString IP;
 		CString Path;
 		CString rev;
@@ -319,7 +311,7 @@ namespace NetWork{
 			//aSocket->Send(data, data.GetLength()*sizeof(TCHAR));
 			int i;
 			for (i = 0; i < len; i += BUFSIZE){
-				if (i + BUFSIZE < len)
+				if(i+BUFSIZE < len)
 					aSocket->Send(senddata + i, BUFSIZE*sizeof(TCHAR));
 				else{
 					CString str = senddata + i;
@@ -331,9 +323,9 @@ namespace NetWork{
 			//aSocket->Send(Msg, Msg.GetLength()*sizeof(TCHAR));
 			return true;
 		}
-
+		
 		void Rev(){
-			///<need analy
+			//need analy
 			rev = _T("");
 			CString temp;
 			int count;
@@ -342,7 +334,7 @@ namespace NetWork{
 				memset(szRecValue, 0, BUFSIZE * sizeof(TCHAR));
 				//aSocket->Receive((void *)szRecValue, BUFSIZE);
 				while (true){
-					count += aSocket->Receive((void *)(szRecValue + count), (BUFSIZE - count));
+					count += aSocket->Receive((void *)(szRecValue+count), (BUFSIZE-count));
 					if (count == BUFSIZE) break;
 				}
 				temp.Format(_T("%s"), szRecValue);
@@ -366,26 +358,61 @@ namespace NetWork{
 	};
 
 	/**
-	*@class AppLayerHttp NetWork.h  "HustNet/NetWork.h"
-	*@brief How the Application Layer works
-	*@author   ACM2012
-	*@note
-	*to achieve communication of the client and the server with HTTP protocol
-	*/
+	 *@class AppLayerHttp NetWork
+	 *@brief How the Application Layer works
+	 *@author   ACM2012
+	 *@note
+	 *to achieve communication of the client and the server with HTTP protocol
+	 */
+
+typedef void *(*HttPtr)(void);
+typedef int(*Httpdiv)(void *, string, char);
+typedef void(*HttpSetport)(void *, int);
+typedef int(*HttpgetPort)(void*);
+typedef void (*HttpMake)(void *);
+typedef int(*Httpanaly)(void*);
+typedef int(*HttpSetMsg)(void *, string);
+typedef string(*HttpgetMsg)(void*);
+typedef string(*Httpgethost)(void*);
+typedef void(*Httpsetdata)(void*, string);
+typedef string(*Httpgetdata)(void*);
+typedef IP(*HttpgetIP)(void*);
+typedef void(*HttpsetIp)(void*,IP);
+typedef bool(*HttpIPcheck)(void*);
+typedef string(*Httplook_msg)(void*);
+typedef string(*Httplook_rmsg)(void*);
+typedef CString(*Httpshow_rmsg)(void*);
 
 	class AppLayerHttp{
 	public:
 		AppLayerHttp(){
 			AfxSocketInit();
-			httpworker = new Httpworker();
+			dll = new NetDll();
+			dll->OpenDll();
+			//httpworker = new Httpworker();
+			httptr = (HttPtr)dll->GetFun("NewHttptr"); 
+			httpsetport = (HttpSetport)dll->GetFun("setPort"); 
+			httpdiv = (Httpdiv)dll->GetFun("Httpdiv");
+			httpmake = (HttpMake)dll->GetFun("Make");
+			httpgetPort = (HttpgetPort)dll->GetFun("getPort");
+			httpgethost = (Httpgethost)dll->GetFun("gethost");
+			httpgetMsg = (HttpgetMsg)dll->GetFun("getMsg");
+			httpsetmsg = (HttpSetMsg)dll->GetFun("setMsg");
+			httpgetdata = (Httpgetdata)dll->GetFun("getdata");
+			httpsetdata = (Httpsetdata)dll->GetFun("setdata");
+			httpanaly = (Httpanaly)dll->GetFun("analy");
+
+			httpworker = httptr();
 			dnsworker = new DNSworker();
-			httpworker->setPort(80);
+			//httpworker->setPort(80);
+			httpsetport(httpworker, 80);
 		}
 		~AppLayerHttp(){
+			dll->FreeDll();
 			delete httpworker;
 			delete dnsworker;
 		}
-
+		
 		void Begin(){
 			CString mystr;
 			TakeOverCmd(_T("Myhttp>"));
@@ -393,26 +420,30 @@ namespace NetWork{
 				CleanRp(NULL);
 				PrintLog(_T("Accept ") + mystr);
 				CStringArray code;
-				if (httpworker->div(STR::CS2S(mystr), ' ')< 0){
+				//httpworker->div(STR::CS2S(mystr), ' ')
+				int divtmp = httpdiv(httpworker, STR::CS2S(mystr), ' ');
+				//int divtmp = httpworker->div(STR::CS2S(mystr), ' ');
+				if (divtmp < 0){
 					vector<string> d;
 					STR::Split(STR::CS2S(mystr), &d, ' ');
 					if (d.size()>1){
 						if (STR::Upper(d[0]) == "SETPORT"){
-							httpworker->setPort(STR::string2int(d[1]));
-							PrintLog(_T("Port ") + STR::S2CS(d[1]) + _T(" successfully"));
+							//httpworker->setPort(STR::string2int(d[1]));
+							httpsetport(httpworker, STR::string2int(d[1]));
+							PrintLog(_T("Port ")+STR::S2CS(d[1])+_T(" successfully"));
 							continue;
 						}
 					}
 					PrintLog(_T("argc error"));
 					continue;
 				}
-				aSocket = new CmySocket();
-				if (!aSocket->Create()){
+				aSocket = new CSocket();
+			    if (!aSocket->Create()){
 					CString error;
-					error.Format(_T("创建失败:%d"), aSocket->GetLastError());
-					PrintLog(error);
-					return;
-				}
+				    error.Format(_T("创建失败:%d"), aSocket->GetLastError());
+				    PrintLog(error);
+				    return;
+			    }
 				if (!Send()){
 					PrintLog(_T("Interrupt Error!"));
 					return;
@@ -422,42 +453,28 @@ namespace NetWork{
 				delete aSocket;
 			}
 		}
-
 		/**
-		*@brief the client sends a report to the server
-		*@author  ACM2012
-		*@param [in] <Method> HTTP CMD
-		*@param [in] <url> the link which waiting to access
-		*@return True if successfully, otherwise False
-		*@note
-		*1 div url to path + IP
-		*2 com Method + " " + path + IP
-		*3 send com Msg
-		*   return true if TCP finish
-		*   else return false
-		*@remarks the format of sending message is "CMD + " " + PATH + " " + HOST"
-		*/
-
+         *@brief the client sends a report to the server
+         *@author  ACM2012
+         *@param [in] <Method> HTTP CMD
+         *@param [in] <url> the link which waiting to access
+         *@return True if successfully, otherwise False
+         *@note
+         *1 div url to path + IP
+		 *2 com Method + " " + path + IP
+	     *3 send com Msg
+		 *   return true if TCP finish
+		 *   else return false
+         *@remarks the format of sending message is "CMD + " " + PATH + " " + HOST"
+		 */	
 		bool Send(){
-			httpworker->Make();
-			if (httpworker->getPort() == 80){
-				//outside link
-				if (aSocket->Connect(STR::S2CS(httpworker->gethost()), httpworker->getPort())){
-					PrintRp(_T("link to ") + STR::S2CS(httpworker->gethost()));//rev
-				}
-				else{
-					CString error;
-					error.Format(_T("连接服务器失败:%d"), aSocket->GetLastError());
-					PrintLog(error);
-					return false;//get 172.21.127.1/html/360.html
-				}
-			}
-			else{
-				if (aSocket->Connect(STR::S2CS(httpworker->gethost()), httpworker->getPort())){
-					memset(szRecValue, 0, 1024 * sizeof(TCHAR));
-					//aSocket->Receive((void *)szRecValue, 1024);
-					//rev.Format(_T("来自服务器的消息:%s"), szRecValue);
-					PrintRp(_T("link to ") + STR::S2CS(httpworker->gethost()));//rev
+			//httpworker->Make();
+			httpmake(httpworker);
+			//if (httpworker->getPort() == 80){
+			if (httpgetPort(httpworker) == 80){
+				//if (aSocket->Connect(STR::S2CS(httpworker->gethost()), httpworker->getPort())){
+				if (aSocket->Connect(STR::S2CS(httpgethost(httpworker)), httpgetPort(httpworker))){
+					PrintRp(_T("link to ") + STR::S2CS(httpgethost(httpworker)));//rev
 				}
 				else{
 					CString error;
@@ -466,22 +483,37 @@ namespace NetWork{
 					return false;
 				}
 			}
-			string data = httpworker->getMsg();
+			else{
+				//if (aSocket->Connect(STR::S2CS(httpworker->gethost()), httpworker->getPort())){
+				if (aSocket->Connect(STR::S2CS(httpgethost(httpworker)), httpgetPort(httpworker))){
+			        memset(szRecValue, 0, 1024 * sizeof(TCHAR));
+			        aSocket->Receive((void *)szRecValue, 1024);
+				    rev.Format(_T("来自服务器的消息:%s"), szRecValue);
+				   // PrintRp(_T("link to ") + STR::S2CS(httpworker->gethost()));//rev
+					PrintRp(_T("link to ") + STR::S2CS(httpgethost(httpworker)));//rev
+				}
+				else{
+					CString error;
+				    error.Format(_T("连接服务器失败:%d"), aSocket->GetLastError());
+				    PrintLog(error);
+				    return false;
+				}
+			}
+			//string data = httpworker->getMsg();
+			string data = httpgetMsg(httpworker);
 			aSocket->Send(data.c_str(), data.length());
 			return true;
 		}
-
 		/**
-		*@author  ACM2012
-		*@return void
-		*@note
-		*the client receives a report from the server
-		*@remarks the farmat of sending message is "FILE TYPE + " " + FILE LEN + " " + FILE Content"
-		*/
+         *@author  ACM2012
+         *@return void
+         *@note
+         *the client receives a report from the server
+         *@remarks the farmat of sending message is "FILE TYPE + " " + FILE LEN + " " + FILE Content"
+		 */
 		void Rev(){
 			string html = "";
 			char buf[BUFSIZE + 1];
-
 			while (true){
 				memset(buf, 0, sizeof(buf));
 				aSocket->Receive(buf, BUFSIZE);
@@ -490,35 +522,49 @@ namespace NetWork{
 				if (html.find("\r\n\r\n")) break;
 			}
 			int xpos = html.find("\r\n\r\n");
-			PrintRp(STR::S2CS(html.substr(0, xpos)));
-			int len = httpworker->setMsg(html);
+			PrintRp(STR::S2CS(html.substr(0,xpos-1)));
+			//int len = httpworker->setMsg(html);
+			int len = httpsetmsg(httpworker, html);
 			if (len > 0){//no data;
-				html = httpworker->getdata();
+				html = httpgetdata(httpworker);//httpworker->getdata();
 				int count;
-				TCHAR Counter[10];
 				while (true){
 					if (len == 0) break;
 					memset(buf, 0, sizeof(buf));
 					count = aSocket->Receive(buf, BUFSIZE);
 					buf[BUFSIZE] = '\0';
-				//	PrintRp(STR::S2CS(buf));
 					html += (*new string(buf));
 					len -= count;
-					//_itot_s(len, Counter, 10);
-					//AfxMessageBox(Counter);
 				}
-				httpworker->setdata(html);
+				//httpworker->setdata(html);
+				httpsetdata(httpworker,html);
 			}
-			if (httpworker->analy()<0){
-
+			//if (httpworker->analy()<0){
+			if (httpanaly(httpworker)<0){
 			}
-			PrintRp(STR::S2CS(httpworker->getdata()));
+			//Httpgetdata httpgetdata = (Httpgetdata)dll->GetFun("getdata");
+			//PrintRp(STR::S2CS(httpworker->getdata()));
+			PrintRp(STR::S2CS(httpgetdata(httpworker)));
 		}
-
+	
 	private:
-		Httpworker *httpworker;
+		NetDll *dll;
+		//Httpworker *httpworker;
+		void *httpworker;
+		HttPtr httptr;
+		HttpSetport httpsetport;
+		Httpdiv httpdiv;
+		HttpMake httpmake;
+		HttpgetPort httpgetPort;
+		Httpgethost httpgethost;
+		HttpgetMsg httpgetMsg;
+		HttpSetMsg httpsetmsg;
+		Httpgetdata httpgetdata;
+		Httpsetdata httpsetdata;
+		Httpanaly httpanaly;
+
 		DNSworker *dnsworker;
-		CmySocket *aSocket;
+		CSocket *aSocket;
 		CString rev;
 		TCHAR szRecValue[1024];
 	};
@@ -531,7 +577,7 @@ dnsworker = new DNSworker();
 dnsworker->Make(httpworker->gethost());
 string dnsmsg = dnsworker->getMsg();
 CString temp = STR::S2CS(dnsmsg);
-udp = new CmySocket();
+udp = new CSocket();
 udp->Create( SOCK_DGRAM);
 CString dns_host_ip = STR::S2CS(DNSworker::getdefault_dfs());
 udp->SendToEx(temp, sizeof(TCHAR)*temp.GetLength(), dns_port, dns_host_ip);
@@ -561,7 +607,7 @@ dnsworker = new DNSworker();
 dnsworker->Make(httpworker->gethost());
 string dnsmsg = dnsworker->getMsg();
 CString temp = STR::S2CS(dnsmsg);
-udp = new CmySocket();
+udp = new CSocket();
 udp->Create();
 CString dns_host_ip = STR::S2CS(DNSworker::getdefault_dfs());
 if (!udp->Connect(dns_host_ip, dns_port)){ PrintRp(_T("dns server can't be access")); continue; };

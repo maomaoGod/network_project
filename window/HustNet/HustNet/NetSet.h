@@ -42,4 +42,6 @@ protected:
 public:
 	afx_msg void OnBnClickedLocalBrowse();
 	afx_msg void OnBnClickedServerBrowse();
+	afx_msg void OnBnClickedUpload();
 };
+extern CString ServeIP, User, Password;

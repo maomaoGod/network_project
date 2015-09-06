@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 #include "HustNet.h"
 #include "MainFrm.h"
-
+#include "Login.h"
 #include "HustNetDoc.h"
 #include "CmdView.h"
 
@@ -37,7 +37,9 @@ END_MESSAGE_MAP()
 /**
 *CHustNetApp 构造
 */
+CString ServeIP, User, Password;
 
+int myport;
 CHustNetApp::CHustNetApp()
 {
 	/**
@@ -155,7 +157,11 @@ BOOL CHustNetApp::InitInstance()
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
 
-
+	Login mylogin;
+	if (IDOK != mylogin.DoModal()){
+		return false;
+	}
+	mylogin.GetInfo(ServeIP, User, Password);
 
 	/**
 	*调度在命令行中指定的命令。 \n
@@ -163,6 +169,8 @@ BOOL CHustNetApp::InitInstance()
 	*/
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
+
+
 
 	/**
 	*唯一的一个窗口已初始化，因此显示它并对其进行更新

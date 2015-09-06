@@ -10,16 +10,40 @@
 
 
 #include "Tools.h"
-#include "CmyAsyncSocket.h"
+#include "NetDll.h"
 
 using namespace Tools;
+
+typedef void *(*HttPtr)(void);
+typedef void(*HttpMake)(void *);
+typedef int(*HttpSetMsg)(void *, string);
+typedef string(*Httpgetdata)(void*);
+typedef int(*Httpanaly)(void*);
+typedef string(*HttpgetMsg)(void*);
+typedef string(*Httpgethost)(void*);
+typedef void(*Httpcheck)(void*);
+typedef int(*HttpgetPort)(void*);
+typedef string(*Httplook_msg)(void*);
+typedef string(*Httplook_rmsg)(void*);
+typedef CString(*Httpshow_rmsg)(void*);
+typedef void(*Httpsetdata)(void*, string);
 ///<HttpClientSocket ÃüÁîÄ¿±ê
-class HttpClientSocket : public CmyAsyncSocket
+class HttpClientSocket : public CAsyncSocket
 {
 public:
 	HttpClientSocket();
 	virtual ~HttpClientSocket();
 	TCHAR Buffer[BUFSIZE];
+	NetDll *dll;
+	HttPtr httptr;
+	HttpMake httpmake;
+	HttpgetPort httpgetPort;
+	Httpgethost httpgethost;
+	HttpgetMsg httpgetMsg;
+	HttpSetMsg httpsetmsg;
+	Httpgetdata httpgetdata;
+	Httpsetdata httpsetdata;
+	Httpanaly httpanaly;
 	virtual void OnReceive(int nErrorCode);
 	virtual void OnSend(int nErrorCode);
 	virtual void OnClose(int nErrorCode);

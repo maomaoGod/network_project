@@ -90,6 +90,12 @@
     <ClInclude Include="ComSocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Login.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketClient.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HustNet.cpp">
@@ -150,6 +156,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Serve\Serve\CmyAsyncSocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Login.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

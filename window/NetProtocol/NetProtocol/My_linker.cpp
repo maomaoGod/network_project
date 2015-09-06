@@ -782,6 +782,7 @@ inline unsigned int my_linker::getIP()
 DWORD WINAPI my_linker::NewPackThread(LPVOID lParam)
 {
 	my_linker *pthis = (my_linker *)lParam;
+	while (AfxGetApp()->m_pMainWnd == NULL);
 	pthis->packcap();
 	return 0;
 }

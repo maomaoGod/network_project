@@ -3,12 +3,20 @@
 #include "stdafx.h"
 #include "NetProtocol.h"
 #include "MainFrm.h"
-#include "CMyIP.h"
 #include "string.h"
 #include "Tools.h"
 #include "pcap.h"
 #include "windows.h"
 #include "time.h"
+
+/*********************************************
+*         ÍøÂç²ãµÄ¶¯Ì¬Á´½ÓÉùÃ÷              *
+*********************************************/
+
+typedef CNETCLI* (*CREATEFNC)();
+typedef void(*DELETEFNC)(CNETCLI*);
+typedef CRoute* (*CREATEFNR)();
+typedef void(*DELETEFNR)(CRoute*);
 
 int sockcount = 0;
 
@@ -120,6 +128,36 @@ DWORD WINAPI NewTcpControlThread(LPVOID)
 
 CMainFrame::CMainFrame()
 {
+	/**********************
+	*¼ÓÔØÍøÂç²ãµÄ¶ËÏµÍ³Ä£¿é
+	***********************/
+	Chd = LoadLibrary(_T("CNETCLI.dll"));
+	CREATEFNC cpfn;
+	if (NULL != Chd){
+		cpfn = (CREATEFNC)GetProcAddress(Chd, "CreateCliPtr");
+		if (!cpfn){
+			FreeLibrary(Chd);
+		}
+		else{
+			ct = cpfn();
+		}
+	}
+
+	Rhd = LoadLibrary(_T("Route.dll"));
+	CREATEFNR rpfn;
+	if (NULL != Rhd){
+		rpfn = (CREATEFNR)GetProcAddress(Rhd, "CreateRoutePtr");
+		if (!rpfn){
+			FreeLibrary(Rhd);
+		}
+		else{
+			rt = rpfn();
+		}
+	}
+
+	updateRoute = 0;
+	initRoute = 0;
+
 	connsocknum = 0;
 	mac_flag = 0;
 	CurIP = 0;
@@ -128,6 +166,25 @@ CMainFrame::CMainFrame()
 
 CMainFrame::~CMainFrame()
 {
+	DELETEFNC cxfn;
+	cxfn = (DELETEFNC)GetProcAddress(Chd, "DeleteCliPtr");
+	if (!cxfn){
+		FreeLibrary(Chd);
+	}
+	else{
+		cxfn(ct);
+	}
+	FreeLibrary(Chd);
+
+	DELETEFNR rxfn;
+
+	rxfn = (DELETEFNR)GetProcAddress(Rhd, "DeleteRoutePtr");
+	if (!rxfn){
+		FreeLibrary(Rhd);
+	}
+	else{
+		rxfn(rt);
+	}
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -234,29 +291,20 @@ LRESULT CMainFrame::OnIP2Trans(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã½â°ü´«Êäµ½´
 	///< Èô·¢ÏÖ·ÖÆ¬È±Ê§»òÕß¼ìÑéºÍ³ö´íÔò return FALSE;
 	///< ÈôÊÇÔòÊý¾Ý³É¹¦½ÓÊÕ ½øÐÐÉÙÁ¿µÄ¼ìÑéºÍ¼ì²é, ÈôÃ»ÓÐ´íÎó
 	///< Ôò½«IP_msg½á¹¹°þÀë³öMsg½á¹¹
-
-	ip_message *Routest = (struct ip_message*)wparam;
-	if (Routest->ih_ident == data_info)
-	{
-		if (!IP.IP2Trans(wparam, lparam))
-			return true;
-		else
-		{
-			AfxMessageBox(_T("ÍøÂç²ã´«Êä¸ø´«Êä²ãÊý¾Ý°ü³öÏÖÎÊÌâ.\n"));
-			return false;
+	int nRetCode = 0;
+	if (end_connect){
+		if (ct->IP2Trans(wparam, lparam) != 0){
+			AfxMessageBox(_T("Client system Link to trans have errors.\n\n"));
+			nRetCode = 1;
 		}
 	}
-	else
-	{
-		if (!IP.RecvMsg(wparam, lparam))
-			return true;
-		else
-		{
-			AfxMessageBox(_T("ÍøÂç²ã½ÓÊÕÂ·ÓÉÐÅÏ¢³öÏÖÎÊÌâ.\n"));
-			return false;
+	else{
+		rt->RS(Routing_select);
+		if (rt->Datainfo(wparam, lparam) != 0){
+			nRetCode = 1;
 		}
 	}
-
+	return nRetCode;
 }
 
 LRESULT CMainFrame::OnLink2IP(WPARAM wparam, LPARAM lparam) //Á´Â·²ã½â°ü´«ÊäÊý¾ÝÍøÂç²ãµÄ½Ó¿Ú
@@ -334,55 +382,22 @@ LRESULT CMainFrame::OnIP2Link(WPARAM wparam, LPARAM lparam) //ÍøÂç²ã´ò°üÊý¾Ý·¢ËÍ
 	///< Èç¹ûÐÅÏ¢³¬¹ýÈÝÁ¿¾Í½øÐÐ·ÖÆ¬´¦Àí, 
 	///< µ÷ÓÃÁ´Â·²ãµÄ·¢ËÍº¯ÊýÈç¹û·¢ËÍÊ§°Ü return FALSE;
 	///< ·ñÔò return TRUE;
-	clock_t t1 = clock(), t2;
-	if (end_connect == 1)
-	{
-		if (!IP.IP2Link(wparam, lparam))
-			return true;
-		else
-		{
-			AfxMessageBox(_T("ÍøÂç²ã´«Êä¸øÁ´Â·Êý¾Ý°ü³öÏÖÎÊÌâ.\n"));
-			return false;
+	int nRetCode = 0;
+	if (end_connect){
+		if (ct->IP2Link(wparam, lparam) != 0){
+			AfxMessageBox(_T("Client system Net to Link have errors.\n"));
+			nRetCode = 1;
 		}
 	}
-	else
-	{
-		ip_message *Routest = new ip_message;
-		Routest = (struct ip_message *)wparam;
-
-		if (Routest->ih_ident == data_info)                             
-		{
-			if (!IP.IP2Link(wparam, lparam))
-				return true;
-			else
-			{
-				AfxMessageBox(_T("ÍøÂç²ã´«Êä¸øÁ´Â·Êý¾Ý°ü³öÏÖÎÊÌâ.\n"));
-				return false;
-			}
-		}
-		else{
-			if (!IP.SendMsg(wparam, lparam))
-				return true;
-			else
-			{
-				AfxMessageBox(_T("ÍøÂç²ã·¢ËÍÂ·ÓÉÐÅÏ¢³öÏÖÎÊÌâ.\n"));
-				return false;
+	else{
+		if (0 == wparam){
+			if (rt->SendMsg(wparam, lparam) != 0){
+				AfxMessageBox(_T("Route system Net to Link have errors.\n\n"));
+				nRetCode = 1;
 			}
 		}
 	}
-
-	if (t1 - t2 ==15)
-	{
-		if (!IP.SendMsg(wparam, lparam))
-			return true;
-		else
-		{
-			AfxMessageBox(_T("ÍøÂç²ã·¢ËÍÂ·ÓÉÐÅÏ¢³öÏÖÎÊÌâ.\n"));
-			return false;
-		}
-	}
-	t2 = t1;
-	///< Èç¹ûÔÚÂ·ÓÉÀïÃæ¾ÍÓ¦¸ÃÃ¿¸ô15s·¢ËÍÒ»´ÎÂ·ÓÉÐÅÏ¢
+	return nRetCode;
 }
 
 
@@ -437,6 +452,12 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 	if (connsocknum != m_sockpool.sockconnum){
 		connsocknum = m_sockpool.sockconnum;
 		GetActiveView()->SendMessage(SOCKSTATEUPDATE, connsocknum);
+	}
+	updateRoute++;
+	if ((updateRoute == 15 || initRoute == 0) && !end_connect){
+		updateRoute = 0;
+		initRoute = 1;
+		(AfxGetApp()->m_pMainWnd)->SendMessage(IPTOLINK, 0U, 0L);
 	}
 	CFrameWnd::OnTimer(nIDEvent);
 }
