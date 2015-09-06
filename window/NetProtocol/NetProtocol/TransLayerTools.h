@@ -1,10 +1,15 @@
-/** @file
- * @brief udp tcp checksum
- * @author ACM1201
- * @date 2015/05/02
- * @version 0.1
- *
- */
+// 下列 ifdef 块是创建使从 DLL 导出更简单的
+// 宏的标准方法。此 DLL 中的所有文件都是用命令行上定义的 TRANSLAYERTOOLS_EXPORTS
+// 符号编译的。在使用此 DLL 的
+// 任何其他项目上不应定义此符号。这样，源文件中包含此文件的任何其他项目都会将
+// TRANSLAYERTOOLS_API 函数视为是从 DLL 导入的，而此 DLL 则将用此宏定义的
+// 符号视为是被导出的。
+#ifdef TRANSLAYERTOOLS_EXPORTS
+#define TRANSLAYERTOOLS_API __declspec(dllexport)
+#else
+#define TRANSLAYERTOOLS_API __declspec(dllimport)
+#endif
+
 #pragma once
 #include "stdafx.h"
 #include "winsock2.h"
@@ -63,24 +68,33 @@ struct tcp_message
 *u16 len_udp is the length (number of octets) of the UDP header and data
 *padding is 1 if data has an even number of octets and 0 for an odd number
 *u16 src_port[4] and u16 dest_port[4] are the IP source and destination address octets
- */
+*/
 typedef unsigned short u16;
 typedef unsigned long u32;
 
-u16 udpmakesum(u16 len_udp, u16 src_port,u16 dest_port, bool padding, u16 *buff);
+// 此类是从 TransLayerTools.dll 导出的
+class TRANSLAYERTOOLS_API CTransLayerTools {
+public:
+	// TODO:  在此添加您的方法。
+	static u16 udpmakesum(u16 len_udp, u16 src_port, u16 dest_port, bool padding, u16 *buff);
 
-u16 tcpmakesum(u16 len_tcp, u16 src_port,u16 dest_port, bool padding, u16 *buff);
+	static u16 tcpmakesum(u16 len_tcp, u16 src_port, u16 dest_port, bool padding, u16 *buff);
 
-bool udpcheck(u16 len_udp, u16 src_port,u16 dest_port, bool padding, u16 *buff, u16 checksum);
+	static bool udpcheck(u16 len_udp, u16 src_port, u16 dest_port, bool padding, u16 *buff, u16 checksum);
 
-bool tcpcheck(u16 len_udp, u16 src_port,u16 dest_port, bool padding, u16 *buff, u16 checksum);
+	static bool tcpcheck(u16 len_udp, u16 src_port, u16 dest_port, bool padding, u16 *buff, u16 checksum);
 
-unsigned int getIP();
+	static unsigned int getIP();
 
-unsigned int IP_chars2uint(char ip[]);
+	static unsigned int IP_chars2uint(char ip[]);
 
-void IP_uint2chars(char ip[], unsigned int ip_int);
+	static void IP_uint2chars(char ip[], unsigned int ip_int);
 
-unsigned int IP_string2uint(string ip);
+	static unsigned int IP_string2uint(string ip);
 
-unsigned int port_string2uint(string port);
+	static unsigned int port_string2uint(string port);
+};
+
+extern TRANSLAYERTOOLS_API int nTransLayerTools;
+
+TRANSLAYERTOOLS_API int fnTransLayerTools(void);

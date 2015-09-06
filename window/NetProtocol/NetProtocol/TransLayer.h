@@ -1,3 +1,15 @@
+// 下列 ifdef 块是创建使从 DLL 导出更简单的
+// 宏的标准方法。此 DLL 中的所有文件都是用命令行上定义的 TRANSLAYER_EXPORTS
+// 符号编译的。在使用此 DLL 的
+// 任何其他项目上不应定义此符号。这样，源文件中包含此文件的任何其他项目都会将
+// TRANSLAYER_API 函数视为是从 DLL 导入的，而此 DLL 则将用此宏定义的
+// 符号视为是被导出的。
+//#ifdef TRANSLAYER_EXPORTS
+//#define TRANSLAYER_API __declspec(dllexport)
+//#else
+//#define TRANSLAYER_API __declspec(dllimport)
+//#endif
+
 /**@file
 *@brief tcp相关协议实现头文件
 *@author ACM2012
@@ -6,12 +18,34 @@
 */
 #pragma once
 #include "stdafx.h"
-#include "Tools.h"
-#include "MainFrm.h"
-#include "TransLayerTools.h"
 #include "string.h"
 
+#include "TransLayerTools.h"
+#pragma comment (lib, "TransLayerTools.lib")
+
 using namespace std;
+
+//--------------------------------------------------------------------------------
+#define TRANSTOIP       WM_USER+1000
+#define IPTOLINK        WM_USER+1001
+#define LINKSEND        WM_USER+1002
+#define TRANSTOAPP      WM_USER+1003
+#define APPTOTRANS	    WM_USER+1004
+#define IPTOTRANS       WM_USER+1005
+#define LINKTOIP        WM_USER+1006
+#define	APPSEND			WM_USER+1007
+#define	SOCKSTATEUPDATE	WM_USER+1008
+
+#define  SOCKCONNECT		200
+#define  SOCKBIND           201
+#define  SOCKLISTEN         202
+#define  SOCKSEND           203
+#define  SOCKSENDTO         204
+#define  SOCKRECEIVE        205
+#define  SOCKRECEIVEFROM	206
+#define  SOCKCLOSE          207
+#define  SOCKACCEPT         208
+//---------------------------------------------------------------------------------
 
 #define PROTOCOL_TCP 6
 #define PROTOCOL_UDP 17
@@ -25,6 +59,7 @@ using namespace std;
 #define INITIAL_THRESHOLD (65*1024) // 65KB
 #define RANDOM_SEQ_NUMBER_MODULE 321
 #define MAX_PORT 65536
+#define RESEND_COUNTS 1000000000
 
 #define CONG_SS 0
 #define CONG_CA 1
@@ -47,6 +82,28 @@ using namespace std;
 #define LINK_CONNECT_LOSE 15
 #define wnd_SR 100			//小于等于SEND_STRUCT_SIZE/2即可
 
+//--------------------------------------------------------------------------------------------
+struct SockStruct_SocketLayer {
+	unsigned short  dstport;   //目的端口号
+	unsigned short  srcport;   //源端口号
+	unsigned short  funcID; //socket操作码
+	unsigned short filling;		// blank
+	int    datalength;             //数据长度
+	char srcip[20];                //原地址ip
+	char dstip[20];                //目标地址ip
+	char *data;             //数据
+};
+
+struct Msg_NetLayer{                     ///<数据
+	unsigned int ih_sport;		///< 32位源端口号
+	unsigned int ih_dport;		///< 32位目的端口号
+	unsigned int sip;			///< 32位源IP
+	unsigned int dip;			///< 32位目的IP
+	int datelen;
+	char data[2048];
+	unsigned int protocol;		///< 上层协议类型
+};
+//--------------------------------------------------------------------------------------------
 
 /**
 *@class <tcpmsg_send>
@@ -116,121 +173,58 @@ struct tcplist
 	int tcp_established_syn_seq;	// 对方发来的syn所在报文编号
 	int connect_status;	// TCP连接状态
 	int receive_time; //当前收到的最后一个报文的时间
-};
-/**
-*@class <stopandwait>
-*@brief 停止等待协议结构
-*@author ACM2012
-*@date 2015/6/1
-*@version <0.1>
-*@note 记录发送报文的时间，发送缓冲区，以及上一个发送报文记录，方便发送和重传
-*/
-struct stopandwait
-{
-	int time;               //记录发送报文的时间
-	struct sockstruct send_buf[SEND_STRUCT_SIZE];   //发送缓冲区
-	int last_waitforsend_msg;     //当前缓冲区中正待被发送的报文下标
-	int last_send_msg;            //当前缓冲区中将要发送的最后一个报文的下标
-	struct tcp_message last_send;   //上一个发送出去的报文
-	int last_ack;
-};
-/**
-*@class <gobackn>
-*@brief go-back-n协议结构
-*@author ACM2012
-*@date 2015/6/1
-*@version <0.1>
-*@note 记录发送报文的时间，发送缓冲区，发送窗口等，以便实现GO-BACK-N协议
-*/
-struct gobackn
-{
-	int time;               //记录发送报文的时间
-	struct sockstruct send_buf[SEND_STRUCT_SIZE];   //发送缓冲区
-	int base;     //当前缓冲区中正待被发送的报文下标
-	int nextseqnum;            
-	int last_send_msg;    //当前缓冲区中将要发送的最后一个报文的下标
-};
-/**
-*@class <SR_message>
-*@brief 选择重传协议结构
-*@author ACM2012
-*@date 2015/6/1
-*@version <0.1>
-*@note 存放发送和接受缓冲区，发送接收窗口，以及相关所需标记，以便选择重传
-*/
-struct SR_message
-{
-	int time;
-	struct sockstruct send_buf[SEND_STRUCT_SIZE];	//发送缓冲区
-	struct Msg rcv_buf[SEND_STRUCT_SIZE]; 	//接收缓冲区
-	int rcv_wnd;		//接收窗口第一个下标
-	int send_wnd;		//发送窗口第一个下标
-	int last_send_msg;	//上一个发送的报文
-	int last_waitforsend_msg;	//上一个待发送的报文
-	int last_rcv_msg;	//上一个接收的报文
-	int state_send[SEND_STRUCT_SIZE];	//确认标记
-	int state_rcv[SEND_STRUCT_SIZE];
-
+	int resend_count;  //重传计数
+	bool waiting_for_ack; //是否正在等待ack
 };
 
-bool createNodeList();
-
-bool addNode(tcplist* tcp_list);
-
-bool deleteNode(tcplist* p);
-
-struct tcplist *getNode(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port);
-
-void TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port, int status);
-
-void TCP_send(struct sockstruct data_from_applayer);
-
-void TCP_receive(struct Msg data_from_netlayer);
-
-void TCP_resend();
-
-void TCP_close(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port);
-
-void TCP_controller();
-
-//int Wrongretrasnsmit(int ACK_global, u16 len_tcp, u16 src_port, u16 dest_port, bool padding, u16 *buff, u16 checksum);//返回需要重发的ACK序号
+//// 此类是从 TransLayer.dll 导出的
+//class TRANSLAYER_API CTransLayer {
+//public:
+//	// TODO:  在此添加您的方法。
+//	static bool createNodeList();
 //
-//int Fastretransmit(int ACK_global);   //快速重传
+//	static bool addNode(tcplist* tcp_list);
 //
-//int Count_ACK(int ACK_global);   //冗余ACK计数器
-
-void initialRTT();			//初始化RTT
-
-float getSampleRTT(int sendtime, int gettime); //动态计算超时间隔
-
-void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int src_ip, unsigned int dst_ip, unsigned int data_len);
-
-void UDP_Send2IP(struct sockstruct data_from_applayer, unsigned int src_ip, unsigned int dst_ip, unsigned int data_len);
-
-bool rcvd_msg_existed(struct tcplist *tcp, unsigned int seg_number);
-
-int next_ack_place(struct tcplist *tcp, unsigned int init_ack_place);
-
-int wait_for_handshaking_ack(struct tcplist *tcp);
-
-void port_listen(unsigned short port);
-
-bool check_listening(unsigned short port);
-
-void fill_new_tcplist(struct tcplist *new_tcp);
-
-void sandw_send(struct sockstruct data_from_applayer);
-
-void sandw_receive(struct Msg data_from_netlayer);
-
-void stop_wait();
-
-void SR_send(struct sockstruct data_from_applayer);
-
-void SR_receive(struct Msg data_from_netlayer);
-
-void _SR();
-
-void Temp_Send_ACK(struct tcplist *single_tcp);
-
-void time_over();
+//	static bool deleteNode(tcplist* p);
+//
+//	static struct tcplist *getNode(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port);
+//
+//	static void TCP_new(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port, int status);
+//
+//	static void TCP_send(struct SockStruct_SocketLayer data_from_applayer);
+//
+//	static void TCP_receive(struct Msg_NetLayer data_from_netlayer);
+//
+//	static void TCP_resend();
+//
+//	static void TCP_close(unsigned int src_ip, unsigned short src_port, unsigned int dst_ip, unsigned short dst_port);
+//
+//	void TCP_controller();
+//
+//	static void initialRTT();			//初始化RTT
+//
+//	static float getSampleRTT(int sendtime, int gettime); //动态计算超时间隔
+//
+//	static void TCP_Send2IP(struct tcp_message send_tcp_message, unsigned int src_ip, unsigned int dst_ip, unsigned int data_len);
+//
+//	static void UDP_Send2IP(struct SockStruct_SocketLayer data_from_applayer, unsigned int src_ip, unsigned int dst_ip, unsigned int data_len);
+//
+//	static bool rcvd_msg_existed(struct tcplist *tcp, unsigned int seg_number);
+//
+//	static int next_ack_place(struct tcplist *tcp, unsigned int init_ack_place);
+//
+//	static void port_listen(unsigned short port);
+//
+//	static bool check_listening(unsigned short port);
+//
+//	static void fill_new_tcplist(struct tcplist *new_tcp);
+//
+//	static void Temp_Send_ACK(struct tcplist *single_tcp);
+//
+//	static void time_over();
+//
+//};
+//
+//extern TRANSLAYER_API int nTransLayer;
+//
+//TRANSLAYER_API int fnTransLayer(void);

@@ -49,10 +49,72 @@ static UINT indicators[] =
 	ID_INDICATOR_SCRL,
 };
 
+CString UserName = _T("default");		// This is the User Name; TODO Xian
+int ProtocolType = 3;	// This is the protocol type; TODO Xian
+// 0 for stop and wait
+// 1 for go back n
+// 2 for selected resend
+// 3 for TCP standard
+
+void (*my_port_listen)(unsigned short);
+void (*my_TCP_new)(unsigned int, unsigned short, unsigned int, unsigned short, int);
+void (*my_TCP_send)(struct SockStruct_SocketLayer);
+void (*my_TCP_receive)(struct Msg_NetLayer);
+void (*my_TCP_close)(unsigned int, unsigned short, unsigned int, unsigned short);
+void (*my_UDP_Send2IP)(struct SockStruct_SocketLayer, unsigned int, unsigned int, unsigned int);
+
 // CMainFrame ¹¹Ôì/Îö¹¹
 DWORD WINAPI NewTcpControlThread(LPVOID)
 {
-	TCP_controller();
+	CString UserPath = _T("../../User/");
+	CString TransPath = _T("/TransLayerDLL/");
+	CString ProtocolPath;
+	if (ProtocolType == 0)
+	{
+		ProtocolPath = _T("StopAndWait.dll");
+	}
+	else if (ProtocolType == 1)
+	{
+		ProtocolPath = _T("GoBackN.dll");
+	}
+	else if (ProtocolType == 2)
+	{
+		ProtocolPath = _T("SelectedResend.dll");
+	}
+	else if (ProtocolType == 3)
+	{
+		ProtocolPath = _T("TCP_Standard.dll");
+	}
+	else
+	{
+		printf("Protocol Error!\n");
+	}
+	CString DLLPath = UserPath + UserName + TransPath + ProtocolPath;
+
+	void (*my_TCP_controller)();
+	HINSTANCE hinst = LoadLibrary(DLLPath);
+	if (hinst == NULL)
+	{
+		printf("Dll Not Found!\n");
+		return -1;
+	}
+
+	my_TCP_controller = (void(*)())GetProcAddress(hinst, "TCP_controller");
+	my_port_listen = (void(*)(unsigned short))GetProcAddress(hinst, "port_listen");
+	my_TCP_new = (void(*)(unsigned int, unsigned short, unsigned int, unsigned short, int))GetProcAddress(hinst, "TCP_new");
+	my_TCP_send = (void(*)(struct SockStruct_SocketLayer))GetProcAddress(hinst, "TCP_send");
+	my_TCP_receive = (void(*)(struct Msg_NetLayer))GetProcAddress(hinst, "TCP_receive");
+	my_TCP_close = (void(*)(unsigned int, unsigned short, unsigned int, unsigned short))GetProcAddress(hinst, "TCP_close");
+	my_UDP_Send2IP = (void(*)(struct SockStruct_SocketLayer, unsigned int, unsigned int, unsigned int))GetProcAddress(hinst, "UDP_Send2IP");
+
+	if (my_TCP_controller == NULL)
+	{
+		printf("Dll Error!\n");
+		FreeLibrary(hinst);
+		return -1;
+	}
+	
+	my_TCP_controller();
 	return 0;
 }
 
@@ -123,7 +185,7 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊý
 {   //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌÐò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌÐò·¢ËÍpCopyDataStructÊý¾Ý  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊý¾ÝÔÚOnCopyDataÖÐ»ñÈ¡
-	struct Msg new_ip_msg = *((struct Msg *)wparam);
+	struct Msg_NetLayer new_ip_msg = *((struct Msg_NetLayer *)wparam);
 
 	// UDP
 	if (new_ip_msg.protocol == PROTOCOL_UDP)
@@ -133,20 +195,20 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊý
 		memcpy(&new_udp_msg, new_ip_msg.data, new_ip_msg.datelen); // +1 for \0
 
 		// ¼ìÑéºÍ
-		if (!udpcheck(new_udp_msg.udp_msg_length - 8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length % 2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
+		if (!CTransLayerTools::udpcheck(new_udp_msg.udp_msg_length - 8, new_udp_msg.udp_src_port, new_udp_msg.udp_dst_port, new_udp_msg.udp_msg_length % 2, (u16 *)&(new_udp_msg.udp_app_data), new_udp_msg.udp_checksum))
 		{
 			// ÉáÆú±¨ÎÄ
 			//return -1;
 		}
 
 		// ÌîÈëËÍÍùÓ¦ÓÃ²ãµÄ½á¹¹ÖÐ
-		struct sockstruct new_sockstruct;
+		struct SockStruct_SocketLayer new_sockstruct;
 		new_sockstruct.dstport = new_udp_msg.udp_dst_port;
 		new_sockstruct.srcport = new_udp_msg.udp_src_port;
 		new_sockstruct.funcID = SOCKSENDTO;
 		new_sockstruct.datalength = new_udp_msg.udp_msg_length - 8;
-		IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
-		IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
+		CTransLayerTools::IP_uint2chars(new_sockstruct.srcip, new_ip_msg.sip);
+		CTransLayerTools::IP_uint2chars(new_sockstruct.dstip, new_ip_msg.dip);
 		memcpy(new_sockstruct.data, new_udp_msg.udp_app_data, new_sockstruct.datalength);
 
 		// ËÍÍùÓ¦ÓÃ²ã
@@ -156,7 +218,7 @@ LRESULT CMainFrame::OnTrans2App(WPARAM wparam, LPARAM lparam) //´«Êä²ã½â°ü´«ÊäÊý
 	else if (new_ip_msg.protocol == PROTOCOL_TCP)
 	{
 		// ´¥·¢½ÓÊÕÊÂ¼þ
-		TCP_receive(new_ip_msg);
+		my_TCP_receive(new_ip_msg);
 	}
 	else
 	{
@@ -207,16 +269,16 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 { //Ê¹ÓÃsendmessageÏòÓ¦ÓÃ³ÌÐò·¢ËÍÏûÏ¢
 	//example Ïò¶Ë¿ÚºÅÎª0µÄÓ¦ÓÃ³ÌÐò·¢ËÍpCopyDataStructÊý¾Ý  ::SendMessage(port2hwnd[0], WM_COPYDATA, (WPARAM)(AfxGetApp()->m_pMainWnd), (LPARAM)pCopyDataStruct);
 	//Ó¦ÓÃ²ã·¢Íù´«Êä²ãµÄÊý¾ÝÔÚOnCopyDataÖÐ»ñÈ¡
-	struct sockstruct data_from_applayer = *((struct sockstruct *)wparam);
-	unsigned int dst_ip = IP_chars2uint(data_from_applayer.dstip);
+	struct SockStruct_SocketLayer data_from_applayer = *((struct SockStruct_SocketLayer *)wparam);
+	unsigned int dst_ip = CTransLayerTools::IP_chars2uint(data_from_applayer.dstip);
 	unsigned short dst_port = data_from_applayer.dstport;
 	unsigned short src_port = data_from_applayer.srcport;
-	unsigned int src_ip = getIP();
+	unsigned int src_ip = CTransLayerTools::getIP();
 	unsigned int data_len = data_from_applayer.datalength;
 
-	IP_uint2chars(data_from_applayer.srcip, src_ip);
+	CTransLayerTools::IP_uint2chars(data_from_applayer.srcip, src_ip);
 	// ×ª»»IP
-	if (dst_ip == IP_chars2uint("127.0.0.1"))
+	if (dst_ip == CTransLayerTools::IP_chars2uint("127.0.0.1"))
 	{
 		dst_ip = src_ip;
 		memcpy(data_from_applayer.dstip, data_from_applayer.srcip, 20);
@@ -230,7 +292,7 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 	if (funcID == SOCKSENDTO)
 	{
 		// Ö±½Ó·¢ËÍ¿©
-		UDP_Send2IP(data_from_applayer, src_ip, dst_ip, data_len);
+		my_UDP_Send2IP(data_from_applayer, src_ip, dst_ip, data_len);
 	}
 	// TCP
 	else
@@ -241,22 +303,22 @@ LRESULT CMainFrame::OnTrans2IP(WPARAM wparam, LPARAM lparam) //´«Êä²ã´ò°üÊý¾Ý·¢Ë
 			// ÒþÊ½µÄÈý´ÎÎÕÊÖ£¬²¢²»ÊÇ×èÈûµÄ¹ý³Ì
 
 			// ÐÂ½¨TCPÁ¬½Ó£¬³õÊ¼»¯TCPÁ¬½ÓÁ´±í
-			TCP_new(src_ip, src_port, dst_ip, dst_port, LINK_CONNECTING);
+			my_TCP_new(src_ip, src_port, dst_ip, dst_port, LINK_CONNECTING);
 		}
 		else if (funcID == SOCKSEND)
 		{
 			// ²»Ðè²ð·ÖÀ´×ÔÓ¦ÓÃ²ãµÄ¹ý´óÊý¾Ý¶Î
-			TCP_send(data_from_applayer);
+			my_TCP_send(data_from_applayer);
 		}
 		else if (funcID == SOCKCLOSE)
 		{
 			// Ö÷¶¯¶Ï¿ªÁ¬½Ó£¬³ÉÎª°ë¿ª×´Ì¬£¬¿ÉÒÔ½ÓÊÕÊý¾Ýµ«ÊÇ²»·¢ËÍ
-			TCP_close(src_ip, src_port, dst_ip, dst_port);
+			my_TCP_close(src_ip, src_port, dst_ip, dst_port);
 		}
 		else if (funcID == SOCKLISTEN)
 		{
 			// ¼àÌý¶Ë¿Ú
-			port_listen(src_port);
+			my_port_listen(src_port);
 		}
 		else
 		{
@@ -331,7 +393,7 @@ LRESULT CMainFrame::OnLinkSend(WPARAM wparam, LPARAM lparam) //Á´Â·²ã´ò°üÊý¾Ý·¢Ë
 	unsigned int Src_IP = datagram->ih_saddr;
 	unsigned int Des_IP = datagram->ih_daddr;
 	unsigned short len = datagram->ih_len;
-	if (Des_IP != getIP())
+	if (Des_IP != CTransLayerTools::getIP())
 	{
 		if (CurIP == Des_IP)
 			goto next;
