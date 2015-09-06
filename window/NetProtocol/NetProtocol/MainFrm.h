@@ -1,4 +1,4 @@
-// MainFrm.h : CMainFrame ç±»çš„æ¥å£
+// MainFrm.h : CMainFrame ÀàµÄ½Ó¿Ú
 //
 #pragma once
 #include <map>
@@ -11,28 +11,27 @@
 
 using namespace std;
 
-#pragma comment(lib, "mylinker.lib")
 
 /**
 *@class  <CMainFrame>
-*@brief   ç¨‹åºæ¡†æ¶çª—å£ç±»,ä¸»è¦å®Œæˆç•Œé¢çš„æ˜¾ç¤ºæ§åˆ¶,åè®®æ ˆä¹‹é—´æ¶ˆæ¯çš„ä¼ é€’
+*@brief   ³ÌĞò¿ò¼Ü´°¿ÚÀà,Ö÷ÒªÍê³É½çÃæµÄÏÔÊ¾¿ØÖÆ,Ğ­ÒéÕ»Ö®¼äÏûÏ¢µÄ´«µİ
 *@author ACM2012
-*@note ç¨‹åºæ¡†æ¶çª—å£ç±»ï¼Œä¸»è¦è´Ÿè´£ç•Œé¢çš„ç°å®ã€‚åœ¨æœ¬ç¨‹åºä¸­ï¼Œç¨‹åºä¸»æ¡†æ¶æ˜¯åè®®æ ˆä¸­å„ä¸ªå±‚é€šä¿¡çš„æ¥å£ï¼Œ
-*åè®®æ ˆä¸­å„ä¸ªå±‚é€šè¿‡çª—å£çš„æ¶ˆæ¯æœºåˆ¶è¿›è¡Œé€šä¿¡ï¼Œä»è€Œå®ç°å„ä¸ªå±‚ä¹‹é—´çš„ä¿¡æ¯äº¤äº’ï¼Œé€‰æ‹©æ¶ˆæ¯çš„åŸå› åœ¨äºçª—å£æ¶ˆæ¯
-*å¯ä»¥ä½¿ç±»ä¹‹é—´çš„å…³ç³»æ›´åŠ æ¸…æ™°ï¼Œæ•°æ®çš„ä¼ é€æ›´åŠ æ˜ç¡®ã€‚
+*@note ³ÌĞò¿ò¼Ü´°¿ÚÀà£¬Ö÷Òª¸ºÔğ½çÃæµÄÏÖÊµ¡£ÔÚ±¾³ÌĞòÖĞ£¬³ÌĞòÖ÷¿ò¼ÜÊÇĞ­ÒéÕ»ÖĞ¸÷¸ö²ãÍ¨ĞÅµÄ½Ó¿Ú£¬
+*Ğ­ÒéÕ»ÖĞ¸÷¸ö²ãÍ¨¹ı´°¿ÚµÄÏûÏ¢»úÖÆ½øĞĞÍ¨ĞÅ£¬´Ó¶øÊµÏÖ¸÷¸ö²ãÖ®¼äµÄĞÅÏ¢½»»¥£¬Ñ¡ÔñÏûÏ¢µÄÔ­ÒòÔÚÓÚ´°¿ÚÏûÏ¢
+*¿ÉÒÔÊ¹ÀàÖ®¼äµÄ¹ØÏµ¸ü¼ÓÇåÎú£¬Êı¾İµÄ´«ËÍ¸ü¼ÓÃ÷È·¡£
 */
 
 class CMainFrame : public CFrameWnd
 {
 
-protected: // ä»…ä»åºåˆ—åŒ–åˆ›å»º
+protected: // ½ö´ÓĞòÁĞ»¯´´½¨
 	CMainFrame();
 	DECLARE_DYNCREATE(CMainFrame)
 
-	// ç‰¹æ€§
+	// ÌØĞÔ
 public:
 
-	// æ“ä½œ
+	// ²Ù×÷
 public:
 	HINSTANCE Chd;
 	CNETCLI* ct;
@@ -46,13 +45,13 @@ public:
 	int connsocknum;
 	my_linker  linker;
 	SockPool   m_sockpool;
-	// é‡å†™
+	// ÖØĞ´
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	HWND PPwnd;
 	int mac_flag;
 	unsigned int CurIP;
-	// å®ç°
+	// ÊµÏÖ
 public:
 	virtual ~CMainFrame();
 #ifdef _DEBUG
@@ -60,40 +59,40 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-protected:  // æ§ä»¶æ¡åµŒå…¥æˆå‘˜
+protected:  // ¿Ø¼şÌõÇ¶Èë³ÉÔ±
 	CToolBar            m_wndToolBar;
 	CStatusBar        m_wndStatusBar;
 	CWnd   *MyWnd;
 	int  numprocess;
-	// ç”Ÿæˆçš„æ¶ˆæ¯æ˜ å°„å‡½æ•°
+	// Éú³ÉµÄÏûÏ¢Ó³Éäº¯Êı
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	DECLARE_MESSAGE_MAP()
 public:
-	/** @brief ä¼ è¾“å±‚å¤„ç†ç½‘ç»œå±‚æ•°æ®ï¼Œå‘å¾€åº”ç”¨å±‚ */
+	/** @brief ´«Êä²ã´¦ÀíÍøÂç²ãÊı¾İ£¬·¢ÍùÓ¦ÓÃ²ã */
 	afx_msg LRESULT OnTrans2App(WPARAM, LPARAM);
-	/** @brief ç½‘ç»œå±‚å¤„ç†é“¾è·¯å±‚æ•°æ®ï¼Œå‘å¾€ä¼ è¾“å±‚ */
+	/** @brief ÍøÂç²ã´¦ÀíÁ´Â·²ãÊı¾İ£¬·¢Íù´«Êä²ã */
 	afx_msg LRESULT OnIP2Trans(WPARAM, LPARAM);
-	/** @brief  é“¾è·¯å±‚æŠ“å–æ•°æ®ï¼Œå‘å¾€ç½‘ç»œå±‚ */
+	/** @brief  Á´Â·²ã×¥È¡Êı¾İ£¬·¢ÍùÍøÂç²ã */
 	afx_msg LRESULT OnLink2IP(WPARAM, LPARAM);
-	/** @brief ä¼ è¾“å±‚æ¥æ”¶åº”ç”¨å±‚æ•°æ®ï¼Œå‘å¾€ç½‘ç»œå±‚ */
+	/** @brief ´«Êä²ã½ÓÊÕÓ¦ÓÃ²ãÊı¾İ£¬·¢ÍùÍøÂç²ã */
 	afx_msg LRESULT OnTrans2IP(WPARAM, LPARAM);
-	/** @brief ç½‘ç»œå±‚æ¥æ”¶ä¼ è¾“å±‚æ•°æ®ï¼Œå‘å¾€ */
+	/** @brief ÍøÂç²ã½ÓÊÕ´«Êä²ãÊı¾İ£¬·¢Íù */
 	afx_msg LRESULT OnIP2Link(WPARAM, LPARAM);
-	/** @brief é“¾è·¯å±‚æ¥å—ç½‘ç»œå±‚æ•°æ®å‘å¾€ */
+	/** @brief Á´Â·²ã½ÓÊÜÍøÂç²ãÊı¾İ·¢Íù */
 	afx_msg LRESULT OnLinkSend(WPARAM, LPARAM);
-	/** @brief æ•°æ®å‘å¾€åº”ç”¨å±‚*/
+	/** @brief Êı¾İ·¢ÍùÓ¦ÓÃ²ã*/
 	afx_msg LRESULT OnAppSend(WPARAM, LPARAM);
-	/** @brief å®šæ—¶å™¨æ¶ˆæ¯å¤„ç†å‡½æ•° */
+	/** @brief ¶¨Ê±Æ÷ÏûÏ¢´¦Àíº¯Êı */
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
-	/** @brief  é€‰æ‹©ç¨‹åºä½œä¸ºç«¯ç³»ç»Ÿ*/
+	/** @brief  Ñ¡Ôñ³ÌĞò×÷Îª¶ËÏµÍ³*/
 	afx_msg void OnClient();
-	/** @brief  é€‰æ‹©ç¨‹åºä½œä¸ºè·¯ç”±å™¨ */
+	/** @brief  Ñ¡Ôñ³ÌĞò×÷ÎªÂ·ÓÉÆ÷ */
 	afx_msg void OnRoute();
-	/** @brief  ä½¿ç”¨OSPFé€‰è·¯åè®®*/
+	/** @brief  Ê¹ÓÃOSPFÑ¡Â·Ğ­Òé*/
 	afx_msg void OnOspf();
-	/** @brief  ä½¿ç”¨RIPé€‰è·¯åè®® */
+	/** @brief  Ê¹ÓÃRIPÑ¡Â·Ğ­Òé */
 	afx_msg void OnRip();
-	/** @brief   MainFrameåˆ›å»ºå®Œæˆè¿›è¡Œåˆå§‹åŒ–*/
+	/** @brief   MainFrame´´½¨Íê³É½øĞĞ³õÊ¼»¯*/
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 };
