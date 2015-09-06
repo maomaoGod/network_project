@@ -1,4 +1,4 @@
-﻿/**
+/**
 *@file
 *@brief 链路层协议
 *@author ACM2012
@@ -13,7 +13,7 @@
 #include "conio.h" 
 #include "packet32.h" 
 #include "ntddndis.h"
-#define  FRAMESIZE 128
+#define FRAMESIZE 128
 #define table_size 10
 #define IP_SIZE sizeof(struct _iphdr)
 #define MAC_ADDR_SIZE 3
@@ -193,7 +193,7 @@ public:
 		}
 		get_adapter();
 		if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewPackThread, (LPVOID) this, NULL, NULL))
-			AfxMessageBox(_T("创建抓包线程失败!"));
+			AfxMessageBox(_T("创建抓包线程失败！"));
 	}
 	
 	/**

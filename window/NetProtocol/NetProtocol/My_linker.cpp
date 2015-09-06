@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "stdafx.h"
 #include "my_linker.h"
 #include "NetProtocol.h"

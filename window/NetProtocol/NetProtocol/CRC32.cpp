@@ -8,7 +8,6 @@
 * 实现了快速CRC32算法，将结果进行了缓存。建立了一个大的crc32常量缓存表。用来缓存crc32数据。
 */
 #include <stdlib.h>
-#include "stdafx.h"
 
 // define endianess and some integer data types
 #ifdef _MSC_VER
