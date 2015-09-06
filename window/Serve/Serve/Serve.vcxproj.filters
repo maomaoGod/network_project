@@ -105,6 +105,9 @@
     <ClInclude Include="TestServeSocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="NetDll.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Serve.cpp">
@@ -180,6 +183,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="TestServeSocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NetDll.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

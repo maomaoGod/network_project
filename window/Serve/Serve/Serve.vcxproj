@@ -119,6 +119,7 @@
     <ClInclude Include="HttpServeSocket.h" />
     <ClInclude Include="Httpworker.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="NetDll.h" />
     <ClInclude Include="NetWork.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Serve.h" />
@@ -150,6 +151,7 @@
     <ClCompile Include="HttpServeSocket.cpp" />
     <ClCompile Include="Httpworker.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="NetDll.cpp" />
     <ClCompile Include="Serve.cpp" />
     <ClCompile Include="ServeDoc.cpp" />
     <ClCompile Include="ServeView.cpp" />
