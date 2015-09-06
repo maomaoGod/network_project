@@ -87,7 +87,7 @@ struct SockStruct_SocketLayer {
 	unsigned short  dstport;   //目的端口号
 	unsigned short  srcport;   //源端口号
 	unsigned short  funcID; //socket操作码
-	unsigned short filling;		// blank
+	unsigned short	padding;		// blank
 	int    datalength;             //数据长度
 	char srcip[20];                //原地址ip
 	char dstip[20];                //目标地址ip
