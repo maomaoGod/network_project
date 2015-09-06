@@ -1,16 +1,4 @@
-// 下列 ifdef 块是创建使从 DLL 导出更简单的
-// 宏的标准方法。此 DLL 中的所有文件都是用命令行上定义的 MYLINKER_EXPORTS
-// 符号编译的。在使用此 DLL 的
-// 任何其他项目上不应定义此符号。这样，源文件中包含此文件的任何其他项目都会将
-// MYLINKER_API 函数视为是从 DLL 导入的，而此 DLL 则将用此宏定义的
-// 符号视为是被导出的。
-#ifdef MYLINKER_EXPORTS
-#define MYLINKER_API __declspec(dllexport)
-#else
-#define MYLINKER_API __declspec(dllimport)
-#endif
-
-/**
+﻿/**
 *@file
 *@brief 链路层协议
 *@author ACM2012
@@ -21,6 +9,7 @@
 */
 #pragma once
 #include "pcap.h"
+#include "NetProtocol.h"
 #include "conio.h" 
 #include "packet32.h" 
 #include "ntddndis.h"
@@ -29,10 +18,6 @@
 #define IP_SIZE sizeof(struct _iphdr)
 #define MAC_ADDR_SIZE 3
 
-#define  TRANSTOIP      WM_USER+1000
-#define  IPTOLINK          WM_USER+1001
-#define  IPTOTRANS      WM_USER+1005
-#define  LINKTOIP          WM_USER+1006
 
 #pragma pack(1)  //按一个字节内存对齐
 #define ETH_ARP         0x0806  //以太网帧类型表示后面数据的类型，对于ARP请求或应答来说，该字段的值为x0806
@@ -44,13 +29,6 @@
 
 typedef unsigned char Byte;
 
-struct IP_Msg2{
-	unsigned int ih_saddr;		///< 32位源IP
-	unsigned int ih_daddr;		///< 32位目的IP
-	unsigned short ih_len;	    ///< 16位数据报总长度
-	char *data;
-};
-
 /**
 *@class <CMlinker>
 *@brief 链路层数据段帧结构体
@@ -59,24 +37,24 @@ struct IP_Msg2{
 *链路层的发送帧数据部分结构，采用标准以太网帧结构
 */
 struct Frame{
-	unsigned short MAC_des[MAC_ADDR_SIZE];           /**@brief MAC_dst MAC目标地址*/
-	unsigned short MAC_src[MAC_ADDR_SIZE];           /**@brief MAC_src MAC源地址*/
+	unsigned short MAC_des[MAC_ADDR_SIZE];           /**@brief MAC_dst MAC目标地址*/ 
+	unsigned short MAC_src[MAC_ADDR_SIZE];           /**@brief MAC_src MAC源地址*/ 
 	unsigned short total_seq_num;                    /**@brief 帧的总个数*/
 	unsigned short datagram_num;                     /**@brief 数据报序号*/
 	unsigned short seq;                              /**@brief 帧序号 */
 	unsigned short length;                           /**@brief 当前帧数据的长度 */
 	Byte data[FRAMESIZE];                            /**@brief 网络层数据 */
 	unsigned short CRC;                              /**@brief CRC16生成结果 */
-
+	
 	/**
 	*@brief 链路层帧验证
 	*@author ACM2012
 	*@note
 	* 用户输入一个帧，由于这两个帧是结构体，进行比较时不能直接比较，
 	* 这里重定义了等号表示，来进行帧结构是否相等的比较
-	*
+	* 
 	*/
-	bool operator == (const Frame &it) const
+	bool operator == (const Frame &it) const         
 	{
 		for (int i = 0; i < 3; ++i)
 		{
@@ -87,8 +65,8 @@ struct Frame{
 		if (datagram_num != it.datagram_num) return false;
 		if (seq != it.seq) return false;
 		if (length != it.length) return false;
-		for (int i = 0; i < length; ++i)
-		if (data[i] != it.data[i]) return false;
+		for (int i = 0; i < length;++i)
+			if (data[i] != it.data[i]) return false;
 		return true;
 	}
 
@@ -98,7 +76,7 @@ struct Frame{
 	*@note
 	* 用户输入一个帧，由于这两个帧是结构体，进行比较时不能直接比较，
 	* 这里重定义了等号表示，来进行帧结构是否不相等的比较
-	*
+	* 
 	*/
 	bool operator != (const Frame &it) const
 	{
@@ -131,9 +109,9 @@ struct Broadcast_frame
 */
 struct EthernetHeader
 {
-	u_char DestMAC[6];    //目的MAC地址 6字节
-	u_char SourMAC[6];   //源MAC地址 6字节
-	u_short EthType;         //上一层协议类型，如0x0800代表上一层是IP协议，0x0806为arp  2字节
+    u_char DestMAC[6];    //目的MAC地址 6字节
+    u_char SourMAC[6];   //源MAC地址 6字节
+    u_short EthType;         //上一层协议类型，如0x0800代表上一层是IP协议，0x0806为arp  2字节
 };
 
 /**
@@ -144,7 +122,7 @@ struct EthernetHeader
 *链路层ARP帧结构的定义，采用以太网标准ARP包结构
 */
 struct Arpheader {
-	unsigned short HardwareType; /**@brief 硬件类型*/
+	unsigned short HardwareType; /**@brief 硬件类型*/ 
 	unsigned short ProtocolType; /**@brief 协议类型*/
 	unsigned char HardwareAddLen; /**@brief 硬件地址长度*/
 	unsigned char ProtocolAddLen; /**@brief 协议地址长度*/
@@ -162,10 +140,10 @@ struct Arpheader {
 *@note
 *链路层类，其中包含链路层所涉及的各类函数以及各类变量
 */
-class MYLINKER_API my_linker
+class my_linker
 {
 private:
-
+	
 	/**
 	*@class <CMlinker>
 	*@brief 数据片段
@@ -180,21 +158,21 @@ private:
 	};
 
 	static const int maxlength = 100000;
-	char **msg;/**@brief 数据报*/
-	Data_Segment *buffer;/**@brief 缓存*/
-	int bp;/**@brief 指向buffer的指针，表示这一位置可用*/
-	int **data_pointer;/**@brief 指针，表示每个数据报的每个帧指向的buffer中的位置*/
-	int *left;/**@brief 每个数据报还剩的帧的个数*/
-	void get_adapter();/**@brief 获取适配器的方法，私有*/
+	char **msg;/**@brief 数据报*/ 			 
+	Data_Segment *buffer;/**@brief 缓存*/ 
+	int bp;/**@brief 指向buffer的指针，表示这一位置可用*/ 
+	int **data_pointer;/**@brief 指针，表示每个数据报的每个帧指向的buffer中的位置*/ 
+	int *left;/**@brief 每个数据报还剩的帧的个数*/ 
+	void get_adapter();/**@brief 获取适配器的方法，私有*/ 
 
 public:
 
-	unsigned short mac_src[3];/**@brief 本机MAC地址*/
-	unsigned short mac_des[3];/**@brief 目的MAC地址*/
-	pcap_t * adapterHandle;/**@brief 适配器句柄*/
+	unsigned short mac_src[3];/**@brief 本机MAC地址*/ 
+	unsigned short mac_des[3];/**@brief 目的MAC地址*/ 
+	pcap_t * adapterHandle;/**@brief 适配器句柄*/ 
 	unsigned int transIP[table_size];
 	unsigned short transmac[table_size][3];
-
+	
 	/**
 	* @author ACM2012
 	* @note
@@ -217,7 +195,7 @@ public:
 		if (!CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewPackThread, (LPVOID) this, NULL, NULL))
 			AfxMessageBox(_T("创建抓包线程失败!"));
 	}
-
+	
 	/**
 	* @author ACM2012
 	* @note
@@ -227,10 +205,10 @@ public:
 	~my_linker()
 	{
 		for (int i = 0; i < maxlength; ++i)
-		if (msg[i] != NULL)
-		{
-			delete[] msg[i];
-		}
+			if (msg[i]!=NULL)
+			{
+				delete[] msg[i];
+			}
 		delete[] msg;
 		delete[] buffer;
 		for (int i = 0; i < maxlength; ++i)
@@ -238,7 +216,7 @@ public:
 		delete[] data_pointer;
 		delete[] left;
 	}
-
+	
 	/**
 	* @author ACM2012
 	* @note
@@ -259,27 +237,23 @@ public:
 		}
 		get_adapter();
 	}
-	char * combine(const u_char *);/**@brief 接收端通过接收到的帧结构组装网络层数据报的函数*/
-	int send_by_frame(IP_Msg2 *, pcap_t *, unsigned short, unsigned short);/**@brief 发送网络层传来的数据报的函数*/
-	int CSMA_CD_send(IP_Msg2 *, pcap_t *, unsigned short, unsigned short);/**@brief 发送帧，加上了碰撞检测*/
-	void GetSelfMac(char*, unsigned short *);/**@brief 获得自身MAC地址的函数*/
+	char * combine(const u_char *);/**@brief 接收端通过接收到的帧结构组装网络层数据报的函数*/ 
+	int send_by_frame(IP_Msg *, pcap_t *, unsigned short, unsigned short);/**@brief 发送网络层传来的数据报的函数*/ 
+	int CSMA_CD_send(IP_Msg *, pcap_t *, unsigned short, unsigned short);/**@brief 发送帧，加上了碰撞检测*/ 
+	void GetSelfMac(char*, unsigned short *);/**@brief 获得自身MAC地址的函数*/ 
 	int ArpGetMacFromIp(pcap_t *adhandle, const char *ip_addr, unsigned char *ip_mac);
 
-	u_char* BuildArpPacket(unsigned short *, unsigned int, unsigned int);/**@brief 构造ARP包的函数*/
+	u_char* BuildArpPacket(unsigned short *, unsigned int, unsigned int);/**@brief 构造ARP包的函数*/ 
 	bool check(const u_char *);/**@brief 构造ARP包的函数用于判断接收的帧是否是广播帧*/
-	unsigned short crc16(unsigned char *, int);/**@brief 计算CRC检验和的函数*/
-	unsigned short checkCrc16(unsigned char *, int);/**@brief 通过检验和检验接收的帧是否正确的函数*/
-	int pppEncode(unsigned char * buf, int len);/**@brief ppp数据帧编码函数*/
-	int pppDecode(unsigned char * buf, int len);/**@brief ppp数据帧解码函数*/
-	void send_broadcast(pcap_t  *adapterHandle, unsigned int src_IP, unsigned int dst_IP);/**@brief 发送广播帧*/
-	bool get_mac(pcap_t  *adapterHandle);/**@brief 获取MAC地址*/
+	unsigned short crc16(unsigned char *, int);/**@brief 计算CRC检验和的函数*/ 
+	unsigned short checkCrc16(unsigned char *, int);/**@brief 通过检验和检验接收的帧是否正确的函数*/ 
+	int pppEncode(unsigned char * buf, int len);/**@brief ppp数据帧编码函数*/ 
+	int pppDecode(unsigned char * buf, int len);/**@brief ppp数据帧解码函数*/ 
+	void send_broadcast(pcap_t  *adapterHandle, unsigned int src_IP, unsigned int dst_IP);/**@brief 发送广播帧*/ 
+	bool get_mac(pcap_t  *adapterHandle);/**@brief 获取MAC地址*/ 
 	bool transtable(unsigned int IP);
-	void packcap();/**@brief 循环接收帧的函数*/
-	void Link2IP(WPARAM wparam);/**@brief 调用combine合并帧并提交上一层的模块*/
+	void packcap();/**@brief 循环接收帧的函数*/ 
+	void Link2IP(WPARAM wparam);/**@brief 调用combine合并帧并提交上一层的模块*/ 
 	static DWORD WINAPI NewPackThread(LPVOID lParam);/**@brief 一个线程，在构造函数中调用，它将用于执行packcap方法*/
-	unsigned int getIP();/**@brief 获取IP地址*/
+	unsigned int getIP();/**@brief 获取IP地址*/ 
 };
-
-extern MYLINKER_API int nmylinker;
-
-MYLINKER_API int fnmylinker(void);
