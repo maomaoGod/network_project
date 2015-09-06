@@ -46,7 +46,7 @@ void HttpServeSocket::OnAccept(int nErrorCode)
 	static int count = 0;
 	CString Hint;
 	HttpClientSocket *httpClientSocket = new HttpClientSocket();
-	CmyAsyncSocket::OnAccept(nErrorCode);
+	CAsyncSocket::OnAccept(nErrorCode);
 	this->Accept(*httpClientSocket);
 	Hint.Format(_T("第%d次网页请求已连接"), count + 1);
 	myclient[httpClientSocket] = count++;

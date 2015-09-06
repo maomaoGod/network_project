@@ -236,17 +236,19 @@ HTTPWORKER_API int fnHttpworker(void);
 FUNCHTTP void *NewHttptr(){
 	return (void *)(new Httpworker());
 }
-
 FUNCHTTP int Httpdiv(void *ele, string Msg, char split){
 	Httpworker *tmp = (Httpworker *)ele;
-	return tmp->div(Msg, split);
+	int tt = tmp->div(Msg, split);
+	return tt;
 }
-
 FUNCHTTP void setPort(void *ele, int port){
 	Httpworker *tmp = (Httpworker *)ele;
 	tmp->setPort(port);
 }
-
+FUNCHTTP int getPort(void*ele){
+	Httpworker *tmp = (Httpworker *)ele;
+	return tmp->getPort();
+}
 FUNCHTTP void Make(void *ele){
 	Httpworker *tmp = (Httpworker *)ele;
 	tmp->Make();
@@ -267,12 +269,18 @@ FUNCHTTP string gethost(void *ele){
 	Httpworker *tmp = (Httpworker *)ele;
 	return tmp->gethost();
 }
-
 FUNCHTTP IP getIP(void *ele){
 	return ((Httpworker *)ele)->getIP();
 }
 //FUNCHTTP
-
+FUNCHTTP void setIP(void* ele, IP ip){
+	Httpworker *tmp = (Httpworker *)ele;
+	tmp->setIP(ip);
+}
+FUNCHTTP bool IPcheck(void* ele){
+	Httpworker *tmp = (Httpworker *)ele;
+	return tmp->IPcheck();
+}
 FUNCHTTP string look_msg(void *ele){
 	Httpworker *tmp = (Httpworker *)ele;
 	return tmp->look_msg();
