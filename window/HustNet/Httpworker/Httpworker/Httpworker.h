@@ -231,13 +231,59 @@ extern HTTPWORKER_API int nHttpworker;
 HTTPWORKER_API int fnHttpworker(void);
 
 // C API to the user
-#define FUNCHTTP extern "C" __declspec(dllexport)
+#define FUNCHTTP extern "C" __declspec(dllexport) 
 
 FUNCHTTP void *NewHttptr(){
 	return (void *)(new Httpworker());
 }
 
-FUNCHTTP int Httpdiv(Httpworker *ele, string Msg, char split){
-	return ele->div(Msg, split);
+FUNCHTTP int Httpdiv(void *ele, string Msg, char split){
+	Httpworker *tmp = (Httpworker *)ele;
+	return tmp->div(Msg, split);
 }
 
+FUNCHTTP void setPort(void *ele, int port){
+	Httpworker *tmp = (Httpworker *)ele;
+	tmp->setPort(port);
+}
+
+FUNCHTTP void Make(void *ele){
+	Httpworker *tmp = (Httpworker *)ele;
+	tmp->Make();
+}
+FUNCHTTP int analy(void *ele){
+	Httpworker *tmp = (Httpworker *)ele;
+	return tmp->analy();
+}
+FUNCHTTP int setMsg(void *ele, string rec){
+	Httpworker *tmp = (Httpworker *)ele;
+	return tmp->setMsg(rec);
+}
+FUNCHTTP string getMsg(void *ele){
+	Httpworker *tmp = (Httpworker *)ele;
+	return tmp->getMsg();
+}
+FUNCHTTP string gethost(void *ele){
+	Httpworker *tmp = (Httpworker *)ele;
+	return tmp->gethost();
+}
+
+FUNCHTTP IP getIP(void *ele){
+	return ((Httpworker *)ele)->getIP();
+}
+//FUNCHTTP
+
+FUNCHTTP string look_msg(void *ele){
+	Httpworker *tmp = (Httpworker *)ele;
+	return tmp->look_msg();
+}
+FUNCHTTP void setdata(void* ele, string msg)
+{
+	Httpworker *tmp = (Httpworker *)ele;
+	tmp->setdata(msg);
+}
+FUNCHTTP string getdata(void* ele)
+{
+	Httpworker *tmp = (Httpworker *)ele;
+	return tmp->getdata();
+}
