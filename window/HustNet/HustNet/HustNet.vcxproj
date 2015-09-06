@@ -116,9 +116,11 @@
     <ClInclude Include="Httpworker.h" />
     <ClInclude Include="HustNet.h" />
     <ClInclude Include="HustNetDoc.h" />
+    <ClInclude Include="Login.h" />
     <ClInclude Include="LogView.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="NetHtml.h" />
+    <ClInclude Include="SocketClient.h" />
     <ClInclude Include="Tools.h" />
     <ClInclude Include="UICtrl.h" />
     <ClInclude Include="UserCmd.h" />
@@ -142,9 +144,11 @@
     <ClCompile Include="Httpworker.cpp" />
     <ClCompile Include="HustNet.cpp" />
     <ClCompile Include="HustNetDoc.cpp" />
+    <ClCompile Include="Login.cpp" />
     <ClCompile Include="LogView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="NetHtml.cpp" />
+    <ClCompile Include="SocketClient.cpp" />
     <ClCompile Include="UserCmd.cpp" />
     <ClCompile Include="NetDll.cpp" />
     <ClCompile Include="NetSet.cpp" />

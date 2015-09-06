@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>   
 #include <io.h>
+#include "SocketClient.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -19,6 +20,8 @@
 *CMainFrame
 */
 extern  CMainFrame *pframe;
+extern int myport;
+CString NowUser;
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
@@ -27,6 +30,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(DISPATCH,Dispatch)
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_NETSET, &CMainFrame::OnNETSET)
+	ON_COMMAND(ID_Http, &CMainFrame::OnHttp)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -60,6 +64,7 @@ CMainFrame::CMainFrame()
 		CreateDirectory(_T("cache/html"), NULL);
 	}
 	flag = false;
+	netflag = false;
 }
 
 CMainFrame::~CMainFrame()
@@ -282,4 +287,44 @@ void CMainFrame::OnNETSET()
 	*@brief 模态显示设置对话框
 	*/
 	SetDlg.DoModal();
+}
+
+
+void CMainFrame::OnHttp()
+{
+	// TODO:  在此添加命令处理程序代码
+	TCHAR Buf[1024];
+	int nport;
+	SocketClient myclient(ServeIP);
+	if (!myclient.Check(User, Password))
+		return;
+	nport = myclient.ConnectServe();
+	myport = nport;
+	if (nport == -1)
+		return;
+	else{
+		CString cmdline;
+		cmdline = _T("NetProtocol.exe");
+		CString para = cmdline + _T("  -") + User +_T("client");
+		NowUser = _T("-") + User + _T("client");
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+		ZeroMemory(&pi, sizeof(pi));
+		ZeroMemory(&si, sizeof(si));
+		if (!CreateProcess(NULL, para.GetBuffer(),
+			NULL,
+			NULL,
+			FALSE,
+			0,
+			NULL,
+			NULL,
+			&si,
+			&pi)){
+			int error = GetLastError();
+			CString vs;
+			vs.Format(_T("%s %d"), _T("启动协议栈失败!"), error);
+			AfxMessageBox(vs);
+		}
+		;
+	}
 }

@@ -9,7 +9,6 @@
 #include "CmdView.h"
 #include "LogView.h"
 #include "RespondView.h"
-
 /**
 *@class  <CMainFrame>
 *@brief  主要负责整个程序的界面框架控制
@@ -66,6 +65,7 @@ protected:
 	CmdView         *pcmd;
 	RespondView   *prespond;
 	BOOL               flag;
+	BOOL              netflag;
 public:
 	CSplitterWnd    m_splitter, s_splitter;
 protected:
@@ -83,4 +83,5 @@ public:
 	afx_msg void OnClose();
 	/*@brief 进行网络设置*/
 	afx_msg void OnNETSET();
+	afx_msg void OnHttp();
 };

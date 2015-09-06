@@ -6,7 +6,7 @@
 #include "HustNet.h"
 #include "NetSet.h"
 #include "afxdialogex.h"
-
+#include "SocketClient.h"
 /**
 *NetSet 对话框
 */
@@ -31,6 +31,7 @@ void NetSet::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(NetSet, CDialogEx)
 	ON_BN_CLICKED(IDC_LOCAL_Browse, &NetSet::OnBnClickedLocalBrowse)
 	ON_BN_CLICKED(IDC_Server_Browse, &NetSet::OnBnClickedServerBrowse)
+	ON_BN_CLICKED(IDC_UPLOAD, &NetSet::OnBnClickedUpload)
 END_MESSAGE_MAP()
 
 
@@ -73,4 +74,20 @@ void NetSet::OnBnClickedServerBrowse()
 		GetDlgItem(IDC_server_text)->SetWindowText(server_path);
 	}
 	else return;
+}
+
+
+void NetSet::OnBnClickedUpload()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	CFile myfile;
+	CString filename;
+	GetDlgItem(IDC_UPLOADPATH)->GetWindowText(filename);
+	myfile.Open(filename, CFile::modeRead|CFile::typeBinary);
+	AfxSocketInit();
+	SocketClient myclient(ServeIP);
+	if (myclient.Check(User, Password))
+		myclient.UploadFile(myfile);
+	else
+		AfxMessageBox(_T("用户不存在!\n"));
 }
