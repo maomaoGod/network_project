@@ -564,7 +564,7 @@ typedef CString(*Httpshow_rmsg)(void*);
 		Httpanaly httpanaly;
 
 		DNSworker *dnsworker;
-		CSocket *aSocket;
+		CmySocket *aSocket;
 		CString rev;
 		TCHAR szRecValue[1024];
 	};

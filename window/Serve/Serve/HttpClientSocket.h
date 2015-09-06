@@ -11,7 +11,7 @@
 
 #include "Tools.h"
 #include "NetDll.h"
-
+#include "CmyAsyncSocket.h"
 using namespace Tools;
 
 typedef void *(*HttPtr)(void);
@@ -28,7 +28,7 @@ typedef string(*Httplook_rmsg)(void*);
 typedef CString(*Httpshow_rmsg)(void*);
 typedef void(*Httpsetdata)(void*, string);
 ///<HttpClientSocket ÃüÁîÄ¿±ê
-class HttpClientSocket : public CAsyncSocket
+class HttpClientSocket : public CmyAsyncSocket
 {
 public:
 	HttpClientSocket();

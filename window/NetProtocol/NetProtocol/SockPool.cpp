@@ -9,12 +9,11 @@
 */
 SockPool::SockPool()
 {
-
+	sockconnum = 0;
 }
 
 bool SockPool::Create(CString user)
 {
-	sockconnum = 0;
 	Wsemaphore = CreateSemaphore(NULL, 1, 100, user + _T("NetProtocolWsemaphore"));//创建信号量P
 	Rsemaphore = CreateSemaphore(NULL, 0, 100, user + _T("NetProtocolRsemaphore"));//创建信号量C
 	Dsemaphore = CreateSemaphore(NULL, 0, 100, user + _T("NetProtocolDsemaphore"));//创建信号量S

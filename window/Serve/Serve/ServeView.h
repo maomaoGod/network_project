@@ -8,6 +8,7 @@
 #include "SMTPServeSocket.h"
 #include "DNSServeSocket.h"
 #include "DnsSocket.h"
+#include "SocketListen.h"
 #pragma once
 
 /**
@@ -31,7 +32,7 @@ public:
    // CmyTestSocket    mytestsock;
 protected :
 	//CTestServeSocket  MyServer;
-	HttpServeSocket  HttpManagerSocket;
+	SocketListen mylisten;
 	FTPServeSocket FtpManagerSocket;
 	SMTPServeSocket SmtpManagerSocket;
 	DNSServeSocket DnsManagerSocket;

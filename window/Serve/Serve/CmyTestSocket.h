@@ -3,7 +3,7 @@
 #include "CmyAsyncSocket.h"
 
 class CmyTestSocket :
-	public CmyAsyncSocket
+	public CAsyncSocket
 {
 public:
 	int my;

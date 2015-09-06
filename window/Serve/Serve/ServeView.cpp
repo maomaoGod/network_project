@@ -47,8 +47,11 @@ CServeView::CServeView()
 	// TODO:  在此处添加构造代码
 	mylog.Empty();
 	AfxSocketInit();
-	HttpManagerSocket.Create(6500);//80
-	HttpManagerSocket.Listen();
+	if (!mylisten.Create(6666)){
+		AfxMessageBox(_T("管理套接字失败!"));
+		exit(0);
+	}
+	mylisten.Listen();
 	FtpManagerSocket.Create(7600);//7600
 	FtpManagerSocket.Listen();
 	//mytestsock.Bind(6500);
@@ -62,7 +65,6 @@ CServeView::CServeView()
 	//DnsManagerSocket.Create(dns_port, SOCK_DGRAM);
 	//DnsManagerSocket.Bind(dns_port, _T("127.0.0.1"));
 	//DnsManagerSocket.Listen();
-	
 }
 
 CServeView::~CServeView()

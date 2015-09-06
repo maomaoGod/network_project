@@ -127,6 +127,8 @@
     <ClInclude Include="ServeView.h" />
     <ClInclude Include="SMTPClientSocket.h" />
     <ClInclude Include="SMTPServeSocket.h" />
+    <ClInclude Include="SocketListen.h" />
+    <ClInclude Include="SocketManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TestServeSocket.h" />
@@ -157,6 +159,8 @@
     <ClCompile Include="ServeView.cpp" />
     <ClCompile Include="SMTPClientSocket.cpp" />
     <ClCompile Include="SMTPServeSocket.cpp" />
+    <ClCompile Include="SocketListen.cpp" />
+    <ClCompile Include="SocketManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
