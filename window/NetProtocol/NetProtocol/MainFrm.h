@@ -2,10 +2,13 @@
 //
 #pragma once
 #include <map>
-#include "CMyIP.h"
 #include "TransLayer.h"
 #include "my_linker.h"
 #include "sockpool.h"
+
+#include "NETCLI.h"
+#include "Route.h"
+
 using namespace std;
 
 
@@ -30,10 +33,16 @@ public:
 
 	// ²Ù×÷
 public:
+	HINSTANCE Chd;
+	CNETCLI* ct;
+	HINSTANCE Rhd;
+	CRoute* rt;
+
+	int updateRoute;
+	int initRoute;
 
 public:
 	int connsocknum;
-	CMyIP IP;
 	my_linker  linker;
 	SockPool   m_sockpool;
 	// ÖØÐ´
