@@ -5,7 +5,7 @@ extern void PrintView(CString e);
 
 CmyTestSocket::CmyTestSocket()
 {
-	//CmyAsyncSocket::CmyAsyncSocket(this);
+	//CAsyncSocket::CAsyncSocket(this);
 }
 
 

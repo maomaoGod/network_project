@@ -1,7 +1,7 @@
 #pragma once
 #include "CmyAsyncSocket.h"
 
-class CTestServeSocket:public CmyAsyncSocket
+class CTestServeSocket:public CAsyncSocket
 {
 public:
 	CTestServeSocket();

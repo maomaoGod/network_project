@@ -5,7 +5,7 @@
 *@class  <CmyAsyncSocket>
 *@brief  自实现异步套接字，实现传输层和应用层之间的通信
 *@author ACM2012
-*@note 本类和协议栈中的套接字池合作使用,完成对MFC提供的CAsyncSocket类的重写，实现套接字监听，
+*@note 本类和协议栈中的套接字池合作使用,完成对MFC提供的CmyAsyncSocket类的重写，实现套接字监听，
 * 数据收发，连接转交等功能
 */
 

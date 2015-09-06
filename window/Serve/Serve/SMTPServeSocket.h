@@ -1,5 +1,5 @@
 #pragma once
-
+#include "CmyAsyncSocket.h"
 // FTPServeSocket ÃüÁîÄ¿±ê
 class SMTPServeSocket : public CAsyncSocket
 {
