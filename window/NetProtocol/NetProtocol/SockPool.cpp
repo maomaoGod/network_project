@@ -9,14 +9,35 @@
 */
 SockPool::SockPool()
 {
+
+}
+
+bool SockPool::Create(CString user)
+{
 	sockconnum = 0;
-	Wsemaphore = CreateSemaphore(NULL, 1, 100, _T("NetProtocolWsemaphore"));//创建信号量P
-	Rsemaphore = CreateSemaphore(NULL, 0, 100, _T("NetProtocolRsemaphore"));//创建信号量C
-	Dsemaphore = CreateSemaphore(NULL, 0, 100, _T("NetProtocolDsemaphore"));//创建信号量S
-	MFile = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(regstruct), _T("NetProtocolListen"));///<创建注册文件
+	Wsemaphore = CreateSemaphore(NULL, 1, 100, user + _T("NetProtocolWsemaphore"));//创建信号量P
+	Rsemaphore = CreateSemaphore(NULL, 0, 100, user + _T("NetProtocolRsemaphore"));//创建信号量C
+	Dsemaphore = CreateSemaphore(NULL, 0, 100, user + _T("NetProtocolDsemaphore"));//创建信号量S
+	MFile = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(regstruct), user + _T("NetProtocolListen"));///<创建注册文件
+	//if (MFile == NULL)
+		//AfxMessageBox(user + _T("NetProtocolListen") + _T("   failed"));
+	//AfxMessageBox(user + _T("NetProtocolListen") + _T("   success"));
 	SH = OpenProcess(PROCESS_ALL_ACCESS, FALSE, _getpid());///<获取本机IP
+	CString soc;
+	int len = user.GetLength();
+	soc = user.Mid(len - 6, len);
+	if (soc.Compare(_T("server"))==0){
+		HANDLE Success = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, user + _T("NetProtocolCreate"));
+		if (Success == NULL){
+			AfxMessageBox(_T("参数传递失败!"));
+			exit(0);
+			return false;
+		}
+		ReleaseSemaphore(Success, 1, NULL);
+	}
 	preg = (regstruct *)MapViewOfFile(MFile, FILE_MAP_WRITE, 0, 0, sizeof(regstruct)); ///<映射注册文件
 	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewConnThread, (LPVOID) this, NULL, NULL);
+	return true;
 }
 
 SockPool::~SockPool()
@@ -88,7 +109,7 @@ DWORD WINAPI SockPool::NewReadThread(LPVOID lParam)
 {
 	struct Para *mypara = (struct Para *)lParam;
 	SockPool *pthis = (SockPool *)mypara->pthis;
-	pthis->ReadSock(mypara->CH, mypara->SockMark, mypara->Queue, mypara->pQueue);
+	pthis->ReadSock(mypara->CH, mypara->SockMark, mypara->Queue, mypara->pQueue,mypara->Destory);
 	return 0;
 }
 
@@ -97,12 +118,13 @@ DWORD WINAPI SockPool::NewReadThread(LPVOID lParam)
 * @param [in] CH 被服务程序句柄，pReadQueue 读队列控制块结构, ReadQueue 读队列控制块句柄,SockMark 套接字标志
 * @note    函数的主要功能是从应用程序写队列中读取数据并传送到传输层。函数提取
 */
-void SockPool::ReadSock(HANDLE CH, unsigned int SockMark, HANDLE ReadQueue, PM pReadQueue)
+void SockPool::ReadSock(HANDLE CH, unsigned int SockMark, HANDLE ReadQueue, PM pReadQueue,HANDLE &CDestory)
 {
 	PN pCur = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));//获取Cur映射内存块
 	transstruct  AppData;
 	HANDLE HData = NULL;
 	portin myportsrc;
+    CString myid;
 	while (SockMark2ReadState[SockMark]) { ///<当状态变为false时退出
 		if (pCur->Next == NULL){
 			Sleep(100);
@@ -115,6 +137,9 @@ void SockPool::ReadSock(HANDLE CH, unsigned int SockMark, HANDLE ReadQueue, PM p
 
 		PN pNode = (PN)MapViewOfFile(pReadQueue->Cur, FILE_MAP_WRITE, 0, 0, sizeof(Node));
 		memset(&AppData, 0, sizeof(transstruct));///初始化为0
+		
+		myid.Format(_T("%s %d"), AfxGetApp()->m_lpCmdLine,pNode->FuncID);
+		//AfxMessageBox(myid);
 		switch (pNode->FuncID){///获取当前命令类型
 		case SOCKBIND:
 			Port2SockMark.erase(SockMark2Port[SockMark]);
@@ -131,28 +156,26 @@ void SockPool::ReadSock(HANDLE CH, unsigned int SockMark, HANDLE ReadQueue, PM p
 			break;
 		case SOCKSEND:
 		case SOCKSENDTO: ///<发送数据
-			    memcpy(AppData.dstip, pNode->dstip,20);
-			    AppData.dstport = pNode->dstport;
-			    AppData.datalength = pNode->DataLen;///<填充源端口
-				AppData.srcport = (Port2PortOut.find(SockMark2Port[SockMark]) == Port2PortOut.end()) ? SockMark2Port[SockMark] : Port2PortOut[SockMark2Port[SockMark]];
-				AppData.function = pNode->FuncID;
-				DuplicateHandle(CH,pNode->Data, SH, &HData, NULL, true, DUPLICATE_SAME_ACCESS);
-			    AppData.data = (char *) MapViewOfFile(HData, FILE_MAP_WRITE, 0, 0, pNode->DataLen);
-				AfxGetApp()->m_pMainWnd->SendMessage(TRANSTOIP, (WPARAM)&AppData, (LPARAM)pNode->FuncID);
-				break;
+			memcpy(AppData.dstip, pNode->dstip, 20);
+			AppData.dstport = pNode->dstport;
+			AppData.datalength = pNode->DataLen;///<填充源端口
+			AppData.srcport = (Port2PortOut.find(SockMark2Port[SockMark]) == Port2PortOut.end()) ? SockMark2Port[SockMark] : Port2PortOut[SockMark2Port[SockMark]];
+			AppData.function = pNode->FuncID;
+			DuplicateHandle(CH, pNode->Data, SH, &HData, NULL, true, DUPLICATE_SAME_ACCESS);
+			AppData.data = (char *)MapViewOfFile(HData, FILE_MAP_WRITE, 0, 0, pNode->DataLen);
+			AfxGetApp()->m_pMainWnd->SendMessage(TRANSTOIP, (WPARAM)&AppData, (LPARAM)pNode->FuncID);
+			break;
 		case SOCKCONNECT:
 		case SOCKCLOSE:
 			memcpy(AppData.dstip, pNode->dstip, 20);
 			AppData.dstport = pNode->dstport;
 			AppData.srcport = SockMark2Port[SockMark];
 			AppData.function = pNode->FuncID;
-			if (pNode->FuncID == SOCKCLOSE)
-				sockconnum--;
-			if (pNode->FuncID == SOCKCONNECT)
-				AfxGetApp()->m_pMainWnd->SendMessage(TRANSTOIP, (WPARAM)&AppData, (LPARAM)pNode->FuncID);
+			//if (pNode->FuncID == SOCKCONNECT)
+			AfxGetApp()->m_pMainWnd->SendMessage(TRANSTOIP, (WPARAM)&AppData, (LPARAM)pNode->FuncID);
 			break;
 		case SOCKLISTEN:
-			AppData.srcport = SockMark2Port[SockMark];
+			AppData.srcport  = SockMark2Port[SockMark];
 			AppData.function = pNode->FuncID;
 			AfxGetApp()->m_pMainWnd->SendMessage(TRANSTOIP, (WPARAM)&AppData, (LPARAM)pNode->FuncID);
 			break;
@@ -167,14 +190,24 @@ void SockPool::ReadSock(HANDLE CH, unsigned int SockMark, HANDLE ReadQueue, PM p
 			CloseHandle(HData);
 			HData = NULL;
 		}
+		if (pNode->FuncID == SOCKCLOSE){
+			sockconnum--;
+			UnmapViewOfFile(pNode);
+			break;
+		}
 		UnmapViewOfFile(pNode);
 		pReadQueue->cid++;
+		
 	}
 	UnmapViewOfFile(pCur);  ///<释放读队列资源
 	SockMark2ReadState.erase(SockMark);
-	SockMark2REvent.erase(SockMark);
 	UnmapViewOfFile(pReadQueue);
 	CloseHandle(ReadQueue);
+	ReleaseSemaphore(CDestory,1,NULL);
+	if (SockMark2State[SockMark])
+		CloseSock(SockMark);
+	else
+		SockMark2State[SockMark] = true;
 }
 
 /**
@@ -187,7 +220,7 @@ DWORD WINAPI SockPool::NewWriteThread(LPVOID lParam)
 {
 	struct Para *mypara = (struct Para *)lParam;
 	SockPool *pthis = (SockPool *)mypara->pthis;
-	pthis->WriteSock(mypara->CH,mypara->SockMark, mypara->Queue, mypara->pQueue);///<线程调用类函数
+	pthis->WriteSock(mypara->CH,mypara->SockMark, mypara->Queue, mypara->pQueue,mypara->Destory);///<线程调用类函数
 	return 0;
 }
 
@@ -196,8 +229,9 @@ DWORD WINAPI SockPool::NewWriteThread(LPVOID lParam)
 * @param [in] pNode新创建的节点句柄,SockMark套接字唯一标示符
 * @note    函数的主要功能是将类中缓存的接收到的数据打包到新创建的节点
 */
-void   SockPool::SockDataToNode(PN pNode, unsigned int SockMark)///<将数据打包成节点形式
+bool   SockPool::SockDataToNode(PN pNode, unsigned int SockMark)///<将数据打包成节点形式
 {
+	bool tmpflag = true;
 	transstruct *psockstruct = SockMark2SockStruct[SockMark];
 	memcpy(pNode->dstip, psockstruct->dstip, 20);///<填充字段
 	memcpy(pNode->srcip, psockstruct->srcip, 20);
@@ -205,11 +239,18 @@ void   SockPool::SockDataToNode(PN pNode, unsigned int SockMark)///<将数据打包成
 	pNode->srcport = psockstruct->srcport;
 	pNode->DataLen = psockstruct->datalength;
 	pNode->FuncID = psockstruct->function;
+	CString myid;
+	myid.Format(_T("%d"), pNode->FuncID);
+	//AfxMessageBox(myid);
 	if (pNode->FuncID == SOCKSEND || pNode->FuncID == SOCKSENDTO)
 		pNode->Data = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, pNode->DataLen, NULL);
+	if (pNode->FuncID == SOCKCLOSE)
+		tmpflag = false;
 	void  *pData = (void *)MapViewOfFile(pNode->Data, FILE_MAP_WRITE, 0, 0, pNode->DataLen);
-	memcpy(pData, psockstruct->data, pNode->DataLen);///<拷贝数据
+	if (psockstruct->data!=NULL)
+	    memcpy(pData, psockstruct->data, pNode->DataLen);///<拷贝数据
 	UnmapViewOfFile(pData);
+	return tmpflag;
 }
 
 /**
@@ -217,7 +258,7 @@ void   SockPool::SockDataToNode(PN pNode, unsigned int SockMark)///<将数据打包成
 * @param [in] pReadQueue 读队列控制块结构, ReadQueue 读队列控制块句柄,SockMark 套接字标志
 * @note    函数的主要功能是从应用程序写队列中读取数据并传送到传输层。函数提取
 */
-void SockPool::WriteSock(HANDLE CH, unsigned int SockMark, HANDLE WriteQueue, PM pWriteQueue)
+void SockPool::WriteSock(HANDLE CH, unsigned int SockMark, HANDLE WriteQueue, PM pWriteQueue,HANDLE &SDestory)
 {
 	bool closeflag = false;
 	int   readnum;
@@ -227,9 +268,9 @@ void SockPool::WriteSock(HANDLE CH, unsigned int SockMark, HANDLE WriteQueue, PM
         WaitForSingleObject(*SockMark2REvent[SockMark], INFINITE);///<等待传输层数据到来
 
 		ClearNode(pWriteQueue);
-		SockDataToNode(pNode, SockMark);
+		if (!SockDataToNode(pNode, SockMark))
+			break;
 		UnmapViewOfFile(pNode);
-
 		SockMark2WEvent[SockMark]->SetEvent();
 		AddToTail(pWriteQueue,NewNode);///<添加数据到写队列
 		CloseHandle(NewNode);
@@ -237,11 +278,15 @@ void SockPool::WriteSock(HANDLE CH, unsigned int SockMark, HANDLE WriteQueue, PM
 	ClearNode(pWriteQueue);///<释放写队列资源
 	CloseHandle(pWriteQueue->Head);
 	CloseHandle(pWriteQueue->Tail);
+	CloseHandle(pWriteQueue->Cur);
 	UnmapViewOfFile(pWriteQueue);
 	CloseHandle(WriteQueue);
-	SockMark2ReadState[SockMark] = false;
 	SockMark2WriteState.erase(SockMark);
 	SockMark2WEvent.erase(SockMark);
+	if (SockMark2State[SockMark])
+		CloseSock(SockMark);
+	else
+		SockMark2State[SockMark] = true;
 }
 
 /**
@@ -269,6 +314,7 @@ void  SockPool::AllocResource(unsigned int SockMark)///<分配资源
 	SockMark2Port[SockMark] = nPort++;///<端口号自增
 	SockMark2ReadState[SockMark] = true;///<初始化读写状态
 	SockMark2WriteState[SockMark] = true;
+	SockMark2State[SockMark] = false;
 	SockMark2SockStruct[SockMark] = new transstruct();
 	SockMark2WEvent[SockMark] = new CEvent();///<初始化读写信号量
 	SockMark2WEvent[SockMark]->SetEvent();
@@ -282,13 +328,14 @@ void  SockPool::AllocResource(unsigned int SockMark)///<分配资源
 * @param [in] mypara 线程参数结构，CH 被服务程序句柄，Queue 被操作队列句柄，SockMark 套接字唯一标识符
 * @note 注册套接字时调用，函数根据套接字标识分配套接字资源
 */
-void  SockPool::InitalThreadPara(Para &mypara, HANDLE CH, HANDLE Queue, PM pQueue, unsigned int SockMark)
+void  SockPool::InitalThreadPara(Para &mypara, HANDLE CH, HANDLE Queue, PM pQueue, unsigned int SockMark,HANDLE &Destory)
 {
 	mypara.CH = CH;///<初始化线程调用参数集合
 	mypara.Queue = Queue;
 	mypara.pQueue = pQueue;
 	mypara.pthis = this;
 	mypara.SockMark = SockMark;
+	DuplicateHandle(SH, Destory, SH, &mypara.Destory, NULL, true, DUPLICATE_SAME_ACCESS);
 }
 
 /**
@@ -301,22 +348,29 @@ void SockPool::Connect()
 			WaitForSingleObject(Dsemaphore, INFINITE);//等待应用程序请求连接
 			PM pReadQueue, pWriteQueue;
 	        HANDLE CH,ReadQueue, WriteQueue;
+			HANDLE CDestory, SDestory;
 			struct Para rPara, wPara;
 
 			AllocResource(preg->SockMark);///<为套接字分配资源
-
 			ReadQueue = OpenFileMapping(FILE_MAP_WRITE, FALSE, preg->WriteQueueName);
 			InitalReadQueue(ReadQueue,pReadQueue,CH);///<初始化读队列
+			CDestory = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, preg->CDestoryName);
 			WriteQueue = CreateFileMapping(HANDLE(0xFFFFFFFF), NULL, PAGE_READWRITE, 0, sizeof(Manager), preg->ReadQueueName);
 			InitalWriteQueue(WriteQueue, pWriteQueue);///<初始化写队列
-
-			InitalThreadPara(rPara, CH, ReadQueue, pReadQueue, preg->SockMark);
+			SDestory = CreateSemaphore(NULL, 0, 100, preg->SDestoryName);
+			InitalThreadPara(rPara, CH, ReadQueue, pReadQueue, preg->SockMark,CDestory);
 			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewReadThread, (LPVOID)&rPara, NULL, NULL);
-			InitalThreadPara(wPara, CH, WriteQueue, pWriteQueue, preg->SockMark);
+			InitalThreadPara(wPara, CH, WriteQueue, pWriteQueue, preg->SockMark,SDestory);
 			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)NewWriteThread, (LPVOID)&wPara, NULL, NULL);
 			ReleaseSemaphore(Rsemaphore, 1, NULL);///<释放读信号量
-
 			sockconnum++;
+			//AfxMessageBox(preg->CDestoryName);
+			//AfxMessageBox(preg->SDestoryName);
+			//AfxMessageBox(preg->ReadQueueName);
+			//AfxMessageBox(preg->WriteQueueName);
+			CString pid;
+			pid.Format(_T("%d"), preg->SockMark);
+			//AfxMessageBox(pid);
 		}
 }
 
@@ -400,19 +454,17 @@ void    SockPool::SendToApp(void *psock)
 */
 bool   SockPool::CloseSock(unsigned int SockMark)
 {
-Port2SockMark.erase(SockMark2Port[SockMark]);
-SockMark2Port.erase(SockMark);
-delete SockMark2SockStruct[SockMark];
-SockMark2SockStruct.erase(SockMark);
-CloseHandle(*SockMark2REvent[SockMark]);
-CloseHandle(*SockMark2WEvent[SockMark]);
-SockMark2REvent.erase(SockMark);
-SockMark2WEvent.erase(SockMark);
-SockMark2ReadState[SockMark] = false;
-SockMark2WriteState[SockMark] = false;
-WaitForSingleObject(SockMark2ReadThread[SockMark],INFINITE);
-WaitForSingleObject(SockMark2WriteThread[SockMark],INFINITE);
-SockMark2ReadState.erase(SockMark);
-SockMark2WriteThread.erase(SockMark);
-return true;
+	Port2SockMark.erase(SockMark2Port[SockMark]);
+	SockMark2Port.erase(SockMark);
+	delete SockMark2SockStruct[SockMark];
+	SockMark2SockStruct.erase(SockMark);
+	CloseHandle(*SockMark2REvent[SockMark]);
+	CloseHandle(*SockMark2WEvent[SockMark]);
+	SockMark2REvent.erase(SockMark);
+	SockMark2WEvent.erase(SockMark);
+	SockMark2ReadState[SockMark] = false;
+	SockMark2WriteState[SockMark] = false;
+	SockMark2ReadState.erase(SockMark);
+	SockMark2WriteState.erase(SockMark);
+	return true;
 }

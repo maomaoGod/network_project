@@ -30,6 +30,7 @@ using namespace std;
 #define  SOCKRECEIVEFROM    206
 #define  SOCKCLOSE                 207
 #define  SOCKACCEPT               208
+#define  SOCKDESTORY             209
 
 
 /**
@@ -101,8 +102,10 @@ typedef struct Node
 
 struct regstruct{
 	int    SockMark;            ///<套接字唯一标识
-	TCHAR ReadQueueName[20];///<读链表管理结构名
-	TCHAR WriteQueueName[20];///<写链表管理结构名
+	TCHAR ReadQueueName[40];///<读链表管理结构名
+	TCHAR WriteQueueName[40];///<写链表管理结构名
+	TCHAR CDestoryName[40];
+	TCHAR SDestoryName[40];
 };
 
 /**
@@ -118,6 +121,7 @@ struct Para
 	unsigned int SockMark;
 	HANDLE CH;
 	HANDLE Queue;
+	HANDLE Destory;
 	PM pQueue;
 };
 
@@ -161,6 +165,7 @@ class SockPool
 {
 public:
 	SockPool();
+	bool Create(CString user);
 	~SockPool();
 public:
 	void   SendToApp(void *);
@@ -176,6 +181,7 @@ private:
 	map <unsigned int, CEvent *>SockMark2REvent;
 	map <unsigned int, bool> SockMark2ReadState;
 	map <unsigned int, bool> SockMark2WriteState;
+	map <unsigned int, bool> SockMark2State;
 	map  <unsigned int, HANDLE> SockMark2ReadThread;
 	map <unsigned int, HANDLE> SockMark2WriteThread;
 private:
@@ -186,6 +192,7 @@ private:
 	HANDLE SH;
 	regstruct *preg;
 private:
+	
 	/** @brief 套接字注册线程*/
 	static DWORD WINAPI NewConnThread(LPVOID lParam);
 	/** @brief 套接字读队列线程 */
@@ -205,15 +212,15 @@ private:
 	/** @brief  套接字注册链接处理函数 */
 	void   Connect();
 	/** @brief 初始化读写线程参数函数 */
-	void   InitalThreadPara(Para &, HANDLE, HANDLE, PM, unsigned int);
+	void   InitalThreadPara(Para &, HANDLE, HANDLE, PM, unsigned int,HANDLE &);
 	/** @brief  传输层数据转化为队列节点结构*/
-	void   SockDataToNode(PN, unsigned int);
+	bool   SockDataToNode(PN, unsigned int);
 	/** @brief 套接字分配资源*/
 	void   AllocResource(unsigned int SockMark);
 	/** @brief 读队列线程处理函数 */
-	void   ReadSock(HANDLE,unsigned int,HANDLE, PM);
+	void   ReadSock(HANDLE,unsigned int,HANDLE, PM,HANDLE &);
 	/** @brief 写队列线程处理函数 */
-	void   WriteSock(HANDLE,unsigned int,HANDLE, PM);
+	void   WriteSock(HANDLE,unsigned int,HANDLE, PM,HANDLE &);
 	/** @brief 套接字关闭函数*/
 	bool  CloseSock(unsigned int);
 	bool  state = true;
